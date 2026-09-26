@@ -1,8 +1,4 @@
-"""Reporting. Aggregation is code, never a model.
-
-The report states what was found, how locked it is, what open source replaces it,
-and what you lose by switching. The last one is what makes the rest trustworthy.
-"""
+"""Reporting: which closed AI services a codebase uses, and what replaces them."""
 
 from __future__ import annotations
 
@@ -10,73 +6,74 @@ import datetime as _dt
 import json
 from pathlib import Path
 
-from .catalog import Catalog
+from .catalog import Alternative, Catalog, Pool
 from .detect import Finding
 
-LOCKIN_LABEL = {
-    "unassessed": "Not assessed",
-    "locked": "Locked",
-    "friction": "Friction",
-    "portable": "Portable",
+RANKED_BY = {
+    "momentum": "ranked by GitHub stars gained in the last 90 days",
+    "stars": "ranked by GitHub stars (momentum needs four weeks of history)",
+    "trending": "ranked by Hugging Face trending",
+    None: "catalog order, not ranked",
 }
-LOCKIN_BLURB = {
-    "unassessed": (
-        "Detected, not assessed. Nobody here has run this, so there is no claim "
-        "about how hard it is to leave."
-    ),
-    "locked": (
-        "No compatible replacement. Leaving means rewriting against a different "
-        "model of the problem."
-    ),
-    "friction": "Replaceable, but not by repointing a URL. Expect real work and a quality re-test.",
-    "portable": (
-        "An open implementation exists that speaks the same interface. You are buying "
-        "operations, not access."
-    ),
-}
+EVIDENCE_SHOWN = 5
 
 
 def _rel(path: Path, root: Path) -> str:
     try:
-        return str(path.relative_to(root))
+        return path.relative_to(root).as_posix()
     except ValueError:
         return str(path)
 
 
-def to_json(
-    findings: list[Finding], root: Path, catalog: Catalog, packages: dict | None = None
-) -> str:
+def _compact(n: int | None) -> str:
+    if n is None:
+        return "?"
+    if n >= 1_000_000:
+        return f"{n / 1_000_000:.1f}M"
+    if n >= 1_000:
+        return f"{n / 1_000:.1f}k"
+    return str(n)
+
+
+def _describe(alt: Alternative, pool: Pool) -> str:
+    bits = []
+    if pool.source == "github":
+        if alt.stars is not None:
+            gain = f", +{_compact(alt.stars_90d)} in 90 days" if alt.stars_90d is not None else ""
+            bits.append(f"★ {_compact(alt.stars)}{gain}")
+    elif alt.downloads is not None:
+        bits.append(f"{_compact(alt.downloads)} downloads/month")
+    if alt.licence:
+        bits.append(alt.licence)
+    meta = f" ({', '.join(bits)})" if bits else ""
+    return f"[{alt.name}]({alt.url}) — {alt.what}{meta}"
+
+
+def _now() -> _dt.datetime:
+    return _dt.datetime.now(_dt.UTC)
+
+
+def _pools_in_order(findings: list[Finding], catalog: Catalog) -> dict[str, list[str]]:
+    """Each pool the findings need, once, with the services it replaces."""
+    pools: dict[str, list[str]] = {}
+    for f in findings:
+        for pool_id in f.service.replace_with:
+            pools.setdefault(pool_id, []).append(f.service.name)
+    return pools
+
+
+def to_json(findings: list[Finding], root: Path, catalog: Catalog) -> str:
     payload = {
         "scanned": str(root),
-        "scanned_at": _dt.datetime.now(_dt.UTC).isoformat(timespec="seconds"),
-        "catalog_version": catalog.version,
-        "catalog_entries": len(catalog),
-        "summary": summarise(findings),
-        "packages": {
-            f"{eco}:{name}": {k: v for k, v in vars(fact).items()}
-            for (eco, name), fact in (packages or {}).items()
-        },
-        "findings": [
+        "scanned_at": _now().isoformat(timespec="seconds"),
+        "catalog_services": len(catalog),
+        "rankings_date": catalog.rankings_date,
+        "found": [
             {
-                "id": f.entry.id,
-                "name": f.entry.name,
-                "category": f.entry.category,
-                "lockin": f.entry.lockin,
-                "assessment": (
-                    {
-                        "interface": f.entry.assessment.interface,
-                        "data": f.entry.assessment.data,
-                        "behaviour": f.entry.assessment.behaviour,
-                    }
-                    if f.entry.assessment
-                    else None
-                ),
-                "escalates_when": f.entry.escalates_when,
-                "binding": list(f.entry.binding),
-                "confidence": f.confidence,
-                "why": f.entry.why,
-                "verified": f.entry.verified.isoformat(),
-                "stale": f.entry.is_stale,
+                "id": f.service.id,
+                "name": f.service.name,
+                "category": f.service.category,
+                "replace_with": list(f.service.replace_with),
                 "evidence": [
                     {
                         "kind": fact.kind,
@@ -85,180 +82,83 @@ def to_json(
                         "line": fact.line,
                         "text": fact.evidence,
                     }
-                    for fact in f.cited[:20]
-                ],
-                "alternatives": [
-                    {
-                        "name": a.name,
-                        "url": a.url,
-                        "kind": a.kind,
-                        "compat": a.compat,
-                        "effort": a.effort,
-                        "loses": a.full_loses,
-                        "assessed": a.component_assessed,
-                    }
-                    for a in f.entry.alternatives
+                    for fact in f.cited
                 ],
             }
             for f in findings
         ],
+        "alternatives": {
+            pool_id: {
+                "name": catalog.pools[pool_id].name,
+                "replaces": services,
+                "ranked_by": catalog.pools[pool_id].ranked_by,
+                "items": [
+                    {k: v for k, v in vars(a).items() if v is not None}
+                    for a in catalog.pools[pool_id].alternatives
+                ],
+            }
+            for pool_id, services in _pools_in_order(findings, catalog).items()
+        },
     }
     return json.dumps(payload, indent=2, ensure_ascii=False)
 
 
-def summarise(findings: list[Finding]) -> dict:
-    counts = {"locked": 0, "friction": 0, "portable": 0, "unassessed": 0}
-    for f in findings:
-        counts[f.entry.lockin] += 1
-    return {
-        "dependencies_found": len(findings),
-        **counts,
-        "assessed": sum(1 for f in findings if f.entry.tier == "assessed"),
-        "stale_assessments": sum(
-            1 for f in findings if f.entry.tier == "assessed" and f.entry.is_stale
-        ),
-    }
-
-
-def to_markdown(
-    findings: list[Finding], root: Path, catalog: Catalog, packages: dict | None = None
-) -> str:
-    s = summarise(findings)
-    out: list[str] = []
-    out.append(f"# Lock-in report: `{root.name}`")
-    out.append("")
-    out.append(
-        f"Scanned {_dt.datetime.now(_dt.UTC).date().isoformat()} (UTC) · "
-        f"catalog {catalog.version} · "
-        f"{len(catalog)} entries"
-    )
-    out.append("")
-    out.append(
-        f"Found **{s['dependencies_found']}** vendor dependencies: "
-        f"**{s['locked']} locked**, **{s['friction']} friction**, "
-        f"**{s['portable']} portable**, **{s['unassessed']} not yet assessed**."
-    )
-    out.append("")
-
-    packages = packages or {}
-    notable = [f for f in packages.values() if f.is_notable]
-    if notable:
-        out.append("**Checked against the registries just now:**")
-        out.append("")
-        for f in notable:
-            what = f.deprecated or "yanked"
-            out.append(f"- `{f.name}` ({f.ecosystem}) — {what}")
-        out.append("")
+def to_markdown(findings: list[Finding], root: Path, catalog: Catalog, top: int = 3) -> str:
+    out: list[str] = [f"# AI dependencies in `{root.name}`", ""]
+    ranked = f" · alternatives ranked {catalog.rankings_date}" if catalog.rankings_date else ""
+    out += [
+        f"Scanned {_now().date().isoformat()} · {len(catalog)} closed AI services in the catalog{ranked}",
+        "",
+    ]
 
     if not findings:
         out.append(
-            "No catalogued vendor dependencies found. That means one of two things: "
-            "this codebase is clean, or the catalog does not cover its stack yet."
+            "No closed AI services found. Either this codebase has none, or it uses one "
+            "the catalog does not cover yet — please open an issue if so."
         )
         return "\n".join(out)
 
-    assessed = [f for f in findings if f.entry.tier == "assessed"]
-    detected = [f for f in findings if f.entry.tier == "detected"]
+    noun = "service" if len(findings) == 1 else "services"
+    out += [f"Found **{len(findings)}** closed AI {noun}.", ""]
+    out += ["| Closed service | Category | Replace with |", "|---|---|---|"]
+    for f in findings:
+        picks = []
+        for pool in catalog.alternatives_for(f.service):
+            if pool.alternatives:
+                best = pool.alternatives[0]
+                picks.append(f"{pool.name}: [{best.name}]({best.url})")
+        out.append(f"| {f.service.name} | {f.service.category} | {'<br>'.join(picks) or '—'} |")
+    out += ["", "## Where each one is used", ""]
 
-    if assessed:
-        out.append("| Dependency | Lock-in | Confidence | Best open source replacement | Effort |")
-        out.append("|---|---|---|---|---|")
-        for f in assessed:
-            best = min(
-                f.entry.alternatives, key=lambda a: ("low", "medium", "high").index(a.effort)
-            )
-            out.append(
-                f"| {f.entry.name} | {LOCKIN_LABEL[f.entry.lockin]} | {f.confidence} "
-                f"| {best.name} | {best.effort} |"
-            )
-        out.append("")
-
-    if detected:
-        out.append(f"### Also found, not assessed ({len(detected)})")
-        out.append("")
-        out.append(
-            "Real dependencies with no verified assessment behind them. Nobody here has "
-            "run these, so there is no lock-in label and no recommendation — only that "
-            "they are present and what they bind you through. That is still worth "
-            "knowing; it is where to look next."
-        )
-        out.append("")
-        out.append("| Dependency | Binds you through | Found in |")
-        out.append("|---|---|---|")
-        for f in detected:
-            where = f"`{_rel(f.cited[0].file, root)}:{f.cited[0].line}`" if f.cited else "—"
-            binds = ", ".join(f.entry.binding) or "—"
-            out.append(f"| {f.entry.name} | {binds} | {where} |")
-        out.append("")
-
-    for f in assessed:
-        e = f.entry
-        out.append(f"## {e.name}")
-        out.append("")
-        out.append(f"**{LOCKIN_LABEL[e.lockin]}** — {LOCKIN_BLURB[e.lockin]}")
-        out.append("")
-        out.append(e.why)
-        out.append("")
-        if e.assessment:
-            a = e.assessment
-            out.append(
-                f"Assessed I{a.interface} · D{a.data} · B{a.behaviour} "
-                f"(interface · data · behaviour — see METHODOLOGY.md)."
-            )
-            out.append("")
-        if e.escalates_when:
-            out.append(f"**Escalates if:** {e.escalates_when}")
-            out.append("")
-        if e.binding:
-            out.append(f"Binds you through: {', '.join(e.binding)}.")
-            out.append("")
-
-        out.append(f"**Found in** ({f.confidence} confidence, {len(f.cited)} locations)")
-        out.append("")
-        for fact in f.cited[:6]:
+    for f in findings:
+        cited = f.cited
+        noun = "location" if len(cited) == 1 else "locations"
+        out += [f"### {f.service.name}", "", f"{len(cited)} {noun}:", ""]
+        for fact in cited[:EVIDENCE_SHOWN]:
             out.append(f"- `{_rel(fact.file, root)}:{fact.line}` — `{fact.evidence[:120]}`")
-        if len(f.cited) > 6:
-            out.append(f"- …and {len(f.cited) - 6} more")
+        if len(cited) > EVIDENCE_SHOWN:
+            out.append(f"- …and {len(cited) - EVIDENCE_SHOWN} more")
         out.append("")
 
-        for (eco, name), fact in sorted(packages.items()):
-            if not any(fact_.value == name for fact_ in f.facts):
-                continue
-            if fact.error:
-                line = f"registry unreachable ({fact.error})"
-            else:
-                line = f"latest {fact.latest}"
-                if fact.last_published:
-                    line += f", published {fact.last_published}"
-                if fact.deprecated:
-                    line += f" — DEPRECATED: {fact.deprecated}"
-                if fact.yanked:
-                    line += " — YANKED"
-            out.append(f"*{name} ({eco}): {line}*")
-            out.append("")
-
-        out.append("**Open source replacements**")
-        out.append("")
-        for a in e.alternatives:
-            title = f"[{a.name}]({a.url})" if a.url else a.name
-            unassessed = (
-                "  ⚠️ not assessed — nobody here has run it" if not a.component_assessed else ""
-            )
-            out.append(f"- **{title}** — {a.kind}, migration effort: {a.effort}{unassessed}")
-            out.append(f"  - Compatibility: {a.compat}")
-            out.append(f"  - What you lose: {a.full_loses}")
+    out += ["## Open source alternatives", ""]
+    for pool_id, services in _pools_in_order(findings, catalog).items():
+        pool = catalog.pools[pool_id]
+        out += [
+            f"### {pool.name}",
+            "",
+            f"Replaces {', '.join(services)} · {RANKED_BY.get(pool.ranked_by, pool.ranked_by)}",
+            "",
+        ]
+        for i, alt in enumerate(pool.alternatives[:top], start=1):
+            out.append(f"{i}. {_describe(alt, pool)}")
         out.append("")
 
-        stale = "  ⚠️ older than 6 months — re-verify before relying on it" if e.is_stale else ""
-        out.append(
-            f"*Assessment verified {e.verified.isoformat()} ({e.age_days} days ago).{stale}*"
-        )
-        out.append("")
-
-    out.append("---")
-    out.append("")
-    out.append(
-        "This report describes dependencies, not verdicts. Every alternative above lists what "
-        "you give up, because a migration recommendation that names no cost is not an assessment."
-    )
+    out += [
+        "---",
+        "",
+        "Open source means an OSI-approved licence for code and an open licence for model "
+        "weights. Archived projects, projects without a push in a year, and "
+        "source-available licences are left out. `--top N` shows more; "
+        "`--format json` gives every ranked alternative.",
+    ]
     return "\n".join(out)

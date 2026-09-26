@@ -1,0 +1,267 @@
+# Open source alternatives, grouped into pools.
+#
+# A pool is one kind of replacement: "inference server", "vector database". A closed
+# service names the pools that replace it (see services/*.yaml), so a project added
+# here is offered everywhere it applies.
+#
+# Order in this file means nothing. `scripts/refresh.py` ranks every pool by momentum
+# and writes catalog/rankings.json; the scanner reads that snapshot and never touches
+# the network.
+#
+#   github pools       — ranked by stars gained in the last 90 days. Archived repos,
+#                        repos with no push in 180 days and repos whose licence is not
+#                        OSI-approved are dropped from the ranking.
+#   huggingface pools  — open-weight models, discovered rather than listed: the newest
+#                        original (non-derived) models from the listed publishers, with
+#                        an open licence, ranked by Hugging Face's trending score.
+#
+# `licence` is only needed where GitHub cannot detect it (it reports NOASSERTION) —
+# it must then be an SPDX id from the allowlist in lockin/catalog.py. Open-core
+# projects count when the core is OSI-licensed and the closed part sits apart (an
+# `ee/` directory); the declared licence is the core's. Licences that add terms to
+# an OSI licence (commercial thresholds, use restrictions) do not count.
+
+pools:
+
+  # ---------------------------------------------------------------- LLMs
+
+  - id: llm-serving
+    name: Inference server
+    source: github
+    projects:
+      - {repo: vllm-project/vllm, what: High-throughput production inference server, OpenAI-compatible API}
+      - {repo: sgl-project/sglang, what: Fast inference server for LLMs and multimodal models, OpenAI-compatible API}
+      - {repo: ggml-org/llama.cpp, what: "LLM inference in C/C++ on CPU, GPU and Apple Silicon; OpenAI-compatible llama-server"}
+      - {repo: ollama/ollama, what: Run open models locally with one command, OpenAI-compatible API}
+      - {repo: InternLM/lmdeploy, what: Toolkit for compressing, deploying and serving LLMs}
+      - {repo: NVIDIA/TensorRT-LLM, what: Optimised LLM inference on NVIDIA GPUs, licence: Apache-2.0}
+      - {repo: mudler/LocalAI, what: Self-hosted drop-in replacement for the OpenAI API, runs on consumer hardware}
+      - {repo: ai-dynamo/dynamo, what: Datacenter-scale distributed inference serving framework, licence: Apache-2.0}
+
+  - id: open-llm
+    name: Open-weight LLM
+    source: huggingface
+    pipeline_tags: [text-generation, image-text-to-text]
+    publishers: [Qwen, deepseek-ai, openai, mistralai, moonshotai, zai-org, XiaomiMiMo, MiniMaxAI,
+                 nvidia, ibm-granite, google, microsoft, allenai, HuggingFaceTB, openbmb, tencent,
+                 baidu, stepfun-ai, meituan-longcat, inclusionAI, ServiceNow-AI, swiss-ai, arcee-ai]
+
+  - id: llm-gateway
+    name: LLM gateway
+    source: github
+    projects:
+      - {repo: BerriAI/litellm, what: "Proxy exposing 100+ providers behind one OpenAI-compatible API, with keys, budgets and fallbacks", licence: MIT}
+      - {repo: Portkey-AI/gateway, what: Fast AI gateway with routing, retries and guardrails}
+      - {repo: maximhq/bifrost, what: High-performance LLM gateway written in Go}
+      - {repo: songquanpeng/one-api, what: "Unified OpenAI-compatible API over many providers, with key management"}
+      - {repo: QuantumNous/new-api, what: "LLM gateway and key management, successor fork of one-api"}
+      - {repo: theagentrouter/agent-router, what: AI gateway built on Envoy Proxy}
+      - {repo: Helicone/helicone, what: "Observability platform with a built-in AI gateway"}
+
+  - id: fine-tuning
+    name: Fine-tuning framework
+    source: github
+    projects:
+      - {repo: unslothai/unsloth, what: "Fast, memory-efficient fine-tuning and RL for open models"}
+      - {repo: hiyouga/LlamaFactory, what: "Unified fine-tuning of 100+ LLMs, with a web UI"}
+      - {repo: axolotl-ai-cloud/axolotl, what: Config-driven fine-tuning for open models}
+      - {repo: huggingface/trl, what: "Post-training with SFT, DPO, GRPO and more"}
+      - {repo: meta-pytorch/torchtune, what: PyTorch-native post-training library}
+      - {repo: verl-project/verl, what: Reinforcement learning for LLMs at scale}
+
+  - id: guardrails
+    name: Guardrails and moderation
+    source: github
+    projects:
+      - {repo: NVIDIA-NeMo/Guardrails, what: Programmable guardrails for LLM applications, licence: Apache-2.0}
+      - {repo: guardrails-ai/guardrails, what: Input and output validation for LLMs}
+
+  # ---------------------------------------------------------------- retrieval
+
+  - id: vector-db
+    name: Vector database
+    source: github
+    projects:
+      - {repo: qdrant/qdrant, what: Vector database and search engine written in Rust}
+      - {repo: milvus-io/milvus, what: Cloud-native vector database built for scale}
+      - {repo: weaviate/weaviate, what: "Vector database with hybrid search and built-in vectorisers", licence: BSD-3-Clause}
+      - {repo: chroma-core/chroma, what: Embedding database for AI applications}
+      - {repo: lancedb/lancedb, what: Serverless multimodal vector database on the Lance format}
+      - {repo: pgvector/pgvector, what: Vector similarity search inside Postgres, licence: PostgreSQL}
+      - {repo: vespa-engine/vespa, what: Search and vector engine for big data serving}
+      - {repo: facebookresearch/faiss, what: Library for efficient similarity search}
+      - {repo: timescale/pgvectorscale, what: "Postgres extension for high-performance, cost-efficient vector search"}
+
+  - id: search-engine
+    name: Search engine
+    source: github
+    projects:
+      - {repo: opensearch-project/OpenSearch, what: "Search and analytics suite with vector, lexical and hybrid search"}
+      - {repo: meilisearch/meilisearch, what: "Search engine with hybrid (keyword + vector) search", licence: MIT}
+      - {repo: typesense/typesense, what: "Typo-tolerant search engine with vector search"}
+      - {repo: paradedb/paradedb, what: Elasticsearch-quality search inside Postgres}
+      - {repo: quickwit-oss/tantivy, what: Full-text search engine library in Rust}
+      - {repo: infiniflow/infinity, what: AI-native database for hybrid search}
+
+  - id: rag-engine
+    name: RAG engine
+    source: github
+    projects:
+      - {repo: infiniflow/ragflow, what: RAG engine with deep document understanding}
+      - {repo: HKUDS/LightRAG, what: Simple and fast graph-based RAG}
+      - {repo: microsoft/graphrag, what: Graph-based retrieval-augmented generation}
+      - {repo: run-llama/llama_index, what: Framework for building RAG over your data}
+      - {repo: deepset-ai/haystack, what: Framework for production RAG pipelines}
+      - {repo: onyx-dot-app/onyx, what: "Self-hostable enterprise search and chat over your documents", licence: MIT}
+
+  - id: embedding-model
+    name: Open embedding model
+    source: huggingface
+    pipeline_tags: [feature-extraction, sentence-similarity]
+    publishers: [Qwen, BAAI, nomic-ai, mixedbread-ai, Alibaba-NLP, intfloat, Snowflake, ibm-granite,
+                 google, jinaai, nvidia, microsoft, sentence-transformers, lightonai, codefuse-ai,
+                 perplexity-ai, tencent]
+
+  - id: embedding-serving
+    name: Embedding server
+    source: github
+    projects:
+      - {repo: huggingface/text-embeddings-inference, what: "Fast inference server for embedding and reranker models"}
+      - {repo: michaelfeil/infinity, what: "OpenAI-compatible server for embedding, reranking and CLIP models"}
+      - {repo: huggingface/sentence-transformers, what: The standard Python library for embedding and reranker models}
+      - {repo: qdrant/fastembed, what: "Lightweight, ONNX-based embedding generation"}
+      - {repo: vllm-project/vllm, what: "Also serves embedding models behind an OpenAI-compatible /v1/embeddings"}
+
+  - id: reranker
+    name: Open reranker model
+    source: huggingface
+    pipeline_tags: [text-ranking, text-classification]
+    name_contains: [rerank, ranker]
+    publishers: [Qwen, BAAI, mixedbread-ai, Alibaba-NLP, jinaai, ibm-granite, nvidia, zeroentropy,
+                 lightonai, cross-encoder, tomaarsen, contextual-ai]
+
+  - id: document-parsing
+    name: Document parsing and OCR
+    source: github
+    projects:
+      - {repo: docling-project/docling, what: "Parses PDF, DOCX, PPTX and more into structured output for AI"}
+      - {repo: datalab-to/marker, what: Converts PDF and documents to Markdown quickly and accurately}
+      - {repo: Unstructured-IO/unstructured, what: Open source ETL for unstructured documents}
+      - {repo: microsoft/markitdown, what: Converts files and office documents to Markdown}
+      - {repo: allenai/olmocr, what: PDF linearisation with a vision-language model}
+      - {repo: PaddlePaddle/PaddleOCR, what: "OCR and document parsing toolkit, 100+ languages"}
+      - {repo: deepseek-ai/DeepSeek-OCR, what: Vision-language OCR model with optical context compression}
+      - {repo: studio-dots-ai/dots.ocr, what: Multilingual document layout parsing in a single VLM}
+
+  # ---------------------------------------------------------------- operations
+
+  - id: llm-observability
+    name: LLM observability and evals
+    source: github
+    projects:
+      - {repo: langfuse/langfuse, what: "LLM tracing, prompt management, evals and metrics", licence: MIT}
+      - {repo: comet-ml/opik, what: "Tracing, evaluation and monitoring for LLM apps"}
+      - {repo: mlflow/mlflow, what: "Open platform for LLM tracing, evaluation and model management"}
+      - {repo: traceloop/openllmetry, what: OpenTelemetry-based observability for LLM apps}
+      - {repo: Helicone/helicone, what: "LLM observability with request logging and cost tracking"}
+      - {repo: Agenta-AI/agenta, what: "Prompt management, evaluation and observability", licence: MIT}
+      - {repo: promptfoo/promptfoo, what: "Evals, red-teaming and regression testing for prompts"}
+      - {repo: confident-ai/deepeval, what: Evaluation framework for LLM applications}
+
+  # ---------------------------------------------------------------- speech
+
+  - id: speech-to-text
+    name: Speech-to-text
+    source: github
+    projects:
+      - {repo: openai/whisper, what: General-purpose speech recognition model}
+      - {repo: SYSTRAN/faster-whisper, what: "Whisper reimplemented on CTranslate2, up to 4x faster"}
+      - {repo: ggml-org/whisper.cpp, what: "Whisper in C/C++, runs on CPU, GPU and edge devices"}
+      - {repo: m-bain/whisperX, what: "Whisper with word-level timestamps and speaker diarisation"}
+      - {repo: speaches-ai/speaches, what: "OpenAI-compatible speech-to-text and text-to-speech server"}
+      - {repo: k2-fsa/sherpa-onnx, what: "Offline speech recognition and synthesis on any platform"}
+      - {repo: NVIDIA-NeMo/Speech, what: "Framework behind the Parakeet and Canary speech models"}
+      - {repo: kyutai-labs/delayed-streams-modeling, what: Kyutai's streaming speech-to-text and text-to-speech}
+      - {repo: pyannote/pyannote-audio, what: Speaker diarisation toolkit}
+
+  - id: text-to-speech
+    name: Text-to-speech
+    source: github
+    projects:
+      - {repo: resemble-ai/chatterbox, what: "Expressive TTS with voice cloning, MIT weights"}
+      - {repo: canopyai/Orpheus-TTS, what: "Human-like speech synthesis on a Llama backbone"}
+      - {repo: nari-labs/dia, what: "Dialogue TTS model generating multi-speaker conversation"}
+      - {repo: QwenAudio/CosyVoice, what: "Multilingual voice generation with zero-shot cloning"}
+      - {repo: microsoft/VibeVoice, what: "Long-form, multi-speaker conversational speech synthesis"}
+      - {repo: remsky/Kokoro-FastAPI, what: "OpenAI-compatible server for Kokoro TTS"}
+      - {repo: OHF-Voice/piper1-gpl, what: "Fast local neural TTS for edge devices"}
+      - {repo: kyutai-labs/delayed-streams-modeling, what: Kyutai's streaming speech-to-text and text-to-speech}
+
+  - id: voice-agent
+    name: Voice agent framework
+    source: github
+    projects:
+      - {repo: pipecat-ai/pipecat, what: Framework for real-time voice and multimodal agents}
+      - {repo: livekit/agents, what: Framework for real-time voice AI agents on WebRTC}
+      - {repo: kyutai-labs/moshi, what: Full-duplex speech-to-speech model}
+
+  # ---------------------------------------------------------------- images
+
+  - id: image-generation
+    name: Image generation
+    source: github
+    projects:
+      - {repo: Comfy-Org/ComfyUI, what: Node-based engine for diffusion models, the de-facto standard}
+      - {repo: huggingface/diffusers, what: Library for state-of-the-art diffusion models}
+      - {repo: invoke-ai/InvokeAI, what: "Creative engine and UI for Stable Diffusion and FLUX"}
+      - {repo: QwenLM/Qwen-Image, what: "Image generation and editing model, Apache-2.0 weights"}
+      - {repo: Tongyi-MAI/Z-Image, what: "Efficient 6B image generation model, Apache-2.0 weights"}
+
+  # ---------------------------------------------------------------- agents
+
+  - id: web-search
+    name: Web search
+    source: github
+    projects:
+      - {repo: searxng/searxng, what: "Self-hosted metasearch engine with a JSON API"}
+      - {repo: ItzCrazyKns/Vane, what: "AI-powered answer engine, open source Perplexity alternative"}
+      - {repo: assafelovic/gpt-researcher, what: Autonomous agent for deep web research}
+      - {repo: stanford-oval/storm, what: Research agent that writes grounded reports from web search}
+
+  - id: web-scraping
+    name: Web scraping for LLMs
+    source: github
+    projects:
+      - {repo: unclecode/crawl4ai, what: "LLM-friendly web crawler producing clean Markdown"}
+      - {repo: firecrawl/firecrawl, what: "Turns websites into LLM-ready data, self-hostable"}
+      - {repo: jina-ai/reader, what: Converts any URL to LLM-friendly input}
+      - {repo: ScrapeGraphAI/Scrapegraph-ai, what: Scraping pipelines driven by LLMs}
+      - {repo: mishushakov/llm-scraper, what: Structured data from any web page with LLMs}
+
+  - id: browser-automation
+    name: Browser automation for agents
+    source: github
+    projects:
+      - {repo: browser-use/browser-use, what: Makes websites accessible to AI agents}
+      - {repo: microsoft/playwright, what: Browser automation for Chromium, Firefox and WebKit}
+      - {repo: steel-dev/steel-browser, what: Self-hostable browser API for AI agents}
+      - {repo: lightpanda-io/browser, what: Headless browser built for AI and automation}
+      - {repo: browserbase/stagehand, what: AI browser automation framework}
+
+  - id: code-sandbox
+    name: Code execution sandbox
+    source: github
+    projects:
+      - {repo: e2b-dev/runtime, what: "Self-hostable infrastructure behind E2B sandboxes"}
+      - {repo: superradcompany/microsandbox, what: Self-hosted microVM sandboxes for untrusted code}
+      - {repo: google/gvisor, what: Application kernel for container isolation}
+      - {repo: firecracker-microvm/firecracker, what: Lightweight microVMs for secure multi-tenant workloads}
+
+  - id: agent-memory
+    name: Agent memory
+    source: github
+    projects:
+      - {repo: mem0ai/mem0, what: "Memory layer for AI agents, self-hostable"}
+      - {repo: getzep/graphiti, what: Real-time knowledge graphs for agent memory}
+      - {repo: letta-ai/letta, what: Stateful agents with long-term memory}
+      - {repo: topoteretes/cognee, what: Memory for AI agents from documents and conversations}

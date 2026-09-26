@@ -1,0 +1,407 @@
+# Closed LLM APIs and gateways.
+#
+# Signature kinds (see lockin/detect.py for exactly how each is matched):
+#   requirement         Python package: requirements*.txt, pyproject, setup.py/cfg, Pipfile, conda, pip install
+#   go, cargo, maven, nuget, gem, composer   package in that ecosystem's manifest
+#   npm                 package in package.json, a JS/TS import or require, or npm/pnpm/yarn/bun add
+#   python_import       module imported in .py or .ipynb (prefix match: `a.b` matches `a.b.c`)
+#   symbol              identifier or call in source code, word-bounded and case-sensitive
+#   model               model id prefix inside source or config ("gpt-4" matches "gpt-4o-mini")
+#   endpoint            API host (optionally with a path) anywhere in source or config
+#   env                 environment variable read in code or set in .env files
+#   terraform_resource  resource or data type in .tf files
+#
+# `excludes` names a more general service whose shared evidence this one claims when
+# it also has evidence of its own (Azure OpenAI ships inside the `openai` package).
+
+- id: openai
+  name: OpenAI API
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  open_models: [gpt-oss]
+  detect:
+    go: [github.com/openai/openai-go, github.com/sashabaranov/go-openai]
+    cargo: [async-openai, openai-api-rs]
+    maven: ["com.openai:openai-java", "dev.langchain4j:langchain4j-open-ai", "org.springframework.ai:spring-ai-openai",
+            "org.springframework.ai:spring-ai-starter-model-openai", "org.springframework.ai:spring-ai-openai-spring-boot-starter",
+            "com.theokanning.openai-gpt3-java:service", "com.aallam.openai:openai-client"]
+    nuget: [OpenAI, Microsoft.SemanticKernel.Connectors.OpenAI, Microsoft.Extensions.AI.OpenAI, Betalgo.OpenAI]
+    gem: [ruby-openai, openai]
+    composer: [openai-php/client, openai-php/laravel]
+    requirement: [openai, langchain-openai, llama-index-llms-openai, openai-agents]
+    npm: [openai, "@ai-sdk/openai", "@langchain/openai", "@openai/agents"]
+    python_import: [openai, langchain_openai, llama_index.llms.openai]
+    symbol: ["openai.OpenAI", "openai.AsyncOpenAI", "OpenAI(", "AsyncOpenAI(", "ChatOpenAI(", "createOpenAI("]
+    model: ["gpt-3.5", "gpt-4", "gpt-5", "chatgpt-4o", "o1-mini", "o1-preview", "o3-mini", "o3-pro", "o4-mini",
+            "openai:gpt-", "openai/gpt-", "openai/o3", "openai/o4"]
+    endpoint: [api.openai.com]
+    env: [OPENAI_API_KEY, OPENAI_ORG_ID, OPENAI_ORGANIZATION, OPENAI_PROJECT_ID]
+
+- id: azure-openai
+  name: Azure OpenAI
+  category: LLM API
+  replace_with: [open-llm, llm-serving, llm-gateway]
+  excludes: [openai]
+  detect:
+    go: [github.com/Azure/azure-sdk-for-go/sdk/ai/azopenai]
+    maven: ["com.azure:azure-ai-openai", "dev.langchain4j:langchain4j-azure-open-ai",
+            "org.springframework.ai:spring-ai-azure-openai", "org.springframework.ai:spring-ai-starter-model-azure-openai"]
+    nuget: [Azure.AI.OpenAI, Microsoft.SemanticKernel.Connectors.AzureOpenAI]
+    requirement: [langchain-azure-ai, llama-index-llms-azure-openai]
+    npm: ["@ai-sdk/azure", "@azure/openai"]
+    python_import: [llama_index.llms.azure_openai]
+    symbol: [AzureOpenAI, AsyncAzureOpenAI, AzureChatOpenAI, azure_endpoint, createAzure]
+    model: ["azure/gpt-", "azure/o3", "azure/o4"]
+    endpoint: [openai.azure.com, cognitiveservices.azure.com]
+    env: [AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_API_KEY, AZURE_OPENAI_DEPLOYMENT, AZURE_OPENAI_API_VERSION,
+          AZURE_OPENAI_DEPLOYMENT_NAME, AZURE_RESOURCE_NAME]
+    terraform_resource: [azurerm_cognitive_deployment]
+
+- id: azure-ai-foundry
+  name: Azure AI Foundry
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  detect:
+    requirement: [azure-ai-inference, azure-ai-projects, azure-ai-agents]
+    npm: ["@azure-rest/ai-inference", "@azure/ai-projects", "@azure/ai-agents"]
+    python_import: [azure.ai.inference, azure.ai.projects, azure.ai.agents]
+    endpoint: [services.ai.azure.com, models.inference.ai.azure.com, models.github.ai]
+    env: [AZURE_AI_PROJECT_ENDPOINT, AZURE_INFERENCE_ENDPOINT, AZURE_AI_FOUNDRY_PROJECT_ENDPOINT]
+    terraform_resource: [azurerm_ai_foundry, azurerm_ai_foundry_project, azurerm_ai_services]
+
+- id: anthropic
+  name: Anthropic API
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  detect:
+    go: [github.com/anthropics/anthropic-sdk-go, github.com/liushuangls/go-anthropic]
+    maven: ["com.anthropic:anthropic-java", "dev.langchain4j:langchain4j-anthropic",
+            "org.springframework.ai:spring-ai-anthropic", "org.springframework.ai:spring-ai-starter-model-anthropic"]
+    nuget: [Anthropic.SDK, Anthropic]
+    gem: [anthropic, ruby-anthropic]
+    requirement: [anthropic, langchain-anthropic, llama-index-llms-anthropic, claude-agent-sdk]
+    npm: ["@anthropic-ai/sdk", "@ai-sdk/anthropic", "@langchain/anthropic", "@anthropic-ai/claude-agent-sdk"]
+    python_import: [anthropic, langchain_anthropic, llama_index.llms.anthropic, claude_agent_sdk]
+    symbol: ["anthropic.Anthropic", "anthropic.AsyncAnthropic", "Anthropic(", "AsyncAnthropic(", "ChatAnthropic(",
+             "createAnthropic("]
+    model: ["claude-2", "claude-3", "claude-instant", "claude-opus-", "claude-sonnet-", "claude-haiku-",
+            "anthropic:claude-", "anthropic/claude-"]
+    endpoint: [api.anthropic.com]
+    env: [ANTHROPIC_API_KEY]
+
+- id: google-gemini
+  name: Google Gemini API
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  detect:
+    go: [google.golang.org/genai, github.com/google/generative-ai-go]
+    maven: ["com.google.genai:google-genai", "dev.langchain4j:langchain4j-google-ai-gemini"]
+    nuget: [Google.GenAI]
+    requirement: [google-genai, google-generativeai, langchain-google-genai, llama-index-llms-gemini,
+                  llama-index-llms-google-genai]
+    npm: ["@google/genai", "@google/generative-ai", "@ai-sdk/google", "@langchain/google-genai"]
+    python_import: [google.genai, google.generativeai, langchain_google_genai, llama_index.llms.gemini,
+                    llama_index.llms.google_genai]
+    symbol: [GoogleGenerativeAI, GoogleGenAI, ChatGoogleGenerativeAI, "genai.Client(", createGoogleGenerativeAI]
+    model: ["gemini-1", "gemini-2", "gemini-3", "gemini-pro", "gemini-flash", "gemini-exp", "google-gla:gemini-",
+            "google/gemini-", "gemini/gemini-"]
+    endpoint: [generativelanguage.googleapis.com]
+    env: [GEMINI_API_KEY, GOOGLE_GENERATIVE_AI_API_KEY, GOOGLE_GENAI_API_KEY]
+
+- id: google-vertex
+  name: Google Vertex AI
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  excludes: [google-gemini]
+  detect:
+    go: [cloud.google.com/go/vertexai, cloud.google.com/go/aiplatform]
+    maven: ["com.google.cloud:google-cloud-vertexai", "com.google.cloud:google-cloud-aiplatform",
+            "dev.langchain4j:langchain4j-vertex-ai-gemini", "org.springframework.ai:spring-ai-vertex-ai-gemini"]
+    nuget: [Google.Cloud.AIPlatform.V1]
+    requirement: [google-cloud-aiplatform, vertexai, langchain-google-vertexai, llama-index-llms-vertex]
+    npm: ["@google-cloud/vertexai", "@ai-sdk/google-vertex", "@langchain/google-vertexai"]
+    python_import: [vertexai, google.cloud.aiplatform, langchain_google_vertexai, llama_index.llms.vertex]
+    symbol: ["aiplatform.init", "vertexai.init", ChatVertexAI, VertexAI, createVertex, "vertexai=True"]
+    model: ["google-vertex:gemini-", "vertex_ai/"]
+    endpoint: [aiplatform.googleapis.com]
+    env: [GOOGLE_VERTEX_PROJECT, GOOGLE_VERTEX_LOCATION, VERTEX_AI_PROJECT, VERTEX_LOCATION,
+          GOOGLE_GENAI_USE_VERTEXAI]
+    terraform_resource: [google_vertex_ai_endpoint, google_vertex_ai_index_endpoint]
+
+- id: aws-bedrock
+  name: Amazon Bedrock
+  category: LLM API
+  replace_with: [open-llm, llm-serving, llm-gateway]
+  detect:
+    go: [github.com/aws/aws-sdk-go-v2/service/bedrockruntime, github.com/aws/aws-sdk-go-v2/service/bedrockagentruntime]
+    cargo: [aws-sdk-bedrockruntime, aws-sdk-bedrockagentruntime]
+    maven: ["software.amazon.awssdk:bedrockruntime", "software.amazon.awssdk:bedrockagentruntime",
+            "dev.langchain4j:langchain4j-bedrock", "org.springframework.ai:spring-ai-bedrock-converse"]
+    nuget: [AWSSDK.BedrockRuntime, AWSSDK.BedrockAgentRuntime]
+    gem: [aws-sdk-bedrockruntime]
+    requirement: [langchain-aws, llama-index-llms-bedrock, llama-index-llms-bedrock-converse, anthropic-bedrock]
+    npm: ["@aws-sdk/client-bedrock-runtime", "@aws-sdk/client-bedrock", "@aws-sdk/client-bedrock-agent-runtime",
+          "@ai-sdk/amazon-bedrock", "@langchain/aws"]
+    python_import: [langchain_aws, llama_index.llms.bedrock, llama_index.llms.bedrock_converse]
+    symbol: ['"bedrock-runtime"', "'bedrock-runtime'", '"bedrock-agent-runtime"', "'bedrock-agent-runtime'",
+             BedrockRuntimeClient, ChatBedrock, ChatBedrockConverse, AnthropicBedrock, createAmazonBedrock]
+    model: ["anthropic.claude-", "us.anthropic.claude-", "eu.anthropic.claude-", "amazon.titan-", "amazon.nova-",
+            "us.amazon.nova-", "meta.llama3", "cohere.command", "mistral.mistral-", "bedrock/", "bedrock:"]
+    endpoint: [bedrock-runtime., bedrock-agent-runtime.]
+    env: [AWS_BEDROCK_MODEL_ID, BEDROCK_MODEL_ID, BEDROCK_REGION]
+    terraform_resource: [aws_bedrock_model_invocation_logging_configuration, aws_bedrockagent_agent,
+                         aws_bedrock_guardrail, aws_bedrock_provisioned_model_throughput]
+
+- id: cohere
+  name: Cohere API
+  category: LLM API
+  replace_with: [open-llm, llm-serving, embedding-model, reranker]
+  detect:
+    go: [github.com/cohere-ai/cohere-go]
+    maven: ["com.cohere:cohere-java"]
+    requirement: [cohere, langchain-cohere, llama-index-llms-cohere, llama-index-postprocessor-cohere-rerank,
+                  llama-index-embeddings-cohere]
+    npm: [cohere-ai, "@ai-sdk/cohere", "@langchain/cohere"]
+    python_import: [cohere, langchain_cohere, llama_index.llms.cohere, llama_index.postprocessor.cohere_rerank,
+                    llama_index.embeddings.cohere]
+    symbol: ["cohere.Client", "cohere.ClientV2", CohereClient, CohereRerank, CohereEmbeddings]
+    model: ["command-r", "command-a-", "embed-english-v", "embed-multilingual-v", "embed-v4", "rerank-english-v",
+            "rerank-multilingual-v", "rerank-v3"]
+    endpoint: [api.cohere.com, api.cohere.ai]
+    env: [COHERE_API_KEY, CO_API_KEY]
+
+- id: mistral
+  name: Mistral AI API
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  detect:
+    maven: ["dev.langchain4j:langchain4j-mistral-ai", "org.springframework.ai:spring-ai-mistral-ai"]
+    requirement: [mistralai, langchain-mistralai, llama-index-llms-mistralai]
+    npm: ["@mistralai/mistralai", "@ai-sdk/mistral", "@langchain/mistralai"]
+    python_import: [mistralai, langchain_mistralai, llama_index.llms.mistralai]
+    symbol: [ChatMistralAI, MistralClient, createMistral]
+    model: ["mistral-large", "mistral-medium", "mistral-small-latest", "mistral-tiny", "codestral-latest",
+            "pixtral-large", "magistral-", "mistral:mistral-", "mistral/mistral-"]
+    endpoint: [api.mistral.ai]
+    env: [MISTRAL_API_KEY]
+
+- id: xai
+  name: xAI API
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  detect:
+    requirement: [xai-sdk, langchain-xai]
+    npm: ["@ai-sdk/xai", "@langchain/xai"]
+    python_import: [xai_sdk, langchain_xai]
+    symbol: [ChatXAI, createXai]
+    model: ["grok-2", "grok-3", "grok-4", "grok-beta", "grok-code-", "xai/grok-"]
+    endpoint: [api.x.ai]
+    env: [XAI_API_KEY]
+
+- id: deepseek-api
+  name: DeepSeek API
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  detect:
+    requirement: [langchain-deepseek]
+    npm: ["@ai-sdk/deepseek", "@langchain/deepseek"]
+    python_import: [langchain_deepseek]
+    symbol: [ChatDeepSeek, createDeepSeek]
+    # API aliases only. DeepSeek's weights are MIT-licensed, so `deepseek/deepseek-v3.2`
+    # through a gateway is an open model, and the gateway is the closed dependency.
+    model: ["deepseek-chat", "deepseek-reasoner"]
+    endpoint: [api.deepseek.com]
+    env: [DEEPSEEK_API_KEY]
+
+- id: groq
+  name: Groq
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  detect:
+    requirement: [groq, langchain-groq, llama-index-llms-groq]
+    npm: [groq-sdk, "@ai-sdk/groq", "@langchain/groq"]
+    python_import: [groq, langchain_groq, llama_index.llms.groq]
+    symbol: [ChatGroq, createGroq, "Groq("]
+    model: ["groq:"]
+    endpoint: [api.groq.com]
+    env: [GROQ_API_KEY]
+
+- id: together
+  name: Together AI
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  detect:
+    requirement: [together, langchain-together, llama-index-llms-together]
+    npm: [together-ai, "@ai-sdk/togetherai"]
+    python_import: [together, langchain_together]
+    symbol: [ChatTogether, createTogetherAI, "Together("]
+    model: ["together_ai/"]
+    endpoint: [api.together.xyz, api.together.ai]
+    env: [TOGETHER_API_KEY, TOGETHER_AI_API_KEY]
+
+- id: fireworks
+  name: Fireworks AI
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  detect:
+    requirement: [fireworks-ai, langchain-fireworks, llama-index-llms-fireworks]
+    npm: ["@ai-sdk/fireworks", "@fireworks-ai/sdk"]
+    python_import: [fireworks, langchain_fireworks]
+    symbol: [ChatFireworks, createFireworks]
+    model: ["accounts/fireworks/models/", "fireworks_ai/"]
+    endpoint: [api.fireworks.ai]
+    env: [FIREWORKS_API_KEY]
+
+- id: cerebras
+  name: Cerebras Inference
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  detect:
+    requirement: [cerebras-cloud-sdk, langchain-cerebras]
+    npm: ["@cerebras/cerebras_cloud_sdk", "@ai-sdk/cerebras"]
+    python_import: [cerebras.cloud.sdk, langchain_cerebras]
+    symbol: [ChatCerebras, createCerebras]
+    endpoint: [api.cerebras.ai]
+    env: [CEREBRAS_API_KEY]
+
+- id: deepinfra
+  name: DeepInfra
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  detect:
+    npm: ["@ai-sdk/deepinfra"]
+    symbol: [createDeepInfra, ChatDeepInfra]
+    endpoint: [api.deepinfra.com]
+    env: [DEEPINFRA_API_KEY, DEEPINFRA_API_TOKEN]
+
+- id: perplexity
+  name: Perplexity API
+  category: LLM API
+  replace_with: [web-search, open-llm]
+  detect:
+    requirement: [perplexityai, langchain-perplexity]
+    npm: ["@ai-sdk/perplexity", "@perplexity-ai/perplexity_ai"]
+    python_import: [perplexity, langchain_perplexity]
+    symbol: [ChatPerplexity, createPerplexity]
+    model: ["sonar-pro", "sonar-reasoning", "sonar-deep-research", "llama-3.1-sonar", "perplexity/"]
+    endpoint: [api.perplexity.ai]
+    env: [PERPLEXITY_API_KEY, PPLX_API_KEY]
+
+- id: ibm-watsonx
+  name: IBM watsonx.ai
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  detect:
+    requirement: [ibm-watsonx-ai, ibm-watson-machine-learning, langchain-ibm, llama-index-llms-ibm]
+    npm: ["@ibm-cloud/watsonx-ai"]
+    python_import: [ibm_watsonx_ai, ibm_watson_machine_learning, langchain_ibm]
+    symbol: [ChatWatsonx, WatsonxLLM]
+    endpoint: [ml.cloud.ibm.com]
+    env: [WATSONX_APIKEY, WATSONX_API_KEY, WATSONX_PROJECT_ID, WATSONX_URL]
+
+- id: nvidia-nim-api
+  name: NVIDIA API Catalog (hosted NIM)
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  detect:
+    requirement: [langchain-nvidia-ai-endpoints, llama-index-llms-nvidia]
+    npm: ["@langchain/nvidia"]
+    python_import: [langchain_nvidia_ai_endpoints, llama_index.llms.nvidia]
+    symbol: [ChatNVIDIA, NVIDIAEmbeddings]
+    endpoint: [integrate.api.nvidia.com, ai.api.nvidia.com]
+    env: [NVIDIA_API_KEY, NGC_API_KEY]
+
+- id: huggingface-inference
+  name: Hugging Face Inference Providers
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  detect:
+    requirement: [langchain-huggingface, llama-index-llms-huggingface-api]
+    npm: ["@huggingface/inference"]
+    symbol: ["InferenceClient(", "AsyncInferenceClient(", HfInference, ChatHuggingFace, HuggingFaceEndpoint,
+             "create_inference_endpoint("]
+    endpoint: [router.huggingface.co, api-inference.huggingface.co, endpoints.huggingface.cloud]
+    # HF_TOKEN is left out: it also downloads open weights from the Hub.
+    env: [HUGGINGFACEHUB_API_TOKEN]
+
+- id: cloudflare-workers-ai
+  name: Cloudflare Workers AI
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  detect:
+    npm: ["@cloudflare/ai", workers-ai-provider]
+    symbol: ["env.AI.run", createWorkersAI, "@cf/meta/", "@cf/qwen/", "@cf/mistral/", "@cf/baai/"]
+    endpoint: [api.cloudflare.com/client/v4/accounts]
+    env: [CLOUDFLARE_AI_GATEWAY_ID]
+
+- id: replicate
+  name: Replicate
+  category: Model hosting
+  replace_with: [llm-serving, image-generation]
+  detect:
+    requirement: [replicate]
+    npm: [replicate]
+    python_import: [replicate]
+    symbol: ["replicate.run(", "replicate.Client"]
+    endpoint: [api.replicate.com]
+    env: [REPLICATE_API_TOKEN, REPLICATE_API_KEY]
+
+- id: openai-fine-tuning
+  name: OpenAI fine-tuning
+  category: Fine-tuning
+  replace_with: [fine-tuning, open-llm]
+  detect:
+    symbol: ["fine_tuning.jobs.create", "fineTuning.jobs.create", "FineTuningJob"]
+    model: ["ft:gpt-", "ft:o4-"]
+
+- id: openai-moderation
+  name: OpenAI Moderation
+  category: Guardrails
+  replace_with: [guardrails]
+  detect:
+    symbol: ["moderations.create"]
+    model: [omni-moderation-, text-moderation-]
+
+# ---------------------------------------------------------------- gateways
+
+- id: vercel-ai-gateway
+  name: Vercel AI Gateway
+  category: LLM gateway
+  replace_with: [llm-gateway]
+  detect:
+    npm: ["@ai-sdk/gateway"]
+    symbol: [createGateway]
+    endpoint: [ai-gateway.vercel.sh, gateway.ai.vercel]
+    env: [AI_GATEWAY_API_KEY, AI_GATEWAY_BASE_URL]
+
+- id: openrouter
+  name: OpenRouter
+  category: LLM gateway
+  replace_with: [llm-gateway, llm-serving]
+  detect:
+    requirement: [openrouter, langchain-openrouter]
+    npm: ["@openrouter/ai-sdk-provider", "@openrouter/sdk"]
+    python_import: [openrouter]
+    symbol: [createOpenRouter, ChatOpenRouter]
+    model: ["openrouter/"]
+    endpoint: [openrouter.ai/api]
+    env: [OPENROUTER_API_KEY]
+
+- id: portkey
+  name: Portkey (hosted)
+  category: LLM gateway
+  replace_with: [llm-gateway]
+  detect:
+    requirement: [portkey-ai]
+    npm: [portkey-ai]
+    python_import: [portkey_ai]
+    endpoint: [api.portkey.ai]
+    env: [PORTKEY_API_KEY]
+
+- id: cloudflare-ai-gateway
+  name: Cloudflare AI Gateway
+  category: LLM gateway
+  replace_with: [llm-gateway]
+  detect:
+    endpoint: [gateway.ai.cloudflare.com]
+    env: [CF_AI_GATEWAY, CLOUDFLARE_AI_GATEWAY]

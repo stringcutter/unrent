@@ -1,0 +1,251 @@
+# Closed agent infrastructure: search, scraping, browsers, sandboxes, memory,
+# observability.
+
+# ---------------------------------------------------------------- web search
+
+- id: tavily
+  name: Tavily
+  category: Web search
+  replace_with: [web-search, web-scraping]
+  detect:
+    requirement: [tavily-python, langchain-tavily, llama-index-tools-tavily-research]
+    npm: ["@tavily/core", "@langchain/tavily"]
+    python_import: [tavily, langchain_tavily]
+    symbol: [TavilyClient, TavilySearch, TavilySearchResults, AsyncTavilyClient]
+    endpoint: [api.tavily.com]
+    env: [TAVILY_API_KEY]
+
+- id: exa
+  name: Exa
+  category: Web search
+  replace_with: [web-search, web-scraping]
+  detect:
+    requirement: [exa-py, langchain-exa]
+    npm: [exa-js, "@langchain/exa"]
+    python_import: [exa_py, langchain_exa]
+    endpoint: [api.exa.ai]
+    env: [EXA_API_KEY]
+
+- id: serper
+  name: Serper
+  category: Web search
+  replace_with: [web-search]
+  detect:
+    symbol: [GoogleSerperAPIWrapper, SerperDevTool]
+    endpoint: [google.serper.dev]
+    env: [SERPER_API_KEY]
+
+- id: serpapi
+  name: SerpApi
+  category: Web search
+  replace_with: [web-search]
+  detect:
+    requirement: [google-search-results, serpapi]
+    npm: [serpapi]
+    python_import: [serpapi]
+    symbol: [SerpAPIWrapper]
+    endpoint: [serpapi.com]
+    env: [SERPAPI_API_KEY, SERPAPI_KEY, SERP_API_KEY]
+
+- id: brave-search
+  name: Brave Search API
+  category: Web search
+  replace_with: [web-search]
+  detect:
+    symbol: [BraveSearch]
+    endpoint: [api.search.brave.com]
+    env: [BRAVE_API_KEY, BRAVE_SEARCH_API_KEY]
+
+- id: bing-search
+  name: Bing / Grounding with Bing Search
+  category: Web search
+  replace_with: [web-search]
+  detect:
+    symbol: [BingSearchAPIWrapper, BingGroundingTool]
+    endpoint: [api.bing.microsoft.com]
+    env: [BING_SUBSCRIPTION_KEY, BING_SEARCH_URL, BING_API_KEY]
+
+- id: firecrawl-cloud
+  name: Firecrawl (hosted)
+  category: Web scraping
+  replace_with: [web-scraping]
+  detect:
+    requirement: [firecrawl-py, firecrawl]
+    npm: ["@mendable/firecrawl-js", firecrawl]
+    python_import: [firecrawl]
+    symbol: [FirecrawlApp, FireCrawlLoader]
+    endpoint: [api.firecrawl.dev]
+    env: [FIRECRAWL_API_KEY]
+
+- id: apify
+  name: Apify
+  category: Web scraping
+  replace_with: [web-scraping, browser-automation]
+  detect:
+    requirement: [apify-client]
+    npm: [apify-client]
+    python_import: [apify_client]
+    endpoint: [api.apify.com]
+    env: [APIFY_API_TOKEN, APIFY_TOKEN]
+
+- id: browserbase
+  name: Browserbase
+  category: Browser automation
+  replace_with: [browser-automation]
+  detect:
+    requirement: [browserbase]
+    npm: ["@browserbasehq/sdk"]
+    python_import: [browserbase]
+    endpoint: [connect.browserbase.com, api.browserbase.com]
+    env: [BROWSERBASE_API_KEY, BROWSERBASE_PROJECT_ID]
+
+- id: hyperbrowser
+  name: Hyperbrowser
+  category: Browser automation
+  replace_with: [browser-automation]
+  detect:
+    requirement: [hyperbrowser]
+    npm: ["@hyperbrowser/sdk"]
+    python_import: [hyperbrowser]
+    env: [HYPERBROWSER_API_KEY]
+
+- id: openai-computer-use
+  name: OpenAI computer use / Operator
+  category: Browser automation
+  replace_with: [browser-automation]
+  detect:
+    symbol: ['"computer_use_preview"', "'computer_use_preview'"]
+    model: [computer-use-preview]
+
+# ---------------------------------------------------------------- sandboxes
+
+- id: e2b
+  name: E2B (hosted)
+  category: Code sandbox
+  replace_with: [code-sandbox]
+  detect:
+    requirement: [e2b, e2b-code-interpreter, e2b-desktop]
+    npm: [e2b, "@e2b/code-interpreter", "@e2b/desktop"]
+    python_import: [e2b, e2b_code_interpreter, e2b_desktop]
+    endpoint: [e2b.app, e2b.dev]
+    env: [E2B_API_KEY]
+
+- id: modal
+  name: Modal
+  category: Code sandbox
+  replace_with: [code-sandbox, llm-serving]
+  detect:
+    requirement: [modal]
+    python_import: [modal]
+    symbol: ["modal.App", "modal.Image", "modal.Sandbox"]
+    endpoint: [modal.run]
+    env: [MODAL_TOKEN_ID, MODAL_TOKEN_SECRET]
+
+- id: vercel-sandbox
+  name: Vercel Sandbox
+  category: Code sandbox
+  replace_with: [code-sandbox]
+  detect:
+    npm: ["@vercel/sandbox"]
+
+
+# ---------------------------------------------------------------- memory
+
+- id: zep-cloud
+  name: Zep Cloud
+  category: Agent memory
+  replace_with: [agent-memory]
+  detect:
+    requirement: [zep-cloud]
+    npm: ["@getzep/zep-cloud"]
+    python_import: [zep_cloud]
+    endpoint: [api.getzep.com]
+    env: [ZEP_API_KEY]
+
+- id: mem0-platform
+  name: Mem0 Platform (hosted)
+  category: Agent memory
+  replace_with: [agent-memory]
+  detect:
+    symbol: [MemoryClient, AsyncMemoryClient]
+    endpoint: [api.mem0.ai]
+    env: [MEM0_API_KEY]
+
+- id: openai-assistants
+  name: OpenAI Assistants / Conversations state
+  category: Agent memory
+  replace_with: [agent-memory, rag-engine]
+  detect:
+    symbol: ["beta.assistants", "beta.threads"]
+
+# ---------------------------------------------------------------- observability
+
+- id: langsmith
+  name: LangSmith
+  category: LLM observability
+  replace_with: [llm-observability]
+  detect:
+    requirement: [langsmith]
+    npm: [langsmith]
+    python_import: [langsmith]
+    symbol: ["@traceable", LangChainTracer, wrap_openai]
+    endpoint: [api.smith.langchain.com]
+    env: [LANGCHAIN_API_KEY, LANGCHAIN_TRACING_V2, LANGSMITH_API_KEY, LANGSMITH_TRACING]
+
+- id: braintrust
+  name: Braintrust
+  category: LLM observability
+  replace_with: [llm-observability]
+  detect:
+    requirement: [braintrust, autoevals]
+    npm: [braintrust, autoevals]
+    python_import: [braintrust]
+    endpoint: [api.braintrust.dev, braintrustdata.com]
+    env: [BRAINTRUST_API_KEY]
+
+- id: wandb-weave
+  name: Weights & Biases Weave
+  category: LLM observability
+  replace_with: [llm-observability]
+  detect:
+    requirement: [weave]
+    npm: [weave]
+    python_import: [weave]
+    symbol: ["weave.init(", "@weave.op"]
+    env: [WANDB_API_KEY]
+
+- id: helicone-cloud
+  name: Helicone Cloud
+  category: LLM observability
+  replace_with: [llm-observability, llm-gateway]
+  detect:
+    endpoint: [oai.helicone.ai, anthropic.helicone.ai, gateway.helicone.ai, ai-gateway.helicone.ai]
+    env: [HELICONE_API_KEY]
+
+- id: datadog-llm-observability
+  name: Datadog LLM Observability
+  category: LLM observability
+  replace_with: [llm-observability]
+  detect:
+    symbol: [LLMObs]
+    env: [DD_LLMOBS_ENABLED, DD_LLMOBS_ML_APP]
+
+- id: humanloop
+  name: Humanloop
+  category: LLM observability
+  replace_with: [llm-observability]
+  detect:
+    requirement: [humanloop]
+    npm: [humanloop]
+    python_import: [humanloop]
+    env: [HUMANLOOP_API_KEY]
+
+- id: galileo
+  name: Galileo
+  category: LLM observability
+  replace_with: [llm-observability]
+  detect:
+    requirement: [galileo, promptquality]
+    npm: [galileo]
+    python_import: [galileo, promptquality]
+    env: [GALILEO_API_KEY]
