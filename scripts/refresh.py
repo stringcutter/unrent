@@ -19,8 +19,13 @@ is moving now rather than what someone remembered.
     python scripts/refresh.py            # uses GITHUB_TOKEN, or `gh auth token`
     python scripts/refresh.py --check    # verify only, write nothing
 
-Exit code 1 when a listed repository is missing, renamed, archived, inactive or not
-open source, so the catalog cannot silently rot.
+Exit codes, so the workflow can tell "open a pull request that needs attention" from
+"something is broken":
+  0  rankings written, no problems
+  3  rankings written, but a listed repository is missing, renamed, archived,
+     inactive or not open source, so the catalog cannot silently rot
+  4  nothing written: a pool emptied or halved, which is an outage, not news
+  1  (Python's own) an unexpected crash
 """
 
 from __future__ import annotations
@@ -45,12 +50,16 @@ import yaml
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from lockin.catalog import OPEN_LICENCES, OPEN_MODEL_LICENCES  # noqa: E402
+from unrent.catalog import OPEN_LICENCES, OPEN_MODEL_LICENCES  # noqa: E402
 
 CATALOG = ROOT / "catalog"
 HISTORY = CATALOG / "star-history.json"
 MOMENTUM_DAYS = 90
 MIN_HISTORY_DAYS = 28
+# Momentum only ever looks ~90 days back; older points are dead weight in the repo.
+KEEP_HISTORY_DAYS = 2 * MOMENTUM_DAYS
+EXIT_PROBLEMS = 3
+EXIT_REFUSED = 4
 # A finished model repo is not a dead one; a year without a push is.
 INACTIVE_AFTER_DAYS = 365
 MODELS_PER_POOL = 10
@@ -79,7 +88,7 @@ def _get(url: str, headers: dict | None = None, timeout: int = 30, attempts: int
     """GET JSON. Retries rate limits (GitHub signals them as 403 with no requests
     remaining) and server errors; raises Transient when they persist, and
     HTTPError only for real answers such as 404."""
-    req = urllib.request.Request(url, headers={"User-Agent": "lockin-refresh", **(headers or {})})
+    req = urllib.request.Request(url, headers={"User-Agent": "unrent-refresh", **(headers or {})})
     for attempt in range(attempts):
         try:
             with urllib.request.urlopen(req, timeout=timeout) as resp:
@@ -333,7 +342,8 @@ def main() -> int:
     for repo, info in repos.items():
         if "stars" not in info:
             continue
-        points = [p for p in history.get(repo, []) if p[0] != today.isoformat()]
+        oldest = (today - dt.timedelta(days=KEEP_HISTORY_DAYS)).isoformat()
+        points = [p for p in history.get(repo, []) if oldest <= p[0] != today.isoformat()]
         history[repo] = [*points, [today.isoformat(), info["stars"]]]
         info["stars_90d"] = momentum(history[repo], today)
 
@@ -395,7 +405,7 @@ def main() -> int:
         print("\nrefusing to write rankings; these pools emptied or halved:", file=sys.stderr)
         for line in collapsed:
             print(f"  - {line}", file=sys.stderr)
-        return 1
+        return EXIT_REFUSED
 
     if not args.check:
         payload = {
@@ -412,7 +422,7 @@ def main() -> int:
             newline="\n",
         )
         print("\nwrote catalog/rankings.json and catalog/star-history.json", file=sys.stderr)
-    return 1 if problems else 0
+    return EXIT_PROBLEMS if problems else 0
 
 
 if __name__ == "__main__":

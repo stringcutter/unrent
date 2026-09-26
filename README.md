@@ -1,25 +1,35 @@
-# lockin
+# unrent
 
 Point it at a codebase. It lists every closed AI service the code depends on, where,
 and the open source projects and open-weight models that replace each one — ranked by
 momentum: GitHub star growth for projects, Hugging Face trending for models.
 
 ```
-$ lockin scan ai-chatbot/
+$ unrent scan my-app/
+# AI dependencies in `my-app`
 
-Found 2 closed AI services.
+Scanned 2026-09-26 · 106 closed AI services in the catalog · alternatives ranked 2026-09-26
 
-| Closed service    | Category    | Replace with                                             |
-|-------------------|-------------|----------------------------------------------------------|
-| xAI API           | LLM API     | Open-weight LLM: XiaomiMiMo/MiMo-V2.6-Pro-RL             |
-|                   |             | Inference server: ollama/ollama                          |
-| Vercel AI Gateway | LLM gateway | LLM gateway: BerriAI/litellm                             |
+Found **2** closed AI services.
 
-### Vercel AI Gateway
-- `.env.example:6` — `AI_GATEWAY_API_KEY=****`
-- `lib/ai/models.ts:126` — `const res = await fetch("https://ai-gateway.vercel.sh/v1/models", {`
+| Closed service | Category | Replace with |
+|---|---|---|
+| OpenAI API | LLM API | Open-weight LLM: [XiaomiMiMo/MiMo-V2.6-Pro-RL](https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL)<br>Inference server: [ollama/ollama](https://github.com/ollama/ollama) |
+| Pinecone | Vector database | Vector database: [milvus-io/milvus](https://github.com/milvus-io/milvus) |
+
+## Where each one is used
+
+### OpenAI API
+
+5 locations:
+
+- `.env.example:1` — `OPENAI_API_KEY=****`
+- `main.py:1` — `from openai import OpenAI`
+- `main.py:5` — `resp = client.chat.completions.create(model="gpt-4o", messages=[])`
 ...
 ```
+
+The report is Markdown, so it renders as a table in a pull request or issue.
 
 Built for the moment you fork a template or inherit an app and want to know which AI
 components are rented, and what the best open replacement is today.
@@ -27,26 +37,26 @@ components are rented, and what the best open replacement is today.
 ## Install
 
 ```bash
-uvx lockin scan .          # run once
-pipx install lockin        # or keep it
+uvx unrent scan .     # run once, nothing installed
+pipx install unrent   # or keep it
 ```
 
 Python 3.11+, one dependency (PyYAML). No account, no upload, no network: the scan
 reads files and prints a report.
 
-If [ripgrep](https://github.com/BurntSushi/ripgrep) is on your PATH, lockin uses it to
+If [ripgrep](https://github.com/BurntSushi/ripgrep) is on your PATH, unrent uses it to
 find candidate lines, and large monorepos scan two to three times faster. The results
 are identical either way; the test suite runs every detection test in both modes.
 
 ## Use
 
 ```bash
-lockin scan .                          # markdown report
-lockin scan . --top 5                  # more alternatives per kind
-lockin scan . --format json -o r.json  # every ranked alternative, every location
-lockin scan . --skip-tests             # leave test, spec and fixture code out
-lockin scan . --exclude "examples/"    # .gitignore syntax; or put it in .lockinignore
-lockin catalog                         # what is covered
+unrent scan .                          # markdown report
+unrent scan . --top 5                  # more alternatives per kind
+unrent scan . --format json -o r.json  # every ranked alternative, every location
+unrent scan . --skip-tests             # leave test, spec and fixture code out
+unrent scan . --exclude "examples/"    # .gitignore syntax; or put it in .unrentignore
+unrent catalog                         # what is covered
 ```
 
 ## What it finds
@@ -103,13 +113,13 @@ Each of these is pinned by a test that fails without it.
 
 Each closed service names the kinds of thing that replace it: the OpenAI API is
 replaced by an open-weight LLM *and* an inference server; Pinecone by a vector
-database. Each kind is a pool in [`catalog/alternatives.yaml`](catalog/alternatives.yaml),
+database. Each kind is a pool in [`catalog/alternatives.yaml`](https://github.com/niklasmellgren/unrent/blob/main/catalog/alternatives.yaml),
 and `scripts/refresh.py` ranks every pool weekly:
 
 - **Open source projects** are ranked by momentum: GitHub stars gained over the last
   90 days. GitHub no longer exposes when stars were given, and the public event
-  archives have undercounted since 2025, so lockin keeps its own history in
-  [`catalog/star-history.json`](catalog/star-history.json). Until that history covers
+  archives have undercounted since 2025, so unrent keeps its own history in
+  [`catalog/star-history.json`](https://github.com/niklasmellgren/unrent/blob/main/catalog/star-history.json). Until that history covers
   four weeks, a pool is ranked by total stars — which is where it stands today — and
   the report says so.
 - **Open-weight models** are discovered, not listed: the listed labs' own models
@@ -127,17 +137,17 @@ and `scripts/refresh.py` ranks every pool weekly:
   outage, not news.
 
 The scanner never touches the network: it reads the ranking snapshot that ships with
-the release, so upgrading lockin is how you get newer rankings.
+the release, so upgrading unrent is how you get newer rankings.
 
 ## Contributing
 
 The catalog is plain YAML. To cover a new service, add it to
-[`catalog/services/`](catalog/services) with its signatures and the pools that replace
+[`catalog/services/`](https://github.com/niklasmellgren/unrent/tree/main/catalog/services) with its signatures and the pools that replace
 it. To suggest an alternative, add it to a pool in
-[`catalog/alternatives.yaml`](catalog/alternatives.yaml) — the ranking decides where it
+[`catalog/alternatives.yaml`](https://github.com/niklasmellgren/unrent/blob/main/catalog/alternatives.yaml) — the ranking decides where it
 lands. Every false positive or missed dependency is a bug: please open an issue with
-the line that fooled it.
+the line that fooled it. See [CONTRIBUTING.md](https://github.com/niklasmellgren/unrent/blob/main/CONTRIBUTING.md).
 
 ## Licence
 
-Apache-2.0.
+[Apache-2.0](https://github.com/niklasmellgren/unrent/blob/main/LICENSE).

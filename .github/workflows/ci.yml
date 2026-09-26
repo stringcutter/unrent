@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:  # lets a maintainer run CI on the bot's refresh-rankings branch
+
+permissions:
+  contents: read
 
 jobs:
   test:
@@ -11,23 +15,50 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python: ["3.11", "3.13"]
+        python: ["3.11", "3.13", "3.14"]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
           python-version: ${{ matrix.python }}
       # With ripgrep on Ubuntu, every detection test runs in both search modes and
       # must give identical results; elsewhere only the pure-Python mode runs.
       - if: runner.os == 'Linux'
-        run: sudo apt-get install -y ripgrep
-      - run: uv run ruff check .
-      - run: uv run ruff format --check .
-      - run: uv run pytest -q
-      - run: uv run lockin catalog --validate
-      - name: lockin finds nothing in lockin
+        run: sudo apt-get update -q && sudo apt-get install -y -q ripgrep
+      - run: uv run --frozen ruff check .
+      - run: uv run --frozen ruff format --check .
+      - run: uv run --frozen pytest -q
+      - run: uv run --frozen unrent catalog --validate
+      - name: unrent finds nothing in unrent
         shell: bash
         run: |
-          uv run lockin scan . --format json -o scan.json
-          python -c "import json,sys; f=json.load(open('scan.json'))['found']; sys.exit(len(f))"
+          uv run --frozen unrent scan . --format json -o scan.json
+          python -c "
+          import json, sys
+          found = json.load(open('scan.json', encoding='utf-8'))['found']
+          for s in found:
+              print(s['name'], *(f\"{e['file']}:{e['line']}\" for e in s['evidence']))
+          sys.exit(1 if found else 0)
+          "
+
+  # The tests run from the checkout, where the catalog is ../catalog. This job checks
+  # what users get: the wheel, with the catalog packed inside it, from outside the repo.
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+      - run: uv build
+      - run: uvx twine check --strict dist/*
+      - name: Installed wheel works outside the checkout
+        run: |
+          cd "$RUNNER_TEMP"
+          mkdir fixture && echo "openai>=1" > fixture/requirements.txt
+          uvx --from "$GITHUB_WORKSPACE"/dist/*.whl unrent --version
+          uvx --from "$GITHUB_WORKSPACE"/dist/*.whl unrent catalog --validate
+          uvx --from "$GITHUB_WORKSPACE"/dist/*.whl unrent scan fixture | grep -q "OpenAI API"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: dist
+          path: dist/

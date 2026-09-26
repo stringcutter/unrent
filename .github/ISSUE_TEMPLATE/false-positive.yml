@@ -1,0 +1,43 @@
+name: False positive or missed service
+description: unrent reported something that is not a closed AI dependency, or missed one that is.
+labels: [detection]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What happened
+      options:
+        - False positive (reported, but not a dependency)
+        - Missed (a real dependency was not reported)
+        - Wrong vendor (reported as the wrong service)
+    validations:
+      required: true
+  - type: input
+    id: file
+    attributes:
+      label: File path
+      description: The name matters (requirements.txt, package.json, .env, *.tf ...).
+      placeholder: src/llm/client.py
+    validations:
+      required: true
+  - type: textarea
+    id: line
+    attributes:
+      label: The line(s) that fooled unrent
+      description: Paste the exact text, plus a few lines around it if they matter. Mask real keys.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: report
+    attributes:
+      label: unrent output for that finding
+      description: The relevant part of `unrent scan . --format json`, if any.
+      render: json
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Output of `unrent --version`.
+    validations:
+      required: true

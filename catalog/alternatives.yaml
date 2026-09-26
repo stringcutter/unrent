@@ -16,7 +16,7 @@
 #                        an open licence, ranked by Hugging Face's trending score.
 #
 # `licence` is only needed where GitHub cannot detect it (it reports NOASSERTION) —
-# it must then be an SPDX id from the allowlist in lockin/catalog.py. Open-core
+# it must then be an SPDX id from the allowlist in unrent/catalog.py. Open-core
 # projects count when the core is OSI-licensed and the closed part sits apart (an
 # `ee/` directory); the declared licence is the core's. Licences that add terms to
 # an OSI licence (commercial thresholds, use restrictions) do not count.

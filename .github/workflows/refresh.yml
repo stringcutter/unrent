@@ -2,7 +2,10 @@ name: refresh rankings
 
 # Weekly: record every alternative's star count, re-rank the pools, and open a pull
 # request. Momentum is computed from this history, so a skipped week costs accuracy,
-# not correctness.
+# not correctness. The history only advances when the pull request is merged.
+#
+# Needs Settings > Actions > General > "Allow GitHub Actions to create and approve
+# pull requests" to be enabled, or the last step fails.
 on:
   schedule:
     - cron: "17 5 * * 1"
@@ -12,29 +15,48 @@ permissions:
   contents: write
   pull-requests: write
 
+concurrency:
+  group: refresh-rankings
+  cancel-in-progress: false
+
 jobs:
   refresh:
+    if: github.repository == 'niklasmellgren/unrent'  # not on forks
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+      # Sync first so uv's own progress lines do not end up in the pull request body.
+      - run: uv sync --frozen
       - name: Rank
         id: rank
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # A non-zero exit means a listed project is missing, renamed, archived,
-        # inactive or no longer open source. The rankings are still written; the
-        # pull request says the catalog needs attention.
-        run: uv run python scripts/refresh.py 2> problems.txt || echo "problems=true" >> "$GITHUB_OUTPUT"
+        # Exit 3: rankings written, but a listed project is missing, renamed, archived,
+        # inactive or no longer open source; the pull request says so. Anything else
+        # non-zero (a crash, or exit 4: a pool collapsed and nothing was written)
+        # fails the run, so an outage is not mistaken for a quiet week.
+        run: |
+          set +e
+          uv run --frozen python scripts/refresh.py 2> problems.txt
+          code=$?
+          set -e
+          cat problems.txt >&2
+          if [ "$code" -eq 3 ]; then
+            echo "problems=true" >> "$GITHUB_OUTPUT"
+          elif [ "$code" -ne 0 ]; then
+            exit "$code"
+          fi
       # Pull requests opened with GITHUB_TOKEN do not trigger ci.yml, so the new
       # snapshot is validated here, before anyone is asked to merge it.
       - name: Validate
         run: |
-          uv run lockin catalog --validate
-          uv run pytest -q
-      - uses: peter-evans/create-pull-request@v7
+          uv run --frozen unrent catalog --validate
+          uv run --frozen pytest -q
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           branch: refresh-rankings
+          delete-branch: true
           commit-message: "Refresh rankings"
           title: "Refresh rankings${{ steps.rank.outputs.problems && ' (catalog needs attention)' || '' }}"
           body-path: problems.txt
