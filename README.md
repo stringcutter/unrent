@@ -101,21 +101,6 @@ Also:
 
 Every rule above has a test that fails without it.
 
-## Accuracy
-
-39 real repos it was never tuned on: provider quickstarts and templates in Python,
-TypeScript, Go, Java, Kotlin and C#, plus local-only apps. Pinned commits, hand-labelled
-truth ([`eval/`](https://github.com/niklasmellgren/unrent/tree/main/eval)).
-
-| | |
-|---|---|
-| Precision | **0.993** (137 of 138) |
-| Recall | **0.986** (137 of 139) |
-
-Misses: two framework defaults invisible in code. False positive: one API key passed on
-under another name. CI fails below 0.98 / 0.97. Closed services only; the open source
-side isn't in the corpus yet.
-
 ## Ranking
 
 Pools live in [`catalog/alternatives.yaml`](https://github.com/niklasmellgren/unrent/blob/main/catalog/alternatives.yaml). Re-ranked every Monday by a
