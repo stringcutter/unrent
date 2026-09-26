@@ -1121,3 +1121,129 @@ def test_every_project_in_the_catalog_belongs_to_a_pool_and_has_a_kind(catalog):
     assert len(catalog.projects) > 50
     for project in catalog.projects:
         assert project.kind and project.replace_with, project.repo
+
+
+# --- acceptance test findings: robustness ---------------------------------------------
+
+
+def test_colab_notebook_with_one_string_per_cell(tmp_path, catalog):
+    nb = {
+        "cells": [
+            {
+                "cell_type": "code",
+                "source": ["import os\nfrom openai import OpenAI\nclient = OpenAI()"],
+            }
+        ],
+        "metadata": {},
+    }
+    write(tmp_path, {"x.ipynb": json.dumps(nb)})
+    assert "openai" in deps(tmp_path, catalog)
+
+
+def test_kotlin_notebook_comments_are_comments(tmp_path, catalog):
+    nb = {
+        "metadata": {"kernelspec": {"language": "kotlin", "name": "kotlin"}},
+        "cells": [
+            {
+                "cell_type": "code",
+                "source": [
+                    '//   val executor = simpleAnthropicExecutor(System.getenv("ANTHROPIC_API_KEY"))\n'
+                ],
+            }
+        ],
+    }
+    write(tmp_path, {"k.ipynb": json.dumps(nb, indent=1)})
+    assert found(tmp_path, catalog) == {}
+
+
+def test_commented_notebook_install_installs_nothing(tmp_path, catalog):
+    nb = {
+        "cells": [
+            {"cell_type": "code", "source": ["# !pip install cohere\n", "!pip install anthropic\n"]}
+        ]
+    }
+    write(tmp_path, {"n.ipynb": json.dumps(nb, indent=1)})
+    hits = deps(tmp_path, catalog)
+    assert "anthropic" in hits and "cohere" not in hits
+
+
+def test_saved_reports_are_not_evidence(tmp_path, catalog):
+    write(tmp_path, {"main.py": "import anthropic\n"})
+    report = to_json(match(collect_facts(tmp_path, catalog), catalog), tmp_path, catalog)
+    write(tmp_path, {"r.json": report, "main.py": "print(1)\n"})
+    assert found(tmp_path, catalog) == {}
+
+
+def test_report_written_inside_the_scanned_tree_is_excluded(tmp_path, capsys):
+    write(tmp_path, {"main.py": "import anthropic\n"})
+    assert main(["scan", str(tmp_path), "--format", "json", "-o", str(tmp_path / "r.md")]) == 0
+    assert main(["scan", str(tmp_path), "--format", "json", "-o", str(tmp_path / "r2.json")]) == 0
+    data = json.loads((tmp_path / "r2.json").read_text(encoding="utf-8"))
+    assert all(e["file"] == "main.py" for f in data["found"] for e in f["evidence"])
+
+
+def test_output_problems_fail_before_the_scan(tmp_path, capsys):
+    write(tmp_path, {"main.py": "import anthropic\n"})
+    assert main(["scan", str(tmp_path), "-o", str(tmp_path / "missing" / "r.md")]) == 2
+    assert main(["scan", str(tmp_path), "-o", str(tmp_path)]) == 2
+    assert "cannot write the report" in capsys.readouterr().err
+
+
+def test_top_must_be_positive(capsys):
+    with pytest.raises(SystemExit):
+        main(["scan", ".", "--top", "0"])
+
+
+def test_no_command_prints_help(capsys):
+    assert main([]) == 2
+    assert "scan" in capsys.readouterr().err
+
+
+def test_classic_mac_line_endings(tmp_path, catalog):
+    (tmp_path / "cr.py").write_bytes(b"import os\rimport anthropic\r")
+    cited = found(tmp_path, catalog)["anthropic"]
+    assert cited[0].line == 2 and cited[0].evidence == "import anthropic"
+
+
+def test_symlinked_files_are_skipped_in_git_mode_too(tmp_path, catalog):
+    write(
+        tmp_path,
+        {"outside/conf.yaml": "url: https://api.groq.com/openai/v1\n", "repo/app.py": "print(1)\n"},
+    )
+    try:
+        (tmp_path / "repo" / "conf.yaml").symlink_to(tmp_path / "outside" / "conf.yaml")
+    except (OSError, NotImplementedError):
+        pytest.skip("symlinks unavailable")
+    if shutil.which("git"):
+        subprocess.run(["git", "init", "-q"], cwd=tmp_path / "repo", check=True)
+    assert found(tmp_path / "repo", catalog) == {}
+
+
+def test_minified_module_bundles_are_generated(tmp_path, catalog):
+    write(tmp_path, {"web/pdf.worker.min.mjs": 'fetch("https://api.openai.com/v1")\n'})
+    assert found(tmp_path, catalog) == {}
+
+
+def test_python_syntax_warnings_stay_quiet(tmp_path, catalog, capsys):
+    write(tmp_path, {"a.py": 'import anthropic\npath = "C:\\Your\\dir"\n'})
+    collect_facts(tmp_path, catalog)
+    assert "SyntaxWarning" not in capsys.readouterr().err
+
+
+def test_ripgrep_reads_only_the_scanned_files(tmp_path, catalog, search_mode):
+    write(tmp_path, {".gitignore": "cache/\n", "src/a.py": "import anthropic\n"})
+    for i in range(50):
+        write(tmp_path, {f"cache/{i}.txt": "OPENAI_API_KEY api.openai.com\n" * 2000})
+    if shutil.which("git"):
+        subprocess.run(["git", "init", "-q"], cwd=tmp_path, check=True)
+    assert set(deps(tmp_path, catalog)) == {"anthropic"}
+
+
+def test_bad_rankings_snapshot_is_a_clear_error(tmp_path, capsys):
+    import shutil as sh
+
+    cat = tmp_path / "cat"
+    sh.copytree(CATALOG_DIR, cat)
+    (cat / "rankings.json").write_text("{not json", encoding="utf-8")
+    assert main(["catalog", "--validate", "--catalog", str(cat)]) == 2
+    assert "rankings.json" in capsys.readouterr().err

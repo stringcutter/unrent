@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
@@ -33,18 +34,30 @@ def _version() -> str:
         return "unknown"
 
 
+def _positive(value: str) -> int:
+    n = int(value)
+    if n < 1:
+        raise argparse.ArgumentTypeError("must be 1 or more")
+    return n
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="unrent",
-        description="Find the closed AI services a codebase depends on, and the open source "
-        "alternatives that replace them.",
+        description="Find the closed AI services a codebase depends on and the open source "
+        "that replaces them, and rank the open source AI it already runs.",
     )
     p.add_argument("--version", action="version", version=f"%(prog)s {_version()}")
-    sub = p.add_subparsers(dest="command", required=True)
+    sub = p.add_subparsers(dest="command", metavar="{scan,catalog}")
 
     scan = sub.add_parser("scan", help="scan a directory")
     scan.add_argument("path", nargs="?", default=".", help="directory to scan (default: .)")
-    scan.add_argument("--format", choices=("markdown", "json"), default="markdown")
+    scan.add_argument(
+        "--format",
+        choices=("markdown", "json"),
+        default="markdown",
+        help="markdown report (default) or JSON with every finding and alternative",
+    )
     scan.add_argument("--output", "-o", type=Path, help="write to a file instead of stdout")
     scan.add_argument(
         "--exclude",
@@ -61,7 +74,11 @@ def build_parser() -> argparse.ArgumentParser:
         "services found only there are marked)",
     )
     scan.add_argument(
-        "--top", type=int, default=3, help="alternatives shown per kind in markdown (default: 3)"
+        "--top",
+        type=_positive,
+        default=3,
+        metavar="N",
+        help="alternatives listed per kind in markdown (default: 3)",
     )
     scan.add_argument("--catalog", type=Path, default=DEFAULT_CATALOG, help=argparse.SUPPRESS)
 
@@ -71,19 +88,38 @@ def build_parser() -> argparse.ArgumentParser:
     return p
 
 
+def _output_problem(output: Path) -> str | None:
+    """Checked before the scan, so a typo costs nothing."""
+    if output.is_dir():
+        return f"{output} is a directory"
+    if not output.resolve().parent.is_dir():
+        return f"{output.parent} does not exist"
+    return None
+
+
 def cmd_scan(args) -> int:
     root = Path(args.path).resolve()
     if not root.is_dir():
         print(f"unrent: {root} is not a directory", file=sys.stderr)
         return 2
+    exclude = list(args.exclude)
+    if args.output:
+        problem = _output_problem(args.output)
+        if problem:
+            print(f"unrent: cannot write the report: {problem}", file=sys.stderr)
+            return 2
+        target = args.output.resolve()
+        if target.is_relative_to(root):
+            # Never scan the report we are about to write (or wrote last time).
+            exclude.append("/" + target.relative_to(root).as_posix())
     catalog = load_catalog(args.catalog)
     skipped: list[Path] = []
-    facts = collect_facts(root, catalog, args.exclude, skipped, skip_tests=args.skip_tests)
+    facts = collect_facts(root, catalog, exclude, skipped, skip_tests=args.skip_tests)
     findings = match(facts, catalog)
     if args.format == "json":
         text = to_json(findings, root, catalog, skipped)
     else:
-        text = to_markdown(findings, root, catalog, top=max(args.top, 1), skipped=skipped)
+        text = to_markdown(findings, root, catalog, top=args.top, skipped=skipped)
     if args.output:
         args.output.write_text(text + "\n", encoding="utf-8")
         print(f"wrote {args.output}", file=sys.stderr)
@@ -102,11 +138,16 @@ def cmd_catalog(args) -> int:
     )
     if args.validate:
         return 0
+    width = max(len(s.name) for s in catalog.detectable) + 2
     for category in catalog.categories:
         print(f"\n{category}")
         for service in (s for s in catalog.services if s.category == category):
             pools = ", ".join(catalog.pools[p].name for p in service.replace_with)
-            print(f"  {service.name:<44} → {pools}")
+            print(f"  {service.name:<{width}} → {pools}")
+    print("\nOpen source recognised in code")
+    for project in sorted(catalog.projects, key=lambda p: p.repo.lower()):
+        pools = ", ".join(catalog.pools[p].name for p in project.replace_with)
+        print(f"  {project.repo:<{width}} {project.kind} · {pools}")
     return 0
 
 
@@ -115,7 +156,11 @@ def main(argv: list[str] | None = None) -> int:
     for stream in (sys.stdout, sys.stderr):
         if hasattr(stream, "reconfigure"):
             stream.reconfigure(encoding="utf-8", errors="replace")
-    args = build_parser().parse_args(argv)
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    if args.command is None:
+        parser.print_help(sys.stderr)
+        return 2
     try:
         if args.command == "scan":
             return cmd_scan(args)
@@ -124,6 +169,8 @@ def main(argv: list[str] | None = None) -> int:
         print(f"unrent: catalog error: {exc}", file=sys.stderr)
     except yaml.YAMLError as exc:
         print(f"unrent: could not parse the catalog: {exc}", file=sys.stderr)
+    except json.JSONDecodeError as exc:
+        print(f"unrent: could not parse the rankings snapshot: {exc}", file=sys.stderr)
     except OSError as exc:
         print(f"unrent: {exc}", file=sys.stderr)
     return 2
