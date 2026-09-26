@@ -210,9 +210,8 @@ def _models_named(named: list[Finding], root: Path) -> list[str]:
     out = [
         "## Closed models named in code",
         "",
-        "Model ids with no SDK, API key, API host or package behind them — a model menu, a "
-        "token-limit table, a model chosen inside another vendor's hosted agent. Not counted "
-        "as dependencies above; check whether any of them is actually called.",
+        "Model ids with no SDK, key, API host or package behind them. Not counted as "
+        "dependencies.",
         "",
     ]
     for f in named:
@@ -230,9 +229,8 @@ def _standing_line(s: Standing, kind: str | None) -> list[str]:
     pool = s.pool
     if s.rank is None:
         return [
-            f"- **{pool.name}**: no longer ranked — archived, without a push in a year, or "
-            "no longer under an open source licence. Worth checking before you build more "
-            "on it."
+            f"- **{pool.name}**: dropped from the ranking — archived, no push in a year, or "
+            "no longer open source."
         ]
     head = f"- **{pool.name}**: #{s.rank} of {s.of}"
     if kind and s.kind_of > 1:
@@ -240,7 +238,7 @@ def _standing_line(s: Standing, kind: str | None) -> list[str]:
     stats = _stats(s.own, pool) if s.own else []
     head += f" ({', '.join(stats)})" if stats else ""
     if s.rank == 1:
-        return [head + ". Leading its field."]
+        return [head + "."]
     # Only momentum says who is gaining ground; total stars say who is bigger.
     lead_in = "Gaining ground faster" if pool.ranked_by == "momentum" else "Ranked above it"
     lines = [f"{head}. {lead_in}:"]
@@ -256,10 +254,7 @@ def _running(running: list[Finding], root: Path, catalog: Catalog) -> list[str]:
     out = [
         "## Open source you already run",
         "",
-        "Where each open source component this codebase uses stands in its field, by the "
-        "same ranking as the alternatives above. Momentum is not fitness: a library and a "
-        "server solve different problems, so each is also placed among its own kind. Read "
-        "it as what is gaining ground, not as a verdict.",
+        "Rank in its pool, overall and among its own kind. Same ranking as above.",
         "",
     ]
     for f in running:
@@ -309,8 +304,7 @@ def to_markdown(
     running = f"**{n_running}** open source component{'s' if n_running != 1 else ''} already in use"
     if not closed:
         out += [
-            "No closed AI services found. Either this codebase has none, or it uses one the "
-            "catalog does not cover yet — please open an issue if so.",
+            "No closed AI services found. If one is missing from the catalog, open an issue.",
             "",
         ]
         if n_running:
@@ -331,9 +325,8 @@ def to_markdown(
         if any(f.test_only for f in closed):
             out += [
                 "",
-                "*Only in tests:* every piece of evidence is in test, spec or fixture code. "
-                "Often a mock of a real dependency, sometimes leftover. `--skip-tests` leaves "
-                "test code out.",
+                "*Only in tests:* all evidence is in test, spec or fixture code. "
+                "`--skip-tests` leaves it out.",
             ]
         out += ["", "## Where each one is used", ""]
         for f in closed:
@@ -369,9 +362,8 @@ def to_markdown(
         out += [
             "---",
             "",
-            "Open source means an OSI-approved licence for code and an open licence for model "
-            "weights. Archived projects, projects without a push in a year, and "
-            "source-available licences are left out. `--top N` shows more; "
-            "`--format json` gives every ranked alternative.",
+            "Open source only: OSI licence for code, open licence for weights. No archived "
+            "projects, none without a push in a year. `--top N` for more, `--format json` for "
+            "everything.",
         ]
     return "\n".join(out).rstrip() + "\n"

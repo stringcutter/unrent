@@ -1049,7 +1049,7 @@ def test_a_component_that_dropped_out_of_the_ranking_is_flagged(tmp_path, catalo
     (s,) = standings(running(tmp_path, catalog)["facebookresearch/faiss"], catalog)
     assert s.rank is None
     md = to_markdown(match(collect_facts(tmp_path, catalog), catalog), tmp_path, catalog)
-    assert "no longer ranked" in md
+    assert "dropped from the ranking" in md
 
 
 @pytest.mark.parametrize(

@@ -1,7 +1,7 @@
 [project]
 name = "unrent"
 version = "0.2.0"
-description = "Find the closed AI services a codebase depends on, and the open source alternatives that replace them."
+description = "Find the rented parts of your AI stack. Swap them for open source. Rank the open source you already run."
 readme = "README.md"
 requires-python = ">=3.11"  # tomllib
 license = "Apache-2.0"
