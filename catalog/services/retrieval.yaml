@@ -17,7 +17,7 @@
   replace_with: [embedding-model, embedding-serving]
   detect:
     requirement: [llama-index-embeddings-gemini, llama-index-embeddings-google-genai, llama-index-embeddings-vertex]
-    symbol: [GoogleGenerativeAIEmbeddings, VertexAIEmbeddings, TextEmbeddingModel]
+    symbol: [GoogleGenerativeAIEmbeddings, VertexAIEmbeddings]
     model: [text-embedding-004, text-embedding-005, gemini-embedding-, textembedding-gecko, text-multilingual-embedding-]
 
 - id: aws-bedrock-embeddings
@@ -54,7 +54,7 @@
 - id: mistral-embeddings
   name: Mistral Embeddings and OCR
   category: Embeddings
-  replace_with: [embedding-model, document-parsing]
+  replace_with: [embedding-model, ocr]
   detect:
     symbol: [MistralAIEmbeddings]
     model: [mistral-embed, codestral-embed, mistral-ocr-]
@@ -112,12 +112,17 @@
 - id: mongodb-atlas-vector-search
   name: MongoDB Atlas Vector Search
   category: Vector database
+  # DocumentDB and self-managed MongoDB speak $vectorSearch too, and SRV connection
+  # strings are not Atlas-only; two of these together are Atlas.
+  weak: [$vectorSearch, "mongodb+srv://", SearchIndexModel, mongodb.net]
   replace_with: [vector-db]
   detect:
     requirement: [langchain-mongodb, llama-index-vector-stores-mongodb]
     npm: ["@langchain/mongodb"]
     python_import: [langchain_mongodb, llama_index.vector_stores.mongodb]
-    symbol: ["$vectorSearch", MongoDBAtlasVectorSearch]
+    symbol: ["$vectorSearch", MongoDBAtlasVectorSearch, "mongodb+srv://", SearchIndexModel]
+    endpoint: [mongodb.net]
+    env: [MONGODB_ATLAS_URI, MONGODB_ATLAS_CLUSTER_URI, ATLAS_URI, ATLAS_CONNECTION_STRING]
 
 - id: vertex-vector-search
   name: Vertex AI Vector Search
@@ -234,7 +239,7 @@
 - id: azure-document-intelligence
   name: Azure AI Document Intelligence
   category: Document parsing
-  replace_with: [document-parsing]
+  replace_with: [ocr, document-parsing]
   detect:
     requirement: [azure-ai-documentintelligence, azure-ai-formrecognizer]
     npm: ["@azure-rest/ai-document-intelligence", "@azure/ai-form-recognizer"]
@@ -246,7 +251,7 @@
 - id: aws-textract
   name: Amazon Textract
   category: Document parsing
-  replace_with: [document-parsing]
+  replace_with: [ocr, document-parsing]
   detect:
     requirement: [amazon-textract-textractor, amazon-textract-caller]
     npm: ["@aws-sdk/client-textract"]
@@ -257,7 +262,7 @@
 - id: google-document-ai
   name: Google Document AI
   category: Document parsing
-  replace_with: [document-parsing]
+  replace_with: [ocr, document-parsing]
   detect:
     requirement: [google-cloud-documentai]
     npm: ["@google-cloud/documentai"]
@@ -269,7 +274,7 @@
 - id: google-vision-ocr
   name: Google Cloud Vision OCR
   category: Document parsing
-  replace_with: [document-parsing]
+  replace_with: [ocr, document-parsing]
   detect:
     requirement: [google-cloud-vision]
     npm: ["@google-cloud/vision"]

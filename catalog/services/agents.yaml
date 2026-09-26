@@ -165,6 +165,7 @@
 - id: mem0-platform
   name: Mem0 Platform (hosted)
   category: Agent memory
+  weak: [MemoryClient, AsyncMemoryClient]
   replace_with: [agent-memory]
   detect:
     symbol: [MemoryClient, AsyncMemoryClient]
@@ -206,6 +207,8 @@
 - id: wandb-weave
   name: Weights & Biases Weave
   category: LLM observability
+  # W&B's key is for experiment tracking too.
+  weak: [WANDB_API_KEY]
   replace_with: [llm-observability]
   detect:
     requirement: [weave]

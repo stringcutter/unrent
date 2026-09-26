@@ -48,7 +48,8 @@ OPEN_MODEL_LICENCES = frozenset(
 DETECT_KINDS = frozenset(
     {
         # packages, per ecosystem
-        "requirement", "npm", "go", "cargo", "maven", "nuget", "gem", "composer",
+        "requirement", "npm", "go", "cargo", "maven", "nuget", "gem", "composer", "pub",
+        "swift",
         # code and configuration
         "python_import", "symbol", "model", "endpoint", "env", "terraform_resource",
     }
@@ -92,11 +93,18 @@ class Service:
     category: str
     replace_with: tuple[str, ...]
     detect: dict[str, tuple[str, ...]]
-    # Ids of more general services whose shared signatures this one claims.
+    # Ids of more general services whose evidence this one claims in the files where
+    # it is used: Azure OpenAI is called through the `openai` package.
     excludes: tuple[str, ...] = ()
     # Open-weight models that a `model` prefix would otherwise catch: `openai/gpt-`
     # must not report `openai/gpt-oss-120b`, which anyone can run.
     open_models: tuple[str, ...] = ()
+    # Signature values that cannot establish the service alone, because something
+    # unrelated shares them: `import fireworks` is also the FireWorks workflow library.
+    weak: tuple[str, ...] = ()
+    # The SDK doubles as the client for self-hosted OpenAI-compatible servers, so
+    # evidence next to a local base URL (Ollama, vLLM, LM Studio) does not count.
+    local_compatible: bool = False
 
 
 @dataclass
@@ -233,6 +241,13 @@ def _parse_service(raw: dict, where: Path, pools: dict[str, Pool]) -> Service:
                 f"{where.name}: service '{service_id}' names pool '{pool_id}', "
                 f"which is not in alternatives.yaml"
             )
+    signatures = {v for values in detect.values() for v in values}
+    for value in _as_tuple(raw.get("weak")):
+        if value not in signatures:
+            raise CatalogError(
+                f"{where.name}: service '{service_id}' marks '{value}' weak, "
+                f"but it is not one of its signatures"
+            )
     return Service(
         id=service_id,
         name=str(raw["name"]),
@@ -241,6 +256,8 @@ def _parse_service(raw: dict, where: Path, pools: dict[str, Pool]) -> Service:
         detect=detect,
         excludes=_as_tuple(raw.get("excludes")),
         open_models=_as_tuple(raw.get("open_models")),
+        weak=_as_tuple(raw.get("weak")),
+        local_compatible=bool(raw.get("local_compatible", False)),
     )
 
 

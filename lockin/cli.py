@@ -42,8 +42,14 @@ def build_parser() -> argparse.ArgumentParser:
         action="append",
         default=[],
         metavar="GLOB",
-        help="skip matching paths, relative to the scanned directory (repeatable; "
+        help="skip paths matching a .gitignore-style pattern (repeatable; "
         "a .lockinignore file in the directory works the same way)",
+    )
+    scan.add_argument(
+        "--skip-tests",
+        action="store_true",
+        help="leave out test, spec and fixture code (by default it is scanned, and "
+        "services found only there are marked)",
     )
     scan.add_argument(
         "--top", type=int, default=3, help="alternatives shown per kind in markdown (default: 3)"
@@ -62,11 +68,13 @@ def cmd_scan(args) -> int:
         print(f"lockin: {root} is not a directory", file=sys.stderr)
         return 2
     catalog = load_catalog(args.catalog)
-    findings = match(collect_facts(root, catalog, args.exclude), catalog)
+    skipped: list[Path] = []
+    facts = collect_facts(root, catalog, args.exclude, skipped, skip_tests=args.skip_tests)
+    findings = match(facts, catalog)
     if args.format == "json":
-        text = to_json(findings, root, catalog)
+        text = to_json(findings, root, catalog, skipped)
     else:
-        text = to_markdown(findings, root, catalog, top=max(args.top, 1))
+        text = to_markdown(findings, root, catalog, top=max(args.top, 1), skipped=skipped)
     if args.output:
         args.output.write_text(text + "\n", encoding="utf-8")
         print(f"wrote {args.output}", file=sys.stderr)

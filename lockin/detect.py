@@ -7,14 +7,15 @@ Facts come from three kinds of reading:
 
   manifests   parsed, not grepped: requirements, pyproject, setup.py/cfg, Pipfile,
               conda environments, package.json, go.mod, Cargo.toml, Maven, Gradle,
-              NuGet, Gemfile, composer.json.
+              NuGet, Gemfile, composer.json, pubspec.yaml, Package.swift.
   imports     Python (AST, notebooks included) and JavaScript/TypeScript import
               and require specifiers, plus `pip install` / `npm install` commands
-              in Dockerfiles, scripts, CI config and notebook cells.
+              in Dockerfiles, shell scripts, CI config and notebook cells.
   text        catalog needles — symbols, model ids, API hosts, environment
-              variables — searched in source and config files of any language,
-              with comments and docstrings skipped. ripgrep, when installed, finds
-              the candidate lines; the same Python checks decide what counts.
+              variables — searched in the *code* of source and config files of any
+              language: comments are blanked per language, strings are kept.
+              ripgrep, when installed, finds the candidate lines; the same Python
+              checks decide what counts.
 
 Lockfiles are deliberately not read: they list what your dependencies depend on,
 and a transitive `openai` pulled in by a gateway library is not a dependency on
@@ -26,7 +27,7 @@ from __future__ import annotations
 import ast
 import bisect
 import configparser
-import fnmatch
+import dataclasses
 import json
 import os
 import re
@@ -46,87 +47,74 @@ from .catalog import Catalog, Service
 
 # Never ours to scan, even when committed.
 SKIP_DIRS = {
-    ".git",
-    ".hg",
-    ".svn",
-    "node_modules",
-    "bower_components",
-    "jspm_packages",
-    "__pycache__",
-    ".mypy_cache",
-    ".pytest_cache",
-    ".ruff_cache",
-    ".tox",
-    ".nox",
-    ".next",
-    ".nuxt",
-    ".svelte-kit",
-    ".turbo",
-    ".vercel",
-    ".terraform",
-    ".gradle",
-    ".idea",
-    ".vscode",
-    "site-packages",
-    "vendor",
-    "Pods",
-}
-# Only skipped outside git, where there is no .gitignore to say what is build output.
-UNTRACKED_SKIP_DIRS = {"dist", "build", "target", "out", "coverage", ".venv", "venv"}
+    ".git", ".hg", ".svn", "node_modules", "bower_components", "jspm_packages",
+    "__pycache__", ".mypy_cache", ".pytest_cache", ".ruff_cache", ".tox", ".nox",
+    ".next", ".nuxt", ".svelte-kit", ".turbo", ".vercel", ".terraform", ".gradle",
+    ".idea", ".vscode", "site-packages", "vendor", "Pods",
+}  # fmt: skip
+# Build output, skipped only outside git and only when there is no .gitignore to
+# say what is build output.
+HEURISTIC_SKIP_DIRS = {"dist", "build", "target", "out", "coverage", ".venv", "venv"}
 MAX_FILE_BYTES = 2_000_000
-MAX_LINE_CHARS = 4_000  # longer lines are minified or generated
-# A JSON or YAML file this large is data (a fixture, an index dump), not configuration.
-MAX_CONFIG_BYTES = 256_000
+# Notebooks are large because of their outputs, which are never read.
+MAX_NOTEBOOK_BYTES = 64_000_000
+# A JSON file this large is data (a fixture, an index dump), not configuration.
+MAX_JSON_BYTES = 256_000
+EVIDENCE_CHARS = 200
 
 CODE_SUFFIXES = {
     ".py", ".pyi", ".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".mts", ".cts", ".vue",
     ".svelte", ".astro", ".go", ".rs", ".java", ".kt", ".kts", ".scala", ".groovy", ".cs",
     ".fs", ".vb", ".rb", ".php", ".swift", ".dart", ".ex", ".exs", ".r", ".jl", ".lua",
-    ".sh", ".bash", ".zsh", ".ps1", ".tf", ".tfvars", ".hcl",
+    ".sh", ".bash", ".zsh", ".ps1", ".tf", ".tfvars", ".hcl", ".c", ".h", ".cc", ".cpp",
+    ".cxx", ".hpp", ".m", ".mm", ".sql", ".html", ".htm",
 }  # fmt: skip
 CONFIG_SUFFIXES = {
     ".json", ".jsonc", ".json5", ".yaml", ".yml", ".toml", ".ini", ".cfg", ".conf",
     ".properties", ".xml", ".gradle", ".env", ".csproj", ".fsproj", ".vbproj", ".props",
+    ".tpl", ".tmpl", ".j2", ".jinja", ".jinja2",
 }  # fmt: skip
-CONFIG_NAMES = {
-    "dockerfile",
-    "makefile",
-    "procfile",
-    "jenkinsfile",
-    ".envrc",
-    ".dev.vars",
-    "gemfile",
-}
-JS_SUFFIXES = {
-    ".js",
-    ".jsx",
-    ".mjs",
-    ".cjs",
-    ".ts",
-    ".tsx",
-    ".mts",
-    ".cts",
-    ".vue",
-    ".svelte",
-    ".astro",
-}
+CONFIG_PREFIXES = (
+    ".env", "dockerfile", "containerfile", "docker-compose", "compose.", "makefile",
+    "procfile", "jenkinsfile", ".envrc", ".dev.vars", "gemfile",
+)  # fmt: skip
+JS_SUFFIXES = {".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".mts", ".cts", ".vue", ".svelte", ".astro"}
+C_FAMILY = JS_SUFFIXES | {
+    ".go", ".rs", ".java", ".kt", ".kts", ".scala", ".groovy", ".gradle", ".cs", ".fs",
+    ".swift", ".dart", ".c", ".h", ".cc", ".cpp", ".cxx", ".hpp", ".m", ".mm", ".php",
+    ".jsonc", ".json5", ".tf", ".tfvars", ".hcl",
+}  # fmt: skip
+# `#` also opens a comment in these C-family files.
+C_AND_HASH = {".php", ".tf", ".tfvars", ".hcl"}
+DASH_COMMENT = {".sql", ".lua"}
+XML_LIKE = {".xml", ".csproj", ".fsproj", ".vbproj", ".props"}
+HTML = {".html", ".htm"}
+# Where an install command is an instruction, not a string in someone's error message.
+INSTALL_SUFFIXES = {".sh", ".bash", ".zsh", ".ps1", ".yaml", ".yml", ".toml", ".cfg", ".conf"}
 LOCKFILES = {
     "package-lock.json", "npm-shrinkwrap.json", "yarn.lock", "pnpm-lock.yaml", "bun.lock",
     "poetry.lock", "uv.lock", "pdm.lock", "pipfile.lock", "cargo.lock", "go.sum",
-    "gemfile.lock", "composer.lock", "packages.lock.json", "gradle.lockfile",
+    "gemfile.lock", "composer.lock", "packages.lock.json", "gradle.lockfile", "pubspec.lock",
+    "package.resolved",
 }  # fmt: skip
 GENERATED = re.compile(r"\.(min|bundle|chunk)\.(js|css)$|\.map$", re.IGNORECASE)
+TEST_DIRS = {"test", "tests", "__tests__", "spec", "specs", "e2e", "__mocks__", "mocks",
+             "fixtures", "testdata", "test_data", "cypress", "playwright"}  # fmt: skip
+TEST_FILE = re.compile(r"(^test_.*\.py$|_test\.(py|go)$|\.(test|spec|e2e)\.[a-z]+$)", re.IGNORECASE)
+PACKAGE_KINDS = {"requirement", "npm", "go", "cargo", "maven", "nuget", "gem", "composer", "pub", "swift"}
 
 
 @dataclass(frozen=True)
 class Fact:
     """One observation about the codebase, before any interpretation."""
 
-    kind: str  # a catalog detect kind
+    kind: str  # a catalog detect kind, or an internal one such as "local_base_url"
     value: str  # the normalised thing observed, e.g. "openai"
     file: Path
     line: int
     evidence: str  # the source line, trimmed
+    manifest: bool = False  # declared in a package manifest, not used in code
+    in_test: bool = False  # found in test, spec or fixture code
 
 
 @dataclass(frozen=True)
@@ -146,73 +134,179 @@ class Finding:
                 out.append(fact)
         return out
 
+    @property
+    def test_only(self) -> bool:
+        return all(f.in_test for f in self.facts)
+
+
+def is_test_path(rel: str) -> bool:
+    parts = rel.lower().split("/")
+    return any(p in TEST_DIRS for p in parts[:-1]) or bool(TEST_FILE.search(parts[-1]))
+
+
+# --------------------------------------------------------------------------
+# Ignore rules: gitignore semantics, for .gitignore, .lockinignore and --exclude
+# --------------------------------------------------------------------------
+
+
+def _glob_regex(pattern: str) -> re.Pattern:
+    out, i = "", 0
+    while i < len(pattern):
+        if pattern.startswith("**/", i):
+            out, i = out + "(?:.*/)?", i + 3
+        elif pattern.startswith("**", i):
+            out, i = out + ".*", i + 2
+        elif pattern[i] == "*":
+            out, i = out + "[^/]*", i + 1
+        elif pattern[i] == "?":
+            out, i = out + "[^/]", i + 1
+        elif pattern[i] == "[" and "]" in pattern[i + 1 :]:
+            j = pattern.index("]", i + 1)
+            body = pattern[i + 1 : j]
+            out += "[" + ("^" + body[1:] if body.startswith("!") else body) + "]"
+            i = j + 1
+        elif pattern[i] == "\\" and i + 1 < len(pattern):
+            out, i = out + re.escape(pattern[i + 1]), i + 2
+        else:
+            out, i = out + re.escape(pattern[i]), i + 1
+    return re.compile(out)
+
+
+@dataclass(frozen=True)
+class IgnoreRule:
+    base: str  # directory the rule file lives in, relative to the scan root
+    regex: re.Pattern
+    negate: bool
+    dir_only: bool
+    anchored: bool
+
+    @classmethod
+    def parse(cls, line: str, base: str = "") -> IgnoreRule | None:
+        line = line.rstrip("\n").rstrip("\r")
+        if not line.strip() or line.startswith("#"):
+            return None
+        if not line.endswith("\\ "):
+            line = line.rstrip(" ")
+        negate = line.startswith("!")
+        if negate:
+            line = line[1:]
+        dir_only = line.endswith("/")
+        line = line.rstrip("/")
+        anchored = "/" in line
+        line = line.lstrip("/")
+        if not line:
+            return None
+        return cls(base, _glob_regex(line), negate, dir_only, anchored)
+
+    def applies(self, rel: str, is_dir: bool) -> bool:
+        if self.dir_only and not is_dir:
+            return False
+        if self.base:
+            if not rel.startswith(self.base + "/"):
+                return False
+            rel = rel[len(self.base) + 1 :]
+        target = rel if self.anchored else rel.rsplit("/", 1)[-1]
+        return self.regex.fullmatch(target) is not None
+
+
+def is_ignored(rel: str, rules: list[IgnoreRule], is_dir: bool = False) -> bool:
+    """Git's rule: a path is ignored if it, or any directory above it, is ignored.
+    Within one path the last matching rule wins, so `!` re-includes."""
+    if not rules:
+        return False
+    parts = rel.split("/")
+    for i in range(1, len(parts) + 1):
+        sub = "/".join(parts[:i])
+        sub_is_dir = is_dir or i < len(parts)
+        state = False
+        for rule in rules:
+            if rule.applies(sub, sub_is_dir):
+                state = not rule.negate
+        if state:
+            return True
+    return False
+
+
+def _rules_from(text: str, base: str = "") -> list[IgnoreRule]:
+    return [r for r in (IgnoreRule.parse(ln, base) for ln in text.splitlines()) if r]
+
+
+def load_ignore(root: Path, exclude: Iterable[str] = ()) -> list[IgnoreRule]:
+    """.lockinignore plus --exclude patterns, both with .gitignore syntax."""
+    file = root / ".lockinignore"
+    text = file.read_text("utf-8", errors="replace") if file.is_file() else ""
+    return _rules_from(text) + _rules_from("\n".join(exclude))
+
 
 # --------------------------------------------------------------------------
 # File discovery
 # --------------------------------------------------------------------------
 
 
-def _git_files(root: Path) -> list[Path] | None:
-    """Tracked plus untracked-but-not-ignored files, when root is inside a git repo."""
+def _git(root: Path, *args: str) -> list[str] | None:
     try:
-        out = subprocess.run(
-            ["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard"],
-            cwd=root,
-            capture_output=True,
-            timeout=60,
-        )
+        out = subprocess.run(["git", *args], cwd=root, capture_output=True, timeout=120)
     except (OSError, subprocess.SubprocessError):
         return None
     if out.returncode != 0:
         return None
-    return [root / p for p in out.stdout.decode("utf-8", "replace").split("\0") if p]
+    return [p for p in out.stdout.decode("utf-8", "replace").split("\0") if p]
+
+
+def _git_files(root: Path) -> list[Path] | None:
+    """Tracked files (submodules included) plus untracked-but-not-ignored ones.
+
+    None when root is not in a git repository, or when git lists nothing — which
+    also happens when root is a directory the enclosing repo ignores, and scanning
+    it explicitly means the user wants it scanned.
+    """
+    tracked = _git(root, "ls-files", "-z", "--cached", "--recurse-submodules")
+    if tracked is None:
+        return None
+    untracked = _git(root, "ls-files", "-z", "--others", "--exclude-standard") or []
+    names = sorted(set(tracked) | set(untracked))
+    return [root / p for p in names] or None
 
 
 def _walk(root: Path) -> list[Path]:
+    """Every file under root, honouring .gitignore files as git would."""
+    rules: list[IgnoreRule] = []
+    heuristics = not (root / ".gitignore").is_file()
     out: list[Path] = []
     stack = [root]
     while stack:
         directory = stack.pop()
+        rel_dir = directory.relative_to(root).as_posix() if directory != root else ""
+        gitignore = directory / ".gitignore"
+        if gitignore.is_file():
+            rules = rules + _rules_from(gitignore.read_text("utf-8", errors="replace"), rel_dir)
         try:
-            children = list(directory.iterdir())
+            children = sorted(directory.iterdir())
         except OSError:
             continue
         for child in children:
+            rel = f"{rel_dir}/{child.name}" if rel_dir else child.name
             if child.is_symlink():
                 continue  # loops, and files that live elsewhere
             if child.is_dir():
-                if child.name in SKIP_DIRS or child.name in UNTRACKED_SKIP_DIRS:
+                if child.name in SKIP_DIRS or is_ignored(rel, rules, is_dir=True):
+                    continue
+                if heuristics and child.name in HEURISTIC_SKIP_DIRS:
                     continue
                 if (child / "pyvenv.cfg").is_file():
                     continue  # a virtualenv, whatever it is called
                 stack.append(child)
-            elif child.is_file():
+            elif child.is_file() and not is_ignored(rel, rules):
                 out.append(child)
     return out
 
 
-def load_ignore(root: Path) -> list[str]:
-    """Patterns from .lockinignore: one glob per line, relative to root."""
-    file = root / ".lockinignore"
-    if not file.is_file():
-        return []
-    lines = file.read_text("utf-8", errors="replace").splitlines()
-    return [ln.strip() for ln in lines if ln.strip() and not ln.lstrip().startswith("#")]
-
-
-def _ignored(rel: str, patterns: Iterable[str]) -> bool:
-    for pattern in patterns:
-        p = pattern.strip("/")
-        if pattern.endswith("/"):
-            if rel == p or rel.startswith(p + "/") or f"/{p}/" in f"/{rel}":
-                return True
-        elif fnmatch.fnmatch(rel, p) or fnmatch.fnmatch(rel.rsplit("/", 1)[-1], p):
-            return True
-    return False
-
-
-def iter_files(root: Path, exclude: Iterable[str] = ()) -> list[Path]:
-    patterns = [*load_ignore(root), *exclude]
+def iter_files(
+    root: Path, exclude: Iterable[str] = (), skipped: list[Path] | None = None
+) -> list[Path]:
+    """Files to scan. Files over the size limit are left out and, when `skipped` is
+    given, recorded there so the report can say so."""
+    rules = load_ignore(root, exclude)
     files = _git_files(root)
     if files is None:
         files = _walk(root)
@@ -221,15 +315,29 @@ def iter_files(root: Path, exclude: Iterable[str] = ()) -> list[Path]:
         rel = path.relative_to(root).as_posix()
         if any(part in SKIP_DIRS for part in rel.split("/")[:-1]):
             continue
-        if patterns and _ignored(rel, patterns):
+        if is_ignored(rel, rules):
             continue
         try:
-            if not path.is_file() or path.stat().st_size > MAX_FILE_BYTES:
+            if not path.is_file():
                 continue
+            size = path.stat().st_size
         except OSError:
+            continue
+        limit = MAX_NOTEBOOK_BYTES if path.suffix.lower() == ".ipynb" else MAX_FILE_BYTES
+        if size > limit:
+            if skipped is not None and _is_relevant(path):
+                skipped.append(path)
             continue
         out.append(path)
     return sorted(out)
+
+
+def _is_relevant(path: Path) -> bool:
+    return (
+        _manifest_parser(path) is not None
+        or _is_text_source(path)
+        or path.suffix.lower() == ".ipynb"
+    )
 
 
 def _split_lines(text: str) -> list[str]:
@@ -238,6 +346,8 @@ def _split_lines(text: str) -> list[str]:
     `str.splitlines` also splits on form feeds, U+2028 and friends, which puts
     every later line number out by one.
     """
+    if "\r" not in text:
+        return text.split("\n")
     return [ln.removesuffix("\r") for ln in text.split("\n")]
 
 
@@ -246,13 +356,140 @@ def _read(path: Path) -> str | None:
         raw = path.read_bytes()
     except OSError:
         return None
+    if raw.startswith((b"\xff\xfe", b"\xfe\xff")):
+        return raw.decode("utf-16", errors="replace")  # Windows editors, PowerShell
     if b"\0" in raw[:8192]:
         return None  # binary
     return raw.decode("utf-8-sig", errors="replace")
 
 
 # --------------------------------------------------------------------------
-# Needles: catalog strings searched as text
+# Code view: the file with comments blanked, strings kept, lines preserved
+# --------------------------------------------------------------------------
+
+
+# Strings first, so a comment marker inside one is text: `"/api/*"` does not open a
+# comment. Single and double quotes close on their own line or not at all — an
+# unclosed one is a Rust lifetime or an apostrophe, and is left as a plain char.
+_C_STRING = r"""\"(?:\\.|[^"\\\n])*\"|'(?:\\.|[^'\\\n])*'|`(?:\\.|[^`\\])*`"""
+_C_TOKENS = re.compile(_C_STRING + r"|(//[^\n]*|/\*.*?(?:\*/|\Z))", re.DOTALL)
+_C_HASH_TOKENS = re.compile(_C_STRING + r"|(//[^\n]*|#(?!\[)[^\n]*|/\*.*?(?:\*/|\Z))", re.DOTALL)
+_NOT_NEWLINE = re.compile(r"[^\n]")
+
+
+def _c_like(text: str, hash_comments: bool = False) -> str:
+    """Blank `//` and `/* */` comments (and `#` ones, for PHP and HCL), leaving
+    string literals and line numbers alone."""
+    pattern = _C_HASH_TOKENS if hash_comments else _C_TOKENS
+    return pattern.sub(
+        lambda m: _NOT_NEWLINE.sub(" ", m.group(0)) if m.group(1) else m.group(0), text
+    )
+
+
+def _hash_like(text: str, extra: str = "") -> str:
+    """Blank `#` comments that start a line or follow whitespace outside quotes —
+    `url#fragment` and `"#hex"` stay. `extra` adds line-start comment markers."""
+    lines = []
+    for line in text.split("\n"):
+        stripped = line.lstrip()
+        if extra and stripped.startswith(tuple(extra.split())):
+            lines.append(" " * len(line))
+            continue
+        if "#" not in line:
+            lines.append(line)
+            continue
+        quote = None
+        cut = len(line)
+        for i, ch in enumerate(line):
+            if quote:
+                if ch == quote:
+                    quote = None
+            elif ch in "\"'":
+                quote = ch
+            elif ch == "#" and (i == 0 or line[i - 1].isspace()) and not line.startswith("#!", i):
+                cut = i
+                break
+        lines.append(line[:cut] + " " * (len(line) - cut))
+    return "\n".join(lines)
+
+
+def _python_view(text: str) -> str:
+    """Comments and docstrings blanked. Ordinary strings stay, because
+    `client("bedrock-runtime")` is a string and is exactly the evidence we want."""
+    lines = _split_lines(text)
+    try:
+        for tok in tokenize.generate_tokens(StringIO(text).readline):
+            if tok.type == tokenize.COMMENT:
+                row, col = tok.start
+                if 0 < row <= len(lines):
+                    lines[row - 1] = lines[row - 1][:col]
+    except (tokenize.TokenError, IndentationError, SyntaxError, ValueError):
+        return _hash_like(text)
+    try:
+        tree = ast.parse(text)
+    except (SyntaxError, ValueError):
+        return "\n".join(lines)
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Module | ast.ClassDef | ast.FunctionDef | ast.AsyncFunctionDef):
+            continue
+        doc = node.body[0] if node.body else None
+        if (
+            isinstance(doc, ast.Expr)
+            and isinstance(doc.value, ast.Constant)
+            and isinstance(doc.value.value, str)
+        ):
+            for row in range(doc.lineno, (doc.end_lineno or doc.lineno) + 1):
+                lines[row - 1] = ""
+    return "\n".join(lines)
+
+
+_SCRIPT = re.compile(r"(<script\b[^>]*>)(.*?)(</script>)", re.IGNORECASE | re.DOTALL)
+
+
+def _html_view(text: str) -> str:
+    """Only what runs: the contents of <script> blocks. Page prose about a vendor
+    is documentation."""
+    out, last = [], 0
+    for m in _SCRIPT.finditer(text):
+        out.append(_NOT_NEWLINE.sub(" ", text[last : m.start(2)]))
+        out.append(_c_like(m.group(2)))
+        last = m.end(2)
+    out.append(_NOT_NEWLINE.sub(" ", text[last:]))
+    return "".join(out)
+
+
+_XML_COMMENT = re.compile(r"<!--.*?-->", re.DOTALL)
+
+
+def _xml_view(text: str) -> str:
+    return _XML_COMMENT.sub(lambda m: _NOT_NEWLINE.sub(" ", m.group(0)), text)
+
+
+def code_view(path: Path, text: str) -> str:
+    suffix = path.suffix.lower()
+    if suffix in (".py", ".pyi"):
+        return _python_view(text)
+    if suffix in C_FAMILY:
+        return _c_like(text, hash_comments=suffix in C_AND_HASH)
+    if suffix in HTML:
+        return _html_view(text)
+    if suffix in XML_LIKE:
+        return _xml_view(text)
+    if suffix in DASH_COMMENT:
+        return _hash_like(text.replace("#", "\0"), extra="--").replace("\0", "#")
+    if suffix in (".json",):
+        return text
+    if suffix in (".ini",):
+        return _hash_like(text, extra=";")
+    if suffix == ".properties":
+        return _hash_like(text, extra="!")
+    if suffix == ".vb":
+        return _hash_like(text.replace("#", "\0"), extra="'").replace("\0", "#")
+    return _hash_like(text)  # shell, YAML, TOML, Ruby, R, Dockerfile, .env, …
+
+
+# --------------------------------------------------------------------------
+# Needles: catalog strings searched in code
 # --------------------------------------------------------------------------
 
 _NORMALISE = re.compile(r"[-_.]+")
@@ -270,7 +507,8 @@ def _needle_pattern(kind: str, needle: str) -> re.Pattern:
               `AzureOpenAI(`, and `searchclient` in a URL is not `SearchClient`.
     model     a prefix of a model id: `gpt-4` matches `gpt-4o-mini`, but not
               `chatgpt-4`, and not `bedrock/` inside a path like `./bedrock/x`.
-    endpoint  a host, matched case-insensitively; a subdomain may precede it.
+    endpoint  a host, matched case-insensitively; a subdomain may precede it, and a
+              call may not follow it: `modal.run()` is code, `x.modal.run/` a host.
     env       an exact variable name.
     """
     escaped = re.escape(needle)
@@ -281,15 +519,23 @@ def _needle_pattern(kind: str, needle: str) -> re.Pattern:
     if kind == "model":
         return re.compile(r"(?<![A-Za-z0-9_./-])" + escaped)
     if kind == "endpoint":
-        tail = r"(?![A-Za-z0-9-])" if ends_word else ""
+        tail = r"(?![A-Za-z0-9(-])" if ends_word else ""
         return re.compile(r"(?<![A-Za-z0-9-])" + escaped + tail, re.IGNORECASE)
     return re.compile(r"(?<![A-Za-z0-9_])" + escaped + r"(?![A-Za-z0-9_])")
 
 
 _NEWLINE = re.compile(r"\n")
 _MODEL_TOKEN = re.compile(r"[A-Za-z0-9_./:@-]+")
+_FILE_EXTENSION = re.compile(r"\.[A-Za-z]{2,5}$")
+_OLLAMA_TAG = re.compile(r":(?!\d+$)[A-Za-z0-9._-]+$")  # `command-r:35b`, not bedrock's `-v1:0`
+# Lines that name a model without calling it: tokenizers and local runtimes.
+_MODEL_NOT_A_CALL = re.compile(r"encoding_for_model|tiktoken|ollama", re.IGNORECASE)
 
 Needle = tuple[str, str, str, re.Pattern]  # kind, needle, probe, pattern
+
+
+def _offsets(text: str) -> list[int]:
+    return [0, *(m.end() for m in _NEWLINE.finditer(text))]
 
 
 class Needles:
@@ -314,126 +560,133 @@ class Needles:
     def _hits(self, text: str) -> dict[int, list[Needle]]:
         """Line number → needles whose literal text occurs on it.
 
-        `str.find` runs in C and there are only a few hundred needles, so this is
-        one fast scan per needle rather than a regex per line per needle.
+        One C-speed `str.find` scan per needle. Offsets are computed on the text
+        actually searched: lower-casing can change a string's length (`İ` becomes
+        two code points), so the original text's offsets would be wrong.
         """
         lowered = text.lower()
-        offsets: list[int] | None = None
+        offsets = {False: _offsets(text), True: None}
         hits: dict[int, list[Needle]] = {}
         for item in self.items:
-            haystack = lowered if item[0] == "endpoint" else text
+            folded = item[0] == "endpoint"
+            haystack = lowered if folded else text
             at = haystack.find(item[2])
             if at < 0:
                 continue
-            if offsets is None:
-                offsets = [0, *(m.end() for m in _NEWLINE.finditer(text))]
+            if offsets[folded] is None:
+                offsets[folded] = _offsets(haystack)
+            lines = offsets[folded]
             while at >= 0:
-                n = bisect.bisect_right(offsets, at)
+                n = bisect.bisect_right(lines, at)
                 hits.setdefault(n, []).append(item)
-                at = haystack.find(item[2], offsets[n] if n < len(offsets) else len(text))
+                at = haystack.find(item[2], lines[n] if n < len(lines) else len(haystack))
         return hits
 
     def _items_on(self, line: str) -> list[Needle]:
         lowered = line.lower()
         return [it for it in self.items if it[2] in (lowered if it[0] == "endpoint" else line)]
 
-    def _is_closed_model(self, needle: str, pattern: re.Pattern, line: str) -> bool:
-        """True when some occurrence of the prefix names a model that is not open-weight."""
-        exempt = self.open_models.get(needle)
+    def _closed_model_at(self, needle: str, pattern: re.Pattern, line: str) -> re.Match | None:
+        """The first occurrence of the prefix that names a closed model, if any."""
+        if _MODEL_NOT_A_CALL.search(line):
+            return None
+        exempt = self.open_models.get(needle, ())
         for m in pattern.finditer(line):
             token = _MODEL_TOKEN.match(line, m.start())
-            model_id = token.group(0).lower() if token else needle
-            if not exempt or not any(e in model_id for e in exempt):
-                return True
-        return False
+            model_id = token.group(0) if token else needle
+            rest = model_id[len(needle) :]
+            if needle.endswith(("/", ":")) and not rest:
+                continue
+            if _FILE_EXTENSION.search(model_id) and not rest[-1:].isdigit():
+                continue  # `bedrock/geology.csv` is a path
+            if ":" not in needle and _OLLAMA_TAG.search(model_id):
+                continue  # `command-r:35b` is an Ollama tag, run locally
+            if any(e in model_id.lower() for e in exempt):
+                continue
+            return m
+        return None
 
     def search(
-        self, path: Path, lines: list[str], skip: set[int], hit_lines: Iterable[int] | None = None
+        self,
+        path: Path,
+        lines: list[str],
+        code: list[str],
+        hit_lines: Iterable[int] | None = None,
     ) -> list[Fact]:
-        """Needles on `lines`. `hit_lines`, when ripgrep has already found them, saves
-        searching the file again."""
+        """Needles in the code view. Evidence quotes the original line.
+
+        `hit_lines`, when ripgrep has already found them, saves searching again.
+        """
         if hit_lines is None:
             hits = self._hits("\n".join(lines))
         else:
             hits = {n: self._items_on(lines[n - 1]) for n in hit_lines if 0 < n <= len(lines)}
         facts = []
         for n, items in sorted(hits.items()):
-            raw = lines[n - 1]
-            if n in skip or len(raw) > MAX_LINE_CHARS or _is_comment(raw):
+            view = code[n - 1] if n <= len(code) else ""
+            if not view.strip():
                 continue
             for kind, needle, _, pattern in items:
                 if kind == "model":
-                    hit = self._is_closed_model(needle, pattern, raw)
+                    m = self._closed_model_at(needle, pattern, view)
                 else:
-                    hit = pattern.search(raw) is not None
-                if hit:
-                    facts.append(Fact(kind, needle, path, n, raw.strip()[:200]))
+                    m = pattern.search(view)
+                if m:
+                    facts.append(Fact(kind, needle, path, n, _snippet(lines[n - 1], m.start())))
         return facts
 
 
-_COMMENT_PREFIXES = ("#", "//", "/*", "*", "<!--", "--", ";", "'''", '"""', "rem ", "REM ")
+def _snippet(line: str, at: int = 0) -> str:
+    """The line, trimmed and with secrets masked; for long lines (minified, one-line
+    configs), the part around the match."""
+    stripped = line.strip()
+    if len(stripped) > EVIDENCE_CHARS:
+        start = max(at - 60, 0)
+        stripped = ("…" if start else "") + line[start : start + EVIDENCE_CHARS].strip() + "…"
+    return redact(stripped)
 
 
-def _is_comment(line: str) -> bool:
-    stripped = line.lstrip()
-    if stripped.startswith("#!") or stripped.startswith("#include"):
-        return False
-    # `#` opens a comment in most of what we scan, but not `#[derive]` or C# regions.
-    return stripped.startswith(_COMMENT_PREFIXES) and not stripped.startswith("#[")
+# Reports get pasted into issues and chats; the .env line that proves a dependency
+# must not carry the key with it.
+_SECRET_ASSIGNMENT = re.compile(
+    r"""(?i)\b([A-Za-z0-9_]*(?:key|token|secret|password|passwd|credential)s?)(["']?\s*[:=]\s*["']?)([^\s"',;]{6,})"""
+)
+_SECRET_SHAPES = re.compile(
+    r"\b(sk-(?:ant-|proj-)?[A-Za-z0-9_-]{16,}|AKIA[0-9A-Z]{16}|AIza[0-9A-Za-z_-]{30,}"
+    r"|gh[pousr]_[A-Za-z0-9]{30,}|hf_[A-Za-z0-9]{30,}|xai-[A-Za-z0-9]{20,}|gsk_[A-Za-z0-9]{20,}"
+    r"|pcsk_[A-Za-z0-9_]{20,}|r8_[A-Za-z0-9]{20,}|tvly-[A-Za-z0-9-]{20,}|fc-[a-f0-9]{24,}"
+    r"|eyJ[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]*)"
+)
+_NOT_A_SECRET = re.compile(r"[($<{]|env|getenv|secrets\.|config\.|settings\.", re.IGNORECASE)
 
 
-def _python_prose(text: str) -> set[int]:
-    """Comment and docstring lines: someone writing about a vendor, not using one.
+def redact(text: str) -> str:
+    def assignment(m: re.Match) -> str:
+        value = m.group(3)
+        if _NOT_A_SECRET.search(value) or set(value) <= set("*xX.-_<>"):
+            return m.group(0)
+        return f"{m.group(1)}{m.group(2)}****"
 
-    Ordinary string literals stay in scope, because `client("bedrock-runtime")` is a
-    string and is exactly the evidence we are looking for.
-    """
-    lines: set[int] = set()
-    try:
-        for tok in tokenize.generate_tokens(StringIO(text).readline):
-            if tok.type == tokenize.COMMENT:
-                lines.add(tok.start[0])
-    except (tokenize.TokenError, IndentationError, SyntaxError, ValueError):
-        pass
-    try:
-        tree = ast.parse(text)
-    except (SyntaxError, ValueError):
-        return lines
-    for node in ast.walk(tree):
-        if not isinstance(node, ast.Module | ast.ClassDef | ast.FunctionDef | ast.AsyncFunctionDef):
-            continue
-        doc = node.body[0] if node.body else None
-        if (
-            isinstance(doc, ast.Expr)
-            and isinstance(doc.value, ast.Constant)
-            and isinstance(doc.value.value, str)
-        ):
-            lines.update(range(doc.lineno, (doc.end_lineno or doc.lineno) + 1))
-    return lines
-
-
-def _js_block_comments(text: str) -> set[int]:
-    lines: set[int] = set()
-    for m in re.finditer(r"/\*.*?\*/", text, re.DOTALL):
-        start = text.count("\n", 0, m.start()) + 1
-        end = text.count("\n", 0, m.end()) + 1
-        lines.update(range(start, end + 1))
-    return lines
+    text = _SECRET_ASSIGNMENT.sub(assignment, text)
+    return _SECRET_SHAPES.sub(lambda m: m.group(1)[:4] + "****", text)
 
 
 # --------------------------------------------------------------------------
-# Imports and install commands
+# Imports, install commands, local OpenAI-compatible servers
 # --------------------------------------------------------------------------
 
 _PY_IMPORT_FALLBACK = re.compile(r"^\s*(?:from\s+([\w.]+)\s+import\b|import\s+([\w.,\s]+))")
+_PY_DYNAMIC_IMPORT = re.compile(r"""(?:import_module|__import__)\(\s*["']([\w.]+)["']""")
 
 
 def _python_imports(path: Path, text: str, lines: list[str]) -> list[Fact]:
-    """`import a.b`, `from a.b import c`. Falls back to a regex when the file does not
-    parse (Python 2, templates), because an unparseable file still imports things."""
+    """`import a.b`, `from a.b import c` (recorded as `a.b` and `a.b.c`, because
+    `from google.cloud import documentai` imports `google.cloud.documentai`), and
+    `importlib.import_module("a")`. Falls back to a regex when the file does not
+    parse (Python 2, templates): an unparseable file still imports things."""
 
-    def line_text(n: int) -> str:
-        return lines[n - 1].strip() if 0 < n <= len(lines) else ""
+    def fact(name: str, n: int) -> Fact:
+        return Fact("python_import", name, path, n, _snippet(lines[n - 1]) if 0 < n <= len(lines) else "")
 
     facts: list[Fact] = []
     try:
@@ -443,25 +696,33 @@ def _python_imports(path: Path, text: str, lines: list[str]) -> list[Fact]:
     if tree is not None:
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
-                for alias in node.names:
-                    facts.append(
-                        Fact("python_import", alias.name, path, node.lineno, line_text(node.lineno))
-                    )
+                facts += [fact(alias.name, node.lineno) for alias in node.names]
             elif isinstance(node, ast.ImportFrom) and node.module and not node.level:
-                facts.append(
-                    Fact("python_import", node.module, path, node.lineno, line_text(node.lineno))
-                )
+                facts.append(fact(node.module, node.lineno))
+                facts += [
+                    fact(f"{node.module}.{alias.name}", node.lineno)
+                    for alias in node.names
+                    if alias.name != "*"
+                ]
+            elif (
+                isinstance(node, ast.Call)
+                and getattr(node.func, "attr", getattr(node.func, "id", None))
+                in ("import_module", "__import__")
+                and node.args
+                and isinstance(node.args[0], ast.Constant)
+                and isinstance(node.args[0].value, str)
+            ):
+                facts.append(fact(node.args[0].value, node.lineno))
         return facts
     for i, raw in enumerate(_split_lines(text), start=1):
         m = _PY_IMPORT_FALLBACK.match(raw)
-        if not m:
-            continue
-        if m.group(1):
-            names = [m.group(1)]
-        else:
-            names = [p.split()[0] for p in m.group(2).split(",") if p.strip()]
-        for name in names:
-            facts.append(Fact("python_import", name, path, i, line_text(i)))
+        if m:
+            if m.group(1):
+                names = [m.group(1)]
+            else:
+                names = [p.split()[0] for p in m.group(2).split(",") if p.strip()]
+            facts += [fact(name, i) for name in names]
+        facts += [fact(d.group(1), i) for d in _PY_DYNAMIC_IMPORT.finditer(raw)]
     return facts
 
 
@@ -472,11 +733,13 @@ _JS_IMPORT = re.compile(
 
 
 def js_package(specifier: str) -> str | None:
-    """`@scope/pkg/sub` → `@scope/pkg`; `npm:openai@4` → `openai`; relative → None."""
+    """`@scope/pkg/sub` → `@scope/pkg`; `npm:openai@4` and `jsr:@a/b` → the
+    package; relative paths and built-ins → None."""
     spec = specifier.strip()
-    if spec.startswith("npm:"):
-        spec = spec[4:]
-    if not spec or spec.startswith((".", "/", "~", "#", "node:", "http:", "https:", "jsr:", "$")):
+    for prefix in ("npm:", "jsr:"):
+        if spec.startswith(prefix):
+            spec = spec[len(prefix) :].lstrip("/")
+    if not spec or spec.startswith((".", "/", "~", "#", "node:", "http:", "https:", "$")):
         return None
     parts = spec.split("/")
     if spec.startswith("@"):
@@ -488,16 +751,13 @@ def js_package(specifier: str) -> str | None:
     return name or None
 
 
-def _js_imports(path: Path, text: str, lines: list[str], skip: set[int]) -> list[Fact]:
+def _js_imports(path: Path, code: str, lines: list[str]) -> list[Fact]:
     facts = []
-    for m in _JS_IMPORT.finditer(text):
+    for m in _JS_IMPORT.finditer(code):
         name = js_package(m.group(1))
-        if not name:
-            continue
-        n = text.count("\n", 0, m.start()) + 1
-        if n in skip or _is_comment(lines[n - 1]):
-            continue
-        facts.append(Fact("npm", name, path, n, lines[n - 1].strip()[:200]))
+        if name:
+            n = code.count("\n", 0, m.start()) + 1
+            facts.append(Fact("npm", name, path, n, _snippet(lines[n - 1])))
     return facts
 
 
@@ -512,19 +772,35 @@ _TAKES_VALUE = {"-r", "-c", "-e", "-i", "-f", "--requirement", "--constraint", "
 _SPEC_SPLIT = re.compile(r"[\[<>=!~;@ ]")
 
 
-def _install_commands(path: Path, lines: list[str], skip: set[int]) -> list[Fact]:
-    facts = []
+def _logical_lines(lines: list[str]) -> list[tuple[int, str]]:
+    """Join `\\` (shell) and backtick (PowerShell) continuations; keep the first line
+    number, so a multi-line `RUN pip install \\` is cited where it starts."""
+    out: list[tuple[int, str]] = []
+    buffer, start = "", 0
     for n, raw in enumerate(lines, start=1):
-        if ("install" not in raw and "add" not in raw) or n in skip or len(raw) > MAX_LINE_CHARS:
+        stripped = raw.rstrip()
+        if not buffer:
+            start = n
+        if stripped.endswith(("\\", "`")):
+            buffer += stripped[:-1] + " "
             continue
-        line = raw.lstrip().lstrip("!%").lstrip()  # notebook magics
-        if _is_comment(raw) and not raw.lstrip().startswith(("!", "%")):
+        out.append((start, buffer + raw))
+        buffer = ""
+    if buffer:
+        out.append((start, buffer))
+    return out
+
+
+def _install_commands(path: Path, lines: list[str], code: list[str]) -> list[Fact]:
+    facts = []
+    for n, logical in _logical_lines(code):
+        if "install" not in logical and "add" not in logical:
             continue
+        line = logical.lstrip().lstrip("!%").lstrip()  # notebook magics
         for pattern, kind in ((_PIP_INSTALL, "requirement"), (_NPM_INSTALL, "npm")):
             for m in pattern.finditer(line):
-                tokens = m.group(1).replace("\\", " ").split()
                 skip_next = False
-                for token in tokens:
+                for token in m.group(1).split():
                     token = token.strip("'\"`")
                     if skip_next:
                         skip_next = False
@@ -538,13 +814,33 @@ def _install_commands(path: Path, lines: list[str], skip: set[int]) -> list[Fact
                         name = js_package(token)
                     else:
                         name = _SPEC_SPLIT.split(token, 1)[0]
-                        name = (
-                            normalise(name)
-                            if re.fullmatch(r"[A-Za-z0-9._-]+", name or "")
-                            else None
-                        )
+                        name = normalise(name) if re.fullmatch(r"[A-Za-z0-9._-]+", name or "") else None
                     if name:
-                        facts.append(Fact(kind, name, path, n, raw.strip()[:200]))
+                        facts.append(Fact(kind, name, path, n, _snippet(lines[n - 1])))
+    return facts
+
+
+_BASE_URL = re.compile(
+    r"""(?i)\b(?:base_?url|api_?base|openai_api_base|openai_base_url|basepath)\b["']?\s*[:=]\s*"""
+    r"""[^\n"'`]*?["'`]?(?:https?://)?\[?([A-Za-z0-9.:-]+?)\]?(?::\d+)?(?:[/"'`\s]|$)"""
+)
+_LOCAL_HOSTS = {"localhost", "127.0.0.1", "0.0.0.0", "::1", "host.docker.internal", "ollama",
+                "vllm", "lmstudio", "localai", "llama-server", "llamacpp", "sglang", "tgi"}  # fmt: skip
+_PRIVATE = re.compile(r"^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)|\.(local|internal|lan)$")
+
+
+def _local_base_urls(path: Path, lines: list[str], code: list[str]) -> list[Fact]:
+    """`base_url="http://localhost:11434/v1"`: an OpenAI-compatible client talking to
+    a server you run — Ollama, vLLM, LM Studio — not to OpenAI."""
+    facts = []
+    for n, view in enumerate(code, start=1):
+        lowered = view.lower()
+        if "base" not in lowered:  # every spelling the pattern accepts contains it
+            continue
+        for m in _BASE_URL.finditer(view):
+            host = m.group(1).lower()
+            if host in _LOCAL_HOSTS or _PRIVATE.search(host):
+                facts.append(Fact("local_base_url", host, path, n, _snippet(lines[n - 1])))
     return facts
 
 
@@ -556,27 +852,26 @@ _REQ_NAME = re.compile(r"^\s*([A-Za-z0-9][A-Za-z0-9._-]*)")
 _EGG = re.compile(r"#egg=([A-Za-z0-9._-]+)")
 
 
-def _line_of(lines: list[str], name: str) -> int:
-    """First line naming `name` as a whole token, for citation."""
-    pattern = re.compile(
-        r"(?<![A-Za-z0-9_.-])" + re.escape(name) + r"(?![A-Za-z0-9_-])", re.IGNORECASE
-    )
-    for i, ln in enumerate(lines, start=1):
-        if pattern.search(ln) and not _is_comment(ln):
-            return i
+def _manifest_fact(kind: str, value: str, path: Path, lines: list[str], n: int) -> Fact:
+    n = n if 0 < n <= len(lines) else 1
+    return Fact(kind, value, path, n, _snippet(lines[n - 1]) if lines else "", manifest=True)
+
+
+def _line_of(lines: list[str], *literals: str, token: str | None = None) -> int:
+    """First line containing any literal verbatim; failing that, `token` as a whole
+    word on a non-comment line; failing that, 1."""
+    for literal in literals:
+        for i, ln in enumerate(lines, start=1):
+            if literal in ln:
+                return i
+    if token:
+        pattern = re.compile(
+            r"(?<![A-Za-z0-9_.-])" + re.escape(token) + r"(?![A-Za-z0-9_-])", re.IGNORECASE
+        )
+        for i, ln in enumerate(lines, start=1):
+            if pattern.search(ln) and not ln.lstrip().startswith("#"):
+                return i
     return 1
-
-
-def _cite(kind: str, value: str, path: Path, lines: list[str], name: str | None = None) -> Fact:
-    n = _line_of(lines, name or value)
-    return Fact(kind, value, path, n, lines[n - 1].strip()[:200] if lines else "")
-
-
-def _cite_literal(kind: str, value: str, path: Path, lines: list[str], literal: str) -> Fact:
-    """Cite the first line containing `literal` verbatim — for JSON keys, where the
-    quotes make the match exact and `"openai"` cannot hit `"@ai-sdk/openai"`."""
-    n = next((i for i, ln in enumerate(lines, 1) if literal in ln), 1)
-    return Fact(kind, value, path, n, lines[n - 1].strip()[:200] if lines else "")
 
 
 def _requirement_spec(spec: str) -> str | None:
@@ -594,22 +889,31 @@ def _requirement_spec(spec: str) -> str | None:
 
 def _requirements_txt(path: Path, text: str, lines: list[str]) -> list[Fact]:
     facts = []
-    for n, raw in enumerate(lines, start=1):
+    for n, raw in _logical_lines(lines):
         name = _requirement_spec(raw.split(" #", 1)[0])
         if name:
-            facts.append(Fact("requirement", name, path, n, raw.strip()))
+            facts.append(_manifest_fact("requirement", name, path, lines, n))
     return facts
 
 
 def _specs_to_facts(specs: Iterable[str], path: Path, lines: list[str]) -> list[Fact]:
+    """Cite each spec where it is written: `"openai>=1"` as a quoted string, or
+    `openai = "*"` as a key — not the first line that happens to mention openai."""
     facts = []
     for spec in specs:
         if not isinstance(spec, str):
             continue
         name = _requirement_spec(spec)
-        if name:
-            raw = _REQ_NAME.match(spec.strip())
-            facts.append(_cite("requirement", name, path, lines, raw.group(1) if raw else name))
+        if not name:
+            continue
+        raw = (_REQ_NAME.match(spec.strip()) or re.match("(.*)", spec)).group(1)
+        n = _line_of(
+            lines,
+            f'"{spec}"', f"'{spec}'", f'"{raw}"', f"'{raw}'",
+            f"{raw} =", f"{raw}=", f'"{raw}" =',
+            token=raw,
+        )  # fmt: skip
+        facts.append(_manifest_fact("requirement", name, path, lines, n))
     return facts
 
 
@@ -628,6 +932,9 @@ def _pyproject(path: Path, text: str, lines: list[str]) -> list[Fact]:
     specs += list((tool.get("uv") or {}).get("dev-dependencies") or [])
     for group in ((tool.get("pdm") or {}).get("dev-dependencies") or {}).values():
         specs += group or []
+    for env in ((tool.get("hatch") or {}).get("envs") or {}).values():
+        specs += list((env or {}).get("dependencies") or [])
+        specs += list((env or {}).get("extra-dependencies") or [])
     poetry = tool.get("poetry") or {}
     names = list(poetry.get("dependencies") or {}) + list(poetry.get("dev-dependencies") or {})
     for group in (poetry.get("group") or {}).values():
@@ -641,18 +948,18 @@ def _setup_py(path: Path, text: str, lines: list[str]) -> list[Fact]:
         tree = ast.parse(text)
     except (SyntaxError, ValueError):
         return []
-    specs: list[str] = []
+    facts = []
     wanted = {"install_requires", "extras_require", "setup_requires", "tests_require"}
     for node in ast.walk(tree):
         if isinstance(node, ast.Call):
             for kw in node.keywords:
                 if kw.arg in wanted:
-                    specs += [
-                        c.value
-                        for c in ast.walk(kw.value)
-                        if isinstance(c, ast.Constant) and isinstance(c.value, str)
-                    ]
-    return _specs_to_facts(specs, path, lines)
+                    for c in ast.walk(kw.value):
+                        if isinstance(c, ast.Constant) and isinstance(c.value, str):
+                            name = _requirement_spec(c.value)
+                            if name:
+                                facts.append(_manifest_fact("requirement", name, path, lines, c.lineno))
+    return facts
 
 
 def _setup_cfg(path: Path, text: str, lines: list[str]) -> list[Fact]:
@@ -662,9 +969,9 @@ def _setup_cfg(path: Path, text: str, lines: list[str]) -> list[Fact]:
     except configparser.Error:
         return []
     specs: list[str] = []
-    for section, key in (("options", "install_requires"), ("options", "setup_requires")):
-        if parser.has_option(section, key):
-            specs += parser.get(section, key).splitlines()
+    for key in ("install_requires", "setup_requires"):
+        if parser.has_option("options", key):
+            specs += parser.get("options", key).splitlines()
     if parser.has_section("options.extras_require"):
         for _, value in parser.items("options.extras_require"):
             specs += value.splitlines()
@@ -703,24 +1010,78 @@ def _json(text: str):
         return None
 
 
+def _json_keys(kind: str, names: Iterable[str], path: Path, lines: list[str], lower=False) -> list[Fact]:
+    """Cite `"name":` — the key — so `"keywords": ["openai"]` is never the citation."""
+    return [
+        _manifest_fact(
+            kind, n.lower() if lower else n, path, lines, _line_of(lines, f'"{n}":', f'"{n}" :', f'"{n}"')
+        )
+        for n in names
+    ]
+
+
 def _package_json(path: Path, text: str, lines: list[str]) -> list[Fact]:
     data = _json(text)
     if not isinstance(data, dict):
         return []
-    facts = []
+    names = []
     for section in ("dependencies", "devDependencies", "peerDependencies", "optionalDependencies"):
         block = data.get(section)
-        for name in block if isinstance(block, dict) else ():
-            facts.append(_cite_literal("npm", name, path, lines, f'"{name}"'))
-    return facts
+        names += list(block) if isinstance(block, dict) else []
+    return _json_keys("npm", names, path, lines)
+
+
+def _pnpm_workspace(path: Path, text: str, lines: list[str]) -> list[Fact]:
+    """pnpm catalogs: versions declared once for the workspace, referenced from
+    package.json as `"openai": "catalog:"`."""
+    try:
+        data = yaml.safe_load(text)
+    except yaml.YAMLError:
+        return []
+    if not isinstance(data, dict):
+        return []
+    names = list(data.get("catalog") or {})
+    for catalog in (data.get("catalogs") or {}).values():
+        names += list(catalog or {})
+    return [
+        _manifest_fact("npm", n, path, lines, _line_of(lines, f'"{n}":', f"'{n}':", f"{n}:"))
+        for n in names
+        if isinstance(n, str)
+    ]
 
 
 def _composer_json(path: Path, text: str, lines: list[str]) -> list[Fact]:
     data = _json(text)
     if not isinstance(data, dict):
         return []
-    names = [n for s in ("require", "require-dev") for n in (data.get(s) or {})]
-    return [_cite_literal("composer", n.lower(), path, lines, f'"{n}"') for n in names if "/" in n]
+    names = [n for s in ("require", "require-dev") for n in (data.get(s) or {}) if "/" in n]
+    return _json_keys("composer", names, path, lines, lower=True)
+
+
+def _pubspec(path: Path, text: str, lines: list[str]) -> list[Fact]:
+    try:
+        data = yaml.safe_load(text)
+    except yaml.YAMLError:
+        return []
+    if not isinstance(data, dict):
+        return []
+    names = [n for s in ("dependencies", "dev_dependencies") for n in (data.get(s) or {})]
+    return [
+        _manifest_fact("pub", n.lower(), path, lines, _line_of(lines, f"{n}:", token=n))
+        for n in names
+        if isinstance(n, str)
+    ]
+
+
+_SWIFT_PACKAGE = re.compile(r"""\.package\s*\(\s*(?:name\s*:\s*"[^"]*"\s*,\s*)?url\s*:\s*"([^"]+)\"""")
+
+
+def _package_swift(path: Path, text: str, lines: list[str]) -> list[Fact]:
+    facts = []
+    for m in _SWIFT_PACKAGE.finditer(text):
+        repo = re.sub(r"^https?://|\.git$", "", m.group(1).lower())
+        facts.append(_manifest_fact("swift", repo, path, lines, text.count("\n", 0, m.start()) + 1))
+    return facts
 
 
 _GO_REQUIRE = re.compile(r"^\s*(?:require\s+)?([a-z0-9.-]+\.[a-z]{2,}/[^\s]+)\s+v[0-9]")
@@ -731,12 +1092,8 @@ def _go_mod(path: Path, text: str, lines: list[str]) -> list[Fact]:
     for n, raw in enumerate(lines, start=1):
         m = _GO_REQUIRE.match(raw)
         # `// indirect` marks a dependency of a dependency, which is not yours.
-        if (
-            m
-            and "// indirect" not in raw
-            and not raw.lstrip().startswith(("module", "replace", "//"))
-        ):
-            facts.append(Fact("go", m.group(1), path, n, raw.strip()))
+        if m and "// indirect" not in raw and not raw.lstrip().startswith(("module", "replace", "//")):
+            facts.append(_manifest_fact("go", m.group(1), path, lines, n))
     return facts
 
 
@@ -753,7 +1110,8 @@ def _cargo_toml(path: Path, text: str, lines: list[str]) -> list[Fact]:
     for table in tables:
         for key, spec in (table or {}).items():
             name = spec.get("package", key) if isinstance(spec, dict) else key
-            facts.append(_cite("cargo", name.lower(), path, lines, key))
+            n = _line_of(lines, f"{key} =", f"{key}=", token=key)
+            facts.append(_manifest_fact("cargo", name.lower(), path, lines, n))
     return facts
 
 
@@ -764,12 +1122,13 @@ _MAVEN_DEP = re.compile(
 
 
 def _pom_xml(path: Path, text: str, lines: list[str]) -> list[Fact]:
-    facts = []
-    for m in _MAVEN_DEP.finditer(text):
-        n = text.count("\n", 0, m.start(2)) + 1
-        coordinate = f"{m.group(1)}:{m.group(2)}".lower()
-        facts.append(Fact("maven", coordinate, path, n, lines[n - 1].strip()))
-    return facts
+    view = _xml_view(text)
+    return [
+        _manifest_fact(
+            "maven", f"{m.group(1)}:{m.group(2)}".lower(), path, lines, view.count("\n", 0, m.start(2)) + 1
+        )
+        for m in _MAVEN_DEP.finditer(view)
+    ]
 
 
 _GRADLE_COORD = re.compile(r"""['"]([A-Za-z0-9_.-]+):([A-Za-z0-9_.-]+)(?::[^'"\s]*)?['"]""")
@@ -779,15 +1138,12 @@ _GRADLE_MAP = re.compile(
 
 
 def _gradle(path: Path, text: str, lines: list[str]) -> list[Fact]:
+    view = _split_lines(_c_like(text) if path.suffix.lower() != ".toml" else _hash_like(text))
     facts = []
-    for n, raw in enumerate(lines, start=1):
-        if _is_comment(raw):
-            continue
+    for n, raw in enumerate(view, start=1):
         for m in [*_GRADLE_COORD.finditer(raw), *_GRADLE_MAP.finditer(raw)]:
-            if "." not in m.group(1):
-                continue  # `id "x:y"` plugin forms and other colon strings
-            coordinate = f"{m.group(1)}:{m.group(2)}".lower()
-            facts.append(Fact("maven", coordinate, path, n, raw.strip()))
+            if "." in m.group(1):  # skip `id "x:y"` plugin forms and other colon strings
+                facts.append(_manifest_fact("maven", f"{m.group(1)}:{m.group(2)}".lower(), path, lines, n))
     return facts
 
 
@@ -798,11 +1154,11 @@ _NUGET = re.compile(
 
 
 def _nuget(path: Path, text: str, lines: list[str]) -> list[Fact]:
-    facts = []
-    for m in _NUGET.finditer(text):
-        n = text.count("\n", 0, m.start()) + 1
-        facts.append(Fact("nuget", m.group(1).lower(), path, n, lines[n - 1].strip()))
-    return facts
+    view = _xml_view(text)
+    return [
+        _manifest_fact("nuget", m.group(1).lower(), path, lines, view.count("\n", 0, m.start()) + 1)
+        for m in _NUGET.finditer(view)
+    ]
 
 
 _GEM = re.compile(
@@ -815,19 +1171,19 @@ def _gems(path: Path, text: str, lines: list[str]) -> list[Fact]:
     for n, raw in enumerate(lines, start=1):
         m = _GEM.match(raw)
         if m:
-            facts.append(Fact("gem", m.group(1).lower(), path, n, raw.strip()))
+            facts.append(_manifest_fact("gem", m.group(1).lower(), path, lines, n))
     return facts
 
 
 _TF_BLOCK = re.compile(r'^\s*(?:resource|data)\s+"([a-z0-9_]+)"')
 
 
-def _terraform(path: Path, text: str, lines: list[str]) -> list[Fact]:
+def _terraform(path: Path, lines: list[str], code: list[str]) -> list[Fact]:
     facts = []
-    for n, raw in enumerate(lines, start=1):
-        m = _TF_BLOCK.match(raw)
+    for n, view in enumerate(code, start=1):
+        m = _TF_BLOCK.match(view)
         if m:
-            facts.append(Fact("terraform_resource", m.group(1), path, n, raw.strip()))
+            facts.append(Fact("terraform_resource", m.group(1), path, n, _snippet(lines[n - 1])))
     return facts
 
 
@@ -837,7 +1193,10 @@ _MANIFESTS = {
     "setup.cfg": _setup_cfg,
     "pipfile": _pipfile,
     "package.json": _package_json,
+    "pnpm-workspace.yaml": _pnpm_workspace,
     "composer.json": _composer_json,
+    "pubspec.yaml": _pubspec,
+    "package.swift": _package_swift,
     "go.mod": _go_mod,
     "cargo.toml": _cargo_toml,
     "pom.xml": _pom_xml,
@@ -848,14 +1207,14 @@ _MANIFESTS = {
     "directory.packages.props": _nuget,
     "gemfile": _gems,
 }
+_REQUIREMENTS_NAME = re.compile(r"(requirements|constraints|requires)[\w.-]*\.(txt|in)$")
 
 
 def _manifest_parser(path: Path):
     name = path.name.lower()
     suffix = path.suffix.lower()
-    if suffix in (".txt", ".in") and (
-        name.startswith(("requirements", "constraints", "requires"))
-        or path.parent.name.lower() == "requirements"
+    if _REQUIREMENTS_NAME.search(name) or (
+        suffix in (".txt", ".in") and path.parent.name.lower() == "requirements"
     ):
         return _requirements_txt
     if name in _MANIFESTS:
@@ -882,14 +1241,25 @@ def _is_text_source(path: Path) -> bool:
     return (
         suffix in CODE_SUFFIXES
         or suffix in CONFIG_SUFFIXES
-        or name in CONFIG_NAMES
-        or name.startswith((".env", "dockerfile", "docker-compose", "compose."))
-        or name.endswith(".dockerfile")
+        or name.startswith(CONFIG_PREFIXES)
+        or name.endswith((".dockerfile", ".containerfile"))
     )
 
 
+def _takes_install_commands(path: Path) -> bool:
+    name = path.name.lower()
+    return path.suffix.lower() in INSTALL_SUFFIXES or name.startswith(
+        ("dockerfile", "containerfile", "makefile", "procfile", "jenkinsfile")
+    ) or name.endswith((".dockerfile", ".containerfile"))
+
+
 def _notebook(path: Path, text: str, needles: Needles) -> list[Fact]:
-    """Code cells, cited at the line of the .ipynb file where the source sits."""
+    """Code cells, cited at the line of the .ipynb file where each source line sits.
+
+    Outputs and markdown are never read. Each cell's `"source"` key is located
+    before its lines are, so text repeated in an earlier markdown cell or in this
+    cell's outputs is never taken for the code.
+    """
     data = _json(text)
     if not isinstance(data, dict):
         return []
@@ -897,44 +1267,38 @@ def _notebook(path: Path, text: str, needles: Needles) -> list[Fact]:
     facts: list[Fact] = []
     cursor = 0
     for cell in data.get("cells") or []:
-        if cell.get("cell_type") != "code":
-            continue
         source = cell.get("source") or []
         cell_lines = source if isinstance(source, list) else source.splitlines(True)
         cell_lines = [ln.rstrip("\n") for ln in cell_lines]
-        # Map each cell line to its line in the file (pretty-printed notebooks keep
-        # one source line per JSON line).
+        anchor = next(
+            (i for i in range(cursor, len(file_lines)) if '"source"' in file_lines[i]), cursor
+        )
         mapped: list[int] = []
+        position = anchor
         for ln in cell_lines:
             probe = json.dumps(ln, ensure_ascii=False)[1:-1]
             found = next(
-                (i for i in range(cursor, len(file_lines)) if probe and probe in file_lines[i]),
+                (i for i in range(position, len(file_lines)) if probe and probe in file_lines[i]),
                 None,
             )
             if found is not None:
-                cursor = found
-            mapped.append((found if found is not None else cursor) + 1)
-
-        def relocate(fs: list[Fact], mapped=mapped, cell_lines=cell_lines) -> list[Fact]:
-            out = []
-            for f in fs:
-                idx = f.line - 1
-                inside = 0 <= idx < len(cell_lines)
-                out.append(
-                    Fact(
-                        f.kind,
-                        f.value,
-                        path,
-                        mapped[idx] if inside else 1,
-                        cell_lines[idx].strip()[:200] if inside else f.evidence,
-                    )
-                )
-            return out
+                position = found
+            mapped.append(position + 1)
+        cursor = position + 1
+        if cell.get("cell_type") != "code":
+            continue
 
         code = "\n".join("" if ln.lstrip().startswith(("!", "%")) else ln for ln in cell_lines)
-        facts += relocate(_python_imports(path, code, cell_lines))
-        facts += relocate(_install_commands(path, cell_lines, set()))
-        facts += relocate(needles.search(path, cell_lines, _python_prose(code)))
+        view = _split_lines(_python_view(code))
+        found_facts = (
+            _python_imports(path, code, cell_lines)
+            + _install_commands(path, cell_lines, cell_lines)
+            + needles.search(path, cell_lines, view)
+        )
+        for f in found_facts:
+            idx = f.line - 1
+            inside = 0 <= idx < len(cell_lines)
+            facts.append(dataclasses.replace(f, line=mapped[idx] if inside else 1))
     return facts
 
 
@@ -955,33 +1319,72 @@ def facts_for_file(
         facts += parser(path, text, lines)
     if not _is_text_source(path):
         return facts
-    if suffix in CONFIG_SUFFIXES and len(text) > MAX_CONFIG_BYTES:
+    if suffix == ".json" and len(text) > MAX_JSON_BYTES:
         return facts
 
-    skip: set[int] = set()
+    view_text = code_view(path, text)
+    code = _split_lines(view_text)
     if suffix in (".py", ".pyi"):
-        skip = _python_prose(text)
         facts += _python_imports(path, text, lines)
     elif suffix in JS_SUFFIXES:
-        skip = _js_block_comments(text)
-        facts += _js_imports(path, text, lines, skip)
+        facts += _js_imports(path, view_text, lines)
     elif suffix in (".tf", ".hcl"):
-        facts += _terraform(path, text, lines)
-    if path.name.lower() != "package.json":
-        facts += _install_commands(path, lines, skip)
-    facts += needles.search(path, lines, skip, hit_lines)
+        facts += _terraform(path, lines, code)
+    if _takes_install_commands(path):
+        facts += _install_commands(path, lines, code)
+    facts += _local_base_urls(path, lines, code)
+    facts += needles.search(path, lines, code, hit_lines)
     return facts
 
 
-def collect_facts(root: Path, catalog: Catalog, exclude: Iterable[str] = ()) -> list[Fact]:
+def _local_modules(root: Path, files: list[Path]) -> set[str]:
+    """Top-level Python modules the project defines itself, at the root or under
+    src/: `from perplexity import score` then means your perplexity.py."""
+    names = set()
+    for path in files:
+        parts = path.relative_to(root).parts
+        if parts[:1] == ("src",):
+            parts = parts[1:]
+        if not parts:
+            continue
+        if len(parts) == 1 and path.suffix == ".py":
+            names.add(path.stem)
+        elif len(parts) > 1 and path.suffix == ".py":
+            names.add(parts[0])
+    return names
+
+
+def _is_local_import(fact: Fact, local: set[str]) -> bool:
+    top = fact.value.split(".", 1)[0]
+    if top in local:
+        return True
+    sibling = fact.file.parent  # a script importing a module next to it
+    return (sibling / f"{top}.py").is_file() or (sibling / top / "__init__.py").is_file()
+
+
+def collect_facts(
+    root: Path,
+    catalog: Catalog,
+    exclude: Iterable[str] = (),
+    skipped: list[Path] | None = None,
+    skip_tests: bool = False,
+) -> list[Fact]:
     """Read every relevant file once and extract every fact the catalog could care about."""
     needles = Needles(catalog)
-    files = iter_files(root, exclude)
+    files = iter_files(root, exclude, skipped)
     found = ripgrep_hits(root, needles)
+    local = _local_modules(root, files)
     facts: list[Fact] = []
     for path in files:
-        hit_lines = None if found is None else found.get(path.relative_to(root).as_posix(), ())
-        facts += facts_for_file(path, needles, hit_lines)
+        rel = path.relative_to(root).as_posix()
+        in_test = is_test_path(rel)
+        if in_test and skip_tests:
+            continue
+        hit_lines = None if found is None else found.get(rel, ())
+        for fact in facts_for_file(path, needles, hit_lines):
+            if fact.kind == "python_import" and _is_local_import(fact, local):
+                continue
+            facts.append(dataclasses.replace(fact, in_test=in_test) if in_test else fact)
     return facts
 
 
@@ -991,9 +1394,7 @@ def ripgrep_hits(root: Path, needles: Needles) -> dict[str, list[int]] | None:
     Optional and only an accelerator: ripgrep finds candidate lines (a superset —
     it matches case-insensitively), and the same Python checks as without it decide
     what counts. Without `rg` on PATH, or with LOCKIN_NO_RIPGREP set, each file is
-    searched in Python instead, with identical results. Searching every needle in
-    one SIMD pass is what makes a 5,000-file monorepo take seconds rather than
-    tens of seconds.
+    searched in Python instead, with identical results.
     """
     rg = shutil.which("rg")
     if not rg or os.environ.get("LOCKIN_NO_RIPGREP"):
@@ -1073,14 +1474,20 @@ def match(facts: list[Fact], catalog: Catalog) -> list[Finding]:
             for service in index.get((fact.kind, key), ()):
                 hits_by_service.setdefault(service.id, {})[_key(fact)] = fact
 
+    local = [f for f in facts if f.kind == "local_base_url"]
     findings: list[Finding] = []
     for service in catalog.services:
         hits = hits_by_service.get(service.id)
-        if hits:
-            ordered = sorted(hits.values(), key=lambda f: (str(f.file), f.line, f.kind, f.value))
-            findings.append(Finding(service=service, facts=tuple(ordered)))
+        if not hits:
+            continue
+        kept = tuple(sorted(hits.values(), key=lambda f: (str(f.file), f.line, f.kind, f.value)))
+        if service.local_compatible:
+            kept = _without_local_clients(kept, local)
+        if kept:
+            findings.append(Finding(service=service, facts=kept))
 
     findings = _resolve_overlaps(findings)
+    findings = [f for f in findings if not _only_weak(f)]
     findings.sort(key=lambda f: (f.service.category, f.service.name))
     return findings
 
@@ -1089,36 +1496,87 @@ def _key(fact: Fact) -> tuple[str, int, str, str]:
     return (str(fact.file), fact.line, fact.kind, fact.value)
 
 
-def _resolve_overlaps(findings: list[Finding]) -> list[Finding]:
-    """A specific service claims the evidence it shares with a general one it excludes.
+def _only_weak(finding: Finding) -> bool:
+    """A signature marked weak (`import fireworks` is also the FireWorks workflow
+    library) cannot establish a dependency on its own."""
+    weak = finding.service.weak
+    if not weak:
+        return False
 
-    `AzureOpenAI` lives inside the `openai` package, so a plain `import openai` is
-    evidence for both. The specific service takes the shared lines only when it has
-    evidence of its own; without that, the general service is the simpler
-    explanation, and naming a vendor that is not there is the one failure this tool
+    def weak_signature(fact: Fact) -> str | None:
+        # Compare the signature that matched, not the observed value:
+        # `from fireworks import Firework` is observed as `fireworks.Firework`.
+        keys = set(_lookup_keys(fact.kind, fact.value))
+        return next((w for w in weak if _canonical(fact.kind, w) in keys), None)
+
+    matched = [weak_signature(f) for f in finding.facts]
+    # Two different weak signatures corroborate each other: `$vectorSearch` next to
+    # a `mongodb.net` host is Atlas.
+    return None not in matched and len(set(matched)) < 2
+
+
+def _only_declared(facts: Iterable[Fact]) -> bool:
+    return all(f.manifest for f in facts)
+
+
+def _without_local_clients(facts: tuple[Fact, ...], local: list[Fact]) -> tuple[Fact, ...]:
+    """Drop evidence of an OpenAI-compatible SDK aimed at a server you run.
+
+    A local base URL in a code file covers that file. One in configuration (.env,
+    compose, YAML) covers the project's client code, but not model ids or the
+    vendor's API host, which still name the vendor. If only the package declaration
+    is left, the package is explained by the local use and nothing remains.
+    """
+    if not local:
+        return facts
+    files = {f.file for f in local if f.file.suffix.lower() in CODE_SUFFIXES}
+    project_wide = any(f.file.suffix.lower() not in CODE_SUFFIXES for f in local)
+    kept = tuple(
+        f
+        for f in facts
+        if f.file not in files
+        and not (project_wide and not f.manifest and f.kind not in ("model", "endpoint"))
+    )
+    if len(kept) < len(facts) and _only_declared(kept):
+        return ()
+    return kept
+
+
+def _resolve_overlaps(findings: list[Finding]) -> list[Finding]:
+    """A specific service claims the general service's evidence where it is used.
+
+    Azure OpenAI is called through the `openai` package; Claude on Bedrock through
+    `anthropic`; Vertex through `google-genai`. In every file where the specific
+    service has evidence of its own, the general service's evidence there (the
+    import, the model ids) belongs to the specific one, except the general
+    vendor's own API host. If all the general service has left is the package
+    declaration, the specific service explains that too, and the general one is
+    not reported: naming a vendor that is not there is the one failure this tool
     cannot afford.
     """
     by_id = {f.service.id: f for f in findings}
-    dropped: set[str] = set()
     claimed: dict[str, set[tuple]] = {}
     for finding in findings:
-        generals = [by_id[g] for g in finding.service.excludes if g in by_id]
-        if not generals:
-            continue
-        general_keys = {_key(f) for g in generals for f in g.facts}
-        mine = {_key(f) for f in finding.facts}
-        if mine <= general_keys:
-            dropped.add(finding.service.id)
-            continue
-        for general in generals:
-            claimed.setdefault(general.service.id, set()).update(mine)
+        for general_id in finding.service.excludes:
+            general = by_id.get(general_id)
+            if general is None:
+                continue
+            general_keys = {_key(f) for f in general.facts}
+            own = [f for f in finding.facts if _key(f) not in general_keys and not f.manifest]
+            if not own:
+                continue
+            files = {f.file for f in own}
+            claimed.setdefault(general_id, set()).update(
+                _key(f) for f in general.facts if f.file in files and f.kind != "endpoint"
+            )
 
     surviving: list[Finding] = []
     for finding in findings:
-        if finding.service.id in dropped:
+        taken = claimed.get(finding.service.id)
+        if not taken:
+            surviving.append(finding)
             continue
-        taken = claimed.get(finding.service.id, set())
-        own = tuple(f for f in finding.facts if _key(f) not in taken)
-        if own:
-            surviving.append(Finding(service=finding.service, facts=own))
+        rest = tuple(f for f in finding.facts if _key(f) not in taken)
+        if rest and not _only_declared(rest):
+            surviving.append(Finding(service=finding.service, facts=rest))
     return surviving

@@ -62,17 +62,21 @@ def _pools_in_order(findings: list[Finding], catalog: Catalog) -> dict[str, list
     return pools
 
 
-def to_json(findings: list[Finding], root: Path, catalog: Catalog) -> str:
+def to_json(
+    findings: list[Finding], root: Path, catalog: Catalog, skipped: list[Path] = ()
+) -> str:
     payload = {
         "scanned": str(root),
         "scanned_at": _now().isoformat(timespec="seconds"),
         "catalog_services": len(catalog),
         "rankings_date": catalog.rankings_date,
+        "not_scanned": [_rel(p, root) for p in skipped],
         "found": [
             {
                 "id": f.service.id,
                 "name": f.service.name,
                 "category": f.service.category,
+                "only_in_tests": f.test_only,
                 "replace_with": list(f.service.replace_with),
                 "evidence": [
                     {
@@ -103,7 +107,21 @@ def to_json(findings: list[Finding], root: Path, catalog: Catalog) -> str:
     return json.dumps(payload, indent=2, ensure_ascii=False)
 
 
-def to_markdown(findings: list[Finding], root: Path, catalog: Catalog, top: int = 3) -> str:
+def _not_scanned(skipped: list[Path], root: Path) -> list[str]:
+    if not skipped:
+        return []
+    shown = ", ".join(f"`{_rel(p, root)}`" for p in skipped[:5])
+    more = f" and {len(skipped) - 5} more" if len(skipped) > 5 else ""
+    return [
+        f"**Not scanned:** {len(skipped)} file(s) over the size limit: {shown}{more}. "
+        "Check them by hand.",
+        "",
+    ]
+
+
+def to_markdown(
+    findings: list[Finding], root: Path, catalog: Catalog, top: int = 3, skipped: list[Path] = ()
+) -> str:
     out: list[str] = [f"# AI dependencies in `{root.name}`", ""]
     ranked = f" · alternatives ranked {catalog.rankings_date}" if catalog.rankings_date else ""
     out += [
@@ -111,6 +129,7 @@ def to_markdown(findings: list[Finding], root: Path, catalog: Catalog, top: int 
         f"{len(catalog)} closed AI services in the catalog{ranked}",
         "",
     ]
+    out += _not_scanned(list(skipped), root)
 
     if not findings:
         out.append(
@@ -128,13 +147,22 @@ def to_markdown(findings: list[Finding], root: Path, catalog: Catalog, top: int 
             if pool.alternatives:
                 best = pool.alternatives[0]
                 picks.append(f"{pool.name}: [{best.name}]({best.url})")
-        out.append(f"| {f.service.name} | {f.service.category} | {'<br>'.join(picks) or '—'} |")
+        name = f"{f.service.name} *(only in tests)*" if f.test_only else f.service.name
+        out.append(f"| {name} | {f.service.category} | {'<br>'.join(picks) or '—'} |")
+    if any(f.test_only for f in findings):
+        out += [
+            "",
+            "*Only in tests:* every piece of evidence is in test, spec or fixture code. "
+            "Often a mock of a real dependency, sometimes leftover. `--skip-tests` leaves "
+            "test code out.",
+        ]
     out += ["", "## Where each one is used", ""]
 
     for f in findings:
         cited = f.cited
         noun = "location" if len(cited) == 1 else "locations"
-        out += [f"### {f.service.name}", "", f"{len(cited)} {noun}:", ""]
+        where = " (only in tests)" if f.test_only else ""
+        out += [f"### {f.service.name}", "", f"{len(cited)} {noun}{where}:", ""]
         for fact in cited[:EVIDENCE_SHOWN]:
             out.append(f"- `{_rel(fact.file, root)}:{fact.line}` — `{fact.evidence[:120]}`")
         if len(cited) > EVIDENCE_SHOWN:
