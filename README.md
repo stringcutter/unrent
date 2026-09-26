@@ -6,7 +6,7 @@ Find the rented parts of your AI stack. Swap them for open source.
 - Names the open source replacements, ranked.
 - Ranks the open source you already run against its field.
 
-Offline. No account. No upload. No telemetry.
+The CLI runs offline. No account. No upload. No telemetry.
 
 ```
 $ unrent scan my-app/
@@ -52,7 +52,7 @@ Or once, without installing:
 uvx --from git+https://github.com/niklasmellgren/unrent unrent scan .
 ```
 
-Python 3.11+. One dependency: PyYAML. With [ripgrep](https://github.com/BurntSushi/ripgrep)
+Python 3.11+. One dependency: PyYAML (the MCP server adds `mcp`). With [ripgrep](https://github.com/BurntSushi/ripgrep)
 on PATH it runs about 3× faster on large repos (18.4 s → 6.5 s on 5,500 files). Same
 results either way.
 
@@ -69,6 +69,39 @@ unrent catalog                         # what it knows
 
 On Windows PowerShell, write reports with `-o`, not `>`. The redirect re-encodes the
 file.
+
+## MCP
+
+unrent as tools for Claude Code, Cursor, Copilot, or any agent that speaks MCP. The agent
+gets the facts; you decide what to swap.
+
+```bash
+claude mcp add unrent -- uvx --from "unrent[mcp] @ git+https://github.com/niklasmellgren/unrent" unrent mcp
+```
+
+Other clients:
+
+```json
+{
+  "mcpServers": {
+    "unrent": {
+      "command": "uvx",
+      "args": ["--from", "unrent[mcp] @ git+https://github.com/niklasmellgren/unrent", "unrent", "mcp"]
+    }
+  }
+}
+```
+
+| Tool | |
+|---|---|
+| `scan` | Closed services, open source in use, alternatives. The report as JSON. |
+| `alternatives` | Best open source for a category or a closed service: `"pinecone"`, `"speech-to-text"`. |
+| `standing` | Where one project ranks, overall and among its kind: `"qdrant/qdrant"`. |
+| `catalog` | What unrent recognises, and the signatures it looks for. |
+
+Rankings come from this repo's `main`, refreshed weekly, not from the install. Cached
+for six hours. When the fetch fails it uses the shipped snapshot and says so.
+`UNRENT_OFFLINE=1` never fetches. Only rankings come in. Your code never goes out.
 
 ## What it detects
 

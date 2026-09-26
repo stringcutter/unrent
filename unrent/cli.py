@@ -48,7 +48,7 @@ def build_parser() -> argparse.ArgumentParser:
         "that replaces them, and rank the open source AI it already runs.",
     )
     p.add_argument("--version", action="version", version=f"%(prog)s {_version()}")
-    sub = p.add_subparsers(dest="command", metavar="{scan,catalog}")
+    sub = p.add_subparsers(dest="command", metavar="{scan,catalog,mcp}")
 
     scan = sub.add_parser("scan", help="scan a directory")
     scan.add_argument("path", nargs="?", default=".", help="directory to scan (default: .)")
@@ -85,6 +85,15 @@ def build_parser() -> argparse.ArgumentParser:
     cat = sub.add_parser("catalog", help="list what the catalog covers")
     cat.add_argument("--catalog", type=Path, default=DEFAULT_CATALOG, help=argparse.SUPPRESS)
     cat.add_argument("--validate", action="store_true", help="validate and exit")
+
+    sub.add_parser(
+        "mcp",
+        help="run as an MCP server over stdio, for coding agents (needs the mcp extra)",
+        description="Serve scan, alternatives, standing and catalog as MCP tools over "
+        "stdio. Rankings are fetched from the unrent repository (cached for six hours; "
+        "UNRENT_OFFLINE=1 keeps the shipped ones). The scanned code never leaves the "
+        "machine.",
+    )
     return p
 
 
@@ -151,6 +160,21 @@ def cmd_catalog(args) -> int:
     return 0
 
 
+MCP_INSTALL = "uv tool install 'unrent[mcp] @ git+https://github.com/niklasmellgren/unrent'"
+
+
+def cmd_mcp(args) -> int:
+    try:
+        from .server import run
+    except ImportError as exc:
+        if not (exc.name or "").startswith("mcp"):
+            raise
+        print(f"unrent: the MCP server needs the mcp extra: {MCP_INSTALL}", file=sys.stderr)
+        return 2
+    run()
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     # Windows consoles default to a legacy code page; the report is UTF-8.
     for stream in (sys.stdout, sys.stderr):
@@ -164,6 +188,8 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.command == "scan":
             return cmd_scan(args)
+        if args.command == "mcp":
+            return cmd_mcp(args)
         return cmd_catalog(args)
     except CatalogError as exc:
         print(f"unrent: catalog error: {exc}", file=sys.stderr)

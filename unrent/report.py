@@ -154,9 +154,12 @@ def same_kind(a: Alternative, kind: tuple[str, ...]) -> bool:
 
 
 def standings(f: Finding, catalog: Catalog) -> list[Standing]:
-    repo, kind = f.service.repo, f.service.kind
+    return standings_of(f.service.repo, f.service.kind, catalog.alternatives_for(f.service))
+
+
+def standings_of(repo: str, kind: tuple[str, ...], pools: list[Pool]) -> list[Standing]:
     out = []
-    for pool in catalog.alternatives_for(f.service):
+    for pool in pools:
         alts = list(pool.alternatives)
         position = next((i for i, a in enumerate(alts) if a.name == repo), None)
         peers = [a for a in alts if same_kind(a, kind)]
@@ -177,24 +180,30 @@ def standings(f: Finding, catalog: Catalog) -> list[Standing]:
     return out
 
 
+def alternative_json(a: Alternative) -> dict:
+    return {k: list(v) if isinstance(v, tuple) else v for k, v in vars(a).items() if v is not None}
+
+
+def standing_json(s: Standing, ahead: int | None = None) -> dict:
+    """`ahead` caps the list of projects ranked above; None lists them all."""
+    return {
+        "pool": s.pool.id,
+        "ranked_by": s.pool.ranked_by,
+        "rank": s.rank,
+        "of": s.of,
+        "rank_among_same_kind": s.kind_rank,
+        "same_kind": s.kind_of,
+        "ahead": [alternative_json(a) for a in s.ahead[:ahead]],
+    }
+
+
 def _running_json(f: Finding, root: Path, catalog: Catalog) -> dict:
     return {
         "repo": f.service.repo,
         "name": f.service.name,
         "kind": list(f.service.kind),
         "only_in_tests": f.test_only,
-        "standing": [
-            {
-                "pool": s.pool.id,
-                "ranked_by": s.pool.ranked_by,
-                "rank": s.rank,
-                "of": s.of,
-                "rank_among_same_kind": s.kind_rank,
-                "same_kind": s.kind_of,
-                "ahead": [{k: v for k, v in vars(a).items() if v is not None} for a in s.ahead],
-            }
-            for s in standings(f, catalog)
-        ],
+        "standing": [standing_json(s) for s in standings(f, catalog)],
         "evidence": _evidence(f, root),
     }
 
@@ -202,9 +211,11 @@ def _running_json(f: Finding, root: Path, catalog: Catalog) -> dict:
 # ---------------------------------------------------------------- JSON
 
 
-def to_json(findings: list[Finding], root: Path, catalog: Catalog, skipped: list[Path] = ()) -> str:
+def payload(
+    findings: list[Finding], root: Path, catalog: Catalog, skipped: list[Path] = ()
+) -> dict:
     split = _split(findings)
-    payload = {
+    return {
         "scanned": root.name,  # the folder name; a full path would leak the user's home
         "scanned_at": _now().isoformat(timespec="seconds"),
         "catalog_services": len(catalog),
@@ -220,15 +231,15 @@ def to_json(findings: list[Finding], root: Path, catalog: Catalog, skipped: list
                 "name": catalog.pools[pool_id].name,
                 "replaces": services,
                 "ranked_by": catalog.pools[pool_id].ranked_by,
-                "items": [
-                    {k: v for k, v in vars(a).items() if v is not None}
-                    for a in catalog.pools[pool_id].alternatives
-                ],
+                "items": [alternative_json(a) for a in catalog.pools[pool_id].alternatives],
             }
             for pool_id, services in _pools_in_order(split.closed).items()
         },
     }
-    return json.dumps(payload, indent=2, ensure_ascii=False)
+
+
+def to_json(findings: list[Finding], root: Path, catalog: Catalog, skipped: list[Path] = ()) -> str:
+    return json.dumps(payload(findings, root, catalog, skipped), indent=2, ensure_ascii=False)
 
 
 # ---------------------------------------------------------------- markdown

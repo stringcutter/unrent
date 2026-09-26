@@ -27,6 +27,10 @@ classifiers = [
 ]
 dependencies = ["pyyaml>=6.0"]
 
+[project.optional-dependencies]
+# `unrent mcp`: the scanner as an MCP server for coding agents.
+mcp = ["mcp>=2.2,<3"]
+
 [project.urls]
 Homepage = "https://github.com/niklasmellgren/unrent"
 Source = "https://github.com/niklasmellgren/unrent"
@@ -37,7 +41,7 @@ Changelog = "https://github.com/niklasmellgren/unrent/blob/main/CHANGELOG.md"
 unrent = "unrent.cli:main"
 
 [dependency-groups]
-dev = ["pytest>=8.0", "ruff>=0.6"]
+dev = ["pytest>=8.0", "ruff>=0.6", "mcp>=2.2,<3"]
 
 [build-system]
 requires = ["hatchling>=1.27"]  # PEP 639 license-files
