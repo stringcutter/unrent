@@ -25,6 +25,6 @@ jobs:
         with:
           path: eval/.cache
           key: eval-corpus-${{ hashFiles('eval/corpus.yaml') }}
-      # Floors sit just under the measured scores (precision 0.992, recall 0.985 on
+      # Floors sit just under the measured scores (precision 0.993, recall 0.986 on
       # 2026-09-26). Raise them when the scores rise; never lower them to pass.
       - run: uv run --frozen python eval/run_eval.py --min-precision 0.98 --min-recall 0.97

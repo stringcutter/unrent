@@ -63,3 +63,16 @@ jobs:
           add-paths: |
             catalog/rankings.json
             catalog/star-history.json
+
+  # Every package name in the catalog must still exist in its registry: a renamed or
+  # removed package is a silent false negative. Separate from the ranking job, so a
+  # catalog problem does not cost a week of star history.
+  packages:
+    if: github.repository == 'niklasmellgren/unrent'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+      - run: uv run --frozen python scripts/verify_packages.py

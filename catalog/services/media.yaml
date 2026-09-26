@@ -6,10 +6,12 @@
   name: OpenAI speech-to-text
   category: Speech-to-text
   part_of: openai
+  weak: [audio.transcriptions.create, audio.translations.create]
   replace_with: [speech-to-text]
   detect:
     symbol: ["audio.transcriptions.create", "audio.translations.create", "openai.transcription("]
-    model: [whisper-1, gpt-4o-transcribe, gpt-4o-mini-transcribe]
+    model: [whisper-1, gpt-4o-transcribe, gpt-4o-mini-transcribe, gpt-transcribe,
+            gpt-live-transcribe]
 
 - id: deepgram
   name: Deepgram
@@ -17,11 +19,12 @@
   replace_with: [speech-to-text, text-to-speech]
   detect:
     requirement: [deepgram-sdk]
-    npm: ["@deepgram/sdk", "@ai-sdk/deepgram"]
+    npm: ["@deepgram/sdk", "@ai-sdk/deepgram", "@mastra/voice-deepgram"]
     python_import: [deepgram]
     symbol: [DeepgramClient, createDeepgram]
-    endpoint: [api.deepgram.com]
+    endpoint: [api.deepgram.com, agent.deepgram.com]
     env: [DEEPGRAM_API_KEY]
+    nuget: [Deepgram]
 
 - id: assemblyai
   name: AssemblyAI
@@ -31,8 +34,9 @@
     requirement: [assemblyai]
     npm: [assemblyai, "@ai-sdk/assemblyai"]
     python_import: [assemblyai]
-    endpoint: [api.assemblyai.com]
+    endpoint: [api.assemblyai.com, llm-gateway.assemblyai.com]
     env: [ASSEMBLYAI_API_KEY]
+    nuget: [AssemblyAI]
 
 - id: speechmatics
   name: Speechmatics
@@ -42,15 +46,15 @@
     requirement: [speechmatics-python, speechmatics-batch, speechmatics-rt]
     npm: ["@speechmatics/batch-client", "@speechmatics/real-time-client"]
     python_import: [speechmatics]
-    endpoint: [speechmatics.com]
     env: [SPEECHMATICS_API_KEY]
+    endpoint: [asr.api.speechmatics.com, rt.speechmatics.com]
 
 - id: gladia
   name: Gladia
   category: Speech-to-text
   replace_with: [speech-to-text]
   detect:
-    npm: ["@ai-sdk/gladia"]
+    npm: ["@ai-sdk/gladia", "@mastra/voice-gladia"]
     endpoint: [api.gladia.io]
     env: [GLADIA_API_KEY]
 
@@ -60,10 +64,10 @@
   replace_with: [speech-to-text]
   detect:
     requirement: [rev-ai]
-    npm: [revai-node-sdk]
+    npm: [revai-node-sdk, "@ai-sdk/revai"]
     python_import: [rev_ai]
     endpoint: [api.rev.ai]
-    env: [REVAI_ACCESS_TOKEN, REV_AI_ACCESS_TOKEN]
+    env: [REVAI_ACCESS_TOKEN, REV_AI_ACCESS_TOKEN, REVAI_API_KEY]
 
 - id: google-speech
   name: Google Cloud Speech-to-Text / Text-to-Speech
@@ -71,7 +75,7 @@
   replace_with: [speech-to-text, text-to-speech]
   detect:
     requirement: [google-cloud-speech, google-cloud-texttospeech]
-    npm: ["@google-cloud/speech", "@google-cloud/text-to-speech"]
+    npm: ["@google-cloud/speech", "@google-cloud/text-to-speech", "@mastra/voice-google"]
     python_import: [google.cloud.speech, google.cloud.speech_v2, google.cloud.texttospeech]
     endpoint: [speech.googleapis.com, texttospeech.googleapis.com]
 
@@ -81,7 +85,8 @@
   replace_with: [speech-to-text, text-to-speech]
   detect:
     requirement: [amazon-transcribe]
-    npm: ["@aws-sdk/client-transcribe", "@aws-sdk/client-transcribe-streaming", "@aws-sdk/client-polly"]
+    npm: ["@aws-sdk/client-transcribe", "@aws-sdk/client-transcribe-streaming",
+          "@aws-sdk/client-polly"]
     python_import: [amazon_transcribe]
     # The client call, not the bare string: Whisper takes task="transcribe" too.
     symbol: ['client("transcribe"', "client('transcribe'", 'client("polly"', "client('polly'",
@@ -91,13 +96,15 @@
 - id: azure-speech
   name: Azure AI Speech
   category: Speech-to-text
+  weak: [SPEECH_KEY, SPEECH_REGION]
   replace_with: [speech-to-text, text-to-speech]
   detect:
     requirement: [azure-cognitiveservices-speech]
-    npm: [microsoft-cognitiveservices-speech-sdk]
+    npm: [microsoft-cognitiveservices-speech-sdk, "@mastra/voice-azure"]
     python_import: [azure.cognitiveservices.speech]
-    symbol: ["speechsdk.SpeechRecognizer", "speechsdk.SpeechSynthesizer", "SpeechConfig.fromSubscription",
-             "SpeechConfig.FromSubscription", "SpeechConfig(subscription"]
+    symbol: ["speechsdk.SpeechRecognizer", "speechsdk.SpeechSynthesizer",
+             "SpeechConfig.fromSubscription", "SpeechConfig.FromSubscription",
+             "SpeechConfig(subscription"]
     maven: ["com.microsoft.cognitiveservices.speech:client-sdk"]
     nuget: [Microsoft.CognitiveServices.Speech]
     endpoint: [stt.speech.microsoft.com, tts.speech.microsoft.com]
@@ -109,31 +116,40 @@
   name: OpenAI text-to-speech
   category: Text-to-speech
   part_of: openai
+  weak: [audio.speech.create]
   replace_with: [text-to-speech]
   detect:
     symbol: ["audio.speech.create", "openai.speech("]
     model: [tts-1, gpt-4o-mini-tts]
+    npm: ["@mastra/voice-openai"]
 
 - id: elevenlabs
   name: ElevenLabs
   category: Text-to-speech
   replace_with: [text-to-speech, speech-to-text]
   detect:
-    requirement: [elevenlabs]
-    npm: [elevenlabs, "@elevenlabs/elevenlabs-js", "@elevenlabs/react", "@elevenlabs/client", "@ai-sdk/elevenlabs"]
-    python_import: [elevenlabs]
-    symbol: [ElevenLabs, ElevenLabsClient]
-    model: [eleven_multilingual_, eleven_turbo_, eleven_flash_, eleven_v3, eleven_monolingual_, scribe_v1]
-    endpoint: [api.elevenlabs.io]
+    requirement: [elevenlabs, llama-index-tools-elevenlabs]
+    npm: [elevenlabs, "@elevenlabs/elevenlabs-js", "@elevenlabs/react", "@elevenlabs/client",
+          "@ai-sdk/elevenlabs", "@mastra/voice-elevenlabs"]
+    python_import: [elevenlabs, llama_index.tools.elevenlabs]
+    symbol: [ElevenLabsClient, "ElevenLabs(", "new ElevenLabs"]
+    model: [eleven_multilingual_, eleven_turbo_, eleven_flash_, eleven_v3, eleven_monolingual_,
+            scribe_v1, scribe_v2]
+    endpoint: [api.elevenlabs.io, api.us.elevenlabs.io, residency.elevenlabs.io]
     env: [ELEVENLABS_API_KEY, ELEVEN_API_KEY]
+    maven: ["org.springframework.ai:spring-ai-elevenlabs",
+            "org.springframework.ai:spring-ai-starter-model-elevenlabs"]
+    nuget: [ElevenLabs-DotNet]
+    swift: [github.com/elevenlabs/elevenlabs-swift-sdk]
 
 - id: cartesia
   name: Cartesia
   category: Text-to-speech
+  weak: [sonic-2]
   replace_with: [text-to-speech]
   detect:
     requirement: [cartesia]
-    npm: ["@cartesia/cartesia-js"]
+    npm: ["@cartesia/cartesia-js", "@ai-sdk/cartesia"]
     python_import: [cartesia]
     model: [sonic-2, sonic-english, sonic-multilingual, sonic-turbo]
     endpoint: [api.cartesia.ai]
@@ -167,19 +183,21 @@
   name: OpenAI Realtime API
   category: Voice agent
   part_of: openai
+  weak: [RealtimeAgent, beta.realtime]
   replace_with: [voice-agent, speech-to-text, text-to-speech]
   detect:
-    npm: ["@openai/realtime-api-beta"]
-    symbol: ["beta.realtime", RealtimeAgent, RealtimeSession, OpenAIRealtimeWebRTC]
-    model: [gpt-4o-realtime-, gpt-4o-mini-realtime-, gpt-realtime]
+    symbol: ["beta.realtime", RealtimeAgent, OpenAIRealtimeWebRTC]
+    model: [gpt-4o-realtime-, gpt-4o-mini-realtime-, gpt-realtime, gpt-live-]
     endpoint: [api.openai.com/v1/realtime]
+    npm: ["@openai/agents-realtime", "@mastra/voice-openai-realtime"]
+    pub: [openai_realtime_dart]
 
 - id: vapi
   name: Vapi
   category: Voice agent
   replace_with: [voice-agent]
   detect:
-    requirement: [vapi-server-sdk, vapi_server_sdk]
+    requirement: [vapi-server-sdk]
     npm: ["@vapi-ai/web", "@vapi-ai/server-sdk", "@vapi-ai/react-native"]
     python_import: [vapi]
     endpoint: [api.vapi.ai]
@@ -215,7 +233,7 @@
   replace_with: [image-generation]
   detect:
     symbol: ["openai.image(", OpenAITextToImageService, "images.generate", GenerateImageAsync]
-    model: [dall-e-2, dall-e-3, gpt-image-]
+    model: [dall-e-2, dall-e-3, gpt-image-, sora-2, chatgpt-image-]
 
 - id: google-imagen
   name: Google Imagen / Veo
@@ -226,6 +244,7 @@
     symbol: [ImageGenerationModel]
     model: [imagen-, veo-2, veo-3, gemini-2.5-flash-image, gemini-3-pro-image,
             gemini-2.0-flash-exp-image-generation, gemini-2.0-flash-preview-image-generation]
+    maven: ["org.springframework.ai:spring-ai-google-genai-image"]
 
 - id: stability-api
   name: Stability AI API
@@ -236,6 +255,8 @@
     python_import: [stability_sdk]
     endpoint: [api.stability.ai]
     env: [STABILITY_API_KEY, STABILITY_KEY]
+    maven: ["org.springframework.ai:spring-ai-stability-ai",
+            "org.springframework.ai:spring-ai-starter-model-stability-ai"]
 
 - id: fal
   name: fal.ai
@@ -247,8 +268,8 @@
     python_import: [fal_client]
     symbol: [createFal]
     model: ["fal-ai/"]
-    endpoint: [fal.run, queue.fal.run, fal.media]
-    env: [FAL_KEY, FAL_API_KEY]
+    endpoint: [fal.run, queue.fal.run, fal.media, rest.fal.ai]
+    env: [FAL_KEY, FAL_API_KEY, FAL_KEY_ID, FAL_KEY_SECRET]
 
 - id: bfl-api
   name: Black Forest Labs API
@@ -258,6 +279,7 @@
     npm: ["@ai-sdk/black-forest-labs"]
     endpoint: [api.bfl.ai, api.bfl.ml]
     env: [BFL_API_KEY]
+    model: [flux-pro, flux-kontext-pro, flux-kontext-max]
 
 - id: ideogram
   name: Ideogram
@@ -287,6 +309,7 @@
     python_import: [runwayml]
     endpoint: [api.dev.runwayml.com]
     env: [RUNWAYML_API_SECRET]
+    model: [gen4_turbo, gen4_image, gen4.5]
 
 - id: luma
   name: Luma AI
@@ -298,3 +321,110 @@
     python_import: [lumaai]
     endpoint: [api.lumalabs.ai]
     env: [LUMAAI_API_KEY, LUMA_API_KEY]
+
+- id: soniox
+  name: Soniox
+  category: Speech-to-text
+  replace_with: [speech-to-text]
+  detect:
+    requirement: [soniox]
+    npm: ["@soniox/node"]
+    python_import: [soniox]
+    symbol: [SonioxClient, AsyncSonioxClient]
+    model: [stt-async-v, stt-rt-v]
+    endpoint: [api.soniox.com, stt-rt.soniox.com]
+    env: [SONIOX_API_KEY]
+
+- id: speechify
+  name: Speechify API
+  category: Text-to-speech
+  replace_with: [text-to-speech]
+  detect:
+    requirement: [speechify-api]
+    npm: ["@speechify/api", "@mastra/voice-speechify"]
+    python_import: [speechify]
+    endpoint: [api.speechify.ai]
+    env: [SPEECHIFY_API_KEY]
+
+- id: murf
+  name: Murf AI
+  category: Text-to-speech
+  replace_with: [text-to-speech]
+  detect:
+    requirement: [murf]
+    npm: ["@mastra/voice-murf"]
+    python_import: [murf]
+    endpoint: [api.murf.ai]
+    env: [MURF_API_KEY]
+
+- id: sarvam
+  name: Sarvam AI API
+  category: Speech-to-text
+  replace_with: [speech-to-text, text-to-speech, open-llm]
+  detect:
+    requirement: [sarvamai]
+    npm: [sarvamai, "@mastra/voice-sarvam"]
+    python_import: [sarvamai]
+    endpoint: [api.sarvam.ai]
+    env: [SARVAM_API_KEY]
+
+- id: fish-audio
+  name: Fish Audio API
+  category: Text-to-speech
+  replace_with: [text-to-speech, speech-to-text]
+  detect:
+    requirement: [fish-audio-sdk]
+    npm: [fish-audio, "@ai-sdk/fish-audio"]
+    python_import: [fish_audio_sdk, fishaudio]
+    symbol: [createFishAudio]
+    endpoint: [api.fish.audio]
+    env: [FISH_API_KEY, FISH_AUDIO_API_KEY]
+
+- id: inworld-tts
+  name: Inworld TTS / Runtime
+  category: Text-to-speech
+  replace_with: [text-to-speech, voice-agent]
+  detect:
+    npm: ["@inworld/runtime", "@mastra/voice-inworld"]
+    endpoint: [api.inworld.ai]
+    env: [INWORLD_API_KEY]
+
+- id: resemble
+  name: Resemble AI
+  category: Text-to-speech
+  replace_with: [text-to-speech]
+  detect:
+    requirement: [resemble]
+    npm: ["@resemble/node"]
+    python_import: [resemble]
+    endpoint: [app.resemble.ai, f.cluster.resemble.ai]
+    env: [RESEMBLE_API_KEY]
+
+- id: kling-ai
+  name: Kling AI
+  category: Image generation
+  replace_with: [image-generation]
+  detect:
+    npm: ["@ai-sdk/klingai"]
+    symbol: [createKlingAI]
+    endpoint: [api-singapore.klingai.com, api.klingai.com]
+    env: [KLINGAI_ACCESS_KEY, KLINGAI_SECRET_KEY, KLINGAI_API_KEY]
+
+- id: prodia
+  name: Prodia
+  category: Image generation
+  replace_with: [image-generation]
+  detect:
+    npm: ["@ai-sdk/prodia"]
+    symbol: [createProdia]
+    endpoint: [inference.prodia.com]
+    env: [PRODIA_TOKEN]
+
+- id: recraft
+  name: Recraft API
+  category: Image generation
+  replace_with: [image-generation]
+  detect:
+    model: [recraftv3, recraftv2]
+    endpoint: [external.api.recraft.ai]
+    env: [RECRAFT_API_TOKEN]

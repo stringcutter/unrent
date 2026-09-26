@@ -12,7 +12,7 @@ each release ships the rankings as of its date.
 First public release.
 
 ### Added
-- `unrent scan <dir>`: finds closed AI services (about 100: LLM APIs, gateways,
+- `unrent scan <dir>`: finds closed AI services (about 160: LLM APIs, gateways,
   embeddings, vector databases, RAG, OCR, observability, speech, image generation,
   search, browser automation, sandboxes, agent memory) from packages, imports,
   install commands, framework integrations, API hosts, model ids, environment
@@ -26,7 +26,7 @@ First public release.
 - Closed model ids with no SDK, key, host or package behind them are listed
   separately ("closed models named in code") instead of counted as dependencies.
 - A golden corpus of 39 hand-labelled repositories (`eval/`), run in CI with
-  precision and recall floors. Measured: precision 0.99, recall 0.985.
+  precision and recall floors. Measured: precision 0.993, recall 0.986.
 
 [Unreleased]: https://github.com/niklasmellgren/unrent/compare/v0.2.0...HEAD
 [0.2.0]: https://github.com/niklasmellgren/unrent/releases/tag/v0.2.0

@@ -61,11 +61,14 @@ unrent catalog                         # what is covered
 
 ## What it finds
 
-About 100 closed AI services: LLM APIs (OpenAI, Anthropic, Gemini, Vertex, Bedrock,
-Azure OpenAI, Mistral, xAI, Groq, Together, Fireworks, …), gateways, embeddings and
-rerankers, vector databases, RAG platforms, document parsing and OCR, observability,
-speech-to-text, text-to-speech, voice agents, image generation, web search and
-scraping, browser automation, code sandboxes and agent memory.
+About 160 closed AI services: LLM APIs (OpenAI, Anthropic, Gemini, Vertex, Bedrock,
+Azure OpenAI and AI Foundry, Mistral, xAI, DeepSeek, Qwen/DashScope, Kimi, GLM, MiniMax,
+Groq, Together, Fireworks, Cerebras, SambaNova, Databricks, Snowflake Cortex, …),
+gateways, embeddings and rerankers, vector databases, RAG platforms, document parsing
+and OCR, guardrails, observability and evals, speech-to-text, text-to-speech, voice
+agents, image and video generation, web search and scraping, browser automation, code
+sandboxes, agent platforms and agent memory. Every package name in the catalog is
+checked against its registry.
 
 A dependency is recognised from whichever evidence the codebase has:
 
@@ -128,8 +131,8 @@ rules in [`eval/TRUTH_RULES.md`](https://github.com/niklasmellgren/unrent/blob/m
 
 | | |
 |---|---|
-| Precision (a reported service is really used) | **0.99** (132 of 133) |
-| Recall (a used service is reported) | **0.985** (132 of 134) |
+| Precision (a reported service is really used) | **0.993** (137 of 138) |
+| Recall (a used service is reported) | **0.986** (137 of 139) |
 
 The misses are framework defaults no scanner can see in the code: Spring AI wiring an
 OpenAI embedding model into a vector store, LlamaIndex falling back to OpenAI

@@ -921,3 +921,84 @@ def test_android_speech_recognizer_is_not_azure(tmp_path, catalog):
 def test_signatures_found_missing_by_the_corpus(tmp_path, catalog, files, service):
     write(tmp_path, files)
     assert service in deps(tmp_path, catalog)
+
+
+# --- catalog audit: false positives it found, and what they must report instead ----
+
+
+@pytest.mark.parametrize(
+    ("files", "expected"),
+    [
+        (
+            {
+                "db.py": 'from pymongo import MongoClient\nclient = MongoClient(os.environ["ATLAS_URI"])\n',
+                ".env": "MONGODB_ATLAS_URI=mongodb+srv://u:p@cluster0.abcd.mongodb.net/db\n",
+            },
+            set(),
+        ),
+        (
+            {
+                "deploy.sh": 'curl -X PUT "https://api.cloudflare.com/client/v4/accounts/$A/workers/scripts/app"\n'
+            },
+            set(),
+        ),
+        (
+            {
+                "app.py": "from azure.ai.documentintelligence import DocumentIntelligenceClient\n"
+                'endpoint = "https://myres.cognitiveservices.azure.com/"\n'
+            },
+            {"azure-document-intelligence"},
+        ),
+        (
+            {
+                "server.ts": 'import { createGateway } from "./apollo-gateway";\nconst gw = createGateway({ services });\n'
+            },
+            set(),
+        ),
+        ({"g.ts": 'export function build(g: Graph) { return g.createVertex("a"); }\n'}, set()),
+        (
+            {
+                "stt.py": "from groq import Groq\nclient = Groq()\n"
+                't = client.audio.transcriptions.create(file=f, model="whisper-large-v3")\n'
+                's = client.audio.speech.create(model="playai-tts", input="hi")\n'
+            },
+            {"groq"},
+        ),
+        (
+            {
+                "agent.py": "from livekit.agents import llm\nclass A:\n    session: llm.RealtimeSession\n"
+            },
+            set(),
+        ),
+        ({"build.sh": "sonar-scanner -Dproject.settings=sonar-project.properties\n"}, set()),
+    ],
+    ids=[
+        "atlas-without-vector-search",
+        "cloudflare-deploy",
+        "document-intelligence",
+        "apollo-gateway",
+        "graph-code",
+        "groq-audio",
+        "livekit-realtime",
+        "sonarqube",
+    ],
+)
+def test_audit_false_positives(tmp_path, catalog, files, expected):
+    write(tmp_path, files)
+    assert deps(tmp_path, catalog) == expected
+
+
+def test_atlas_vector_search_still_needs_both_kinds_of_evidence(tmp_path, catalog):
+    write(tmp_path, {
+        ".env": "MONGODB_ATLAS_URI=mongodb+srv://u:p@cluster0.abcd.mongodb.net/db\n",
+        "search.py": 'pipeline = [{"$vectorSearch": {"index": "v", "path": "e"}}]\n',
+    })  # fmt: skip
+    assert "mongodb-atlas-vector-search" in deps(tmp_path, catalog)
+
+
+def test_regional_bedrock_model_ids(tmp_path, catalog):
+    write(tmp_path, {"app.py": (
+        'import boto3\nc = boto3.client("bedrock-runtime")\n'
+        'MODEL = "global.anthropic.claude-sonnet-4-5-20250929-v1:0"\n'
+    )})  # fmt: skip
+    assert "aws-bedrock" in deps(tmp_path, catalog)

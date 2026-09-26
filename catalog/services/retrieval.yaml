@@ -20,9 +20,17 @@
   part_of: [google-gemini, google-vertex]
   replace_with: [embedding-model, embedding-serving]
   detect:
-    requirement: [llama-index-embeddings-gemini, llama-index-embeddings-google-genai, llama-index-embeddings-vertex]
+    requirement: [llama-index-embeddings-gemini, llama-index-embeddings-google-genai,
+                  llama-index-embeddings-vertex, llama-index-embeddings-vertex-endpoint]
     symbol: [GoogleGenerativeAIEmbeddings, VertexAIEmbeddings]
-    model: [text-embedding-004, text-embedding-005, gemini-embedding-, textembedding-gecko, text-multilingual-embedding-]
+    model: [text-embedding-004, text-embedding-005, gemini-embedding-, textembedding-gecko,
+            text-multilingual-embedding-, multimodalembedding]
+    maven: ["org.springframework.ai:spring-ai-vertex-ai-embedding",
+            "org.springframework.ai:spring-ai-starter-model-vertex-ai-embedding",
+            "org.springframework.ai:spring-ai-google-genai-embedding",
+            "org.springframework.ai:spring-ai-starter-model-google-genai-embedding"]
+    python_import: [llama_index.embeddings.gemini, llama_index.embeddings.google_genai,
+                    llama_index.embeddings.vertex]
 
 - id: aws-bedrock-embeddings
   name: Amazon Titan / Bedrock Embeddings
@@ -31,30 +39,41 @@
   replace_with: [embedding-model, embedding-serving]
   detect:
     symbol: [BedrockEmbeddings]
-    model: [amazon.titan-embed-, cohere.embed-]
+    model: [amazon.titan-embed-, cohere.embed-, global.cohere.embed-, us.cohere.embed-,
+            twelvelabs.marengo-embed-]
+    requirement: [llama-index-embeddings-bedrock]
+    python_import: [llama_index.embeddings.bedrock]
 
 - id: voyage
   name: Voyage AI
   category: Embeddings
   replace_with: [embedding-model, embedding-serving, reranker]
   detect:
-    requirement: [voyageai, langchain-voyageai, llama-index-embeddings-voyageai]
-    npm: [voyageai, voyage-ai-provider]
-    python_import: [voyageai, langchain_voyageai]
+    requirement: [voyageai, langchain-voyageai, llama-index-embeddings-voyageai,
+                  llama-index-postprocessor-voyageai-rerank]
+    npm: [voyageai, voyage-ai-provider, "@ai-sdk/voyage", "@mastra/voyageai"]
+    python_import: [voyageai, langchain_voyageai, llama_index.embeddings.voyageai,
+                    llama_index.postprocessor.voyageai_rerank]
     symbol: [VoyageAIEmbeddings, VoyageEmbedding, "voyageai.Client"]
-    model: [voyage-3, voyage-4, voyage-code-, voyage-large-, voyage-multilingual-, voyage-law-, voyage-finance-]
+    model: [voyage-3, voyage-4, voyage-code-, voyage-large-, voyage-multilingual-, voyage-law-,
+            voyage-finance-, voyage-context-, voyage-multimodal-, voyage-2, voyage-lite-,
+            rerank-2.5, rerank-2-lite]
     endpoint: [api.voyageai.com]
     env: [VOYAGE_API_KEY]
+    maven: ["dev.langchain4j:langchain4j-voyage-ai"]
+    gem: [voyageai]
 
 - id: jina-api
   name: Jina AI API
   category: Embeddings
   replace_with: [embedding-model, reranker, web-scraping]
   detect:
-    requirement: [llama-index-embeddings-jinaai]
+    requirement: [llama-index-embeddings-jinaai, llama-index-postprocessor-jinaai-rerank]
     symbol: [JinaEmbeddings, JinaRerank]
     endpoint: [api.jina.ai, r.jina.ai, s.jina.ai]
     env: [JINA_API_KEY, JINAAI_API_KEY]
+    maven: ["dev.langchain4j:langchain4j-jina"]
+    python_import: [llama_index.embeddings.jinaai, llama_index.postprocessor.jinaai_rerank]
 
 - id: mistral-embeddings
   name: Mistral Embeddings and OCR
@@ -64,23 +83,31 @@
   detect:
     symbol: [MistralAIEmbeddings]
     model: [mistral-embed, codestral-embed, mistral-ocr-]
+    requirement: [llama-index-embeddings-mistralai]
+    python_import: [llama_index.embeddings.mistralai]
 
 # ---------------------------------------------------------------- vector search
 
 - id: pinecone
   name: Pinecone
   category: Vector database
+  weak: [pinecone.io]
   replace_with: [vector-db]
   detect:
     go: [github.com/pinecone-io/go-pinecone]
-    maven: ["io.pinecone:pinecone-client", "dev.langchain4j:langchain4j-pinecone"]
-    nuget: [Pinecone.Client]
-    requirement: [pinecone, pinecone-client, langchain-pinecone, llama-index-vector-stores-pinecone]
-    npm: ["@pinecone-database/pinecone", "@langchain/pinecone"]
-    python_import: [pinecone, langchain_pinecone, llama_index.vector_stores.pinecone]
+    maven: ["io.pinecone:pinecone-client", "dev.langchain4j:langchain4j-pinecone",
+            "org.springframework.ai:spring-ai-pinecone-store",
+            "org.springframework.ai:spring-ai-starter-vector-store-pinecone"]
+    nuget: [Pinecone.Client, Microsoft.SemanticKernel.Connectors.Pinecone]
+    requirement: [pinecone, pinecone-client, langchain-pinecone, llama-index-vector-stores-pinecone,
+                  llama-index-postprocessor-pinecone-native-rerank]
+    npm: ["@pinecone-database/pinecone", "@langchain/pinecone", "@mastra/pinecone"]
+    python_import: [pinecone, langchain_pinecone, llama_index.vector_stores.pinecone,
+                    llama_index.postprocessor.pinecone_native_rerank]
     symbol: ["pinecone.Pinecone", "Pinecone(", PineconeVectorStore, PineconeStore, PineconeGRPC]
     endpoint: [pinecone.io]
     env: [PINECONE_API_KEY, PINECONE_ENVIRONMENT, PINECONE_INDEX, PINECONE_INDEX_NAME]
+    cargo: [pinecone-sdk]
 
 - id: upstash-vector
   name: Upstash Vector
@@ -89,7 +116,7 @@
   detect:
     requirement: [upstash-vector, llama-index-vector-stores-upstash]
     npm: ["@upstash/vector"]
-    python_import: [upstash_vector]
+    python_import: [upstash_vector, llama_index.vector_stores.upstash]
     env: [UPSTASH_VECTOR_REST_URL, UPSTASH_VECTOR_REST_TOKEN]
 
 - id: turbopuffer
@@ -97,9 +124,9 @@
   category: Vector database
   replace_with: [vector-db]
   detect:
-    requirement: [turbopuffer]
-    npm: ["@turbopuffer/turbopuffer"]
-    python_import: [turbopuffer]
+    requirement: [turbopuffer, langchain-turbopuffer]
+    npm: ["@turbopuffer/turbopuffer", "@mastra/turbopuffer"]
+    python_import: [turbopuffer, langchain_turbopuffer]
     endpoint: [turbopuffer.com]
     env: [TURBOPUFFER_API_KEY]
 
@@ -109,8 +136,8 @@
   replace_with: [vector-db]
   detect:
     requirement: [astrapy, langchain-astradb, llama-index-vector-stores-astra-db]
-    npm: ["@datastax/astra-db-ts"]
-    python_import: [astrapy, langchain_astradb]
+    npm: ["@datastax/astra-db-ts", "@mastra/astra"]
+    python_import: [astrapy, langchain_astradb, llama_index.vector_stores.astra_db]
     symbol: [AstraDBVectorStore, DataAPIClient]
     endpoint: [apps.astra.datastax.com]
     env: [ASTRA_DB_APPLICATION_TOKEN, ASTRA_DB_API_ENDPOINT]
@@ -118,9 +145,13 @@
 - id: mongodb-atlas-vector-search
   name: MongoDB Atlas Vector Search
   category: Vector database
-  # DocumentDB and self-managed MongoDB speak $vectorSearch too, and SRV connection
-  # strings are not Atlas-only; two of these together are Atlas.
-  weak: [$vectorSearch, "mongodb+srv://", SearchIndexModel, mongodb.net]
+  # Two kinds of weak evidence, and it takes one of each: vector search (DocumentDB and
+  # self-managed MongoDB speak $vectorSearch too) and Atlas hosting (an Atlas cluster
+  # is not Atlas Vector Search). Several Atlas hosting signals prove only a database.
+  weak:
+    - [$vectorSearch, SearchIndexModel]
+    - ["mongodb+srv://", mongodb.net, MONGODB_ATLAS_URI, ATLAS_URI, ATLAS_CONNECTION_STRING,
+       MONGODB_ATLAS_CLUSTER_URI]
   replace_with: [vector-db]
   detect:
     requirement: [langchain-mongodb, llama-index-vector-stores-mongodb]
@@ -129,6 +160,9 @@
     symbol: ["$vectorSearch", MongoDBAtlasVectorSearch, "mongodb+srv://", SearchIndexModel]
     endpoint: [mongodb.net]
     env: [MONGODB_ATLAS_URI, MONGODB_ATLAS_CLUSTER_URI, ATLAS_URI, ATLAS_CONNECTION_STRING]
+    maven: ["org.springframework.ai:spring-ai-mongodb-atlas-store",
+            "org.springframework.ai:spring-ai-starter-vector-store-mongodb-atlas",
+            "dev.langchain4j:langchain4j-mongodb-atlas"]
 
 - id: vertex-vector-search
   name: Vertex AI Vector Search
@@ -137,13 +171,15 @@
   detect:
     symbol: [MatchingEngineIndex, MatchingEngineIndexEndpoint, VectorSearchVectorStore]
     terraform_resource: [google_vertex_ai_index, google_vertex_ai_index_endpoint_deployed_index]
+    requirement: [llama-index-vector-stores-vertexaivectorsearch]
+    python_import: [llama_index.vector_stores.vertexaivectorsearch]
 
 - id: zilliz-cloud
   name: Zilliz Cloud (hosted Milvus)
   category: Vector database
   replace_with: [vector-db]
   detect:
-    endpoint: [zillizcloud.com, api.zilliz.com]
+    endpoint: [zillizcloud.com, api.cloud.zilliz.com]
     env: [ZILLIZ_CLOUD_URI, ZILLIZ_CLOUD_API_KEY, ZILLIZ_API_KEY]
 
 - id: weaviate-cloud
@@ -169,14 +205,21 @@
   category: Vector database
   replace_with: [search-engine, vector-db]
   detect:
-    requirement: [azure-search-documents, llama-index-vector-stores-azureaisearch]
-    npm: ["@azure/search-documents"]
-    python_import: [azure.search.documents, llama_index.vector_stores.azureaisearch]
+    requirement: [azure-search-documents, llama-index-vector-stores-azureaisearch,
+                  llama-index-vector-stores-cogsearch, agent-framework-azure-ai-search]
+    npm: ["@azure/search-documents", "@mastra/azure-ai-search"]
+    python_import: [azure.search.documents, llama_index.vector_stores.azureaisearch,
+                    llama_index.vector_stores.cogsearch, agent_framework_azure_ai_search]
     symbol: [SearchIndexClient, SemanticConfiguration, AzureSearch, AzureAISearchVectorStore]
     endpoint: [search.windows.net]
-    env: [AZURE_SEARCH_ENDPOINT, AZURE_SEARCH_KEY, AZURE_SEARCH_INDEX, AZURE_SEARCH_SERVICE_ENDPOINT,
-          AZURE_AI_SEARCH_ENDPOINT, AZURE_AI_SEARCH_API_KEY]
+    env: [AZURE_SEARCH_ENDPOINT, AZURE_SEARCH_KEY, AZURE_SEARCH_INDEX,
+          AZURE_SEARCH_SERVICE_ENDPOINT, AZURE_AI_SEARCH_ENDPOINT, AZURE_AI_SEARCH_API_KEY]
     terraform_resource: [azurerm_search_service]
+    nuget: [Microsoft.SemanticKernel.Connectors.AzureAISearch,
+            CommunityToolkit.VectorData.AzureAISearch, Azure.Search.Documents]
+    maven: ["org.springframework.ai:spring-ai-azure-store",
+            "org.springframework.ai:spring-ai-starter-vector-store-azure",
+            "dev.langchain4j:langchain4j-azure-ai-search"]
 
 - id: vectara
   name: Vectara
@@ -184,10 +227,11 @@
   replace_with: [rag-engine]
   detect:
     requirement: [vectara, langchain-vectara, llama-index-indices-managed-vectara]
-    npm: ["@vectara/vectara-ts"]
-    python_import: [vectara, langchain_vectara]
+    python_import: [vectara, langchain_vectara, llama_index.indices.managed.vectara]
     endpoint: [api.vectara.io]
-    env: [VECTARA_API_KEY, VECTARA_CORPUS_KEY, VECTARA_CUSTOMER_ID]
+    env: [VECTARA_API_KEY, VECTARA_CORPUS_KEY, VECTARA_CUSTOMER_ID, VECTARA_CLIENT_ID,
+          VECTARA_CLIENT_SECRET]
+    npm: [vectara, "@vectara/stream-query-client"]
 
 - id: aws-bedrock-knowledge-bases
   name: Amazon Bedrock Knowledge Bases / Kendra
@@ -197,9 +241,10 @@
   detect:
     npm: ["@aws-sdk/client-kendra"]
     symbol: [AmazonKnowledgeBasesRetriever, AmazonKendraRetriever, '"kendra"', "'kendra'",
-             "retrieve_and_generate", RetrieveCommand, RetrieveAndGenerateCommand, retrieveAndGenerate,
-             knowledgeBaseId]
+             "retrieve_and_generate", RetrieveCommand, RetrieveAndGenerateCommand,
+             retrieveAndGenerate, knowledgeBaseId]
     terraform_resource: [aws_bedrockagent_knowledge_base, aws_kendra_index]
+    maven: ["org.springframework.ai:spring-ai-bedrock-knowledgebase-store"]
 
 - id: google-vertex-search
   name: Vertex AI Search
@@ -219,7 +264,8 @@
   replace_with: [rag-engine, vector-db]
   detect:
     # Not the bare "file_search" string: agent frameworks name their own tools that.
-    symbol: ["vector_stores.create", "vectorStores.create", "vector_stores.files", "vectorStores.files"]
+    symbol: ["vector_stores.create", "vectorStores.create", "vector_stores.files",
+             "vectorStores.files"]
 
 # ---------------------------------------------------------------- document parsing
 
@@ -231,7 +277,7 @@
     requirement: [unstructured-client]
     npm: [unstructured-client]
     python_import: [unstructured_client]
-    endpoint: [api.unstructured.io, api.unstructuredapp.io]
+    endpoint: [api.unstructured.io, api.unstructuredapp.io, platform.unstructuredapp.io]
     env: [UNSTRUCTURED_API_KEY, UNSTRUCTURED_API_URL]
 
 - id: llamaparse
@@ -241,11 +287,13 @@
   detect:
     requirement: [llama-parse, llama-cloud-services, llama-cloud, llama-index-readers-llama-parse,
                   llama-index-indices-managed-llama-cloud]
-    npm: [llama-parse, "@llamaindex/cloud", llama-cloud-services]
-    python_import: [llama_parse, llama_cloud_services, llama_cloud]
+    npm: [llama-parse, "@llamaindex/cloud", llama-cloud-services, "@llamaindex/llama-cloud"]
+    python_import: [llama_parse, llama_cloud_services, llama_cloud, llama_index.readers.llama_parse,
+                    llama_index.indices.managed.llama_cloud]
     symbol: [LlamaParse, LlamaCloudIndex]
     endpoint: [api.cloud.llamaindex.ai]
-    env: [LLAMA_CLOUD_API_KEY]
+    env: [LLAMA_CLOUD_API_KEY, LLAMA_PARSE_API_KEY]
+    maven: ["dev.langchain4j:langchain4j-community-document-parser-llamaparse"]
 
 - id: azure-document-intelligence
   name: Azure AI Document Intelligence
@@ -256,8 +304,10 @@
     npm: ["@azure-rest/ai-document-intelligence", "@azure/ai-form-recognizer"]
     python_import: [azure.ai.documentintelligence, azure.ai.formrecognizer]
     symbol: [DocumentIntelligenceClient, DocumentAnalysisClient, AzureAIDocumentIntelligenceLoader]
-    env: [AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT, AZURE_DOCUMENT_INTELLIGENCE_KEY, AZURE_FORM_RECOGNIZER_ENDPOINT,
-          AZURE_FORM_RECOGNIZER_KEY]
+    env: [AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT, AZURE_DOCUMENT_INTELLIGENCE_KEY,
+          AZURE_FORM_RECOGNIZER_ENDPOINT, AZURE_FORM_RECOGNIZER_KEY]
+    nuget: [Azure.AI.DocumentIntelligence]
+    maven: ["com.azure:azure-ai-documentintelligence"]
 
 - id: aws-textract
   name: Amazon Textract
@@ -303,3 +353,81 @@
     python_import: [reducto]
     endpoint: [platform.reducto.ai]
     env: [REDUCTO_API_KEY]
+
+- id: aws-s3-vectors
+  name: Amazon S3 Vectors
+  category: Vector database
+  replace_with: [vector-db]
+  detect:
+    go: [github.com/aws/aws-sdk-go-v2/service/s3vectors]
+    cargo: [aws-sdk-s3vectors]
+    maven: ["software.amazon.awssdk:s3vectors", "org.springframework.ai:spring-ai-s3-vector-store",
+            "dev.langchain4j:langchain4j-community-s3-vectors"]
+    nuget: [AWSSDK.S3Vectors]
+    npm: ["@aws-sdk/client-s3vectors", "@mastra/s3vectors"]
+    symbol: ["client(\"s3vectors\"", "client('s3vectors'", S3VectorsClient]
+    endpoint: [s3vectors.]
+    terraform_resource: [aws_s3vectors_vector_bucket, aws_s3vectors_index]
+
+- id: cloudflare-vectorize
+  name: Cloudflare Vectorize
+  category: Vector database
+  replace_with: [vector-db]
+  detect:
+    npm: ["@mastra/vectorize"]
+    symbol: [CloudflareVectorizeStore, VectorizeIndex, "[[vectorize]]"]
+
+- id: mixedbread-api
+  name: Mixedbread API
+  category: Embeddings
+  replace_with: [embedding-model, embedding-serving, reranker]
+  detect:
+    requirement: [mixedbread]
+    npm: ["@mixedbread/sdk"]
+    python_import: [mixedbread]
+    endpoint: [api.mixedbread.com, api.mixedbread.ai]
+    env: [MXBAI_API_KEY]
+
+- id: contextual-ai
+  name: Contextual AI
+  category: RAG platform
+  weak: [contextual]
+  replace_with: [rag-engine, reranker]
+  detect:
+    requirement: [contextual-client, langchain-contextual]
+    npm: [contextual-client]
+    python_import: [contextual, langchain_contextual]
+    endpoint: [api.contextual.ai]
+    env: [CONTEXTUAL_API_KEY]
+
+- id: landingai-ade
+  name: LandingAI Agentic Document Extraction
+  category: Document parsing
+  replace_with: [document-parsing, ocr]
+  detect:
+    requirement: [landingai-ade, agentic-doc]
+    npm: [landingai-ade]
+    python_import: [landingai_ade, agentic_doc]
+    endpoint: [api.va.landing.ai, api.ade.landing.ai]
+    env: [VISION_AGENT_API_KEY]
+
+- id: datalab
+  name: Datalab API (hosted Marker / Surya)
+  category: Document parsing
+  replace_with: [document-parsing, ocr]
+  detect:
+    requirement: [datalab-python-sdk]
+    python_import: [datalab_sdk]
+    symbol: [DatalabClient, AsyncDatalabClient]
+    endpoint: [www.datalab.to/api]
+    env: [DATALAB_API_KEY]
+
+- id: mathpix
+  name: Mathpix
+  category: Document parsing
+  replace_with: [ocr, document-parsing]
+  detect:
+    requirement: [mpxpy]
+    python_import: [mpxpy]
+    endpoint: [api.mathpix.com]
+    env: [MATHPIX_APP_ID, MATHPIX_APP_KEY]
