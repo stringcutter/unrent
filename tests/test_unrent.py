@@ -1032,11 +1032,38 @@ def test_standing_in_the_pool_and_among_the_same_kind(tmp_path, catalog):
     pool = catalog.pools["vector-db"]
     assert s.pool.id == "vector-db" and s.of == len(pool.alternatives)
     assert pool.alternatives[s.rank - 1].name == "qdrant/qdrant"
-    servers = [a.name for a in pool.alternatives if a.kind == "server"]
+    # Peers share at least one kind: chroma is "embedded and server", so it counts.
+    servers = [a.name for a in pool.alternatives if "server" in a.kind]
     assert s.kind_rank == servers.index("qdrant/qdrant") + 1 and s.kind_of == len(servers)
-    assert all(pool.alternatives.index(a) < s.rank - 1 for a in s.ahead)
+    # Everything ranked above it, in rank order.
+    assert list(s.ahead) == list(pool.alternatives[: s.rank - 1])
     md = to_markdown(match(collect_facts(tmp_path, catalog), catalog), tmp_path, catalog)
     assert "Open source you already run" in md and f"#{s.rank} of {s.of}" in md
+
+
+def test_ahead_list_keeps_rank_order_and_counts_the_rest(tmp_path, catalog):
+    write(tmp_path, {"requirements.txt": "tantivy\n"})
+    finding = running(tmp_path, catalog)["quickwit-oss/tantivy"]
+    (s,) = standings(finding, catalog)
+    md = to_markdown(match(collect_facts(tmp_path, catalog), catalog), tmp_path, catalog)
+    if s.rank and s.rank - 1 > 3:
+        assert f"…and {s.rank - 1 - 3} more" in md
+    data = json.loads(to_json(match(collect_facts(tmp_path, catalog), catalog), tmp_path, catalog))
+    assert len(data["open_source"][0]["standing"][0]["ahead"]) == (s.rank - 1 if s.rank else s.of)
+
+
+def test_every_kind_is_from_the_vocabulary(catalog):
+    from unrent.catalog import KINDS
+
+    for project in catalog.projects:
+        assert set(project.kind) <= KINDS, project.repo
+
+
+def test_models_show_their_size(tmp_path, catalog):
+    write(tmp_path, {"a.py": "from openai import OpenAI\nc = OpenAI()\n"})
+    md = to_markdown(match(collect_facts(tmp_path, catalog), catalog), tmp_path, catalog)
+    if any(a.params for a in catalog.pools["open-llm"].alternatives[:3]):
+        assert " params" in md
 
 
 def test_a_component_that_dropped_out_of_the_ranking_is_flagged(tmp_path, catalog, monkeypatch):

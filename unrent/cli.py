@@ -147,7 +147,7 @@ def cmd_catalog(args) -> int:
     print("\nOpen source recognised in code")
     for project in sorted(catalog.projects, key=lambda p: p.repo.lower()):
         pools = ", ".join(catalog.pools[p].name for p in project.replace_with)
-        print(f"  {project.repo:<{width}} {project.kind} · {pools}")
+        print(f"  {project.repo:<{width}} {' and '.join(project.kind)} · {pools}")
     return 0
 
 

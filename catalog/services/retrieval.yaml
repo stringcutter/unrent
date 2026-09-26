@@ -224,7 +224,7 @@
 - id: vectara
   name: Vectara
   category: RAG platform
-  replace_with: [rag-engine]
+  replace_with: [rag-application, rag-framework]
   detect:
     requirement: [vectara, langchain-vectara, llama-index-indices-managed-vectara]
     python_import: [vectara, langchain_vectara, llama_index.indices.managed.vectara]
@@ -237,7 +237,7 @@
   name: Amazon Bedrock Knowledge Bases / Kendra
   category: RAG platform
   weak: [knowledgeBaseId, RetrieveCommand]
-  replace_with: [rag-engine, search-engine]
+  replace_with: [rag-application, rag-framework, search-engine]
   detect:
     npm: ["@aws-sdk/client-kendra"]
     symbol: [AmazonKnowledgeBasesRetriever, AmazonKendraRetriever, '"kendra"', "'kendra'",
@@ -249,7 +249,7 @@
 - id: google-vertex-search
   name: Vertex AI Search
   category: RAG platform
-  replace_with: [rag-engine, search-engine]
+  replace_with: [rag-application, rag-framework, search-engine]
   detect:
     requirement: [google-cloud-discoveryengine]
     npm: ["@google-cloud/discoveryengine"]
@@ -261,7 +261,7 @@
   name: OpenAI vector stores / file search
   category: RAG platform
   part_of: openai
-  replace_with: [rag-engine, vector-db]
+  replace_with: [rag-application, rag-framework, vector-db]
   detect:
     # Not the bare "file_search" string: agent frameworks name their own tools that.
     symbol: ["vector_stores.create", "vectorStores.create", "vector_stores.files",
@@ -283,7 +283,7 @@
 - id: llamaparse
   name: LlamaParse / LlamaCloud
   category: Document parsing
-  replace_with: [document-parsing, rag-engine]
+  replace_with: [document-parsing, rag-application, rag-framework]
   detect:
     requirement: [llama-parse, llama-cloud-services, llama-cloud, llama-index-readers-llama-parse,
                   llama-index-indices-managed-llama-cloud]
@@ -392,7 +392,7 @@
   name: Contextual AI
   category: RAG platform
   weak: [contextual]
-  replace_with: [rag-engine, reranker]
+  replace_with: [rag-application, rag-framework, reranker]
   detect:
     requirement: [contextual-client, langchain-contextual]
     npm: [contextual-client]
