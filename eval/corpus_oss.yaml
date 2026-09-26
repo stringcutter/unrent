@@ -1581,6 +1581,7 @@ repos:
   open_source_uncertain:
   - firecrawl/firecrawl
   - ollama/ollama
+  - xorbitsai/inference
   open_source_evidence:
     Unstructured-IO/unstructured: 'api/core/rag/extractor/unstructured/unstructured_doc_extractor.py:52 from unstructured.partition.docx
       import partition_docx (ETL_TYPE=Unstructured); docker/docker-compose-template.yaml:1287 image: downloads.unstructured.io/unstructured-io/unstructured-api:latest'

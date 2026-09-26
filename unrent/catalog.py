@@ -55,6 +55,8 @@ DETECT_KINDS = frozenset(
         "python_import", "symbol", "model", "endpoint", "env", "terraform_resource",
         # container images, for self-hosted open source servers
         "image",
+        # CREATE EXTENSION <name> in SQL, any case
+        "sql_extension",
     }
 )  # fmt: skip
 POOL_SOURCES = frozenset({"github", "huggingface"})
@@ -199,6 +201,13 @@ def _load_pools(path: Path, rankings: dict) -> dict[str, Pool]:
                 raise CatalogError(f"{path.name}: pool '{pool_id}' lists no projects")
             repos = [p.get("repo", "") for p in projects]
             for p in projects:
+                stray = set(p) - {"repo", "what", "licence"}
+                if stray:
+                    # `what: A, B` in a flow mapping is `what: A` plus a key `B`.
+                    raise CatalogError(
+                        f"{path.name}: {p.get('repo')} has unexpected keys {sorted(stray)} — "
+                        "quote a 'what' that contains a comma"
+                    )
                 if not p.get("repo") or p["repo"].count("/") != 1 or not p.get("what"):
                     raise CatalogError(
                         f"{path.name}: pool '{pool_id}' has a project without "
