@@ -158,10 +158,11 @@ class Finding:
 
     @property
     def cited(self) -> list[Fact]:
-        """One fact per source location, for the report."""
+        """One fact per source location, strongest first: production code before tests,
+        and a declared package or an import before a string that merely names it."""
         seen: set[tuple[str, int]] = set()
         out: list[Fact] = []
-        for fact in self.facts:
+        for fact in sorted(self.facts, key=_citation_order):
             key = (str(fact.file), fact.line)
             if key not in seen:
                 seen.add(key)
@@ -171,6 +172,18 @@ class Finding:
     @property
     def test_only(self) -> bool:
         return all(f.in_test for f in self.facts)
+
+
+_EVIDENCE_STRENGTH = {
+    **{k: 0 for k in ("requirement", "npm", "go", "cargo", "maven", "nuget", "gem", "composer",
+                      "pub", "swift", "image")},
+    "python_import": 1, "terraform_resource": 1, "sql_extension": 1,
+    "symbol": 2, "endpoint": 2, "env": 3, "model": 4,
+}  # fmt: skip
+
+
+def _citation_order(fact: Fact) -> tuple:
+    return (fact.in_test, _EVIDENCE_STRENGTH.get(fact.kind, 5), str(fact.file), fact.line)
 
 
 def is_test_path(rel: str) -> bool:

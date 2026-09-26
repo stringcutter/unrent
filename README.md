@@ -11,25 +11,26 @@ Offline. No account. No upload. No telemetry.
 ```
 $ unrent scan my-app/
 
-Found 2 closed AI services, and 2 open source components already in use.
+Found 4 closed AI services, and 1 open source component already in use.
 
-| Closed service | Category        | Replace with                                                     |
-|----------------|-----------------|------------------------------------------------------------------|
-| OpenAI API     | LLM API         | Open-weight LLM: XiaomiMiMo/MiMo-V2.6-Pro-RL                     |
-|                |                 | Inference server: ollama/ollama                                  |
-| Pinecone       | Vector database | Vector database: milvus-io/milvus                                |
+| Closed service | Category        | Replace with                                         |
+|----------------|-----------------|------------------------------------------------------|
+| OpenAI API     | LLM API         | Open-weight LLM: XiaomiMiMo/MiMo-V2.6-Pro-RL         |
+|                |                 | Inference server: ollama/ollama                      |
+| Pinecone       | Vector database | Vector database: milvus-io/milvus                    |
+| ...            |                 |                                                      |
 
 ### OpenAI API
-- .env.example:1      OPENAI_API_KEY=****
+- requirements.txt:1  openai>=1
 - main.py:1           from openai import OpenAI
 - main.py:5           client = OpenAI()
-- requirements.txt:1  openai>=1
+- .env.example:1      OPENAI_API_KEY=****
 
 ## Open source you already run
 
-### faiss (library)
-found at main.py:3 — import faiss
-- Vector database: #2 of 9 (★ 41.0k). Ranked above it:
+### facebookresearch/faiss (library and embedded)
+Found at requirements.txt:3 — faiss-cpu
+- Vector database: #2 of 8, #1 of 3 of its kind (★ 41.0k). Ranked above it:
   - milvus-io/milvus — server, ★ 46.3k
 ```
 
@@ -39,6 +40,13 @@ straight into an issue or PR.
 ## Install
 
 Not on PyPI yet. Straight from GitHub:
+
+```bash
+uv tool install git+https://github.com/niklasmellgren/unrent
+unrent scan .
+```
+
+Or once, without installing:
 
 ```bash
 uvx --from git+https://github.com/niklasmellgren/unrent unrent scan .
@@ -59,26 +67,29 @@ unrent scan . --exclude "examples/"    # .gitignore syntax; or a .unrentignore f
 unrent catalog                         # what it knows
 ```
 
+On Windows PowerShell, write reports with `-o`, not `>`. The redirect re-encodes the
+file.
+
 ## What it detects
 
-**163 closed AI services** in 20 categories: LLM APIs, gateways, embeddings, rerankers,
-vector databases, RAG platforms, OCR and document parsing, guardrails, observability,
-speech, voice agents, image and video generation, web search, scraping, browser
-automation, sandboxes, agent platforms, agent memory.
+**182 closed AI services** in 20 categories: LLM APIs, LLM gateways, embeddings, vector
+databases, RAG platforms, document parsing, guardrails, LLM observability, model hosting,
+fine-tuning, speech-to-text, text-to-speech, voice agents, image generation, web search,
+web scraping, browser automation, code sandboxes, agent platforms, agent memory.
 
-**88 open source components**: vector databases, search engines, inference servers,
-gateways, embedding libraries, document parsers, observability, speech, scraping, agent
-memory.
+**89 open source projects**: vector databases, inference servers, gateways, RAG
+frameworks and applications, document parsers, observability, evals, speech, scraping,
+agent memory.
 
 Evidence it reads:
 
 | | |
 |---|---|
-| Packages | Python (requirements, pyproject, setup.py/cfg, Pipfile, conda), npm and pnpm catalogs, Go, Cargo, Maven, Gradle, NuGet, RubyGems, Composer, pub, SwiftPM |
+| Packages | Python (requirements, pyproject, setup.py/cfg, Pipfile, conda, extras like `qdrant-client[fastembed]`), npm and pnpm catalogs, Go, Cargo, Maven, Gradle, NuGet, RubyGems, Composer, pub, SwiftPM |
 | Imports | Python (AST, notebooks), JavaScript/TypeScript (`import`, `require`, `import()`, `npm:`, `jsr:`) |
 | Install commands | `pip install`, `uv add`, `npm i`, … in Dockerfiles, shell, CI, notebook cells |
-| Container images | `image:` in compose and Kubernetes, Helm values, Dockerfile `FROM` |
-| Code and config | API hosts, model ids, env vars, SDK symbols, SQL (`CREATE EXTENSION vector`), Terraform |
+| Container images | `image:` in compose and Kubernetes, `${VAR:-default}`, Helm values, Dockerfile `FROM` |
+| Code and config | API hosts, model ids, env vars, SDK symbols, `CREATE EXTENSION`, Terraform |
 
 Every package name in the catalog exists in its registry. Checked weekly.
 
