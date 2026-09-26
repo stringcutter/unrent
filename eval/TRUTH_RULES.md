@@ -6,14 +6,14 @@ it must be built from the code itself, NOT from any detector output.
 
 HARD RULES
 - Do NOT run `unrent`, and do NOT open anything under `eval/out/` (detector output).
-- Do NOT modify anything in C:\Users\nmtr\Downloads\unrent\unrent-dist or in the cloned repos.
-- You MAY read `C:\Users\nmtr\Downloads\unrent\unrent-dist\catalog\services\*.yaml` to learn
+- Do NOT modify anything in the unrent checkout or in the cloned repos.
+- You MAY read `catalog/services/*.yaml` to learn
   what each service id means. Do not restrict your search to those signatures: read the
   README, manifests, env examples, config and code, and grep broadly for provider names
   (case-insensitive: openai, azure, anthropic, claude, gemini, vertex, bedrock, cohere,
   mistral, groq, together, fireworks, deepseek, xai/grok, perplexity, openrouter, pinecone,
   qdrant, weaviate, elevenlabs, deepgram, tavily, exa, serp, langsmith, huggingface, ...).
-- ripgrep: C:\Users\nmtr\AppData\Local\Temp\claude\C--Users-nmtr-Downloads-unrent\a76dc95a-6a98-4387-9276-2242d01e21f3\scratchpad\ripgrep-15.1.0-x86_64-pc-windows-msvc\rg.exe
+- Search with ripgrep (`rg`)
   (use `--no-ignore-vcs` off by default; the repo scope is the git-tracked files; skip .git).
 
 SERVICE IDS (use exactly these):
@@ -66,7 +66,7 @@ WHAT COUNTS
     actually sends them to that vendor's API (directly or via its SDK).
 
 OUTPUT: one file per repo at
-C:\Users\nmtr\AppData\Local\Temp\claude\C--Users-nmtr-Downloads-unrent\a76dc95a-6a98-4387-9276-2242d01e21f3\scratchpad\eval\truth\<dir>.yaml
+`truth/<dir>.yaml`, outside the checkout,
 with exactly this shape (valid YAML; quote evidence strings with single quotes, doubling any
 single quote inside):
 

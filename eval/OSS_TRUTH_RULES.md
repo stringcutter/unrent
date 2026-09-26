@@ -7,11 +7,11 @@ detector output.
 
 HARD RULES
 - Do NOT run `unrent` (or `uv run ... unrent`), and do NOT open any detector output: nothing
-  under `...\scratchpad\eval\out*`, `...\_reports`, `results.json`, `eval_report.txt`, or any
+  under `eval/.cache/_reports`, `results.json`, `eval_report.txt`, or any
   `*.json` report produced by unrent.
-- Do NOT modify anything in the cloned repos or in C:\Users\nmtr\Downloads\lockin\lockin-dist.
+- Do NOT modify anything in the cloned repos or in the unrent checkout.
   Write only your truth files.
-- Repos live at C:\Users\nmtr\Downloads\lockin\agent-work\oss-eval\repos\<dir>\ (some are
+- Repos live at `<cache>/<dir>/` (some are
   directory junctions; that is fine, read-only). Scope = git-tracked files
   (`git -C <dir> ls-files`); skip .git, node_modules, vendor/, third_party/ vendored code,
   minified bundles and lockfiles (package-lock.json, yarn.lock, pnpm-lock.yaml, poetry.lock,
@@ -20,7 +20,7 @@ HARD RULES
   broadly; do not limit yourself to the hint signatures below.
 
 THE CATALOG (label only these 88 repos; ids = the GitHub repo exactly as written)
-See C:\Users\nmtr\Downloads\lockin\agent-work\oss-eval\catalog_projects.txt: one line per project
+See `unrent catalog` (the "Open source recognised in code" list): one line per project
 with its pool, kind and some HINT signatures. The hints are an INCOMPLETE starting point (they are
 roughly what one detector looks for). Real usage often looks different, e.g.:
 - framework integration packages: `langchain-chroma`, `langchain_community.vectorstores.Chroma`,
@@ -75,13 +75,13 @@ WHAT COUNTS (same spirit as the closed-service rules in lockin-dist/eval/TRUTH_R
    nginx, plain Postgres/Redis caches.
 
 CLOSED SERVICES (only when your assignment says so, i.e. for NEW repos)
-Follow C:\Users\nmtr\Downloads\lockin\lockin-dist\eval\TRUTH_RULES.md exactly for the closed
-side, but use the CURRENT service ids from C:\Users\nmtr\Downloads\lockin\lockin-dist\catalog\services\*.yaml
+Follow `eval/TRUTH_RULES.md` exactly for the closed
+side, but use the CURRENT service ids from `catalog/services/*.yaml`
 (`id:` fields; there are 163, more than TRUTH_RULES.md lists). You may read those yaml files to
 learn what each id means.
 
 OUTPUT: one file per repo at
-C:\Users\nmtr\Downloads\lockin\agent-work\oss-eval\truth\<dir>.yaml
+`truth/<dir>.yaml`, outside the checkout,
 exactly this shape (valid YAML; quote evidence/reason strings with single quotes, doubling any
 single quote inside; keep evidence to the best 1-2 pieces, `path:line text`, path relative to
 the repo root):
