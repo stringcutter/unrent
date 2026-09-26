@@ -22,6 +22,8 @@ import argparse
 import concurrent.futures as cf
 import gzip
 import json
+import os
+import shutil
 import subprocess
 import sys
 import time
@@ -269,22 +271,32 @@ def check_go(path):
     return {"exists": False}
 
 
+def _github_token() -> str | None:
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    if token or not shutil.which("gh"):
+        return token
+    out = subprocess.run(["gh", "auth", "token"], capture_output=True, text=True)
+    return out.stdout.strip() or None if out.returncode == 0 else None
+
+
 def check_swift(spec):
+    """A Swift package is its GitHub repository. Only a 404 means it is gone; a rate
+    limit or a missing token is 'could not check', not 'does not exist'."""
     owner_repo = spec.split("github.com/", 1)[1]
+    headers = {"User-Agent": UA, "Accept": "application/vnd.github+json"}
+    token = _github_token()
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    req = urllib.request.Request(f"https://api.github.com/repos/{owner_repo}", headers=headers)
     try:
-        out = subprocess.run(
-            ["gh", "api", f"repos/{owner_repo}"],
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-            timeout=60,
-        )
-    except Exception as e:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            d = json.load(r)
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            return {"exists": False}
+        return {"exists": None, "error": f"GitHub returned {e.code}"}
+    except (urllib.error.URLError, TimeoutError) as e:
         return {"exists": None, "error": str(e)}
-    if out.returncode != 0 or not out.stdout:
-        return {"exists": False}
-    d = json.loads(out.stdout)
     return {
         "exists": True,
         "canonical": d.get("full_name"),
@@ -357,7 +369,14 @@ def main() -> int:
     out = [dict(file=fi, service=s, kind=k, value=v, **results[f"{k}:{v}"]) for fi, s, k, v in rows]
     if a.out:
         Path(a.out).write_text(json.dumps(out, indent=1, default=str), encoding="utf-8")
-    missing = [r for r in out if r.get("exists") is not True]
+    missing = [r for r in out if r.get("exists") is False]
+    # Rate limits and outages are not news about the catalog; they are reported, and
+    # the check fails only on packages a registry says do not exist.
+    unchecked = [r for r in out if r.get("exists") is None]
+    if unchecked:
+        print(f"\nCOULD NOT CHECK ({len(unchecked)}):")
+        for r in unchecked:
+            print(f"  {r['service']:28} {r['kind']:12} {r['value']}  {r.get('error', '')}")
     flagged = [
         r
         for r in out
