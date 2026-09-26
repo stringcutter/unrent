@@ -37,8 +37,17 @@ def write(root: Path, files: dict[str, str]) -> Path:
 
 
 def found(root: Path, catalog, **kw) -> dict[str, list]:
-    """Service id → cited facts."""
+    """Service id → cited facts, for everything reported (models only named included)."""
     return {f.service.id: f.cited for f in match(collect_facts(root, catalog, **kw), catalog)}
+
+
+def deps(root: Path, catalog, **kw) -> set[str]:
+    """Services reported as dependencies, not merely named by a model id."""
+    return {
+        f.service.id
+        for f in match(collect_facts(root, catalog, **kw), catalog)
+        if not f.models_only
+    }
 
 
 @pytest.fixture(autouse=True, params=["python", "ripgrep"])
@@ -788,3 +797,127 @@ def test_same_lab_fine_tunes_are_original(search_mode):
     refresh = _refresh_module()
     assert refresh._original("Qwen", {"base_model": "Qwen/Qwen3-8B-Base"})
     assert not refresh._original("Qwen", {"base_model": "meta-llama/Llama-3.1-8B"})
+
+
+# --- golden-corpus findings: one regression test each ---------------------------
+
+
+def test_model_names_alone_are_named_not_dependencies(tmp_path, catalog):
+    write(
+        tmp_path,
+        {"limits.py": 'LIMITS = {"mistral:mistral-large": 32768, "claude-3-5-sonnet": 200000}\n'},
+    )
+    assert deps(tmp_path, catalog) == set()
+    assert {"mistral", "anthropic"} <= found(tmp_path, catalog).keys()
+    findings = match(collect_facts(tmp_path, catalog), catalog)
+    md = to_markdown(findings, tmp_path, catalog)
+    assert "Closed models named in code" in md and "No closed AI services found" in md
+    data = json.loads(to_json(findings, tmp_path, catalog))
+    assert data["found"] == [] and {f["id"] for f in data["models_named"]} == {
+        "mistral",
+        "anthropic",
+    }
+
+
+def test_capability_model_ids_count_when_the_vendor_is_used(tmp_path, catalog):
+    write(
+        tmp_path,
+        {"a.py": 'from openai import OpenAI\nc = OpenAI()\nm = "text-embedding-3-small"\n'},
+    )
+    assert {"openai", "openai-embeddings"} <= deps(tmp_path, catalog)
+
+
+def test_capability_model_ids_in_tests_are_fixtures(tmp_path, catalog):
+    write(tmp_path, {
+        "client.go": 'import "github.com/openai/openai-go"\n',
+        "go.mod": "module x\nrequire github.com/openai/openai-go v1.0.0\n",
+        "llm_test.go": 'realtimeModel := "gpt-realtime"\n',
+    })  # fmt: skip
+    hits = deps(tmp_path, catalog)
+    assert "openai" in hits and "openai-realtime" not in hits
+
+
+def test_tokenizer_tables_are_not_calls(tmp_path, catalog):
+    write(
+        tmp_path,
+        {"tokenizer.go": 'var m = map[string]int{"text-embedding-ada-002": encodingCL100KBase}\n'},
+    )
+    assert found(tmp_path, catalog) == {}
+
+
+def test_a_vendors_openapi_spec_is_not_usage(tmp_path, catalog):
+    write(tmp_path, {"openai_spec.yaml": (
+        "openapi: 3.0.0\ninfo:\n  title: OpenAI API\nservers:\n  - url: https://api.openai.com/v1\n"
+        "x-key: $OPENAI_API_KEY\nexample: dall-e-2\n"
+    )})  # fmt: skip
+    assert found(tmp_path, catalog) == {}
+
+
+def test_ai_sdk_model_strings_without_a_provider_go_to_the_gateway(tmp_path, catalog):
+    write(tmp_path, {
+        "package.json": '{"dependencies": {"ai": "^6.0.0"}}',
+        "app/actions.ts": 'import { generateText } from "ai";\nawait generateText({ model: "openai/gpt-5-mini" });\n',
+    })  # fmt: skip
+    assert deps(tmp_path, catalog) == {"vercel-ai-gateway"}
+
+
+def test_ai_sdk_with_a_provider_package_calls_the_provider(tmp_path, catalog):
+    write(tmp_path, {
+        "package.json": '{"dependencies": {"ai": "^6.0.0", "@ai-sdk/openai": "^2"}}',
+        "app/actions.ts": 'import { openai } from "@ai-sdk/openai";\nconst m = openai("gpt-5-mini");\n',
+    })  # fmt: skip
+    assert "vercel-ai-gateway" not in deps(tmp_path, catalog)
+    assert "openai" in deps(tmp_path, catalog)
+
+
+def test_claude_on_vertex_is_vertex(tmp_path, catalog):
+    write(tmp_path, {
+        "requirements.txt": "anthropic[vertex]\n",
+        "loop.py": "from anthropic import AnthropicVertex\nclient = AnthropicVertex()\n",
+    })  # fmt: skip
+    assert deps(tmp_path, catalog) == {"google-vertex"}
+
+
+def test_android_speech_recognizer_is_not_azure(tmp_path, catalog):
+    write(
+        tmp_path,
+        {
+            "Voice.kt": "import android.speech.SpeechRecognizer\nval r = SpeechRecognizer.createSpeechRecognizer(ctx)\n"
+        },
+    )
+    assert found(tmp_path, catalog) == {}
+
+
+@pytest.mark.parametrize(
+    ("files", "service"),
+    [
+        (
+            {
+                "utils.ts": 'import { BedrockAgentRuntimeClient, RetrieveCommand } from "@aws-sdk/client-bedrock-agent-runtime";\nnew RetrieveCommand({ knowledgeBaseId: id });\n'
+            },
+            "aws-bedrock-knowledge-bases",
+        ),
+        ({"Program.cs": "OpenAITextToImageService svc = new(key, null);\n"}, "openai-images"),
+        (
+            {
+                "route.ts": 'import { GoogleGenAI } from "@google/genai";\nconst MODEL_ID = "gemini-2.0-flash-exp-image-generation";\n'
+            },
+            "google-imagen",
+        ),
+        (
+            {"config.py": "client = QdrantClient(url=u, api_key=k, cloud_inference=True)\n"},
+            "qdrant-cloud",
+        ),
+        ({"tools.py": "from llama_hub.tools.metaphor.base import MetaphorToolSpec\n"}, "exa"),
+        (
+            {
+                "pom.xml": "<dependency><groupId>org.springframework.ai</groupId><artifactId>spring-ai-starter-model-mistral-ai</artifactId></dependency>\n"
+            },
+            "mistral",
+        ),
+    ],
+    ids=lambda v: v if isinstance(v, str) else next(iter(v)),
+)
+def test_signatures_found_missing_by_the_corpus(tmp_path, catalog, files, service):
+    write(tmp_path, files)
+    assert service in deps(tmp_path, catalog)

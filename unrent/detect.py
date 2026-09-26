@@ -144,6 +144,10 @@ class Fact:
 class Finding:
     service: Service
     facts: tuple[Fact, ...]
+    # Only model names, with no SDK, key, host or package behind them: a token-limit
+    # table, a model menu in a config template, a model picked inside someone else's
+    # hosted agent. Worth listing, not the same as depending on the vendor.
+    models_only: bool = False
 
     @property
     def cited(self) -> list[Fact]:
@@ -552,7 +556,10 @@ _MODEL_TOKEN = re.compile(r"[A-Za-z0-9_./:@-]+")
 _FILE_EXTENSION = re.compile(r"\.[A-Za-z]{2,5}$")
 _OLLAMA_TAG = re.compile(r":(?!\d+$)[A-Za-z0-9._-]+$")  # `command-r:35b`, not bedrock's `-v1:0`
 # Lines that name a model without calling it: tokenizers and local runtimes.
-_MODEL_NOT_A_CALL = re.compile(r"encoding_for_model|tiktoken|ollama", re.IGNORECASE)
+_MODEL_NOT_A_CALL = re.compile(
+    r"encoding_for_model|tiktoken|ollama|cl100k|o200k|p50k|tokeniz", re.IGNORECASE
+)
+_ENCODING_CONSTANT = re.compile(r"encoding[A-Z_]")  # Go/Java: encodingCL100KBase
 
 Needle = tuple[str, str, str, re.Pattern]  # kind, needle, probe, pattern
 
@@ -611,7 +618,7 @@ class Needles:
 
     def _closed_model_at(self, needle: str, pattern: re.Pattern, line: str) -> re.Match | None:
         """The first occurrence of the prefix that names a closed model, if any."""
-        if _MODEL_NOT_A_CALL.search(line):
+        if _MODEL_NOT_A_CALL.search(line) or _ENCODING_CONSTANT.search(line):
             return None
         exempt = self.open_models.get(needle, ())
         for m in pattern.finditer(line):
@@ -1355,6 +1362,9 @@ def _notebook(path: Path, text: str, needles: Needles) -> list[Fact]:
     return facts
 
 
+_API_SPEC = re.compile(r"""\A\s*(?:#[^\n]*\n\s*)*(?:\{\s*)?["']?(?:openapi|swagger)["']?\s*:""")
+
+
 def facts_for_file(
     path: Path, needles: Needles, hit_lines: Iterable[int] | None = None
 ) -> list[Fact]:
@@ -1374,6 +1384,8 @@ def facts_for_file(
         return facts
     if suffix == ".json" and len(text) > MAX_JSON_BYTES:
         return facts
+    if suffix in (".json", ".yaml", ".yml") and _API_SPEC.match(text):
+        return facts  # a vendor's OpenAPI description documents the API; it doesn't call it
 
     view_text = code_view(path, text)
     code = _split_lines(view_text)
@@ -1541,8 +1553,74 @@ def match(facts: list[Fact], catalog: Catalog) -> list[Finding]:
 
     findings = _resolve_overlaps(findings)
     findings = [f for f in findings if not _only_weak(f)]
+    # Marked before the gateway rule: model ids routed to the gateway are how it is
+    # called, so the gateway finding they build is a real dependency.
+    findings = _mark_models_only(findings)
+    findings = _ai_sdk_default_gateway(findings, facts, catalog)
     findings.sort(key=lambda f: (f.service.category, f.service.name))
     return findings
+
+
+# @ai-sdk packages that are not model providers.
+_AI_SDK_TOOLING = {
+    "@ai-sdk/react", "@ai-sdk/vue", "@ai-sdk/svelte", "@ai-sdk/angular", "@ai-sdk/rsc",
+    "@ai-sdk/ui-utils", "@ai-sdk/provider", "@ai-sdk/provider-utils", "@ai-sdk/otel",
+    "@ai-sdk/gateway", "@ai-sdk/mcp", "@ai-sdk/devtools",
+}  # fmt: skip
+GATEWAY_ID = "vercel-ai-gateway"
+
+
+def _ai_sdk_default_gateway(
+    findings: list[Finding], facts: list[Fact], catalog: Catalog
+) -> list[Finding]:
+    """The Vercel AI SDK sends `model: "openai/gpt-5"` to Vercel's AI Gateway when no
+    provider package is installed. The gateway is then the dependency, and the
+    `vendor/model` strings are evidence for it."""
+    gateway = catalog.by_id(GATEWAY_ID)
+    packages = {f.value for f in facts if f.kind == "npm" and f.manifest}
+    providers = {p for p in packages if p.startswith("@ai-sdk/") and p not in _AI_SDK_TOOLING}
+    if gateway is None or "ai" not in packages or providers:
+        return findings
+
+    def routed(fact: Fact) -> bool:
+        return fact.kind == "model" and "/" in fact.value and fact.file.suffix in JS_SUFFIXES
+
+    moved = [f for finding in findings for f in finding.facts if routed(f)]
+    if not moved:
+        return findings
+    out = []
+    for finding in findings:
+        if finding.service.id == GATEWAY_ID:
+            continue
+        rest = tuple(f for f in finding.facts if not routed(f))
+        if rest:
+            out.append(Finding(service=finding.service, facts=rest))
+    existing = next((f.facts for f in findings if f.service.id == GATEWAY_ID), ())
+    merged = {_key(f): f for f in (*existing, *moved)}
+    out.append(Finding(service=gateway, facts=tuple(sorted(merged.values(), key=_key))))
+    # The vendors lost their routed model ids; re-mark what is left of them. The
+    # gateway itself is called through those ids, so it stays a dependency.
+    remarked = _mark_models_only([dataclasses.replace(f, models_only=False) for f in out])
+    return [
+        dataclasses.replace(f, models_only=False) if f.service.id == GATEWAY_ID else f
+        for f in remarked
+    ]
+
+
+def _mark_models_only(findings: list[Finding]) -> list[Finding]:
+    """Flag findings whose only evidence is model names. A capability (OpenAI
+    Embeddings) is exempt when the service it is part of has real evidence:
+    `text-embedding-3-small` next to `from openai import OpenAI` is a real call."""
+    real = {f.service.id for f in findings if any(fact.kind != "model" for fact in f.facts)}
+    out = []
+    for finding in findings:
+        only_models = all(fact.kind == "model" for fact in finding.facts)
+        # A model id in a test is a fixture, not a call, even when the vendor is real.
+        backed = any(base in real for base in finding.service.part_of) and not finding.test_only
+        if only_models and not backed:
+            finding = dataclasses.replace(finding, models_only=True)
+        out.append(finding)
+    return out
 
 
 def _key(fact: Fact) -> tuple[str, int, str, str]:

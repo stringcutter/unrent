@@ -23,6 +23,10 @@ First public release.
 - `--exclude`, `.unrentignore`, `--skip-tests`, `--top`, `--output`.
 - `unrent catalog` and `unrent catalog --validate`.
 - Optional ripgrep acceleration with identical results.
+- Closed model ids with no SDK, key, host or package behind them are listed
+  separately ("closed models named in code") instead of counted as dependencies.
+- A golden corpus of 39 hand-labelled repositories (`eval/`), run in CI with
+  precision and recall floors. Measured: precision 0.99, recall 0.985.
 
 [Unreleased]: https://github.com/niklasmellgren/unrent/compare/v0.2.0...HEAD
 [0.2.0]: https://github.com/niklasmellgren/unrent/releases/tag/v0.2.0

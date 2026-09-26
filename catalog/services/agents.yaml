@@ -20,10 +20,13 @@
   category: Web search
   replace_with: [web-search, web-scraping]
   detect:
-    requirement: [exa-py, langchain-exa]
-    npm: [exa-js, "@langchain/exa"]
-    python_import: [exa_py, langchain_exa]
-    endpoint: [api.exa.ai]
+    # Exa was called Metaphor until 2024.
+    requirement: [exa-py, langchain-exa, metaphor-python]
+    npm: [exa-js, "@langchain/exa", metaphor-node]
+    python_import: [exa_py, langchain_exa, metaphor_python, llama_hub.tools.metaphor,
+                    llama_index.tools.metaphor]
+    symbol: [MetaphorToolSpec]
+    endpoint: [api.exa.ai, api.metaphor.systems]
     env: [EXA_API_KEY]
 
 - id: serper
@@ -112,6 +115,7 @@
 - id: openai-computer-use
   name: OpenAI computer use / Operator
   category: Browser automation
+  part_of: openai
   replace_with: [browser-automation]
   detect:
     symbol: ['"computer_use_preview"', "'computer_use_preview'"]
@@ -175,6 +179,7 @@
 - id: openai-assistants
   name: OpenAI Assistants / Conversations state
   category: Agent memory
+  part_of: openai
   replace_with: [agent-memory, rag-engine]
   detect:
     symbol: ["beta.assistants", "beta.threads"]
