@@ -17,8 +17,8 @@ sys.path.insert(0, str(ROOT))
 
 from unrent.catalog import OPEN_LICENCES, OPEN_MODEL_LICENCES, load_catalog  # noqa: E402
 from unrent.cli import main  # noqa: E402
-from unrent.detect import collect_facts, js_package, match, redact  # noqa: E402
-from unrent.report import to_json, to_markdown  # noqa: E402
+from unrent.detect import collect_facts, image_name, js_package, match, redact  # noqa: E402
+from unrent.report import standings, to_json, to_markdown  # noqa: E402
 
 CATALOG_DIR = ROOT / "catalog"
 
@@ -42,11 +42,11 @@ def found(root: Path, catalog, **kw) -> dict[str, list]:
 
 
 def deps(root: Path, catalog, **kw) -> set[str]:
-    """Services reported as dependencies, not merely named by a model id."""
+    """Closed services reported as dependencies, not merely named by a model id."""
     return {
         f.service.id
         for f in match(collect_facts(root, catalog, **kw), catalog)
-        if not f.models_only
+        if not f.models_only and not f.service.open_source
     }
 
 
@@ -1002,3 +1002,122 @@ def test_regional_bedrock_model_ids(tmp_path, catalog):
         'MODEL = "global.anthropic.claude-sonnet-4-5-20250929-v1:0"\n'
     )})  # fmt: skip
     assert "aws-bedrock" in deps(tmp_path, catalog)
+
+
+# --- open source you already run --------------------------------------------------
+
+
+def running(root: Path, catalog, **kw) -> dict:
+    """Open source components found, by repo."""
+    return {
+        f.service.repo: f
+        for f in match(collect_facts(root, catalog, **kw), catalog)
+        if f.service.open_source
+    }
+
+
+def test_open_source_components_are_recognised_not_reported_as_closed(tmp_path, catalog):
+    write(tmp_path, {"requirements.txt": "faiss-cpu==1.8\n", "app.py": "import faiss\n"})
+    assert set(running(tmp_path, catalog)) == {"facebookresearch/faiss"}
+    assert deps(tmp_path, catalog) == set()
+    data = json.loads(to_json(match(collect_facts(tmp_path, catalog), catalog), tmp_path, catalog))
+    assert data["found"] == []
+    assert [f["repo"] for f in data["open_source"]] == ["facebookresearch/faiss"]
+
+
+def test_standing_in_the_pool_and_among_the_same_kind(tmp_path, catalog):
+    write(tmp_path, {"docker-compose.yml": "services:\n  db:\n    image: qdrant/qdrant:v1.12.0\n"})
+    finding = running(tmp_path, catalog)["qdrant/qdrant"]
+    (s,) = standings(finding, catalog)
+    pool = catalog.pools["vector-db"]
+    assert s.pool.id == "vector-db" and s.of == len(pool.alternatives)
+    assert pool.alternatives[s.rank - 1].name == "qdrant/qdrant"
+    servers = [a.name for a in pool.alternatives if a.kind == "server"]
+    assert s.kind_rank == servers.index("qdrant/qdrant") + 1 and s.kind_of == len(servers)
+    assert all(pool.alternatives.index(a) < s.rank - 1 for a in s.ahead)
+    md = to_markdown(match(collect_facts(tmp_path, catalog), catalog), tmp_path, catalog)
+    assert "Open source you already run" in md and f"#{s.rank} of {s.of}" in md
+
+
+def test_a_component_that_dropped_out_of_the_ranking_is_flagged(tmp_path, catalog, monkeypatch):
+    import dataclasses
+
+    pool = catalog.pools["vector-db"]
+    without = tuple(a for a in pool.alternatives if a.name != "facebookresearch/faiss")
+    monkeypatch.setitem(catalog.pools, "vector-db", dataclasses.replace(pool, alternatives=without))
+    write(tmp_path, {"app.py": "import faiss\n"})
+    (s,) = standings(running(tmp_path, catalog)["facebookresearch/faiss"], catalog)
+    assert s.rank is None
+    md = to_markdown(match(collect_facts(tmp_path, catalog), catalog), tmp_path, catalog)
+    assert "no longer ranked" in md
+
+
+@pytest.mark.parametrize(
+    ("ref", "name"),
+    [
+        ("qdrant/qdrant:v1.12.0", "qdrant/qdrant"),
+        ("docker.io/library/postgres:16", "postgres"),
+        ("docker.io/ollama/ollama@sha256:abc", "ollama/ollama"),
+        ("localhost:5000/team/app:1", "localhost:5000/team/app"),
+        ("ghcr.io/ggml-org/llama.cpp:server", "ghcr.io/ggml-org/llama.cpp"),
+        ("${REGISTRY}/qdrant/qdrant", None),
+        ("{{ .Values.image.repository }}", None),
+    ],
+)
+def test_image_names(ref, name):
+    assert image_name(ref) == name
+
+
+@pytest.mark.parametrize(
+    ("files", "repo"),
+    [
+        (
+            {"Dockerfile": "FROM --platform=linux/amd64 vllm/vllm-openai:v0.9.0\n"},
+            "vllm-project/vllm",
+        ),
+        (
+            {
+                "k8s/deploy.yaml": "spec:\n  containers:\n    - name: m\n      image: getmeili/meilisearch:v1.12\n"
+            },
+            "meilisearch/meilisearch",
+        ),
+        (
+            {
+                "chart/values.yaml": "image:\n  repository: ghcr.io/huggingface/text-embeddings-inference\n  tag: 1.5\n"
+            },
+            "huggingface/text-embeddings-inference",
+        ),
+        (
+            {"migrations/001.sql": "-- enable vectors\nCREATE EXTENSION IF NOT EXISTS vector;\n"},
+            "pgvector/pgvector",
+        ),
+        ({".env.example": "OLLAMA_BASE_URL=http://localhost:11434\n"}, "ollama/ollama"),
+        ({"package.json": '{"dependencies": {"@lancedb/lancedb": "0.15.0"}}'}, "lancedb/lancedb"),
+        ({"go.mod": "module x\nrequire github.com/qdrant/go-client v1.12.0\n"}, "qdrant/qdrant"),
+    ],
+    ids=lambda v: v if isinstance(v, str) else next(iter(v)),
+)
+def test_open_source_evidence(tmp_path, catalog, files, repo):
+    write(tmp_path, files)
+    assert repo in running(tmp_path, catalog)
+
+
+def test_commented_images_and_templated_images_are_ignored(tmp_path, catalog):
+    write(tmp_path, {
+        "docker-compose.yml": "services:\n  db:\n    # image: qdrant/qdrant\n    image: ${DB_IMAGE}\n",
+        "chart/templates/deploy.yaml": 'image: "{{ .Values.image.repository }}"\n',
+    })  # fmt: skip
+    assert running(tmp_path, catalog) == {}
+
+
+def test_import_whisper_alone_is_not_openai_whisper(tmp_path, catalog):
+    write(tmp_path, {"metrics.py": "import whisper\nwhisper.create('x.wsp', [(60, 1440)])\n"})
+    assert "openai/whisper" not in running(tmp_path, catalog)
+    write(tmp_path, {"requirements.txt": "openai-whisper\n"})
+    assert "openai/whisper" in running(tmp_path, catalog)
+
+
+def test_every_project_in_the_catalog_belongs_to_a_pool_and_has_a_kind(catalog):
+    assert len(catalog.projects) > 50
+    for project in catalog.projects:
+        assert project.kind and project.replace_with, project.repo

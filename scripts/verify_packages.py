@@ -326,7 +326,12 @@ def load(paths):
     rows = []
     for p in paths:
         data = yaml.safe_load(Path(p).read_text(encoding="utf-8"))
-        if isinstance(data, dict):  # proposals.yaml: new_services + add_signatures
+        if isinstance(data, dict) and "projects" in data:  # alternatives.yaml
+            data = [
+                {"id": repo, "detect": spec.get("detect")}
+                for repo, spec in data["projects"].items()
+            ]
+        elif isinstance(data, dict):  # proposals.yaml: new_services + add_signatures
             data = [
                 *(data.get("services") or data.get("new_services") or []),
                 *(
@@ -354,6 +359,9 @@ def main() -> int:
     ap.add_argument("--no-catalog", action="store_true")
     a = ap.parse_args()
     files = [] if a.no_catalog else sorted(Path(a.catalog).glob("*.yaml"))
+    alternatives = Path(a.catalog).parent / "alternatives.yaml"
+    if not a.no_catalog and alternatives.is_file():
+        files.append(alternatives)  # the open source projects' signatures
     rows = load([*files, *a.extra])
     unique = sorted({(k, v) for _, _, k, v in rows})
     print(f"{len(rows)} signatures, {len(unique)} unique", file=sys.stderr)

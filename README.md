@@ -2,15 +2,17 @@
 
 Point it at a codebase. It lists every closed AI service the code depends on, where,
 and the open source projects and open-weight models that replace each one — ranked by
-momentum: GitHub star growth for projects, Hugging Face trending for models.
+momentum: GitHub star growth for projects, Hugging Face trending for models. And for
+the open source AI components the code already runs, it shows where each one stands in
+its field today.
 
 ```
 $ unrent scan my-app/
 # AI dependencies in `my-app`
 
-Scanned 2026-09-26 · 106 closed AI services in the catalog · alternatives ranked 2026-09-26
+Scanned 2026-09-26 · 163 closed AI services and 88 open source projects in the catalog
 
-Found **2** closed AI services.
+Found **2** closed AI services, and **1** open source component already in use.
 
 | Closed service | Category | Replace with |
 |---|---|---|
@@ -27,12 +29,24 @@ Found **2** closed AI services.
 - `main.py:1` — `from openai import OpenAI`
 - `main.py:5` — `resp = client.chat.completions.create(model="gpt-4o", messages=[])`
 ...
+
+## Open source you already run
+
+### faiss (library)
+
+[facebookresearch/faiss](https://github.com/facebookresearch/faiss) · found at `app.py:1` — `import faiss`
+
+- **Vector database**: #2 of 9 (★ 41.0k). Ranked above it:
+  - [milvus-io/milvus](https://github.com/milvus-io/milvus) — server, ★ 46.3k
 ```
 
 The report is Markdown, so it renders as a table in a pull request or issue.
 
-Built for the moment you fork a template or inherit an app and want to know which AI
-components are rented, and what the best open replacement is today.
+Built for two moments. When you fork a template or inherit an app: which AI components
+are rented, and what is the best open replacement today. And as a routine check on your
+own project: the AI stack moves fast, and the vector database or inference server that
+was the obvious pick a year ago may have been overtaken — or archived. Run it in CI, or
+every few weeks, and the report tells you where each component you run now stands.
 
 ## Install
 
@@ -118,6 +132,24 @@ installed, `model: "openai/gpt-5"` is sent to Vercel's AI Gateway, so it is repo
 a dependency on the gateway.
 
 Each of these is pinned by a test that fails without it.
+
+## The open source you already run
+
+unrent also recognises 88 open source AI components — vector databases (faiss, Qdrant,
+Milvus, Weaviate, Chroma, LanceDB, pgvector), search engines, inference servers (vLLM,
+SGLang, llama.cpp, Ollama), gateways (LiteLLM), embedding and reranking libraries,
+document parsers, observability (Langfuse, Opik, MLflow), speech, agent memory and
+scraping — from their packages, imports, SQL (`CREATE EXTENSION vector`) and, since
+self-hosted servers usually run from images, from `image:` in compose and Kubernetes
+files, Helm values and Dockerfile `FROM`.
+
+For each one the report shows its place in its pool, overall and among projects of the
+same kind, and the projects ranked above it. The kind matters: faiss is a library,
+Qdrant a server, pgvector a Postgres extension, and a library that ranks lower than a
+server may still be the right tool. The ranking says what is gaining ground; it is a
+prompt to look, not a verdict. A component that drops out of the ranking — archived, a
+year without a push, or relicensed away from open source — is called out, which is often
+the more urgent news.
 
 ## How accurate it is
 

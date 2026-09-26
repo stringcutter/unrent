@@ -715,7 +715,7 @@
    "dropped": []
   },
   "embedding-serving": {
-   "name": "Embedding server",
+   "name": "Embedding inference",
    "source": "github",
    "ranked_by": "stars",
    "ranked": [

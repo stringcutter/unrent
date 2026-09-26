@@ -11,6 +11,7 @@ Two halves, kept apart on purpose:
 
 from __future__ import annotations
 
+import dataclasses
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -52,6 +53,8 @@ DETECT_KINDS = frozenset(
         "swift",
         # code and configuration
         "python_import", "symbol", "model", "endpoint", "env", "terraform_resource",
+        # container images, for self-hosted open source servers
+        "image",
     }
 )  # fmt: skip
 POOL_SOURCES = frozenset({"github", "huggingface"})
@@ -73,6 +76,8 @@ class Alternative:
     # Hugging Face models
     downloads: int | None = None
     trending: int | None = None
+    # library, server, Postgres extension, ... (from alternatives.yaml `projects`)
+    kind: str | None = None
 
 
 @dataclass(frozen=True)
@@ -115,19 +120,29 @@ class Service:
     # A capability of a broader service (OpenAI Embeddings is part of the OpenAI API).
     # Its model ids count as real evidence when the broader service is itself in use.
     part_of: tuple[str, ...] = ()
+    # An open source project from alternatives.yaml, recognised so a scan can say
+    # where the component a codebase already runs stands in its pool.
+    open_source: bool = False
+    repo: str | None = None
+    kind: str | None = None
 
 
 @dataclass
 class Catalog:
-    services: list[Service] = field(default_factory=list)
+    services: list[Service] = field(default_factory=list)  # closed services
     pools: dict[str, Pool] = field(default_factory=dict)
     rankings_date: str | None = None
+    projects: list[Service] = field(default_factory=list)  # recognisable open source
 
     def __len__(self) -> int:
         return len(self.services)
 
+    @property
+    def detectable(self) -> list[Service]:
+        return [*self.services, *self.projects]
+
     def by_id(self, service_id: str) -> Service | None:
-        return next((s for s in self.services if s.id == service_id), None)
+        return next((s for s in self.detectable if s.id == service_id), None)
 
     def alternatives_for(self, service: Service) -> list[Pool]:
         return [self.pools[p] for p in service.replace_with]
@@ -311,4 +326,53 @@ def load_catalog(path: Path) -> Catalog:
         for other in (*service.excludes, *service.part_of):
             if other not in seen:
                 raise CatalogError(f"service '{service.id}' names unknown service '{other}'")
+
+    catalog.projects = _load_projects(path / "alternatives.yaml", pools)
+    kinds = {p.repo: p.kind for p in catalog.projects}
+    for pool_id, pool in pools.items():
+        pools[pool_id] = dataclasses.replace(
+            pool,
+            alternatives=tuple(
+                dataclasses.replace(a, kind=kinds.get(a.name)) for a in pool.alternatives
+            ),
+        )
     return catalog
+
+
+def _load_projects(path: Path, pools: dict[str, Pool]) -> list[Service]:
+    """The `projects` section of alternatives.yaml: open source components a scan can
+    recognise, each belonging to every pool that lists its repo."""
+    raw = yaml.safe_load(path.read_text("utf-8")) or {}
+    listed = {
+        p["repo"]: [pid for pid, pool in pools.items() if p["repo"] in _repos(raw, pid)]
+        for item in raw.get("pools") or []
+        for p in item.get("projects") or []
+    }
+    out = []
+    for repo, spec in (raw.get("projects") or {}).items():
+        if repo not in listed:
+            raise CatalogError(f"{path.name}: project '{repo}' is not in any pool")
+        if not spec.get("kind"):
+            raise CatalogError(f"{path.name}: project '{repo}' is missing 'kind'")
+        pool_ids = listed[repo]
+        service = _parse_service(
+            {
+                "id": f"oss:{repo}",
+                "name": repo.split("/", 1)[1],
+                "category": pools[pool_ids[0]].name,
+                "replace_with": pool_ids,
+                "detect": spec.get("detect"),
+                "weak": spec.get("weak"),
+            },
+            path,
+            pools,
+        )
+        out.append(
+            dataclasses.replace(service, open_source=True, repo=repo, kind=str(spec["kind"]))
+        )
+    return out
+
+
+def _repos(raw: dict, pool_id: str) -> set[str]:
+    pool = next(p for p in raw.get("pools") or [] if p.get("id") == pool_id)
+    return {p["repo"] for p in pool.get("projects") or []}
