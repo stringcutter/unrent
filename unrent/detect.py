@@ -35,8 +35,8 @@ import shutil
 import subprocess
 import tempfile
 import tokenize
-import warnings
 import tomllib
+import warnings
 from collections.abc import Iterable
 from dataclasses import dataclass
 from io import StringIO
@@ -95,7 +95,7 @@ JS_SUFFIXES = {
 C_FAMILY = JS_SUFFIXES | {
     ".go", ".rs", ".java", ".kt", ".kts", ".scala", ".groovy", ".gradle", ".cs", ".fs",
     ".swift", ".dart", ".c", ".h", ".cc", ".cpp", ".cxx", ".hpp", ".m", ".mm", ".php",
-    ".jsonc", ".json5", ".tf", ".tfvars", ".hcl",
+    ".json", ".jsonc", ".json5", ".tf", ".tfvars", ".hcl",
 }  # fmt: skip
 # `#` also opens a comment in these C-family files.
 C_AND_HASH = {".php", ".tf", ".tfvars", ".hcl"}
@@ -111,9 +111,15 @@ LOCKFILES = {
     "package.resolved",
 }  # fmt: skip
 GENERATED = re.compile(r"\.(min|bundle|chunk)\.(js|mjs|cjs|css)$|\.map$", re.IGNORECASE)
-TEST_DIRS = {"test", "tests", "__tests__", "spec", "specs", "e2e", "__mocks__", "mocks",
-             "fixtures", "testdata", "test_data", "cypress", "playwright"}  # fmt: skip
-TEST_FILE = re.compile(r"(^test_.*\.py$|_test\.(py|go)$|\.(test|spec|e2e)\.[a-z]+$)", re.IGNORECASE)
+# Not `spec`/`specs`: outside Ruby those hold API and connector specifications, which are
+# production code. Ruby specs are caught by their `_spec.rb` file names instead.
+TEST_DIRS = {"test", "tests", "__tests__", "e2e", "__mocks__", "mocks", "fixtures", "testdata",
+             "test_data", "cypress", "playwright"}  # fmt: skip
+TEST_FILE = re.compile(
+    r"(^test_.*\.py$|_test\.(py|go)$|_spec\.rb$|\.(test|spec|e2e)\.[a-z]+$"
+    r"|^(pytest\.ini|conftest\.py|tox\.ini|\.env\.test.*)$)",
+    re.IGNORECASE,
+)
 PACKAGE_KINDS = {
     "requirement",
     "npm",
@@ -516,8 +522,6 @@ def code_view(path: Path, text: str) -> str:
         return _xml_view(text)
     if suffix in DASH_COMMENT:
         return _hash_like(text.replace("#", "\0"), extra="--").replace("\0", "#")
-    if suffix in (".json",):
-        return text
     if suffix in (".ini",):
         return _hash_like(text, extra=";")
     if suffix == ".properties":
@@ -556,7 +560,7 @@ def _needle_pattern(kind: str, needle: str) -> re.Pattern:
         head = r"(?<![A-Za-z0-9_$])" if needle[:1].isalnum() or needle[:1] in "_$" else ""
         return re.compile(head + escaped + (r"(?![A-Za-z0-9_])" if ends_word else ""))
     if kind == "model":
-        return re.compile(r"(?<![A-Za-z0-9_./-])" + escaped)
+        return re.compile(r"(?<![A-Za-z0-9_./@-])" + escaped)
     if kind == "endpoint":
         tail = r"(?![A-Za-z0-9(-])" if ends_word else ""
         return re.compile(r"(?<![A-Za-z0-9-])" + escaped + tail, re.IGNORECASE)
@@ -702,11 +706,21 @@ _SECRET_SHAPES = re.compile(
 _NOT_A_SECRET = re.compile(r"[($<{]|env|getenv|secrets\.|config\.|settings\.", re.IGNORECASE)
 
 
+_ENV_NAME = re.compile(r"[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+")  # FIRECRAWL_API_KEY
+_IDENTIFIER = re.compile(r"[A-Za-z_][A-Za-z0-9_.]*")
+
+
 def redact(text: str) -> str:
     def assignment(m: re.Match) -> str:
         value = m.group(3)
         if _NOT_A_SECRET.search(value) or set(value) <= set("*xX.-_<>"):
             return m.group(0)
+        if _ENV_NAME.fullmatch(value):
+            return m.group(0)  # the name of the variable that holds the key, not the key
+        rest = m.string[m.end() :].lstrip()
+        quoted = m.group(2).rstrip().endswith(("'", '"'))
+        if not quoted and _IDENTIFIER.fullmatch(value) and rest[:2] in ("or", "||", "??", ")"):
+            return m.group(0)  # `api_key = api_key or os.getenv(...)`: code, not a secret
         return f"{m.group(1)}{m.group(2)}****"
 
     text = _SECRET_ASSIGNMENT.sub(assignment, text)
@@ -1522,8 +1536,13 @@ def _is_local_import(fact: Fact, local: set[str]) -> bool:
     top = fact.value.split(".", 1)[0]
     if top in local:
         return True
-    sibling = fact.file.parent  # a script importing a module next to it
-    return (sibling / f"{top}.py").is_file() or (sibling / top / "__init__.py").is_file()
+    # A script importing a module next to it. Not inside a package, where imports are
+    # absolute, and never the importing file itself: `lancedb.py` saying `import
+    # lancedb` is a wrapper around the real library.
+    here = fact.file.parent
+    if (here / "__init__.py").is_file() or fact.file.stem == top:
+        return False
+    return (here / f"{top}.py").is_file() or (here / top / "__init__.py").is_file()
 
 
 def collect_facts(
@@ -1549,7 +1568,21 @@ def collect_facts(
             if fact.kind == "python_import" and _is_local_import(fact, local):
                 continue
             facts.append(dataclasses.replace(fact, in_test=in_test) if in_test else fact)
+    own = _own_repo(root)
+    if own:
+        facts.append(Fact("own_repo", own, root, 0, ""))
     return facts
+
+
+_GITHUB_REMOTE = re.compile(r"github\.com[:/]+([^/\s]+/[^/\s]+?)(?:\.git)?/?$", re.IGNORECASE)
+
+
+def _own_repo(root: Path) -> str | None:
+    """`owner/repo` of the checkout being scanned, from its origin remote: a project
+    is never reported as a component of itself (ragflow's Helm chart runs ragflow)."""
+    urls = _git(root, "config", "--get", "remote.origin.url")
+    match_ = _GITHUB_REMOTE.search(urls[0].strip()) if urls else None
+    return match_.group(1).lower() if match_ else None
 
 
 # Keep each ripgrep command line well under Windows' 32,767-character limit.
@@ -1667,10 +1700,11 @@ def match(facts: list[Fact], catalog: Catalog) -> list[Finding]:
                 hits_by_service.setdefault(service.id, {})[_key(fact)] = fact
 
     local = [f for f in facts if f.kind == "local_base_url"]
+    own = {f.value for f in facts if f.kind == "own_repo"}
     findings: list[Finding] = []
     for service in catalog.detectable:
         hits = hits_by_service.get(service.id)
-        if not hits:
+        if not hits or (service.repo and service.repo.lower() in own):
             continue
         kept = tuple(sorted(hits.values(), key=lambda f: (str(f.file), f.line, f.kind, f.value)))
         if service.local_compatible:

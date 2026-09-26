@@ -1247,3 +1247,89 @@ def test_bad_rankings_snapshot_is_a_clear_error(tmp_path, capsys):
     (cat / "rankings.json").write_text("{not json", encoding="utf-8")
     assert main(["catalog", "--validate", "--catalog", str(cat)]) == 2
     assert "rankings.json" in capsys.readouterr().err
+
+
+# --- acceptance test findings: precision -----------------------------------------------
+
+
+def test_specs_directories_are_production_code(tmp_path, catalog):
+    write(tmp_path, {"src/specs/jina/jina_reader.ts": "const URL = 'https://r.jina.ai';\n"})
+    findings = {f.service.id: f for f in match(collect_facts(tmp_path, catalog), catalog)}
+    assert not findings["jina-api"].test_only
+
+
+def test_ruby_specs_and_pytest_config_are_tests(tmp_path, catalog):
+    write(tmp_path, {
+        "spec/models/llm_spec.rb": 'ENV["COHERE_API_KEY"]\n',
+        "api/pytest.ini": "[pytest]\nenv =\n    VOYAGE_API_KEY=x\n",
+    })  # fmt: skip
+    findings = match(collect_facts(tmp_path, catalog), catalog)
+    assert findings and all(f.test_only for f in findings)
+    assert found(tmp_path, catalog, skip_tests=True) == {}
+
+
+def test_json_comments_are_comments(tmp_path, catalog):
+    write(tmp_path, {"appsettings.json": (
+        "{\n  // By default the system uses 'https://api.openai.com/v1'.\n"
+        '  "Endpoint": "http://localhost:8080"\n}\n'
+    )})  # fmt: skip
+    assert found(tmp_path, catalog) == {}
+
+
+def test_urls_in_json_strings_are_not_comments(tmp_path, catalog):
+    write(tmp_path, {"config.json": '{"endpoint": "https://api.anthropic.com/v1"}\n'})
+    assert "anthropic" in deps(tmp_path, catalog)
+
+
+def test_redaction_keeps_code_and_variable_names():
+    assert redact('api_key = api_key or os.getenv("X")') == 'api_key = api_key or os.getenv("X")'
+    assert redact('EnvKey = "FIRECRAWL_API_KEY"') == 'EnvKey = "FIRECRAWL_API_KEY"'
+    assert redact('ANTHROPIC_API_KEY="realsecretvalue123"') == 'ANTHROPIC_API_KEY="****"'
+
+
+def test_vscode_extension_id_is_not_a_bedrock_model(tmp_path, catalog):
+    write(
+        tmp_path, {".devcontainer/devcontainer.json": '{"extensions": ["anthropic.claude-code"]}\n'}
+    )
+    assert found(tmp_path, catalog) == {}
+
+
+def test_npm_scope_is_not_a_gateway_model_prefix(tmp_path, catalog):
+    write(tmp_path, {"a.ts": 'import { OpenRouter } from "@openrouter/sdk";\n'})
+    hits = found(tmp_path, catalog)
+    assert all(f.kind != "model" for f in hits.get("openrouter", []))
+
+
+def test_open_snowflake_embeddings_are_open(tmp_path, catalog):
+    write(tmp_path, {"conf.json": '{"model": "snowflake/arctic-embed-l"}\n'})
+    assert "snowflake-cortex" not in found(tmp_path, catalog)
+
+
+def test_github_models_is_its_own_service(tmp_path, catalog):
+    write(
+        tmp_path,
+        {"app.properties": "spring.ai.openai.base-url=https://models.github.ai/inference\n"},
+    )
+    hits = deps(tmp_path, catalog)
+    assert "github-models" in hits and "azure-ai-foundry" not in hits
+
+
+def test_a_wrapper_module_named_like_the_library_imports_the_library(tmp_path, catalog):
+    write(tmp_path, {
+        "kotaemon/__init__.py": "",
+        "kotaemon/storages/__init__.py": "",
+        "kotaemon/storages/lancedb.py": "import lancedb\n",
+    })  # fmt: skip
+    assert "lancedb/lancedb" in running(tmp_path, catalog)
+
+
+@pytest.mark.skipif(not shutil.which("git"), reason="git not installed")
+def test_a_project_is_not_a_component_of_itself(tmp_path, catalog):
+    write(tmp_path, {"helm/values.yaml": "image:\n  repository: infiniflow/ragflow\n"})
+    subprocess.run(["git", "init", "-q"], cwd=tmp_path, check=True)
+    subprocess.run(
+        ["git", "remote", "add", "origin", "https://github.com/infiniflow/ragflow.git"],
+        cwd=tmp_path,
+        check=True,
+    )
+    assert "infiniflow/ragflow" not in running(tmp_path, catalog)
