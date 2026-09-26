@@ -827,3 +827,131 @@
   detect:
     endpoint: [api.lakera.ai]
     env: [LAKERA_GUARD_API_KEY, LAKERA_API_KEY]
+
+# ---------------------------------------------------------------- added from real-repo gaps
+
+- id: aws-sagemaker
+  name: Amazon SageMaker endpoints
+  category: Model hosting
+  replace_with: [llm-serving, open-llm]
+  detect:
+    requirement: [sagemaker, llama-index-llms-sagemaker-endpoint]
+    npm: ["@aws-sdk/client-sagemaker-runtime"]
+    go: [github.com/aws/aws-sdk-go-v2/service/sagemakerruntime]
+    maven: ["software.amazon.awssdk:sagemakerruntime"]
+    nuget: [AWSSDK.SageMakerRuntime]
+    symbol: ['"sagemaker-runtime"', "'sagemaker-runtime'", SagemakerEndpoint, SageMakerRuntimeClient,
+             SagemakerEndpointEmbeddings]
+    endpoint: [runtime.sagemaker.]
+    terraform_resource: [aws_sagemaker_endpoint, aws_sagemaker_model]
+
+- id: baidu-qianfan
+  name: Baidu Qianfan (ERNIE API)
+  category: LLM API
+  excludes: [openai]
+  replace_with: [open-llm, llm-serving]
+  detect:
+    requirement: [qianfan, llama-index-llms-qianfan]
+    python_import: [qianfan]
+    symbol: [QianfanChatEndpoint, QianfanLLMEndpoint, QianfanEmbeddingsEndpoint]
+    endpoint: [qianfan.baidubce.com, aip.baidubce.com]
+    env: [QIANFAN_AK, QIANFAN_SK, QIANFAN_ACCESS_KEY, QIANFAN_SECRET_KEY]
+
+- id: siliconflow
+  name: SiliconFlow
+  category: LLM API
+  excludes: [openai]
+  replace_with: [open-llm, llm-serving]
+  detect:
+    requirement: [llama-index-llms-siliconflow]
+    endpoint: [api.siliconflow.cn, api.siliconflow.com]
+    env: [SILICONFLOW_API_KEY]
+
+- id: tencent-hunyuan
+  name: Tencent Hunyuan API
+  category: LLM API
+  excludes: [openai]
+  replace_with: [open-llm, llm-serving]
+  detect:
+    requirement: [tencentcloud-sdk-python-hunyuan]
+    python_import: [tencentcloud.hunyuan]
+    endpoint: [hunyuan.tencentcloudapi.com, api.hunyuan.cloud.tencent.com]
+    env: [HUNYUAN_API_KEY, HUNYUAN_SECRET_ID, HUNYUAN_SECRET_KEY]
+
+- id: iflytek-spark
+  name: iFlytek Spark API
+  category: LLM API
+  excludes: [openai]
+  # SPARK_* also configures Apache Spark; the API hosts decide.
+  weak: [[SPARK_API_KEY, SPARK_APP_ID, SPARK_API_SECRET]]
+  replace_with: [open-llm, llm-serving]
+  detect:
+    endpoint: [spark-api.xf-yun.com, spark-api-open.xf-yun.com]
+    env: [SPARK_API_KEY, SPARK_APP_ID, SPARK_API_SECRET, IFLYTEK_SPARK_API_KEY]
+
+- id: baichuan
+  name: Baichuan API
+  category: LLM API
+  excludes: [openai]
+  replace_with: [open-llm, llm-serving]
+  detect:
+    endpoint: [api.baichuan-ai.com]
+    env: [BAICHUAN_API_KEY]
+
+- id: stepfun-api
+  name: StepFun API
+  category: LLM API
+  excludes: [openai]
+  replace_with: [open-llm, llm-serving]
+  detect:
+    endpoint: [api.stepfun.com]
+    env: [STEPFUN_API_KEY]
+
+- id: novita
+  name: Novita AI
+  category: LLM API
+  excludes: [openai]
+  replace_with: [open-llm, llm-serving]
+  detect:
+    endpoint: [api.novita.ai]
+    env: [NOVITA_API_KEY]
+
+- id: clarifai
+  name: Clarifai
+  category: Model hosting
+  replace_with: [llm-serving, open-llm]
+  detect:
+    requirement: [clarifai]
+    python_import: [clarifai]
+    npm: [clarifai-nodejs]
+    endpoint: [api.clarifai.com]
+    env: [CLARIFAI_PAT]
+
+- id: aleph-alpha
+  name: Aleph Alpha API
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  detect:
+    requirement: [aleph-alpha-client]
+    python_import: [aleph_alpha_client]
+    endpoint: [api.aleph-alpha.com]
+    env: [ALEPH_ALPHA_API_KEY, AA_TOKEN]
+
+- id: reka
+  name: Reka API
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  detect:
+    requirement: [reka-api]
+    endpoint: [api.reka.ai]
+    env: [REKA_API_KEY]
+
+- id: gigachat
+  name: GigaChat (Sber)
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  detect:
+    requirement: [gigachat, langchain-gigachat]
+    python_import: [gigachat, langchain_gigachat]
+    endpoint: [gigachat.devices.sberbank.ru, ngw.devices.sberbank.ru]
+    env: [GIGACHAT_CREDENTIALS]

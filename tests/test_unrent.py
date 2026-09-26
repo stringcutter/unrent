@@ -1480,3 +1480,58 @@ def test_catalog_rejects_unquoted_commas_in_descriptions(tmp_path):
     (cat / "alternatives.yaml").write_text(text, encoding="utf-8")
     with pytest.raises(CatalogError, match="unexpected keys"):
         load_catalog(cat)
+
+
+# --- catalog gaps from real repos ------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    ("files", "service"),
+    [
+        ({"a.py": 'import boto3\nrt = boto3.client("sagemaker-runtime")\n'}, "aws-sagemaker"),
+        (
+            {"conf/models/baidu.json": '{"base_url": "https://qianfan.baidubce.com/v2"}\n'},
+            "baidu-qianfan",
+        ),
+        (
+            {"conf/models/siliconflow.json": '{"base_url": "https://api.siliconflow.cn/v1"}\n'},
+            "siliconflow",
+        ),
+        (
+            {"a.py": 'url = "https://spark-api-open.xf-yun.com/v1/chat/completions"\n'},
+            "iflytek-spark",
+        ),
+        ({"a.py": 'url = "https://api.stepfun.com/v1"\n'}, "stepfun-api"),
+        ({"requirements.txt": "gigachat\n"}, "gigachat"),
+        (
+            {
+                "a.py": "from langchain_community.vectorstores import AzureCosmosDBNoSqlVectorSearch\n"
+            },
+            "azure-cosmos-vector",
+        ),
+        ({"requirements.txt": "tcvectordb\n"}, "tencent-vectordb"),
+        (
+            {
+                "go.mod": "module x\nrequire github.com/aws/aws-sdk-go-v2/service/bedrockagent v1.0.0\n"
+            },
+            "aws-bedrock-knowledge-bases",
+        ),
+    ],
+    ids=lambda v: v if isinstance(v, str) else next(iter(v)),
+)
+def test_catalog_gaps(tmp_path, catalog, files, service):
+    write(tmp_path, files)
+    assert service in deps(tmp_path, catalog)
+
+
+def test_apache_spark_settings_are_not_iflytek(tmp_path, catalog):
+    write(tmp_path, {".env": "SPARK_APP_ID=etl-job\n"})
+    assert "iflytek-spark" not in found(tmp_path, catalog)
+
+
+def test_provider_through_openai_sdk_names_the_provider(tmp_path, catalog):
+    write(tmp_path, {
+        "requirements.txt": "openai\n",
+        "a.py": 'from openai import OpenAI\nc = OpenAI(base_url="https://api.siliconflow.cn/v1")\n',
+    })  # fmt: skip
+    assert deps(tmp_path, catalog) == {"siliconflow"}

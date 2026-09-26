@@ -866,6 +866,13 @@ repos:
   - parallel-web
   - e2b
   - google-programmable-search
+  - baichuan
+  - baidu-qianfan
+  - novita
+  - siliconflow
+  - stepfun-api
+  - tencent-hunyuan
+  - iflytek-spark
   tests_only:
   - google-programmable-search
   uncertain:
@@ -1488,6 +1495,10 @@ repos:
   - fireworks
   - upstage
   - voyage
+  - alibaba-analyticdb
+  - baidu-vectordb
+  - tencent-vectordb
+  - volcengine-vikingdb
   tests_only:
   - openai-speech-to-text
   - fireworks
@@ -1989,6 +2000,8 @@ repos:
   - brave-search
   - you-com
   - firecrawl-cloud
+  - baidu-qianfan
+  - novita
   tests_only: []
   uncertain:
   - nvidia-nim-api
@@ -2454,6 +2467,7 @@ repos:
   - exa
   - zep-cloud
   - assemblyai
+  - baidu-qianfan
   tests_only: []
   uncertain:
   - deepseek-api
