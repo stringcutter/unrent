@@ -7,6 +7,31 @@ each release ships the rankings as of its date.
 
 ## [Unreleased]
 
+### Added
+- 19 closed services (182 in all): GitHub Models, SageMaker, Qianfan, SiliconFlow,
+  Hunyuan, Spark, Baichuan, StepFun, Novita, Clarifai, Aleph Alpha, Reka, GigaChat and
+  six managed vector databases.
+- Open source signatures for Java (Spring AI, LangChain4j), .NET, Go, LangChain and
+  LlamaIndex integration packages, env vars and more images; four new projects (89).
+- Pools: RAG split into applications and frameworks; new LLM evaluation and answer
+  engine pools. Model rows show parameter counts.
+- Package extras named after a package (`qdrant-client[fastembed]`), compose
+  `${VAR:-default}` images and `CREATE EXTENSION` statements.
+- The eval corpus labels open source components too (54 repositories), checked in CI.
+
+### Fixed
+- ripgrep only reads the files the scan covers: a repo with gigabytes of ignored data
+  went from 99 s to about 1 s.
+- Notebooks: source lists joined correctly, non-Python kernels read with their own
+  comment syntax.
+- Old Mac (CR-only) files, symlinks, non-UTF-8 paths, saved unrent reports and OpenAPI
+  specs no longer produce wrong lines or findings.
+- A repo is never listed as a component of itself.
+- Descriptions containing commas were cut short in the catalog; the loader now rejects
+  them unquoted and names the file on any catalog error.
+- `-o` is checked before the scan and excluded from it; `--top` must be positive.
+- Evidence is ordered strongest first; code spans survive backticks.
+
 ## [0.2.0] - 2026-09-26
 
 First public release.

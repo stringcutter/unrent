@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import datetime as _dt
 import json
+import re
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -18,6 +19,7 @@ RANKED_BY = {
     None: "catalog order, not ranked",
 }
 EVIDENCE_SHOWN = 5
+_BACKTICKS = re.compile(r"`+")
 AHEAD_SHOWN = 3
 
 
@@ -64,6 +66,15 @@ def _describe(alt: Alternative, pool: Pool) -> str:
     bits = _stats(alt, pool) + ([alt.licence] if alt.licence else [])
     meta = f" ({', '.join(bits)})" if bits else ""
     return f"[{alt.name}]({alt.url}) — {alt.what}{meta}"
+
+
+def _code(text: str) -> str:
+    """A Markdown code span that survives backticks in the text: fence it with one
+    more backtick than its longest run, and pad when it starts or ends with one."""
+    runs = [len(m) for m in _BACKTICKS.findall(text)]
+    fence = "`" * (max(runs, default=0) + 1)
+    pad = " " if text.startswith("`") or text.endswith("`") or runs else ""
+    return f"{fence}{pad}{text}{pad}{fence}" if text else "``"
 
 
 def _now() -> _dt.datetime:
@@ -194,7 +205,7 @@ def _running_json(f: Finding, root: Path, catalog: Catalog) -> dict:
 def to_json(findings: list[Finding], root: Path, catalog: Catalog, skipped: list[Path] = ()) -> str:
     split = _split(findings)
     payload = {
-        "scanned": str(root),
+        "scanned": root.name,  # the folder name; a full path would leak the user's home
         "scanned_at": _now().isoformat(timespec="seconds"),
         "catalog_services": len(catalog),
         "rankings_date": catalog.rankings_date,
@@ -237,7 +248,7 @@ def _models_named(named: list[Finding], root: Path) -> list[str]:
         more = f" (+{len(f.cited) - 1} more)" if len(f.cited) > 1 else ""
         out.append(
             f"- **{f.service.name}**: `{_rel(first.file, root)}:{first.line}` — "
-            f"`{first.evidence[:100]}`{more}"
+            f"{_code(first.evidence[:100])}{more}"
         )
     out.append("")
     return out
@@ -276,7 +287,7 @@ def _running(running: list[Finding], root: Path, catalog: Catalog) -> list[str]:
     out = [
         "## Open source you already run",
         "",
-        "Rank in its pool, overall and among its own kind. Same ranking as above.",
+        "Rank in its pool, overall and among projects of the same kind.",
         "",
     ]
     for f in running:
@@ -285,7 +296,7 @@ def _running(running: list[Finding], root: Path, catalog: Catalog) -> list[str]:
         out += [
             f"### {f.service.repo} ({_kinds(f.service.kind)}){tests}",
             "",
-            f"Found at `{_rel(first.file, root)}:{first.line}` — `{first.evidence[:100]}` · "
+            f"Found at `{_rel(first.file, root)}:{first.line}` — {_code(first.evidence[:100])} · "
             f"[GitHub](https://github.com/{f.service.repo})",
             "",
         ]
@@ -357,7 +368,9 @@ def to_markdown(
             where = " (only in tests)" if f.test_only else ""
             out += [f"### {f.service.name}", "", f"{len(cited)} {noun}{where}:", ""]
             for fact in cited[:EVIDENCE_SHOWN]:
-                out.append(f"- `{_rel(fact.file, root)}:{fact.line}` — `{fact.evidence[:120]}`")
+                out.append(
+                    f"- `{_rel(fact.file, root)}:{fact.line}` — {_code(fact.evidence[:120])}"
+                )
             if len(cited) > EVIDENCE_SHOWN:
                 out.append(f"- …and {len(cited) - EVIDENCE_SHOWN} more")
             out.append("")
@@ -376,6 +389,8 @@ def to_markdown(
             ]
             for i, alt in enumerate(pool.alternatives[:top], start=1):
                 out.append(f"{i}. {_describe(alt, pool)}")
+            if not pool.alternatives:
+                out.append("No ranking in this catalog. Run `scripts/refresh.py`.")
             out.append("")
 
     out += _running(split.running, root, catalog)
