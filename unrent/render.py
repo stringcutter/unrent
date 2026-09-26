@@ -62,8 +62,12 @@ def _stats(alt: Alternative, pool: Pool) -> list[str]:
     return bits
 
 
+def _licence(alt: Alternative) -> str:
+    return f"{alt.licence}, open core: {alt.open_core}" if alt.open_core else alt.licence
+
+
 def _describe(alt: Alternative, pool: Pool) -> str:
-    bits = _stats(alt, pool) + ([alt.licence] if alt.licence else [])
+    bits = _stats(alt, pool) + ([_licence(alt)] if alt.licence else [])
     meta = f" ({', '.join(bits)})" if bits else ""
     return f"[{alt.name}]({alt.url}) — {alt.what}{meta}"
 
@@ -85,13 +89,23 @@ def _now() -> _dt.datetime:
 class Split:
     closed: list[Finding]  # closed services the code depends on
     named: list[Finding]  # closed model ids with nothing behind them
+    templates: list[Finding]  # keys in example env files with nothing behind them
     running: list[Finding]  # open source components already in use
 
 
 def _split(findings: list[Finding]) -> Split:
     return Split(
-        closed=[f for f in findings if not f.service.open_source and not f.models_only],
+        closed=[
+            f
+            for f in findings
+            if not f.service.open_source and not f.models_only and not f.template_only
+        ],
         named=[f for f in findings if not f.service.open_source and f.models_only],
+        templates=[
+            f
+            for f in findings
+            if not f.service.open_source and not f.models_only and f.template_only
+        ],
         running=[f for f in findings if f.service.open_source],
     )
 
@@ -224,6 +238,8 @@ def payload(
         "found": [_entry(f, root) for f in split.closed],
         # Closed model ids with no SDK, key, host or package behind them.
         "models_named": [_entry(f, root) for f in split.named],
+        # Keys in an example env file that nothing else backs.
+        "env_template_only": [_entry(f, root) for f in split.templates],
         # Open source components already in use, and where they stand in their pool.
         "open_source": [_running_json(f, root, catalog) for f in split.running],
         "alternatives": {
@@ -246,15 +262,29 @@ def to_json(findings: list[Finding], root: Path, catalog: Catalog, skipped: list
 
 
 def _models_named(named: list[Finding], root: Path) -> list[str]:
-    if not named:
-        return []
-    out = [
-        "## Closed models named in code",
-        "",
+    return _listed_apart(
+        named,
+        root,
+        "Closed models named in code",
         "Model ids with no SDK, key, API host or package behind them. Not counted as dependencies.",
-        "",
-    ]
-    for f in named:
+    )
+
+
+def _env_templates(templates: list[Finding], root: Path) -> list[str]:
+    return _listed_apart(
+        templates,
+        root,
+        "Keys only in example env files",
+        "A placeholder in `.env.example` or similar, with nothing in the code behind it. "
+        "Not counted as dependencies.",
+    )
+
+
+def _listed_apart(findings: list[Finding], root: Path, title: str, why: str) -> list[str]:
+    if not findings:
+        return []
+    out = [f"## {title}", "", why, ""]
+    for f in findings:
         first = f.cited[0]
         more = f" (+{len(f.cited) - 1} more)" if len(f.cited) > 1 else ""
         out.append(
@@ -387,6 +417,7 @@ def to_markdown(
             out.append("")
 
     out += _models_named(split.named, root)
+    out += _env_templates(split.templates, root)
 
     if closed:
         out += ["## Open source alternatives", ""]

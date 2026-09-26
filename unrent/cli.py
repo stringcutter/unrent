@@ -12,7 +12,7 @@ import yaml
 
 from .catalog import CatalogError, load_catalog
 from .detect import collect_facts, match
-from .report import to_json, to_markdown
+from .render import to_json, to_markdown
 
 
 def _default_catalog() -> Path:

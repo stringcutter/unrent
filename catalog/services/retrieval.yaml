@@ -54,14 +54,30 @@
     npm: [voyageai, voyage-ai-provider, "@ai-sdk/voyage", "@mastra/voyageai"]
     python_import: [voyageai, langchain_voyageai, llama_index.embeddings.voyageai,
                     llama_index.postprocessor.voyageai_rerank]
-    symbol: [VoyageAIEmbeddings, VoyageEmbedding, "voyageai.Client"]
+    # VoyageEmbeddings is LangChain.js (@langchain/community/embeddings/voyage).
+    symbol: [VoyageAIEmbeddings, VoyageEmbedding, VoyageEmbeddings, "voyageai.Client"]
     model: [voyage-3, voyage-4, voyage-code-, voyage-large-, voyage-multilingual-, voyage-law-,
             voyage-finance-, voyage-context-, voyage-multimodal-, voyage-2, voyage-lite-,
             rerank-2.5, rerank-2-lite]
     endpoint: [api.voyageai.com]
-    env: [VOYAGE_API_KEY]
+    env: [VOYAGE_API_KEY, VOYAGEAI_API_KEY]
     maven: ["dev.langchain4j:langchain4j-voyage-ai"]
     gem: [voyageai]
+
+- id: nomic-api
+  name: Nomic API
+  category: Embeddings
+  # The nomic-embed models are open weights; this is Nomic's hosted endpoint, which the
+  # SDKs call by default. `inference_mode="local"` runs the model here instead.
+  local_mode: true
+  replace_with: [embedding-model, embedding-serving]
+  detect:
+    requirement: [nomic, langchain-nomic, llama-index-embeddings-nomic]
+    npm: ["@nomic-ai/atlas"]
+    python_import: [nomic, langchain_nomic, llama_index.embeddings.nomic]
+    symbol: [NomicEmbeddings, NomicEmbedding]
+    endpoint: [api-atlas.nomic.ai]
+    env: [NOMIC_API_KEY]
 
 - id: jina-api
   name: Jina AI API
@@ -485,3 +501,18 @@
   detect:
     python_import: [volcengine.viking_db]
     symbol: [VikingDBService]
+
+- id: chroma-cloud
+  name: Chroma Cloud
+  category: Vector database
+  # CloudClient is a generic class name. The CHROMA_* variables are what CloudClient
+  # reads, but self-hosted setups use them too (AnythingLLM sends CHROMA_API_KEY to its
+  # own Chroma server), so they only count next to CloudClient.
+  weak: [[CloudClient, AdminCloudClient], [CHROMA_API_KEY, CHROMA_TENANT, CHROMA_DATABASE]]
+  replace_with: [vector-db]
+  detect:
+    python_import: [chromadb.CloudClient]
+    symbol: ["chromadb.CloudClient", CloudClient, AdminCloudClient]
+    endpoint: [api.trychroma.com]
+    env: [CHROMA_API_KEY, CHROMA_TENANT, CHROMA_DATABASE, CHROMACLOUD_API_KEY,
+          CHROMACLOUD_TENANT, CHROMACLOUD_DATABASE]

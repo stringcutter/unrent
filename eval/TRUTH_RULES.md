@@ -45,7 +45,9 @@ WHAT COUNTS
 5. An OpenAI-compatible SDK pointed only at a local/self-hosted server (Ollama, vLLM,
    llama.cpp, LM Studio, LocalAI) is NOT `openai`. The `openai` SDK used only against Azure
    is `azure-openai`, not `openai`. OpenAI SDK with a Groq/Together/OpenRouter/... base URL
-   is that vendor, not `openai`.
+   is that vendor, not `openai`. A vendor's hosted API counts even when the model is
+   open weights (Together, Fireworks, the Nomic API); an SDK told to run the model on the
+   machine (`inference_mode="local"`) does not.
 6. Calling a gateway (OpenRouter, Vercel AI Gateway, Portkey...) with model ids of other
    vendors (e.g. "anthropic/claude-...") counts as the GATEWAY, not the underlying vendor,
    unless the app also calls the vendor directly. If unclear, put the vendor in `uncertain`.

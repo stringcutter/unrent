@@ -18,7 +18,7 @@ sys.path.insert(0, str(ROOT))
 from unrent.catalog import OPEN_LICENCES, OPEN_MODEL_LICENCES, load_catalog  # noqa: E402
 from unrent.cli import main  # noqa: E402
 from unrent.detect import collect_facts, image_name, js_package, match, redact  # noqa: E402
-from unrent.report import standings, to_json, to_markdown  # noqa: E402
+from unrent.render import standings, to_json, to_markdown  # noqa: E402
 
 CATALOG_DIR = ROOT / "catalog"
 
@@ -42,11 +42,12 @@ def found(root: Path, catalog, **kw) -> dict[str, list]:
 
 
 def deps(root: Path, catalog, **kw) -> set[str]:
-    """Closed services reported as dependencies, not merely named by a model id."""
+    """Closed services reported as dependencies, not merely named by a model id or an
+    example env file."""
     return {
         f.service.id
         for f in match(collect_facts(root, catalog, **kw), catalog)
-        if not f.models_only and not f.service.open_source
+        if not f.models_only and not f.template_only and not f.service.open_source
     }
 
 
@@ -1445,6 +1446,22 @@ def test_a_project_is_not_a_component_of_itself(tmp_path, catalog):
             {"chains.py": 'emb = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")\n'},
             "huggingface/sentence-transformers",
         ),
+        # gpt-researcher (held out): three spellings the catalog missed.
+        ({"searx.py": 'host = os.environ["SEARX_URL"]\n'}, "searxng/searxng"),
+        (
+            {"base.py": 'llm = ChatOpenAI(openai_api_base=os.environ["VLLM_OPENAI_API_BASE"])\n'},
+            "vllm-project/vllm",
+        ),
+        (
+            {
+                "firecrawl.py": 'url = os.getenv("FIRECRAWL_SERVER_URL", "https://api.firecrawl.dev")\n'
+            },
+            "firecrawl/firecrawl",
+        ),
+        (
+            {"store.py": "from langchain_community.vectorstores import FAISS\n"},
+            "facebookresearch/faiss",
+        ),
     ],
     ids=lambda v: v if isinstance(v, str) else next(iter(v)),
 )
@@ -1535,3 +1552,327 @@ def test_provider_through_openai_sdk_names_the_provider(tmp_path, catalog):
         "a.py": 'from openai import OpenAI\nc = OpenAI(base_url="https://api.siliconflow.cn/v1")\n',
     })  # fmt: skip
     assert deps(tmp_path, catalog) == {"siliconflow"}
+
+
+# --- from the 2026-09-27 evaluation: agent alone vs agent + MCP, and a held-out repo -
+
+
+def test_capability_model_ids_next_to_the_sdk_are_a_call(tmp_path, catalog):
+    write(tmp_path, {
+        "image.ts": 'import { GoogleGenAI } from "@google/genai";\n'
+        'const MODEL_ID = "gemini-2.5-flash-image";\n',
+    })  # fmt: skip
+    assert "google-imagen" in deps(tmp_path, catalog)
+
+
+def test_vendor_prefix_needs_a_model_name(tmp_path, catalog):
+    write(tmp_path, {
+        "loader.js": 'const url = "github://" + doc.metadata.source;\n',
+        "icons.jsx": "const icons = [{ pattern: /^snowflake/i, icon: Snowflake }];\n",
+    })  # fmt: skip
+    hits = found(tmp_path, catalog)
+    assert "github-models" not in hits and "snowflake-cortex" not in hits
+
+
+def test_langchain_js_voyage_embeddings(tmp_path, catalog):
+    write(tmp_path, {
+        "voyage.js": 'const { VoyageEmbeddings } = require("@langchain/community/embeddings/voyage");\n'
+        "const e = new VoyageEmbeddings({ apiKey: process.env.VOYAGEAI_API_KEY });\n",
+    })  # fmt: skip
+    assert "voyage" in deps(tmp_path, catalog)
+
+
+def test_nomic_hosted_api_is_closed(tmp_path, catalog):
+    write(tmp_path, {
+        "requirements.txt": "langchain-nomic\n",
+        "emb.py": "from langchain_nomic import NomicEmbeddings\n"
+        'e = NomicEmbeddings(model="nomic-embed-text-v1.5")\n',
+    })  # fmt: skip
+    assert "nomic-api" in deps(tmp_path, catalog)
+
+
+def test_nomic_run_locally_is_not_the_hosted_api(tmp_path, catalog):
+    write(tmp_path, {
+        "requirements.txt": "langchain-nomic\n",
+        "emb.py": "from langchain_nomic import NomicEmbeddings\n"
+        'e = NomicEmbeddings(model="nomic-embed-text-v1.5", inference_mode="local")\n',
+    })  # fmt: skip
+    assert "nomic-api" not in found(tmp_path, catalog)
+
+
+def test_open_core_is_shown_with_the_licence(tmp_path, catalog):
+    litellm = next(
+        a for p in catalog.pools.values() for a in p.alternatives if a.name == "BerriAI/litellm"
+    )
+    assert litellm.open_core and "enterprise/" in litellm.open_core
+    # Azure OpenAI is replaced from the LLM gateway pool, where LiteLLM ranks.
+    write(tmp_path, {"requirements.txt": "llama-index-llms-azure-openai\n"})
+    findings = match(collect_facts(tmp_path, catalog), catalog)
+    assert "open core: enterprise/" in to_markdown(findings, tmp_path, catalog, top=10)
+
+
+# Closed services first seen in anything-llm and gpt-researcher (2026-09-27 evaluation).
+NEW_SERVICES_FOUND = [
+    (
+        {
+            "provider.js": 'const { OpenAI: OpenAIApi } = require("openai");\nthis.openai = new OpenAIApi({\n  apiKey: process.env.GITEE_AI_API_KEY,\n  baseURL: "https://ai.gitee.com/v1",\n});\n'
+        },
+        "gitee-ai",
+    ),
+    (
+        {
+            "provider.js": 'const { OpenAI: OpenAIApi } = require("openai");\nthis.basePath = "https://api.ppinfra.com/v3/openai/";\nthis.openai = new OpenAIApi({\n  baseURL: this.basePath,\n  apiKey: process.env.PPIO_API_KEY ?? null,\n});\n'
+        },
+        "ppio",
+    ),
+    (
+        {
+            "provider.js": 'const { OpenAI: OpenAIApi } = require("openai");\nthis.basePath = "https://apipie.ai/v1";\nthis.openai = new OpenAIApi({\n  baseURL: this.basePath,\n  apiKey: process.env.APIPIE_LLM_API_KEY ?? null,\n});\n'
+        },
+        "apipie",
+    ),
+    (
+        {
+            "llm.py": 'import os\nfrom openai import OpenAI\n\nclient = OpenAI(base_url="https://api.cometapi.com/v1", api_key=os.environ["COMETAPI_KEY"])\n'
+        },
+        "cometapi",
+    ),
+    (
+        {
+            "provider.js": 'const { OpenAI: OpenAIApi } = require("openai");\nif (!process.env.PRIVATEMODE_LLM_BASE_PATH)\n  throw new Error("Privatemode must have a valid base path to use for the api.");\nthis.openai = new OpenAIApi({ baseURL: PrivatemodeLLM.parseBasePath(), apiKey: null });\n'
+        },
+        "privatemode",
+    ),
+    (
+        {
+            "base.py": "import os\nfrom langchain_openai import ChatOpenAI\n\nllm = ChatOpenAI(openai_api_base='https://api.atlascloud.ai/v1',\n                 openai_api_key=os.environ[\"ATLASCLOUD_API_KEY\"])\n"
+        },
+        "atlas-cloud",
+    ),
+    (
+        {
+            "base.py": "import os\nfrom langchain_openai import ChatOpenAI\n\nllm = ChatOpenAI(openai_api_base='https://api.aimlapi.com/v1',\n                 openai_api_key=os.environ[\"AIMLAPI_API_KEY\"])\n"
+        },
+        "aimlapi",
+    ),
+    (
+        {
+            "base.py": "import os\nfrom langchain_openai import ChatOpenAI\n\nllm = ChatOpenAI(openai_api_base='https://api.forge.tensorblock.co/v1',\n                 openai_api_key=os.environ[\"FORGE_API_KEY\"])\n"
+        },
+        "tensorblock-forge",
+    ),
+    (
+        {
+            "base.py": "import os\nfrom langchain_openai import ChatOpenAI\n\nllm = ChatOpenAI(openai_api_base='https://api.avian.io/v1',\n                 openai_api_key=os.environ[\"AVIAN_API_KEY\"])\n"
+        },
+        "avian",
+    ),
+    (
+        {
+            "base.py": 'from langchain_netmind import ChatNetmind\n\nllm = ChatNetmind(model="deepseek-ai/DeepSeek-V3", temperature=0)\n'
+        },
+        "netmind",
+    ),
+    (
+        {
+            "index.js": 'const { CloudClient } = require("chromadb");\nconst client = new CloudClient({\n  apiKey: process.env.CHROMACLOUD_API_KEY,\n  tenant: process.env.CHROMACLOUD_TENANT,\n  database: process.env.CHROMACLOUD_DATABASE,\n});\n'
+        },
+        "chroma-cloud",
+    ),
+    (
+        {
+            "web-browsing.js": "const url = `https://www.searchapi.io/api/v1/search?${params.toString()}`;\nconst res = await fetch(url, {\n  headers: { Authorization: `Bearer ${process.env.AGENT_SEARCHAPI_API_KEY}` },\n});\n"
+        },
+        "searchapi-io",
+    ),
+    (
+        {
+            "agents.py": "from crewai_tools import SerplyWebSearchTool\n\nsearch = SerplyWebSearchTool(limit=10)\n"
+        },
+        "serply",
+    ),
+    (
+        {
+            "crw.py": 'import os\n\nbase_url = os.environ.get("CRW_API_URL", "https://fastcrw.com/api")\nheaders = {"Authorization": f"Bearer {os.environ[\'CRW_API_KEY\']}"}\n'
+        },
+        "fastcrw-cloud",
+    ),
+    (
+        {
+            "search.py": 'from keenable import Keenable\n\nclient = Keenable()\nresults = client.search("open source vector databases")\n'
+        },
+        "keenable",
+    ),
+    (
+        {
+            "web-browsing.js": 'const apiKey = (process.env.AGENT_ANYSEARCH_API_KEY || "").trim();\nconst res = await fetch("https://api.anysearch.com/v1/search", {\n  method: "POST",\n  headers: { Authorization: `Bearer ${apiKey}` },\n});\n'
+        },
+        "anysearch",
+    ),
+    (
+        {
+            "bocha.py": 'import os\nimport requests\n\napi_key = os.environ["BOCHA_API_KEY"]\nurl = \'https://api.bochaai.com/v1/web-search\'\nresp = requests.post(url, headers={"Authorization": f"Bearer {api_key}"}, json={"query": q})\n'
+        },
+        "bocha",
+    ),
+    (
+        {
+            "groundroute.py": 'import os\n\nbase_url = "https://api.groundroute.ai/v1/search"\napi_key = os.environ["GROUNDROUTE_API_KEY"]\n'
+        },
+        "groundroute",
+    ),
+    (
+        {".env": "MONOCLE_TRACING=true\nMONOCLE_EXPORTER=okahu\nOKAHU_API_KEY=okh_xxxxxxxx\n"},
+        "okahu-cloud",
+    ),
+    (
+        {
+            "modelslab_image_generator.py": 'import os\n\nTEXT2IMG_URL = "https://modelslab.com/api/v6/images/text2img"\napi_key = os.getenv("MODELSLAB_API_KEY")\n'
+        },
+        "modelslab",
+    ),
+]
+NEW_SERVICES_LOOKALIKES = [
+    (
+        {
+            "provider.js": 'const DOCS_URL = "https://ai.gitee.com/docs/getting-started";\nconst MIRROR = "https://gitee.com/mindspore/mindformers";\n'
+        },
+        "gitee-ai",
+    ),
+    (
+        {
+            "provider.js": 'const PPIO = require("ppio");\nconst storage = new PPIO({ bucket: "uploads" });\n'
+        },
+        "ppio",
+    ),
+    (
+        {
+            "provider.js": 'const apipie = require("apipie");\nconst api = apipie.create({ baseURL: "/api/v1" });\n'
+        },
+        "apipie",
+    ),
+    (
+        {
+            "llm.py": 'import os\nimport comet_ml\n\nexperiment = comet_ml.Experiment(api_key=os.environ["COMET_API_KEY"], project_name="demo")\n'
+        },
+        "cometapi",
+    ),
+    (
+        {
+            "provider.js": 'const PRIVATE_MODE = process.env.PRIVATE_MODE === "true";\nconst privateModeLabel = "Private mode";\n'
+        },
+        "privatemode",
+    ),
+    (
+        {
+            "base.py": 'import os\n\nATLAS_CLOUD_REGION = os.environ.get("ATLAS_CLOUD_REGION", "us-east-1")\natlas_project = "cloud-atlas"\n'
+        },
+        "atlas-cloud",
+    ),
+    (
+        {
+            "base.py": 'import aiml\n\nkernel = aiml.Kernel()\nkernel.learn("aiml/std-startup.xml")\nBRAIN = "aiml/alice"\n'
+        },
+        "aimlapi",
+    ),
+    (
+        {
+            "base.py": 'import os\nfrom langchain_openai import ChatOpenAI\n\n# Self-hosted Forge (github.com/TensorBlock/forge) on this machine.\nllm = ChatOpenAI(openai_api_base="http://localhost:8000/v1",\n                 openai_api_key=os.environ["FORGE_API_KEY"])\n'
+        },
+        "tensorblock-forge",
+    ),
+    (
+        {
+            "base.py": 'AVIAN_TAXONOMY_URL = "https://avibase.bsc-eoc.org/api"\nspecies_class = "avian"\n'
+        },
+        "avian",
+    ),
+    ({"base.py": "NETMIND_ENABLED = False\nnet_mind_layers = [64, 32]\n"}, "netmind"),
+    (
+        {
+            "index.js": 'const { ChromaClient } = require("chromadb");\nconst client = new ChromaClient({\n  path: process.env.CHROMA_ENDPOINT,\n  tenant: process.env.CHROMA_TENANT,\n  database: process.env.CHROMA_DATABASE,\n});\n'
+        },
+        "chroma-cloud",
+    ),
+    (
+        {
+            "web-browsing.js": 'const searchApi = new SearchApi({ baseUrl: "/api/v1/search" });\nconst results = await searchApi.query(q);\n'
+        },
+        "searchapi-io",
+    ),
+    (
+        {
+            "agents.py": 'from serplib import parse_serp\n\nSERP_PROVIDER = "serply-mock"\nresults = parse_serp(html)\n'
+        },
+        "serply",
+    ),
+    (
+        {
+            "crw.py": 'import os\n\nbase_url = os.environ.get("CRW_API_URL", "http://localhost:3000")\nheaders = {"Authorization": f"Bearer {os.environ[\'CRW_API_KEY\']}"}\n'
+        },
+        "fastcrw-cloud",
+    ),
+    ({"search.py": 'settings = {"keenable_mode": False, "keen": True}\n'}, "keenable"),
+    (
+        {
+            "web-browsing.js": 'const { AnySearch } = require("anysearch-es");\nconst es = new AnySearch({ node: "http://localhost:9200" });\n'
+        },
+        "anysearch",
+    ),
+    (
+        {
+            "bocha.py": 'search_provider = "bocha"\nSIGNUP_URL = "https://open.bochaai.com/api-keys"\n'
+        },
+        "bocha",
+    ),
+    (
+        {
+            "groundroute.py": 'GROUND_ROUTE = "/api/ground"\nKEYS_PAGE = "https://groundroute.ai/keys"\n'
+        },
+        "groundroute",
+    ),
+    ({".env": "MONOCLE_TRACING=true\nMONOCLE_EXPORTER=file\n"}, "okahu-cloud"),
+    (
+        {
+            "modelslab_image_generator.py": 'def missing_key():\n    raise ValueError("No image API key found. Get one at https://modelslab.com/account")\n'
+        },
+        "modelslab",
+    ),
+]
+
+
+@pytest.mark.parametrize(
+    "files,service", NEW_SERVICES_FOUND, ids=lambda v: v if isinstance(v, str) else None
+)
+def test_new_services_are_found(tmp_path, catalog, files, service):
+    write(tmp_path, files)
+    assert service in deps(tmp_path, catalog)
+
+
+@pytest.mark.parametrize(
+    "files,service", NEW_SERVICES_LOOKALIKES, ids=lambda v: v if isinstance(v, str) else None
+)
+def test_new_services_lookalikes_are_not(tmp_path, catalog, files, service):
+    write(tmp_path, files)
+    assert service not in found(tmp_path, catalog)
+
+
+def test_key_only_in_an_env_template_is_listed_apart(tmp_path, catalog):
+    # gpt-researcher: HELICONE_API_KEY= in frontend/nextjs/.example.env, read nowhere.
+    write(tmp_path, {".example.env": "HELICONE_API_KEY=\n", "app.py": "print('hi')\n"})
+    assert "helicone-cloud" not in deps(tmp_path, catalog)
+    data = json.loads(to_json(match(collect_facts(tmp_path, catalog), catalog), tmp_path, catalog))
+    assert [f["id"] for f in data["env_template_only"]] == ["helicone-cloud"]
+
+
+def test_key_in_an_env_template_and_read_in_code_is_a_dependency(tmp_path, catalog):
+    write(tmp_path, {
+        ".env.example": "HELICONE_API_KEY=\n",
+        "app.py": 'import os\nkey = os.environ["HELICONE_API_KEY"]\n',
+    })  # fmt: skip
+    assert "helicone-cloud" in deps(tmp_path, catalog)
+
+
+def test_a_real_env_file_is_not_a_template(tmp_path, catalog):
+    write(tmp_path, {".env": "HELICONE_API_KEY=sk-123\n"})
+    assert "helicone-cloud" in deps(tmp_path, catalog)

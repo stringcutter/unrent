@@ -56,7 +56,7 @@ pools:
     name: LLM gateway
     source: github
     projects:
-      - {repo: BerriAI/litellm, what: "Proxy exposing 100+ providers behind one OpenAI-compatible API, with keys, budgets and fallbacks", licence: MIT}
+      - {repo: BerriAI/litellm, what: "Proxy exposing 100+ providers behind one OpenAI-compatible API, with keys, budgets and fallbacks", licence: MIT, open_core: "enterprise/ is under a commercial licence"}
       - {repo: Portkey-AI/gateway, what: "Fast AI gateway with routing, retries and guardrails"}
       - {repo: maximhq/bifrost, what: High-performance LLM gateway written in Go}
       - {repo: songquanpeng/one-api, what: "Unified OpenAI-compatible API over many providers, with key management"}
@@ -90,7 +90,7 @@ pools:
     projects:
       - {repo: qdrant/qdrant, what: Vector database and search engine written in Rust}
       - {repo: milvus-io/milvus, what: Cloud-native vector database built for scale}
-      - {repo: weaviate/weaviate, what: "Vector database with hybrid search and built-in vectorisers", licence: BSD-3-Clause}
+      - {repo: weaviate/weaviate, what: "Vector database with hybrid search and built-in vectorisers", licence: BSD-3-Clause, open_core: "wl/ is under the Weaviate licence and needs a licence key"}
       - {repo: chroma-core/chroma, what: Embedding database for AI applications}
       - {repo: lancedb/lancedb, what: Serverless multimodal vector database on the Lance format}
       - {repo: pgvector/pgvector, what: Vector similarity search inside Postgres, licence: PostgreSQL}
@@ -102,7 +102,7 @@ pools:
     source: github
     projects:
       - {repo: opensearch-project/OpenSearch, what: "Search and analytics suite with vector, lexical and hybrid search"}
-      - {repo: meilisearch/meilisearch, what: "Search engine with hybrid (keyword + vector) search", licence: MIT}
+      - {repo: meilisearch/meilisearch, what: "Search engine with hybrid (keyword + vector) search", licence: MIT, open_core: "Enterprise Edition features are BUSL-1.1"}
       - {repo: typesense/typesense, what: "Typo-tolerant search engine with vector search"}
       - {repo: paradedb/paradedb, what: Elasticsearch-quality search inside Postgres}
       - {repo: quickwit-oss/tantivy, what: Full-text search engine library in Rust}
@@ -113,7 +113,7 @@ pools:
     source: github
     projects:
       - {repo: infiniflow/ragflow, what: RAG engine with deep document understanding}
-      - {repo: onyx-dot-app/onyx, what: "Self-hostable enterprise search and chat over your documents", licence: MIT}
+      - {repo: onyx-dot-app/onyx, what: "Self-hostable enterprise search and chat over your documents", licence: MIT, open_core: "ee/ is under a commercial licence"}
 
   - id: rag-framework
     name: RAG framework
@@ -180,12 +180,12 @@ pools:
     name: LLM observability and evals
     source: github
     projects:
-      - {repo: langfuse/langfuse, what: "LLM tracing, prompt management, evals and metrics", licence: MIT}
+      - {repo: langfuse/langfuse, what: "LLM tracing, prompt management, evals and metrics", licence: MIT, open_core: "ee/ is under a commercial licence"}
       - {repo: comet-ml/opik, what: "Tracing, evaluation and monitoring for LLM apps"}
       - {repo: mlflow/mlflow, what: "Open platform for LLM tracing, evaluation and model management"}
       - {repo: traceloop/openllmetry, what: OpenTelemetry-based observability for LLM apps}
       - {repo: Helicone/helicone, what: "LLM observability with request logging and cost tracking"}
-      - {repo: Agenta-AI/agenta, what: "Prompt management, evaluation and observability", licence: MIT}
+      - {repo: Agenta-AI/agenta, what: "Prompt management, evaluation and observability", licence: MIT, open_core: "ee/ is under a commercial licence"}
 
   - id: llm-evals
     name: LLM evaluation
@@ -308,8 +308,10 @@ projects:
     kind: [library, embedded]
     detect:
       requirement: [faiss-cpu, faiss-gpu, faiss-gpu-cu12]
-      python_import: [faiss]
+      python_import: [faiss, langchain_community.vectorstores.FAISS,
+                      langchain.vectorstores.FAISS]
       npm: [faiss-node]
+      symbol: [FaissStore]
   qdrant/qdrant:
     kind: [server]
     detect:
@@ -465,6 +467,10 @@ projects:
       requirement: [vllm]
       python_import: [vllm]
       image: [vllm/vllm-openai, lmcache/vllm-openai]
+      # Reached over its OpenAI-compatible API: LangChain's VLLMOpenAI, or a base URL
+      # setting named for it.
+      symbol: [VLLMOpenAI]
+      env: [VLLM_OPENAI_API_BASE, VLLM_API_BASE, VLLM_BASE_URL]
   sgl-project/sglang:
     kind: [server]
     detect:
@@ -761,9 +767,9 @@ projects:
   searxng/searxng:
     kind: [server]
     detect:
-      symbol: [SearxSearchWrapper]
+      symbol: [SearxSearchWrapper, SearxSearch]
       image: [searxng/searxng]
-      env: [SEARXNG_URL, SEARX_HOST, SEARXNG_API_URL, SEARXNG_QUERY_URL, SEARXNG_INSTANCE_URL,
+      env: [SEARXNG_URL, SEARX_URL, SEARX_HOST, SEARXNG_API_URL, SEARXNG_QUERY_URL, SEARXNG_INSTANCE_URL,
             SEARXNG_BASE_URL, AGENT_SEARXNG_API_URL]
   unclecode/crawl4ai:
     kind: [library, server]
@@ -775,6 +781,8 @@ projects:
     kind: [server]
     detect:
       image: [ghcr.io/firecrawl/firecrawl, ghcr.io/mendableai/firecrawl]
+      # The setting that points the SDK at your own instance instead of the cloud.
+      env: [FIRECRAWL_API_URL, FIRECRAWL_SERVER_URL]
   ScrapeGraphAI/Scrapegraph-ai:
     kind: [library]
     detect:

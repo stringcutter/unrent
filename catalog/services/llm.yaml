@@ -955,3 +955,127 @@
     python_import: [gigachat, langchain_gigachat]
     endpoint: [gigachat.devices.sberbank.ru, ngw.devices.sberbank.ru]
     env: [GIGACHAT_CREDENTIALS]
+
+- id: gitee-ai
+  name: Gitee AI / MoArk (模力方舟)
+  category: LLM API
+  excludes: [openai]
+  replace_with: [open-llm, llm-serving]
+  detect:
+    # With a path: ai.gitee.com is also the marketplace and docs site.
+    endpoint: [ai.gitee.com/v1]
+    env: [GITEE_AI_API_KEY, GITEEAI_API_KEY]
+
+
+- id: ppio
+  name: PPIO (派欧云) LLM API
+  category: LLM API
+  excludes: [openai]
+  replace_with: [open-llm, llm-serving]
+  detect:
+    # Not the `ppio` npm package: that is PPIO's older P2P storage SDK.
+    endpoint: [api.ppinfra.com, api.ppio.com]
+    env: [PPIO_API_KEY]
+
+
+- id: apipie
+  name: APIpie
+  category: LLM gateway
+  excludes: [openai]
+  replace_with: [llm-gateway, llm-serving]
+  detect:
+    # Not the `apipie` packages on PyPI and npm: both are unrelated projects.
+    endpoint: [apipie.ai/v1]
+    env: [APIPIE_API_KEY, APIPIE_LLM_API_KEY]
+
+
+- id: cometapi
+  name: CometAPI
+  category: LLM gateway
+  excludes: [openai]
+  replace_with: [llm-gateway, llm-serving]
+  detect:
+    requirement: [cometapi, llama-index-llms-cometapi]
+    npm: [cometapi]
+    python_import: [cometapi, llama_index.llms.cometapi]
+    symbol: ["CometAPI(", "AsyncCometAPI("]
+    model: [cometapi/]
+    endpoint: [api.cometapi.com]
+    # Not COMET_API_KEY: that is Comet ML's experiment tracker.
+    env: [COMETAPI_KEY, COMETAPI_API_KEY, COMETAPI_LLM_API_KEY]
+
+
+- id: privatemode
+  name: Privatemode AI (Edgeless Systems)
+  category: LLM API
+  excludes: [openai]
+  replace_with: [open-llm, llm-serving]
+  detect:
+    # Apps talk to a local encryption proxy, which forwards to the hosted service; the
+    # proxy image and its localhost URL are how a codebase shows it.
+    image: [ghcr.io/edgelesssys/privatemode/privatemode-proxy]
+    endpoint: [api.privatemode.ai]
+    env: [PRIVATEMODE_API_KEY, PRIVATEMODE_LLM_BASE_PATH, PRIVATEMODE_LLM_MODEL_PREF]
+
+
+- id: atlas-cloud
+  name: Atlas Cloud
+  category: LLM API
+  excludes: [openai]
+  replace_with: [open-llm, llm-serving, image-generation]
+  detect:
+    endpoint: [api.atlascloud.ai]
+    env: [ATLASCLOUD_API_KEY]
+
+
+- id: aimlapi
+  name: AI/ML API (aimlapi.com)
+  category: LLM gateway
+  excludes: [openai]
+  # LiteLLM's prefix, but also a plain folder name in AIML chatbot projects.
+  weak: [aiml/]
+  replace_with: [llm-gateway, llm-serving]
+  detect:
+    requirement: [langchain-aimlapi]
+    npm: ["@ai-ml.api/aimlapi-vercel-ai"]
+    python_import: [langchain_aimlapi]
+    symbol: [ChatAimlapi, AimlapiLLM, AimlapiEmbeddings, AimlapiImageModel, AimlapiVideoModel]
+    model: [aiml/]
+    endpoint: [api.aimlapi.com]
+    env: [AIMLAPI_API_KEY]
+
+
+- id: tensorblock-forge
+  name: TensorBlock Forge (hosted)
+  category: LLM gateway
+  excludes: [openai]
+  replace_with: [llm-gateway]
+  detect:
+    # Forge itself is open source and self-hostable; only the hosted API is closed.
+    # Not FORGE_API_KEY: self-hosted Forge uses it too, and so do unrelated "Forge" tools.
+    endpoint: [api.forge.tensorblock.co]
+
+
+- id: avian
+  name: Avian
+  category: LLM API
+  excludes: [openai]
+  replace_with: [open-llm, llm-serving]
+  detect:
+    endpoint: [api.avian.io]
+    env: [AVIAN_API_KEY]
+
+
+- id: netmind
+  name: NetMind AI Inference
+  category: LLM API
+  excludes: [openai]
+  replace_with: [open-llm, llm-serving, embedding-model]
+  detect:
+    requirement: [netmind, langchain-netmind, llama-index-llms-netmind,
+                  llama-index-embeddings-netmind]
+    python_import: [netmind, langchain_netmind, llama_index.llms.netmind,
+                    llama_index.embeddings.netmind]
+    symbol: [ChatNetmind, NetmindEmbeddings, NetmindLLM, NetmindEmbedding, AsyncNetMind]
+    endpoint: [api.netmind.ai]
+    env: [NETMIND_API_KEY]

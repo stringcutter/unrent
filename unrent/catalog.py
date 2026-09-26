@@ -79,6 +79,9 @@ class Alternative:
     url: str
     what: str
     licence: str | None = None
+    # Open core: the part of the repo that is not under `licence`, e.g. "enterprise/
+    # (commercial licence)". GitHub reports such repos as NOASSERTION.
+    open_core: str | None = None
     # GitHub projects
     stars: int | None = None
     stars_90d: int | None = None
@@ -127,6 +130,9 @@ class Service:
     # The SDK doubles as the client for self-hosted OpenAI-compatible servers, so
     # evidence next to a local base URL (Ollama, vLLM, LM Studio) does not count.
     local_compatible: bool = False
+    # The SDK can also run the model on this machine (`inference_mode="local"`), so a
+    # file that asks for that is not calling the vendor.
+    local_mode: bool = False
     # A capability of a broader service (OpenAI Embeddings is part of the OpenAI API).
     # Its model ids count as real evidence when the broader service is itself in use.
     part_of: tuple[str, ...] = ()
@@ -191,6 +197,14 @@ def _as_tuple(value) -> tuple[str, ...]:
 def _load_pools(path: Path, rankings: dict) -> dict[str, Pool]:
     raw = _load_yaml(path) or {}
     pools: dict[str, Pool] = {}
+    # Declared per project in the catalog, not taken from the rankings snapshot, so a
+    # correction shows before the next weekly refresh.
+    open_core = {
+        p["repo"]: str(p["open_core"])
+        for item in raw.get("pools") or []
+        for p in item.get("projects") or []
+        if p.get("repo") and p.get("open_core")
+    }
     for item in raw.get("pools") or []:
         pool_id = item.get("id")
         for key in ("id", "name", "source"):
@@ -209,7 +223,7 @@ def _load_pools(path: Path, rankings: dict) -> dict[str, Pool]:
                 raise CatalogError(f"{path.name}: pool '{pool_id}' lists no projects")
             repos = [p.get("repo", "") for p in projects]
             for p in projects:
-                stray = set(p) - {"repo", "what", "licence"}
+                stray = set(p) - {"repo", "what", "licence", "open_core"}
                 if stray:
                     # `what: A, B` in a flow mapping is `what: A` plus a key `B`.
                     raise CatalogError(
@@ -248,6 +262,10 @@ def _load_pools(path: Path, rankings: dict) -> dict[str, Pool]:
                 for p in item.get("projects") or []
             )
             ranked_by = None
+        alts = tuple(
+            dataclasses.replace(a, open_core=open_core[a.name]) if a.name in open_core else a
+            for a in alts
+        )
         pools[pool_id] = Pool(
             id=pool_id,
             name=item["name"],
@@ -325,6 +343,7 @@ def _parse_service(raw: dict, where: Path, pools: dict[str, Pool]) -> Service:
         open_models=_as_tuple(raw.get("open_models")),
         weak_groups=weak_groups,
         local_compatible=bool(raw.get("local_compatible", False)),
+        local_mode=bool(raw.get("local_mode", False)),
         part_of=_as_tuple(raw.get("part_of")),
     )
 

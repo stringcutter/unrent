@@ -22,6 +22,21 @@ each release ships the rankings as of its date.
 - Package extras named after a package (`qdrant-client[fastembed]`), compose
   `${VAR:-default}` images and `CREATE EXTENSION` statements.
 - The eval corpus labels open source components too (54 repositories), checked in CI.
+- 21 more closed services (203 in all), found by agents in anything-llm and
+  gpt-researcher: Gitee AI, PPIO, APIpie, CometAPI, Privatemode, Atlas Cloud, AI/ML API,
+  TensorBlock Forge, Avian, NetMind, ModelsLab, Chroma Cloud, the Nomic API, Okahu, and
+  the search APIs SearchApi.io, Serply, fastCRW, Keenable, AnySearch, Bocha and
+  GroundRoute. The Nomic API is not reported where the code asks for local inference.
+- `open_core` on open source projects whose repo keeps part of the code under another
+  licence (LiteLLM, Langfuse, Agenta, Onyx, Meilisearch, Weaviate), shown next to the
+  licence.
+- `env_template_only`: a key that appears only in `.env.example` or similar, with
+  nothing in the code behind it, is listed apart and not counted as a dependency.
+
+### Changed
+- The MCP instructions state the limits: only catalog services are detected, and each
+  pool's `ranked_by` says whether it is ranked by 90-day star gain or total stars.
+- `unrent/report.py` is now `unrent/render.py`.
 
 ### Fixed
 - ripgrep only reads the files the scan covers: a repo with gigabytes of ignored data
@@ -35,6 +50,11 @@ each release ships the rankings as of its date.
   them unquoted and names the file on any catalog error.
 - `-o` is checked before the scan and excluded from it; `--top` must be positive.
 - Evidence is ordered strongest first; code spans survive backticks.
+- LangChain.js `VoyageEmbeddings` and `VOYAGEAI_API_KEY` are Voyage AI.
+- A vendor prefix needs a model name after it: `github://` URIs and `/^snowflake/i`
+  regexes no longer name GitHub Models or Snowflake Cortex.
+- Open source signatures: `SEARX_URL` and `SearxSearch` (SearXNG), vLLM behind an
+  OpenAI-compatible base URL, a self-hosted Firecrawl URL, LangChain's `FAISS`.
 
 ## [0.2.0] - 2026-09-26
 
