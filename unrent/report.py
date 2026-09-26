@@ -210,8 +210,7 @@ def _models_named(named: list[Finding], root: Path) -> list[str]:
     out = [
         "## Closed models named in code",
         "",
-        "Model ids with no SDK, key, API host or package behind them. Not counted as "
-        "dependencies.",
+        "Model ids with no SDK, key, API host or package behind them. Not counted as dependencies.",
         "",
     ]
     for f in named:
