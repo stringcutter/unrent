@@ -97,7 +97,8 @@ def cmd_catalog(args) -> int:
     ranked = catalog.rankings_date or "never"
     print(
         f"{len(catalog)} closed AI services in {len(catalog.categories)} categories, "
-        f"{len(catalog.pools)} pools of open source alternatives (ranked {ranked})"
+        f"{len(catalog.pools)} pools of open source alternatives (ranked {ranked}), "
+        f"{len(catalog.projects)} open source projects recognised in code"
     )
     if args.validate:
         return 0

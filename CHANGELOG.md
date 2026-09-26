@@ -25,6 +25,10 @@ First public release.
 - Optional ripgrep acceleration with identical results.
 - Closed model ids with no SDK, key, host or package behind them are listed
   separately ("closed models named in code") instead of counted as dependencies.
+- "Open source you already run": 88 open source AI components (vector databases,
+  inference servers, gateways, document parsers, observability, ...) are recognised
+  from packages, imports, SQL and container images (`image:`, Helm values, `FROM`),
+  and each is placed in its pool, overall and among projects of the same kind.
 - A golden corpus of 39 hand-labelled repositories (`eval/`), run in CI with
   precision and recall floors. Measured: precision 0.993, recall 0.986.
 

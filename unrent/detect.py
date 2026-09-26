@@ -576,7 +576,7 @@ class Needles:
         # Per model needle: open-weight ids it must not report.
         self.open_models: dict[str, set[str]] = {}
         seen = set()
-        for service in catalog.services:
+        for service in catalog.detectable:
             for needle in service.detect.get("model", ()):
                 self.open_models.setdefault(needle, set()).update(service.open_models)
             for kind in self.TEXT_KINDS:
@@ -1234,6 +1234,43 @@ def _gems(path: Path, text: str, lines: list[str]) -> list[Fact]:
 
 
 _TF_BLOCK = re.compile(r'^\s*(?:resource|data)\s+"([a-z0-9_]+)"')
+_IMAGE_KEY = re.compile(r"""^\s*(?:-\s*)?image:\s*["']?([^\s"'#]+)""")
+_HELM_REPOSITORY = re.compile(r"""^\s*repository:\s*["']?([^\s"'#]+)""")
+_FROM = re.compile(r"^\s*FROM\s+(?:--platform=\S+\s+)?(\S+)", re.IGNORECASE)
+
+
+def image_name(ref: str) -> str | None:
+    """`docker.io/qdrant/qdrant:v1.12@sha256:…` → `qdrant/qdrant`. Templated references
+    (`${REGISTRY}/…`, `{{ .Values… }}`) name no image we can know."""
+    if not ref or ref.startswith(("$", "{")) or "{{" in ref:
+        return None
+    name = ref.split("@", 1)[0]
+    head, _, last = name.rpartition("/")
+    last = last.split(":", 1)[0]  # the tag; a registry port sits before the last "/"
+    name = f"{head}/{last}" if head else last
+    for prefix in ("docker.io/", "index.docker.io/", "registry-1.docker.io/"):
+        name = name.removeprefix(prefix)
+    return name.removeprefix("library/").lower() or None
+
+
+def _images(path: Path, lines: list[str], code: list[str]) -> list[Fact]:
+    """Images a project runs: compose and Kubernetes `image:`, Helm `repository:` in
+    values files, and Dockerfile `FROM`."""
+    name = path.name.lower()
+    dockerfile = name.startswith(("dockerfile", "containerfile")) or name.endswith(
+        (".dockerfile", ".containerfile")
+    )
+    patterns = [_FROM] if dockerfile else [_IMAGE_KEY]
+    if name.startswith("values") and not dockerfile:
+        patterns.append(_HELM_REPOSITORY)
+    facts = []
+    for n, view in enumerate(code, start=1):
+        for pattern in patterns:
+            m = pattern.match(view)
+            image = image_name(m.group(1)) if m else None
+            if image:
+                facts.append(Fact("image", image, path, n, _snippet(lines[n - 1])))
+    return facts
 
 
 def _terraform(path: Path, lines: list[str], code: list[str]) -> list[Fact]:
@@ -1395,6 +1432,12 @@ def facts_for_file(
         facts += _js_imports(path, view_text, lines)
     elif suffix in (".tf", ".hcl"):
         facts += _terraform(path, lines, code)
+    if (
+        suffix in (".yaml", ".yml")
+        or path.name.lower().startswith(("dockerfile", "containerfile"))
+        or path.name.lower().endswith((".dockerfile", ".containerfile"))
+    ):
+        facts += _images(path, lines, code)
     if _takes_install_commands(path):
         facts += _install_commands(path, lines, code)
     facts += _local_base_urls(path, lines, code)
@@ -1528,7 +1571,7 @@ def _lookup_keys(kind: str, value: str) -> list[str]:
 
 def match(facts: list[Fact], catalog: Catalog) -> list[Finding]:
     index: dict[tuple[str, str], list[Service]] = {}
-    for service in catalog.services:
+    for service in catalog.detectable:
         for kind, signatures in service.detect.items():
             for signature in signatures:
                 index.setdefault((kind, _canonical(kind, signature)), []).append(service)
@@ -1541,7 +1584,7 @@ def match(facts: list[Fact], catalog: Catalog) -> list[Finding]:
 
     local = [f for f in facts if f.kind == "local_base_url"]
     findings: list[Finding] = []
-    for service in catalog.services:
+    for service in catalog.detectable:
         hits = hits_by_service.get(service.id)
         if not hits:
             continue
