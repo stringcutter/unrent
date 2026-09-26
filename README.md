@@ -2,7 +2,7 @@
 
 Point it at a codebase. It lists every closed AI service the code depends on, where,
 and the open source projects and open-weight models that replace each one — ranked by
-what is actually gaining ground right now.
+momentum: GitHub star growth for projects, Hugging Face trending for models.
 
 ```
 $ lockin scan ai-chatbot/
@@ -35,8 +35,8 @@ Python 3.11+, one dependency (PyYAML). No account, no upload, no network: the sc
 reads files and prints a report.
 
 If [ripgrep](https://github.com/BurntSushi/ripgrep) is on your PATH, lockin uses it to
-find candidate lines and large monorepos scan about three times faster. The results
-are identical either way, and CI checks that they are.
+find candidate lines, and large monorepos scan two to three times faster. The results
+are identical either way; the test suite runs every detection test in both modes.
 
 ## Use
 
@@ -44,7 +44,8 @@ are identical either way, and CI checks that they are.
 lockin scan .                          # markdown report
 lockin scan . --top 5                  # more alternatives per kind
 lockin scan . --format json -o r.json  # every ranked alternative, every location
-lockin scan . --exclude "examples/*"   # or list globs in a .lockinignore file
+lockin scan . --skip-tests             # leave test, spec and fixture code out
+lockin scan . --exclude "examples/"    # .gitignore syntax; or put it in .lockinignore
 lockin catalog                         # what is covered
 ```
 
@@ -60,27 +61,43 @@ A dependency is recognised from whichever evidence the codebase has:
 
 | Evidence | Read from |
 |---|---|
-| Packages | `requirements*.txt`, `pyproject.toml` (PEP 621, Poetry, PDM, uv groups), `setup.py`, `setup.cfg`, `Pipfile`, conda `environment.yml`, `package.json`, `go.mod`, `Cargo.toml`, `pom.xml`, Gradle and version catalogs, `.csproj` / `Directory.Packages.props`, `Gemfile`, `composer.json` |
-| Imports | Python (AST, Jupyter notebooks included), JavaScript and TypeScript `import` / `require` / dynamic `import()` |
-| Install commands | `pip install`, `uv add`, `poetry add`, `npm i`, `pnpm add`, … in Dockerfiles, shell scripts, CI config and notebook `!pip` cells |
+| Packages | `*requirements*.txt` (continuations and `--hash` lines included), `pyproject.toml` (PEP 621, Poetry, PDM, Hatch, uv groups), `setup.py`, `setup.cfg`, `Pipfile`, conda `environment.yml`, `package.json`, `pnpm-workspace.yaml` catalogs, `go.mod`, `Cargo.toml`, `pom.xml`, Gradle and version catalogs, `.csproj` / `Directory.Packages.props`, `Gemfile`, `composer.json`, `pubspec.yaml`, `Package.swift` |
+| Imports | Python (AST, `from pkg import module`, `importlib.import_module`, Jupyter notebooks of any size), JavaScript and TypeScript `import` / `require` / `import()` including `npm:` and `jsr:` specifiers |
+| Install commands | `pip install`, `uv add`, `poetry add`, `npm i`, `pnpm add`, … in Dockerfiles, Containerfiles, shell scripts, CI config and notebook `!pip` cells, across `\` line continuations |
 | Framework integrations | LangChain, LlamaIndex, Vercel AI SDK, Spring AI, LangChain4j, Semantic Kernel provider packages |
-| API hosts | `api.openai.com`, `*.openai.azure.com`, `ai-gateway.vercel.sh`, … in any source or config file |
-| Model ids | `gpt-4o`, `claude-sonnet-4`, `gemini-2.5-pro`, `xai/grok-4`, … — but not open-weight ones like `gpt-oss` or `deepseek-v3.2` |
-| Environment variables | read in code in any language, or set in `.env*`, compose files and CI config |
+| API hosts | `api.openai.com`, `*.openai.azure.com`, `ai-gateway.vercel.sh`, … in source or config of any language, HTML `<script>` blocks and Helm templates included |
+| Model ids | `gpt-4o`, `claude-sonnet-4`, `gemini-2.5-pro`, `xai/grok-4`, … — but not open-weight ones like `gpt-oss` or `deepseek-v3.2`, and not local Ollama tags like `command-r:35b` |
+| Environment variables | read in code in any language, or set in `.env*`, compose files, Helm charts and CI config |
 | Terraform | `azurerm_search_service`, `aws_bedrockagent_agent`, … |
 
-Every finding cites file, line and text. What it deliberately does not count:
+Every finding cites file, line and text, with API keys and tokens masked, so a report
+can be pasted into an issue. Where one vendor is reached through another's SDK — Azure
+through `openai`, Claude on Bedrock through `anthropic`, Groq through the OpenAI SDK
+with a Groq base URL — the report names the vendor actually called.
 
+What it deliberately does not count:
+
+- **Self-hosted models behind a compatible SDK.** `OpenAI(base_url="http://localhost:11434/v1")`
+  is Ollama, not OpenAI. A local or private base URL in a file (or in `.env` and
+  config, for the whole project) means the `openai` package there is a client for a
+  server you run.
 - **Lockfiles.** They list what your dependencies depend on. A gateway library that
   pulls in the `openai` SDK does not make you an OpenAI customer.
-- **Comments, docstrings and docs.** Writing about a vendor is not using one.
-- **Ignored and vendored files.** `.gitignore` is respected; `node_modules`, `vendor`,
-  virtualenvs and minified bundles are skipped.
-- **Generic strings.** `task="transcribe"` is Whisper, not Amazon Transcribe;
-  `import textract` is an open source library, not AWS Textract; `HF_TOKEN` downloads
-  open weights and is not Hugging Face inference.
+- **Comments, docstrings and docs.** Writing about a vendor is not using one. Comment
+  syntax is per language, and comment markers inside strings are text.
+- **Ignored and vendored files.** `.gitignore` is respected with or without git;
+  submodules are scanned; `node_modules`, `vendor`, virtualenvs and minified bundles
+  are skipped. Files too large to read are listed in the report, never dropped silently.
+- **Generic names.** `task="transcribe"` is Whisper, not Amazon Transcribe;
+  `import textract` is an open source library; `from fireworks import Firework` is a
+  workflow library; your own `perplexity.py` is not Perplexity; `HF_TOKEN` downloads
+  open weights. Signatures that are ambiguous on their own need a second, different
+  signature to count.
 
-The test suite pins each of these, and many more, as one test per edge case.
+Findings whose only evidence is in test, spec or fixture code are marked *only in
+tests*: usually a mock of a real dependency, sometimes a leftover.
+
+Each of these is pinned by a test that fails without it.
 
 ## How alternatives are chosen
 
@@ -92,18 +109,25 @@ and `scripts/refresh.py` ranks every pool weekly:
 - **Open source projects** are ranked by momentum: GitHub stars gained over the last
   90 days. GitHub no longer exposes when stars were given, and the public event
   archives have undercounted since 2025, so lockin keeps its own history in
-  [`catalog/star-history.json`](catalog/star-history.json). Until a project has four
-  weeks of history, its pool is ranked by total stars and the report says so.
+  [`catalog/star-history.json`](catalog/star-history.json). Until that history covers
+  four weeks, a pool is ranked by total stars — which is where it stands today — and
+  the report says so.
 - **Open-weight models** are discovered, not listed: the listed labs' own models
   (not community fine-tunes or re-quantisations) under an open licence, ranked by
-  Hugging Face's trending score, at most two per lab.
+  Hugging Face's trending score, at most two per lab. Trending favours new releases:
+  the top model may be days old. Read the model card before you bet on it.
 - **Only open source counts.** An OSI-approved licence for code; Apache, MIT, BSD or
-  CC-BY for weights. Licences that add use restrictions or commercial thresholds are
-  out, however popular the project. So are archived projects and projects without a
-  push in a year. The refresh fails loudly when a listed project is renamed, archived
-  or relicensed.
+  CC-BY for weights. A project that runs a model is only as open as its weights, so
+  tools with revenue-capped or use-restricted weights are left out even when their
+  code is Apache or GPL. So are archived projects and projects without a push in a
+  year.
+- **Rankings can't silently rot.** The refresh fails loudly when a listed project is
+  renamed, archived or relicensed; keeps last week's data for a project it could not
+  reach; and refuses to publish when a pool would empty or halve — that is an
+  outage, not news.
 
-The scanner never touches the network: it reads the committed ranking snapshot.
+The scanner never touches the network: it reads the ranking snapshot that ships with
+the release, so upgrading lockin is how you get newer rankings.
 
 ## Contributing
 

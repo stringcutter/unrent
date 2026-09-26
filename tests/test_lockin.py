@@ -17,7 +17,7 @@ sys.path.insert(0, str(ROOT))
 
 from lockin.catalog import OPEN_LICENCES, OPEN_MODEL_LICENCES, load_catalog  # noqa: E402
 from lockin.cli import main  # noqa: E402
-from lockin.detect import collect_facts, js_package, match  # noqa: E402
+from lockin.detect import collect_facts, js_package, match, redact  # noqa: E402
 from lockin.report import to_json, to_markdown  # noqa: E402
 
 CATALOG_DIR = ROOT / "catalog"
@@ -311,7 +311,364 @@ def test_azure_claims_the_shared_evidence(tmp_path, catalog):
         "requirements.txt": "openai\n",
         "a.py": "from openai import AzureOpenAI\nc = AzureOpenAI()\n",
     })  # fmt: skip
-    assert "azure-openai" in found(tmp_path, catalog)
+    hits = found(tmp_path, catalog)
+    assert "azure-openai" in hits
+    assert "openai" not in hits, "the openai package is how Azure is called"
+
+
+def test_claude_on_bedrock_is_bedrock(tmp_path, catalog):
+    write(tmp_path, {
+        "requirements.txt": "anthropic[bedrock]\n",
+        "a.py": "from anthropic import AnthropicBedrock\nc = AnthropicBedrock()\n",
+    })  # fmt: skip
+    assert set(found(tmp_path, catalog)) == {"aws-bedrock"}
+
+
+def test_gemini_through_vertex_is_vertex(tmp_path, catalog):
+    write(tmp_path, {
+        "requirements.txt": "google-genai\n",
+        "a.py": "from google import genai\nc = genai.Client(vertexai=True, project='p')\n",
+    })  # fmt: skip
+    assert set(found(tmp_path, catalog)) == {"google-vertex"}
+
+
+def test_both_vendors_really_used_are_both_reported(tmp_path, catalog):
+    write(tmp_path, {
+        "azure.py": "from openai import AzureOpenAI\nc = AzureOpenAI()\n",
+        "direct.py": "from openai import OpenAI\nc = OpenAI()\n",
+    })  # fmt: skip
+    assert {"azure-openai", "openai"} <= found(tmp_path, catalog).keys()
+
+
+def test_provider_via_openai_sdk_is_the_provider(tmp_path, catalog):
+    write(tmp_path, {
+        "requirements.txt": "openai\n",
+        "a.py": 'from openai import OpenAI\nc = OpenAI(base_url="https://api.groq.com/openai/v1")\n',
+    })  # fmt: skip
+    assert set(found(tmp_path, catalog)) == {"groq"}
+
+
+# --- review findings: one regression test each ------------------------------------
+
+
+def test_trailing_python_comment_does_not_hide_the_code(tmp_path, catalog):
+    write(tmp_path, {"app.py": (
+        'requests.post("https://api.deepgram.com/v1/listen", data=a)  # speech to text\n'
+        'key = os.environ["ELEVENLABS_API_KEY"]  # TTS\n'
+    )})  # fmt: skip
+    assert {"deepgram", "elevenlabs"} <= found(tmp_path, catalog).keys()
+
+
+def test_comment_markers_are_per_language(tmp_path, catalog):
+    write(tmp_path, {
+        "a.ts": "class A { #key = process.env.DEEPGRAM_API_KEY }\n",
+        "b.js": ';(async () => { await fetch("https://api.elevenlabs.io/v1/tts") })()\n',
+        "run.sh": "docker run \\\n  --env PINECONE_API_KEY=$K img\n",
+        "c.rs": "let x = 'a'; // lifetime-ish\nlet u = \"https://api.anthropic.com\";\n",
+    })  # fmt: skip
+    assert {"deepgram", "elevenlabs", "pinecone", "anthropic"} <= found(tmp_path, catalog).keys()
+
+
+def test_comment_markers_inside_strings_are_text(tmp_path, catalog):
+    write(
+        tmp_path, {"a.js": 'app.use("/api/*", auth);\nfetch("https://api.cohere.com/v2/chat");\n'}
+    )
+    assert "cohere" in found(tmp_path, catalog)
+
+
+def test_real_comments_still_hide_code(tmp_path, catalog):
+    write(tmp_path, {
+        "a.go": "/*\nkey := os.Getenv(\"GROQ_API_KEY\")\n*/\n// url := \"https://api.anthropic.com\"\n",
+        "b.yaml": "# OPENAI_API_KEY: x\nname: app\n",
+        "c.sql": "-- ANTHROPIC_API_KEY\nselect 1;\n",
+        "d.xml": "<!-- <key>PINECONE_API_KEY</key> -->\n",
+    })  # fmt: skip
+    assert found(tmp_path, catalog) == {}
+
+
+def test_from_package_import_module(tmp_path, catalog):
+    write(tmp_path, {"app.py": "from google.cloud import documentai, aiplatform, vision\n"})
+    hits = found(tmp_path, catalog)
+    assert {"google-document-ai", "google-vertex", "google-vision-ocr"} <= hits.keys()
+
+
+def test_dynamic_python_import(tmp_path, catalog):
+    write(tmp_path, {"app.py": 'import importlib\nm = importlib.import_module("anthropic")\n'})
+    assert "anthropic" in found(tmp_path, catalog)
+
+
+def test_dotted_i_does_not_hang_or_shift_lines(tmp_path, catalog):
+    write(tmp_path, {"app.py": 's = "' + "İ" * 60 + '"\n\nu = "https://api.deepgram.com/v1"\n'})
+    assert found(tmp_path, catalog)["deepgram"][0].line == 3
+
+
+def test_openai_sdk_against_a_local_server_is_not_openai(tmp_path, catalog):
+    write(tmp_path, {
+        "requirements.txt": "openai\n",
+        "a.py": 'from openai import OpenAI\nc = OpenAI(base_url="http://localhost:11434/v1", api_key="ollama")\n',
+        "b.js": 'import OpenAI from "openai";\nconst c = new OpenAI({ baseURL: "http://192.168.1.5:8000/v1" });\n',
+    })  # fmt: skip
+    assert "openai" not in found(tmp_path, catalog)
+
+
+def test_local_base_url_in_env_covers_the_project(tmp_path, catalog):
+    write(tmp_path, {
+        ".env.example": "OPENAI_BASE_URL=http://host.docker.internal:11434/v1\n",
+        "a.py": "from openai import OpenAI\nc = OpenAI()\n",
+    })  # fmt: skip
+    assert "openai" not in found(tmp_path, catalog)
+
+
+def test_real_openai_next_to_a_local_server_is_still_openai(tmp_path, catalog):
+    write(tmp_path, {
+        "local.py": 'from openai import OpenAI\nc = OpenAI(base_url="http://localhost:8000/v1")\n',
+        "cloud.py": 'from openai import OpenAI\nc = OpenAI()\nm = "gpt-4o"\n',
+    })  # fmt: skip
+    assert "openai" in found(tmp_path, catalog)
+
+
+def test_big_notebooks_long_lines_and_big_yaml_are_read(tmp_path, catalog):
+    image = "A" * 3_000_000
+    nb = {"cells": [
+        {"cell_type": "code", "source": ["from pinecone import Pinecone\n"],
+         "outputs": [{"output_type": "display_data", "data": {"image/png": image}}]},
+    ]}  # fmt: skip
+    write(tmp_path, {
+        "big.ipynb": json.dumps(nb),
+        "models.ts": "export const m = [" + '{id:"local",label:"L"},' * 200 + '{id:"claude-sonnet-4-5"}];\n',
+        "litellm/config.yaml": "model_list:\n" + "  - model_name: m\n" * 20000 + "  - model: anthropic/claude-sonnet-4-5\n",
+    })  # fmt: skip
+    hits = found(tmp_path, catalog)
+    assert "pinecone" in hits and "anthropic" in hits
+    assert len(hits["anthropic"][0].evidence) < 300
+
+
+def test_oversized_files_are_reported_not_silently_dropped(tmp_path, catalog):
+    write(tmp_path, {"huge.py": "import anthropic\n" + "x = 1\n" * 400_000})
+    skipped: list = []
+    collect_facts(tmp_path, catalog, skipped=skipped)
+    assert [p.name for p in skipped] == ["huge.py"]
+    md = to_markdown([], tmp_path, catalog, skipped=skipped)
+    assert "Not scanned" in md and "huge.py" in md
+
+
+@pytest.mark.parametrize(
+    "files",
+    [
+        {"ui.js": "function close() { return modal.run(); }\n"},
+        {"requirements.txt": "FireWorks>=2\n", "wf.py": "from fireworks import Firework\n"},
+        {"perplexity.py": "def score(): ...\n", "app.py": "from perplexity import score\n"},
+        {"mem.py": "class MemoryClient:\n    pass\n"},
+        {"Speech.kt": "class SpeechClient\n"},
+        {"emb.py": "class TextEmbeddingModel: ...\n"},
+        {"rt.js": "supabase.realtime.connect()\n"},
+        {"compose.yaml": "services:\n  llm:\n    command: ollama run command-r:35b\n"},
+        {"data.py": 'open("bedrock/geology.csv")\nopen("perplexity/scores.json")\n'},
+        {"tok.py": 'enc = tiktoken.encoding_for_model("gpt-4")\n'},
+        {".env.example": "WANDB_API_KEY=\n"},
+        {"Dockerfile": "ENV NGC_API_KEY=x\n"},
+        {"db.js": 'db.c.aggregate([{ $vectorSearch: { index: "v" } }])\n'},
+        {"err.py": 'raise ImportError("run: pip install cohere")\n'},
+    ],
+    ids=lambda files: next(iter(files)),
+)
+def test_generic_signatures_do_not_name_a_vendor(tmp_path, catalog, files):
+    write(tmp_path, files)
+    assert found(tmp_path, catalog) == {}
+
+
+def test_weak_signatures_corroborate_each_other(tmp_path, catalog):
+    write(tmp_path, {"db.py": (
+        'client = MongoClient("mongodb+srv://u:p@c0.abcde.mongodb.net")\n'
+        'pipeline = [{"$vectorSearch": {"index": "v"}}]\n'
+    )})  # fmt: skip
+    assert "mongodb-atlas-vector-search" in found(tmp_path, catalog)
+
+
+@pytest.mark.skipif(not shutil.which("git"), reason="git not installed")
+def test_directory_ignored_by_its_parent_repo_is_scanned(tmp_path, catalog):
+    write(
+        tmp_path, {".gitignore": "downloads/\n", "downloads/template/app.py": "import anthropic\n"}
+    )
+    subprocess.run(["git", "init", "-q"], cwd=tmp_path, check=True)
+    assert "anthropic" in found(tmp_path / "downloads" / "template", catalog)
+
+
+@pytest.mark.skipif(not shutil.which("git"), reason="git not installed")
+def test_submodules_are_scanned(tmp_path, catalog):
+    git = ["git", "-c", "user.email=t@t", "-c", "user.name=t", "-c", "protocol.file.allow=always"]
+    lib = write(tmp_path / "lib", {"llm.py": "import anthropic\n"})
+    subprocess.run([*git, "init", "-q"], cwd=lib, check=True)
+    subprocess.run([*git, "add", "."], cwd=lib, check=True)
+    subprocess.run([*git, "commit", "-qm", "x"], cwd=lib, check=True)
+    main_repo = write(tmp_path / "main", {"app.py": "print(1)\n"})
+    subprocess.run([*git, "init", "-q"], cwd=main_repo, check=True)
+    subprocess.run(
+        [*git, "submodule", "-q", "add", str(lib), "vendorlib"], cwd=main_repo, check=True
+    )
+    assert "anthropic" in found(main_repo, catalog)
+
+
+def test_secrets_never_reach_the_report(tmp_path, catalog):
+    write(tmp_path, {
+        ".env": "OPENAI_API_KEY=sk-proj-AbCdEfGhIjKlMnOpQrStUvWx\n",
+        "a.py": 'import anthropic\nc = anthropic.Anthropic(api_key="sk-ant-api03-REALKEYxyz0123456789")\n',
+    })  # fmt: skip
+    findings = match(collect_facts(tmp_path, catalog), catalog)
+    out = to_markdown(findings, tmp_path, catalog) + to_json(findings, tmp_path, catalog)
+    assert "AbCdEfGh" not in out and "REALKEY" not in out
+    assert "OPENAI_API_KEY=****" in out
+
+
+def test_references_to_secrets_are_not_masked():
+    assert redact('api_key=os.environ["OPENAI_API_KEY"]') == 'api_key=os.environ["OPENAI_API_KEY"]'
+    assert (
+        redact("apiKey: process.env.ANTHROPIC_API_KEY") == "apiKey: process.env.ANTHROPIC_API_KEY"
+    )
+
+
+def test_multiline_install_commands(tmp_path, catalog):
+    write(tmp_path, {"Dockerfile": (
+        "FROM python:3.12\nRUN pip install --no-cache-dir \\\n"
+        "    anthropic==0.40.0 \\\n    pinecone \\\n    voyageai\n"
+    )})  # fmt: skip
+    hits = found(tmp_path, catalog)
+    assert {"anthropic", "pinecone", "voyage"} <= hits.keys()
+    assert hits["voyage"][0].line == 2
+
+
+def test_requirements_with_hashes(tmp_path, catalog):
+    write(tmp_path, {"requirements.txt": "anthropic==0.40 \\\n    --hash=sha256:abc\n"})
+    assert "anthropic" in found(tmp_path, catalog)
+
+
+def test_findings_only_in_tests_are_marked_and_skippable(tmp_path, catalog):
+    write(tmp_path, {
+        "app.py": "import anthropic\n",
+        "tests/test_llm.py": "import cohere\n",
+        "src/models.spec.ts": 'const m = "gpt-4o";\n',
+    })  # fmt: skip
+    findings = {f.service.id: f for f in match(collect_facts(tmp_path, catalog), catalog)}
+    assert not findings["anthropic"].test_only
+    assert findings["cohere"].test_only and findings["openai"].test_only
+    assert "only in tests" in to_markdown(list(findings.values()), tmp_path, catalog)
+    assert set(found(tmp_path, catalog, skip_tests=True)) == {"anthropic"}
+
+
+def test_ignore_files_use_gitignore_semantics(tmp_path, catalog):
+    write(tmp_path, {
+        # As in git: `/docs/*` then `!docs/keep.py` re-includes; `/docs` would not.
+        ".lockinignore": "tests\n**/fixtures/\n/docs/*\n!docs/keep.py\n",
+        "tests/t.py": "import anthropic\n",
+        "src/fixtures/f.py": "import cohere\n",
+        "docs/d.py": "import mistralai\n",
+        "docs/keep.py": "import groq\n",
+        "src/docs/real.py": "import voyageai\n",
+    })  # fmt: skip
+    assert set(found(tmp_path, catalog)) == {"groq", "voyage"}
+
+
+def test_gitignore_is_respected_without_git(tmp_path, catalog):
+    write(tmp_path, {
+        ".gitignore": "generated/\n",
+        "generated/a.py": "import anthropic\n",
+        "build/Dockerfile": "RUN pip install cohere\n",
+    })  # fmt: skip
+    assert set(found(tmp_path, catalog)) == {"cohere"}
+
+
+@pytest.mark.parametrize(
+    ("files", "service"),
+    [
+        ({"dev-requirements.txt": "anthropic\n"}, "anthropic"),
+        ({"Containerfile": "RUN pip install anthropic\n"}, "anthropic"),
+        (
+            {
+                "index.html": '<p>api.openai.com</p><script>\nfetch("https://api.mistral.ai/v1")\n</script>'
+            },
+            "mistral",
+        ),
+        ({"main.cpp": 'auto u = "https://api.anthropic.com/v1/messages";\n'}, "anthropic"),
+        ({"chart/templates/_helpers.tpl": "- name: OPENAI_API_KEY\n"}, "openai"),
+        ({"main.ts": 'import Anthropic from "jsr:@anthropic-ai/sdk";\n'}, "anthropic"),
+        ({"pubspec.yaml": "dependencies:\n  dart_openai: ^5.0.0\n"}, "openai"),
+        ({"pyproject.toml": '[tool.hatch.envs.default]\ndependencies = ["cohere"]\n'}, "cohere"),
+        (
+            {
+                "Package.swift": '.package(url: "https://github.com/MacPaw/OpenAI.git", from: "0.2.0")\n'
+            },
+            "openai",
+        ),
+        ({"pnpm-workspace.yaml": 'catalog:\n  "@anthropic-ai/sdk": ^0.30.0\n'}, "anthropic"),
+    ],
+    ids=lambda v: next(iter(v)) if isinstance(v, dict) else v,
+)
+def test_more_file_types(tmp_path, catalog, files, service):
+    write(tmp_path, files)
+    assert service in found(tmp_path, catalog)
+
+
+def test_html_prose_is_not_code(tmp_path, catalog):
+    write(tmp_path, {"docs.html": "<p>Call https://api.openai.com with OPENAI_API_KEY</p>\n"})
+    assert found(tmp_path, catalog) == {}
+
+
+def test_utf16_files(tmp_path, catalog):
+    (tmp_path / "setup.ps1").write_bytes('$env:ANTHROPIC_API_KEY = "x"\r\n'.encode("utf-16"))
+    assert "anthropic" in found(tmp_path, catalog)
+
+
+def test_citations_point_at_the_dependency(tmp_path, catalog):
+    write(tmp_path, {
+        "pyproject.toml": (
+            '[project]\nname = "r"\ndescription = "Routes prompts to anthropic"\n'
+            'keywords = ["openai"]\ndependencies = ["anthropic>=0.40"]\n'
+        ),
+        "package.json": '{\n "keywords": ["openai"],\n "dependencies": {\n  "openai": "^4"\n }\n}\n',
+    })  # fmt: skip
+    hits = found(tmp_path, catalog)
+    assert hits["anthropic"][0].line == 5
+    assert hits["openai"][0].line == 4
+
+
+def test_notebook_citation_skips_markdown_with_the_same_text(tmp_path, catalog):
+    nb = {"cells": [
+        {"cell_type": "markdown", "source": ["    client = OpenAI()\n"]},
+        {"cell_type": "code", "outputs": [], "source": ["client = OpenAI()"]},
+    ]}  # fmt: skip
+    write(tmp_path, {"n.ipynb": json.dumps(nb, indent=1)})
+    line = found(tmp_path, catalog)["openai"][0].line
+    text = (tmp_path / "n.ipynb").read_text().split("\n")
+    assert text[line - 1].strip() == '"client = OpenAI()"'
+    assert line > 6
+
+
+def test_refresh_refuses_to_publish_a_collapse(search_mode):
+    refresh = _refresh_module()
+    before = {"vector-db": {"ranked": [{}] * 8}, "rag": {"ranked": [{}] * 5}}
+    assert refresh.shrunk_pools(before, {"vector-db": {"ranked": []}, "rag": {"ranked": [{}] * 5}})
+    assert refresh.shrunk_pools(
+        before, {"vector-db": {"ranked": [{}] * 3}, "rag": {"ranked": [{}] * 5}}
+    )
+    assert not refresh.shrunk_pools(
+        before, {"vector-db": {"ranked": [{}] * 7}, "rag": {"ranked": [{}] * 5}}
+    )
+
+
+def test_refresh_treats_rate_limits_as_transient(search_mode, monkeypatch):
+    import io
+    import urllib.error
+
+    refresh = _refresh_module()
+    monkeypatch.setattr(refresh, "MAX_RATE_LIMIT_WAIT", 0)
+
+    def rate_limited(*a, **k):
+        headers = {"X-RateLimit-Remaining": "0", "X-RateLimit-Reset": "9999999999"}
+        raise urllib.error.HTTPError("u", 403, "rate limited", headers, io.BytesIO())
+
+    monkeypatch.setattr(refresh.urllib.request, "urlopen", rate_limited)
+    result = refresh.github_project("a/b", None, "token")
+    assert result["status"] == "unreachable"
 
 
 # --- which files ----------------------------------------------------------------

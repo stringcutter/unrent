@@ -62,9 +62,7 @@ def _pools_in_order(findings: list[Finding], catalog: Catalog) -> dict[str, list
     return pools
 
 
-def to_json(
-    findings: list[Finding], root: Path, catalog: Catalog, skipped: list[Path] = ()
-) -> str:
+def to_json(findings: list[Finding], root: Path, catalog: Catalog, skipped: list[Path] = ()) -> str:
     payload = {
         "scanned": str(root),
         "scanned_at": _now().isoformat(timespec="seconds"),
