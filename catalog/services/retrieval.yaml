@@ -240,6 +240,7 @@
   replace_with: [rag-application, rag-framework, search-engine]
   detect:
     npm: ["@aws-sdk/client-kendra"]
+    go: [github.com/aws/aws-sdk-go-v2/service/bedrockagent]
     symbol: [AmazonKnowledgeBasesRetriever, AmazonKendraRetriever, '"kendra"', "'kendra'",
              "retrieve_and_generate", RetrieveCommand, RetrieveAndGenerateCommand,
              retrieveAndGenerate, knowledgeBaseId]
@@ -431,3 +432,56 @@
     python_import: [mpxpy]
     endpoint: [api.mathpix.com]
     env: [MATHPIX_APP_ID, MATHPIX_APP_KEY]
+
+# ---------------------------------------------------------------- added from real-repo gaps
+
+- id: azure-cosmos-vector
+  name: Azure Cosmos DB vector search
+  category: Vector database
+  replace_with: [vector-db]
+  detect:
+    requirement: [llama-index-vector-stores-azurecosmosnosql, llama-index-vector-stores-azurecosmosmongo]
+    nuget: [Microsoft.SemanticKernel.Connectors.AzureCosmosDBNoSQL,
+            Microsoft.SemanticKernel.Connectors.AzureCosmosDBMongoDB]
+    symbol: [AzureCosmosDBNoSqlVectorSearch, AzureCosmosDBVectorSearch, vectorEmbeddingPolicy,
+             vector_embedding_policy]
+
+- id: tencent-vectordb
+  name: Tencent Cloud VectorDB
+  category: Vector database
+  replace_with: [vector-db]
+  detect:
+    requirement: [tcvectordb]
+    python_import: [tcvectordb]
+
+- id: baidu-vectordb
+  name: Baidu VectorDB
+  category: Vector database
+  replace_with: [vector-db]
+  detect:
+    requirement: [pymochow]
+    python_import: [pymochow]
+
+- id: alibaba-analyticdb
+  name: Alibaba AnalyticDB for PostgreSQL (vector)
+  category: Vector database
+  replace_with: [vector-db]
+  detect:
+    requirement: [alibabacloud-gpdb20160503]
+    python_import: [alibabacloud_gpdb20160503]
+
+- id: alibaba-dashvector
+  name: Alibaba DashVector
+  category: Vector database
+  replace_with: [vector-db]
+  detect:
+    requirement: [dashvector]
+    python_import: [dashvector]
+
+- id: volcengine-vikingdb
+  name: Volcengine VikingDB
+  category: Vector database
+  replace_with: [vector-db]
+  detect:
+    python_import: [volcengine.viking_db]
+    symbol: [VikingDBService]
