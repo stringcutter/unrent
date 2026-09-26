@@ -1,8 +1,8 @@
 name: refresh rankings
 
-# Weekly: record every alternative's star count, re-rank the pools, and open a pull
-# request. Momentum is computed from this history, so a skipped week costs accuracy,
-# not correctness. The history only advances when the pull request is merged.
+# Weekly: record every alternative's star count, re-rank the pools, open a pull request
+# and merge it. Momentum is computed from this history, so a skipped week costs
+# accuracy, not correctness. A week with catalog problems is left open for review.
 #
 # Needs Settings > Actions > General > "Allow GitHub Actions to create and approve
 # pull requests" to be enabled, or the last step fails.
@@ -54,6 +54,7 @@ jobs:
           uv run --frozen unrent catalog --validate
           uv run --frozen pytest -q
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        id: pr
         with:
           branch: refresh-rankings
           delete-branch: true
@@ -63,6 +64,14 @@ jobs:
           add-paths: |
             catalog/rankings.json
             catalog/star-history.json
+      # A quiet week merges itself: the snapshot was validated and tested above, and
+      # merging is what advances the star history. A week with catalog problems stays
+      # open for a human, with the problems in its description.
+      - name: Merge
+        if: steps.pr.outputs.pull-request-number && steps.rank.outputs.problems != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr merge "${{ steps.pr.outputs.pull-request-number }}" --squash --delete-branch
 
   # Every package name in the catalog must still exist in its registry: a renamed or
   # removed package is a silent false negative. Separate from the ranking job, so a
