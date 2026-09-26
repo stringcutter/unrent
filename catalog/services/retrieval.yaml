@@ -1,0 +1,289 @@
+# Closed embedding, reranking, vector search and document parsing services.
+
+- id: openai-embeddings
+  name: OpenAI Embeddings
+  category: Embeddings
+  replace_with: [embedding-model, embedding-serving]
+  detect:
+    requirement: [llama-index-embeddings-openai]
+    python_import: [llama_index.embeddings.openai]
+    # `embeddings.create` is left out: every OpenAI-compatible client, local ones included, has it.
+    symbol: [OpenAIEmbeddings, OpenAIEmbedding, "openai.embedding(", "openai.textEmbeddingModel("]
+    model: [text-embedding-3-, text-embedding-ada-]
+
+- id: google-embeddings
+  name: Google Gemini / Vertex Embeddings
+  category: Embeddings
+  replace_with: [embedding-model, embedding-serving]
+  detect:
+    requirement: [llama-index-embeddings-gemini, llama-index-embeddings-google-genai, llama-index-embeddings-vertex]
+    symbol: [GoogleGenerativeAIEmbeddings, VertexAIEmbeddings, TextEmbeddingModel]
+    model: [text-embedding-004, text-embedding-005, gemini-embedding-, textembedding-gecko, text-multilingual-embedding-]
+
+- id: aws-bedrock-embeddings
+  name: Amazon Titan / Bedrock Embeddings
+  category: Embeddings
+  replace_with: [embedding-model, embedding-serving]
+  detect:
+    symbol: [BedrockEmbeddings]
+    model: [amazon.titan-embed-, cohere.embed-]
+
+- id: voyage
+  name: Voyage AI
+  category: Embeddings
+  replace_with: [embedding-model, embedding-serving, reranker]
+  detect:
+    requirement: [voyageai, langchain-voyageai, llama-index-embeddings-voyageai]
+    npm: [voyageai, voyage-ai-provider]
+    python_import: [voyageai, langchain_voyageai]
+    symbol: [VoyageAIEmbeddings, VoyageEmbedding, "voyageai.Client"]
+    model: [voyage-3, voyage-4, voyage-code-, voyage-large-, voyage-multilingual-, voyage-law-, voyage-finance-]
+    endpoint: [api.voyageai.com]
+    env: [VOYAGE_API_KEY]
+
+- id: jina-api
+  name: Jina AI API
+  category: Embeddings
+  replace_with: [embedding-model, reranker, web-scraping]
+  detect:
+    requirement: [llama-index-embeddings-jinaai]
+    symbol: [JinaEmbeddings, JinaRerank]
+    endpoint: [api.jina.ai, r.jina.ai, s.jina.ai]
+    env: [JINA_API_KEY, JINAAI_API_KEY]
+
+- id: mistral-embeddings
+  name: Mistral Embeddings and OCR
+  category: Embeddings
+  replace_with: [embedding-model, document-parsing]
+  detect:
+    symbol: [MistralAIEmbeddings]
+    model: [mistral-embed, codestral-embed, mistral-ocr-]
+
+# ---------------------------------------------------------------- vector search
+
+- id: pinecone
+  name: Pinecone
+  category: Vector database
+  replace_with: [vector-db]
+  detect:
+    go: [github.com/pinecone-io/go-pinecone]
+    maven: ["io.pinecone:pinecone-client", "dev.langchain4j:langchain4j-pinecone"]
+    nuget: [Pinecone.Client]
+    requirement: [pinecone, pinecone-client, langchain-pinecone, llama-index-vector-stores-pinecone]
+    npm: ["@pinecone-database/pinecone", "@langchain/pinecone"]
+    python_import: [pinecone, langchain_pinecone, llama_index.vector_stores.pinecone]
+    symbol: ["pinecone.Pinecone", "Pinecone(", PineconeVectorStore, PineconeStore, PineconeGRPC]
+    endpoint: [pinecone.io]
+    env: [PINECONE_API_KEY, PINECONE_ENVIRONMENT, PINECONE_INDEX, PINECONE_INDEX_NAME]
+
+- id: upstash-vector
+  name: Upstash Vector
+  category: Vector database
+  replace_with: [vector-db]
+  detect:
+    requirement: [upstash-vector, llama-index-vector-stores-upstash]
+    npm: ["@upstash/vector"]
+    python_import: [upstash_vector]
+    env: [UPSTASH_VECTOR_REST_URL, UPSTASH_VECTOR_REST_TOKEN]
+
+- id: turbopuffer
+  name: turbopuffer
+  category: Vector database
+  replace_with: [vector-db]
+  detect:
+    requirement: [turbopuffer]
+    npm: ["@turbopuffer/turbopuffer"]
+    python_import: [turbopuffer]
+    endpoint: [turbopuffer.com]
+    env: [TURBOPUFFER_API_KEY]
+
+- id: astra-db
+  name: DataStax Astra DB
+  category: Vector database
+  replace_with: [vector-db]
+  detect:
+    requirement: [astrapy, langchain-astradb, llama-index-vector-stores-astra-db]
+    npm: ["@datastax/astra-db-ts"]
+    python_import: [astrapy, langchain_astradb]
+    symbol: [AstraDBVectorStore, DataAPIClient]
+    endpoint: [apps.astra.datastax.com]
+    env: [ASTRA_DB_APPLICATION_TOKEN, ASTRA_DB_API_ENDPOINT]
+
+- id: mongodb-atlas-vector-search
+  name: MongoDB Atlas Vector Search
+  category: Vector database
+  replace_with: [vector-db]
+  detect:
+    requirement: [langchain-mongodb, llama-index-vector-stores-mongodb]
+    npm: ["@langchain/mongodb"]
+    python_import: [langchain_mongodb, llama_index.vector_stores.mongodb]
+    symbol: ["$vectorSearch", MongoDBAtlasVectorSearch]
+
+- id: vertex-vector-search
+  name: Vertex AI Vector Search
+  category: Vector database
+  replace_with: [vector-db]
+  detect:
+    symbol: [MatchingEngineIndex, MatchingEngineIndexEndpoint, VectorSearchVectorStore]
+    terraform_resource: [google_vertex_ai_index, google_vertex_ai_index_endpoint_deployed_index]
+
+- id: zilliz-cloud
+  name: Zilliz Cloud (hosted Milvus)
+  category: Vector database
+  replace_with: [vector-db]
+  detect:
+    endpoint: [zillizcloud.com, api.zilliz.com]
+    env: [ZILLIZ_CLOUD_URI, ZILLIZ_CLOUD_API_KEY, ZILLIZ_API_KEY]
+
+- id: weaviate-cloud
+  name: Weaviate Cloud
+  category: Vector database
+  replace_with: [vector-db]
+  detect:
+    symbol: [connect_to_weaviate_cloud, connect_to_wcs, connectToWeaviateCloud]
+    endpoint: [weaviate.cloud, weaviate.network]
+    env: [WCD_URL, WCD_API_KEY, WEAVIATE_CLOUD_URL]
+
+- id: qdrant-cloud
+  name: Qdrant Cloud
+  category: Vector database
+  replace_with: [vector-db]
+  detect:
+    endpoint: [cloud.qdrant.io]
+
+- id: azure-ai-search
+  name: Azure AI Search
+  category: Vector database
+  replace_with: [search-engine, vector-db]
+  detect:
+    requirement: [azure-search-documents, llama-index-vector-stores-azureaisearch]
+    npm: ["@azure/search-documents"]
+    python_import: [azure.search.documents, llama_index.vector_stores.azureaisearch]
+    symbol: [SearchIndexClient, SemanticConfiguration, AzureSearch, AzureAISearchVectorStore]
+    endpoint: [search.windows.net]
+    env: [AZURE_SEARCH_ENDPOINT, AZURE_SEARCH_KEY, AZURE_SEARCH_INDEX, AZURE_SEARCH_SERVICE_ENDPOINT,
+          AZURE_AI_SEARCH_ENDPOINT, AZURE_AI_SEARCH_API_KEY]
+    terraform_resource: [azurerm_search_service]
+
+- id: vectara
+  name: Vectara
+  category: RAG platform
+  replace_with: [rag-engine]
+  detect:
+    requirement: [vectara, langchain-vectara, llama-index-indices-managed-vectara]
+    npm: ["@vectara/vectara-ts"]
+    python_import: [vectara, langchain_vectara]
+    endpoint: [api.vectara.io]
+    env: [VECTARA_API_KEY, VECTARA_CORPUS_KEY, VECTARA_CUSTOMER_ID]
+
+- id: aws-bedrock-knowledge-bases
+  name: Amazon Bedrock Knowledge Bases / Kendra
+  category: RAG platform
+  replace_with: [rag-engine, search-engine]
+  detect:
+    npm: ["@aws-sdk/client-kendra"]
+    symbol: [AmazonKnowledgeBasesRetriever, AmazonKendraRetriever, '"kendra"', "'kendra'",
+             "retrieve_and_generate"]
+    terraform_resource: [aws_bedrockagent_knowledge_base, aws_kendra_index]
+
+- id: google-vertex-search
+  name: Vertex AI Search
+  category: RAG platform
+  replace_with: [rag-engine, search-engine]
+  detect:
+    requirement: [google-cloud-discoveryengine]
+    npm: ["@google-cloud/discoveryengine"]
+    python_import: [google.cloud.discoveryengine]
+    endpoint: [discoveryengine.googleapis.com]
+    terraform_resource: [google_discovery_engine_search_engine, google_discovery_engine_data_store]
+
+- id: openai-file-search
+  name: OpenAI vector stores / file search
+  category: RAG platform
+  replace_with: [rag-engine, vector-db]
+  detect:
+    # Not the bare "file_search" string: agent frameworks name their own tools that.
+    symbol: ["vector_stores.create", "vectorStores.create", "vector_stores.files", "vectorStores.files"]
+
+# ---------------------------------------------------------------- document parsing
+
+- id: unstructured-api
+  name: Unstructured API
+  category: Document parsing
+  replace_with: [document-parsing]
+  detect:
+    requirement: [unstructured-client]
+    npm: [unstructured-client]
+    python_import: [unstructured_client]
+    endpoint: [api.unstructured.io, api.unstructuredapp.io]
+    env: [UNSTRUCTURED_API_KEY, UNSTRUCTURED_API_URL]
+
+- id: llamaparse
+  name: LlamaParse / LlamaCloud
+  category: Document parsing
+  replace_with: [document-parsing, rag-engine]
+  detect:
+    requirement: [llama-parse, llama-cloud-services, llama-cloud, llama-index-readers-llama-parse,
+                  llama-index-indices-managed-llama-cloud]
+    npm: [llama-parse, "@llamaindex/cloud", llama-cloud-services]
+    python_import: [llama_parse, llama_cloud_services, llama_cloud]
+    symbol: [LlamaParse, LlamaCloudIndex]
+    endpoint: [api.cloud.llamaindex.ai]
+    env: [LLAMA_CLOUD_API_KEY]
+
+- id: azure-document-intelligence
+  name: Azure AI Document Intelligence
+  category: Document parsing
+  replace_with: [document-parsing]
+  detect:
+    requirement: [azure-ai-documentintelligence, azure-ai-formrecognizer]
+    npm: ["@azure-rest/ai-document-intelligence", "@azure/ai-form-recognizer"]
+    python_import: [azure.ai.documentintelligence, azure.ai.formrecognizer]
+    symbol: [DocumentIntelligenceClient, DocumentAnalysisClient, AzureAIDocumentIntelligenceLoader]
+    env: [AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT, AZURE_DOCUMENT_INTELLIGENCE_KEY, AZURE_FORM_RECOGNIZER_ENDPOINT,
+          AZURE_FORM_RECOGNIZER_KEY]
+
+- id: aws-textract
+  name: Amazon Textract
+  category: Document parsing
+  replace_with: [document-parsing]
+  detect:
+    requirement: [amazon-textract-textractor, amazon-textract-caller]
+    npm: ["@aws-sdk/client-textract"]
+    python_import: [textractor, textractcaller]
+    # Not `import textract`: that is an unrelated open source library.
+    symbol: ['"textract"', "'textract'", TextractClient, AmazonTextractPDFLoader]
+
+- id: google-document-ai
+  name: Google Document AI
+  category: Document parsing
+  replace_with: [document-parsing]
+  detect:
+    requirement: [google-cloud-documentai]
+    npm: ["@google-cloud/documentai"]
+    python_import: [google.cloud.documentai]
+    symbol: [DocumentProcessorServiceClient]
+    endpoint: [documentai.googleapis.com]
+    terraform_resource: [google_document_ai_processor]
+
+- id: google-vision-ocr
+  name: Google Cloud Vision OCR
+  category: Document parsing
+  replace_with: [document-parsing]
+  detect:
+    requirement: [google-cloud-vision]
+    npm: ["@google-cloud/vision"]
+    python_import: [google.cloud.vision]
+    symbol: [ImageAnnotatorClient]
+    endpoint: [vision.googleapis.com]
+
+- id: reducto
+  name: Reducto
+  category: Document parsing
+  replace_with: [document-parsing]
+  detect:
+    requirement: [reductoai]
+    npm: [reductoai]
+    python_import: [reducto]
+    endpoint: [platform.reducto.ai]
+    env: [REDUCTO_API_KEY]

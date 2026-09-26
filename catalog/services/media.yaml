@@ -1,0 +1,290 @@
+# Closed speech, voice and image services.
+
+# ---------------------------------------------------------------- speech-to-text
+
+- id: openai-speech-to-text
+  name: OpenAI speech-to-text
+  category: Speech-to-text
+  replace_with: [speech-to-text]
+  detect:
+    symbol: ["audio.transcriptions.create", "audio.translations.create", "openai.transcription("]
+    model: [whisper-1, gpt-4o-transcribe, gpt-4o-mini-transcribe]
+
+- id: deepgram
+  name: Deepgram
+  category: Speech-to-text
+  replace_with: [speech-to-text, text-to-speech]
+  detect:
+    requirement: [deepgram-sdk]
+    npm: ["@deepgram/sdk", "@ai-sdk/deepgram"]
+    python_import: [deepgram]
+    symbol: [DeepgramClient, createDeepgram]
+    endpoint: [api.deepgram.com]
+    env: [DEEPGRAM_API_KEY]
+
+- id: assemblyai
+  name: AssemblyAI
+  category: Speech-to-text
+  replace_with: [speech-to-text]
+  detect:
+    requirement: [assemblyai]
+    npm: [assemblyai, "@ai-sdk/assemblyai"]
+    python_import: [assemblyai]
+    endpoint: [api.assemblyai.com]
+    env: [ASSEMBLYAI_API_KEY]
+
+- id: speechmatics
+  name: Speechmatics
+  category: Speech-to-text
+  replace_with: [speech-to-text]
+  detect:
+    requirement: [speechmatics-python, speechmatics-batch, speechmatics-rt]
+    npm: ["@speechmatics/batch-client", "@speechmatics/real-time-client"]
+    python_import: [speechmatics]
+    endpoint: [speechmatics.com]
+    env: [SPEECHMATICS_API_KEY]
+
+- id: gladia
+  name: Gladia
+  category: Speech-to-text
+  replace_with: [speech-to-text]
+  detect:
+    npm: ["@ai-sdk/gladia"]
+    endpoint: [api.gladia.io]
+    env: [GLADIA_API_KEY]
+
+- id: revai
+  name: Rev AI
+  category: Speech-to-text
+  replace_with: [speech-to-text]
+  detect:
+    requirement: [rev-ai]
+    npm: [revai-node-sdk]
+    python_import: [rev_ai]
+    endpoint: [api.rev.ai]
+    env: [REVAI_ACCESS_TOKEN, REV_AI_ACCESS_TOKEN]
+
+- id: google-speech
+  name: Google Cloud Speech-to-Text / Text-to-Speech
+  category: Speech-to-text
+  replace_with: [speech-to-text, text-to-speech]
+  detect:
+    requirement: [google-cloud-speech, google-cloud-texttospeech]
+    npm: ["@google-cloud/speech", "@google-cloud/text-to-speech"]
+    python_import: [google.cloud.speech, google.cloud.speech_v2, google.cloud.texttospeech]
+    symbol: [SpeechClient, TextToSpeechClient]
+    endpoint: [speech.googleapis.com, texttospeech.googleapis.com]
+
+- id: aws-transcribe-polly
+  name: Amazon Transcribe / Polly
+  category: Speech-to-text
+  replace_with: [speech-to-text, text-to-speech]
+  detect:
+    requirement: [amazon-transcribe]
+    npm: ["@aws-sdk/client-transcribe", "@aws-sdk/client-transcribe-streaming", "@aws-sdk/client-polly"]
+    python_import: [amazon_transcribe]
+    # The client call, not the bare string: Whisper takes task="transcribe" too.
+    symbol: ['client("transcribe"', "client('transcribe'", 'client("polly"', "client('polly'",
+             'service_name="transcribe"', 'service_name="polly"', TranscribeClient, PollyClient,
+             TranscribeStreamingClient]
+
+- id: azure-speech
+  name: Azure AI Speech
+  category: Speech-to-text
+  replace_with: [speech-to-text, text-to-speech]
+  detect:
+    requirement: [azure-cognitiveservices-speech]
+    npm: [microsoft-cognitiveservices-speech-sdk]
+    python_import: [azure.cognitiveservices.speech]
+    symbol: [SpeechRecognizer, SpeechSynthesizer]
+    endpoint: [stt.speech.microsoft.com, tts.speech.microsoft.com]
+    env: [AZURE_SPEECH_KEY, AZURE_SPEECH_REGION, SPEECH_KEY, SPEECH_REGION]
+
+# ---------------------------------------------------------------- text-to-speech
+
+- id: openai-text-to-speech
+  name: OpenAI text-to-speech
+  category: Text-to-speech
+  replace_with: [text-to-speech]
+  detect:
+    symbol: ["audio.speech.create", "openai.speech("]
+    model: [tts-1, gpt-4o-mini-tts]
+
+- id: elevenlabs
+  name: ElevenLabs
+  category: Text-to-speech
+  replace_with: [text-to-speech, speech-to-text]
+  detect:
+    requirement: [elevenlabs]
+    npm: [elevenlabs, "@elevenlabs/elevenlabs-js", "@elevenlabs/react", "@elevenlabs/client", "@ai-sdk/elevenlabs"]
+    python_import: [elevenlabs]
+    symbol: [ElevenLabs, ElevenLabsClient]
+    model: [eleven_multilingual_, eleven_turbo_, eleven_flash_, eleven_v3, eleven_monolingual_, scribe_v1]
+    endpoint: [api.elevenlabs.io]
+    env: [ELEVENLABS_API_KEY, ELEVEN_API_KEY]
+
+- id: cartesia
+  name: Cartesia
+  category: Text-to-speech
+  replace_with: [text-to-speech]
+  detect:
+    requirement: [cartesia]
+    npm: ["@cartesia/cartesia-js"]
+    python_import: [cartesia]
+    model: [sonic-2, sonic-english, sonic-multilingual, sonic-turbo]
+    endpoint: [api.cartesia.ai]
+    env: [CARTESIA_API_KEY]
+
+- id: playht
+  name: PlayHT
+  category: Text-to-speech
+  replace_with: [text-to-speech]
+  detect:
+    requirement: [pyht]
+    npm: [playht]
+    python_import: [pyht]
+    endpoint: [api.play.ht]
+    env: [PLAY_HT_API_KEY, PLAYHT_API_KEY, PLAY_HT_USER_ID, PLAYHT_USER_ID]
+
+- id: hume
+  name: Hume AI
+  category: Text-to-speech
+  replace_with: [text-to-speech, voice-agent]
+  detect:
+    requirement: [hume]
+    npm: [hume, "@humeai/voice-react", "@ai-sdk/hume"]
+    python_import: [hume]
+    endpoint: [api.hume.ai]
+    env: [HUME_API_KEY, HUME_SECRET_KEY]
+
+# ---------------------------------------------------------------- voice agents
+
+- id: openai-realtime
+  name: OpenAI Realtime API
+  category: Voice agent
+  replace_with: [voice-agent, speech-to-text, text-to-speech]
+  detect:
+    npm: ["@openai/realtime-api-beta"]
+    symbol: ["beta.realtime", "realtime.connect", RealtimeAgent, RealtimeSession, OpenAIRealtimeWebRTC]
+    model: [gpt-4o-realtime-, gpt-4o-mini-realtime-, gpt-realtime]
+    endpoint: [api.openai.com/v1/realtime]
+
+- id: vapi
+  name: Vapi
+  category: Voice agent
+  replace_with: [voice-agent]
+  detect:
+    requirement: [vapi-server-sdk, vapi_server_sdk]
+    npm: ["@vapi-ai/web", "@vapi-ai/server-sdk", "@vapi-ai/react-native"]
+    python_import: [vapi]
+    endpoint: [api.vapi.ai]
+    env: [VAPI_API_KEY, VAPI_PRIVATE_KEY, VAPI_PUBLIC_KEY, NEXT_PUBLIC_VAPI_PUBLIC_KEY]
+
+- id: retell
+  name: Retell AI
+  category: Voice agent
+  replace_with: [voice-agent]
+  detect:
+    requirement: [retell-sdk]
+    npm: [retell-sdk, retell-client-js-sdk]
+    python_import: [retell]
+    endpoint: [api.retellai.com]
+    env: [RETELL_API_KEY]
+
+- id: bland
+  name: Bland AI
+  category: Voice agent
+  replace_with: [voice-agent]
+  detect:
+    endpoint: [api.bland.ai]
+    env: [BLAND_API_KEY]
+
+# ---------------------------------------------------------------- images
+
+- id: openai-images
+  name: OpenAI image generation
+  category: Image generation
+  replace_with: [image-generation]
+  detect:
+    symbol: ["openai.image("]
+    model: [dall-e-2, dall-e-3, gpt-image-]
+
+- id: google-imagen
+  name: Google Imagen / Veo
+  category: Image generation
+  replace_with: [image-generation]
+  detect:
+    symbol: [ImageGenerationModel]
+    model: [imagen-3, imagen-4, veo-2, veo-3, gemini-2.5-flash-image, gemini-3-pro-image]
+
+- id: stability-api
+  name: Stability AI API
+  category: Image generation
+  replace_with: [image-generation]
+  detect:
+    requirement: [stability-sdk]
+    python_import: [stability_sdk]
+    endpoint: [api.stability.ai]
+    env: [STABILITY_API_KEY, STABILITY_KEY]
+
+- id: fal
+  name: fal.ai
+  category: Image generation
+  replace_with: [image-generation, llm-serving]
+  detect:
+    requirement: [fal-client]
+    npm: ["@fal-ai/client", "@fal-ai/serverless-client", "@fal-ai/server-proxy", "@ai-sdk/fal"]
+    python_import: [fal_client]
+    symbol: [createFal]
+    model: ["fal-ai/"]
+    endpoint: [fal.run, queue.fal.run, fal.media]
+    env: [FAL_KEY, FAL_API_KEY]
+
+- id: bfl-api
+  name: Black Forest Labs API
+  category: Image generation
+  replace_with: [image-generation]
+  detect:
+    npm: ["@ai-sdk/black-forest-labs"]
+    endpoint: [api.bfl.ai, api.bfl.ml]
+    env: [BFL_API_KEY]
+
+- id: ideogram
+  name: Ideogram
+  category: Image generation
+  replace_with: [image-generation]
+  detect:
+    endpoint: [api.ideogram.ai]
+    env: [IDEOGRAM_API_KEY]
+
+- id: leonardo
+  name: Leonardo.Ai
+  category: Image generation
+  replace_with: [image-generation]
+  detect:
+    requirement: [leonardo-ai-sdk]
+    npm: ["@leonardo-ai/sdk"]
+    endpoint: [cloud.leonardo.ai]
+    env: [LEONARDO_API_KEY]
+
+- id: runway
+  name: Runway
+  category: Image generation
+  replace_with: [image-generation]
+  detect:
+    requirement: [runwayml]
+    npm: ["@runwayml/sdk"]
+    python_import: [runwayml]
+    endpoint: [api.dev.runwayml.com]
+    env: [RUNWAYML_API_SECRET]
+
+- id: luma
+  name: Luma AI
+  category: Image generation
+  replace_with: [image-generation]
+  detect:
+    requirement: [lumaai]
+    npm: [lumaai, "@ai-sdk/luma"]
+    python_import: [lumaai]
+    endpoint: [api.lumalabs.ai]
+    env: [LUMAAI_API_KEY, LUMA_API_KEY]

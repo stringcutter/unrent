@@ -1,19 +1,26 @@
-"""Tests. The catalog is the product, so most of these guard the catalog's honesty."""
+"""Tests. Detection is the product, so most of these pin down one edge case each."""
 
 from __future__ import annotations
 
+import importlib.util
+import json
+import os
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
 
-from lockin.catalog import load_catalog
-from lockin.detect import collect_facts, match
-from lockin.report import summarise, to_json, to_markdown
+from lockin.catalog import OPEN_LICENCES, OPEN_MODEL_LICENCES, load_catalog  # noqa: E402
+from lockin.cli import main  # noqa: E402
+from lockin.detect import collect_facts, js_package, match  # noqa: E402
+from lockin.report import to_json, to_markdown  # noqa: E402
 
-CATALOG_DIR = Path(__file__).resolve().parent.parent / "catalog"
+CATALOG_DIR = ROOT / "catalog"
 
 
 @pytest.fixture(scope="session")
@@ -21,419 +28,384 @@ def catalog():
     return load_catalog(CATALOG_DIR)
 
 
-@pytest.fixture
-def project(tmp_path: Path) -> Path:
-    (tmp_path / "app").mkdir()
-    (tmp_path / "app" / "rag.py").write_text(
-        "import os\n"
-        "from openai import AzureOpenAI\n"
-        "from pinecone import Pinecone\n"
-        'client = AzureOpenAI(azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"])\n',
-        encoding="utf-8",
-    )
-    (tmp_path / "requirements.txt").write_text(
-        "openai==1.51.0\npinecone-client==5.0.1\n", encoding="utf-8"
-    )
-    (tmp_path / "main.tf").write_text(
-        'resource "azurerm_search_service" "s" {\n}\n', encoding="utf-8"
-    )
-    return tmp_path
+def write(root: Path, files: dict[str, str]) -> Path:
+    for name, content in files.items():
+        path = root / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(content, encoding="utf-8", newline="")
+    return root
 
 
-# --- catalog integrity -----------------------------------------------------
+def found(root: Path, catalog, **kw) -> dict[str, list]:
+    """Service id → cited facts."""
+    return {f.service.id: f.cited for f in match(collect_facts(root, catalog, **kw), catalog)}
+
+
+@pytest.fixture(autouse=True, params=["python", "ripgrep"])
+def search_mode(request, monkeypatch):
+    """Every detection test runs with and without ripgrep: results must not differ."""
+    if request.param == "ripgrep":
+        if not shutil.which("rg"):
+            pytest.skip("ripgrep not installed")
+        monkeypatch.delenv("LOCKIN_NO_RIPGREP", raising=False)
+    else:
+        monkeypatch.setenv("LOCKIN_NO_RIPGREP", "1")
+    return request.param
+
+
+# --- catalog ------------------------------------------------------------------
 
 
 def test_catalog_loads(catalog):
-    assert len(catalog) > 0
+    assert len(catalog) > 80
+    assert catalog.pools
 
 
-def test_every_alternative_states_what_you_lose(catalog):
-    """An alternative with no stated cost is advocacy, not assessment."""
-    for entry in catalog.entries:
-        for alt in entry.alternatives:
-            assert len(alt.loses) > 20, f"{entry.id} → {alt.name}: 'loses' is too thin to be honest"
+def test_every_service_has_ranked_alternatives(catalog):
+    for service in catalog.services:
+        for pool in catalog.alternatives_for(service):
+            assert pool.alternatives, f"{service.id} → {pool.id} is empty"
 
 
-def test_every_assessed_entry_has_an_alternative(catalog):
-    """An assessed entry names a way out. A detected one deliberately does not."""
-    for entry in catalog.entries:
-        if entry.tier != "assessed":
-            continue
-        assert entry.alternatives, f"{entry.id} has no alternatives"
+def test_rankings_offer_only_open_source(catalog):
+    for pool in catalog.pools.values():
+        for alt in pool.alternatives:
+            allowed = OPEN_LICENCES if pool.source == "github" else OPEN_MODEL_LICENCES
+            assert alt.licence in allowed, f"{pool.id}: {alt.name} is {alt.licence}"
 
 
-def test_detected_entries_claim_nothing_they_cannot_support(catalog):
-    """The tier exists so coverage can grow without the catalog inventing judgement."""
-    for entry in catalog.entries:
-        if entry.tier != "detected":
-            continue
-        assert entry.lockin == "unassessed"
-        assert not entry.alternatives
-        assert entry.assessment is None
-        assert entry.binding, f"{entry.id} should still say what it binds you through"
-        assert any(entry.detect.values()), f"{entry.id} has no detection signature"
+def test_catalog_command_validates(capsys):
+    assert main(["catalog", "--validate"]) == 0
+    assert "closed AI services" in capsys.readouterr().out
 
 
-def test_excludes_point_at_real_entries(catalog):
-    for entry in catalog.entries:
-        for other in entry.excludes:
-            assert catalog.by_id(other), f"{entry.id} excludes unknown entry '{other}'"
+# --- Python ecosystem ---------------------------------------------------------
 
 
-def test_staleness_is_reported_not_enforced(catalog):
-    """Staleness is a property to report, not an assertion to break builds with.
-
-    This used to assert that no entry was stale, which made the suite go red on a
-    fixed date with no code change — permanently red for anyone who forked the repo
-    after it. The report already tells the reader how old an assessment is; that is
-    where the information belongs.
-    """
-    entry = catalog.entries[0]
-    assert isinstance(entry.age_days, int)
-    assert isinstance(entry.is_stale, bool)
-
-
-# --- detection -------------------------------------------------------------
+def test_requirements_variants(tmp_path, catalog):
+    write(tmp_path, {
+        "requirements.txt": "Pinecone_Client[grpc]>=5 ; python_version>'3.8'\n-r base.txt\n",
+        "requirements/prod.txt": "anthropic==0.40\n",
+        "setup.py": "from setuptools import setup\nsetup(install_requires=['cohere>=5'])\n",
+        "setup.cfg": "[options]\ninstall_requires =\n    voyageai\n",
+        "Pipfile": '[packages]\ngroq = "*"\n',
+        "environment.yml": "dependencies:\n  - python=3.11\n  - pip:\n    - mistralai==1.0\n",
+    })  # fmt: skip
+    hits = found(tmp_path, catalog)
+    for service in ("pinecone", "anthropic", "cohere", "voyage", "groq", "mistral"):
+        assert service in hits, service
 
 
-def test_finds_dependencies_across_file_types(project, catalog):
-    findings = match(collect_facts(project, catalog), catalog)
-    found = {f.entry.id for f in findings}
-    assert "pinecone" in found
-    assert "azure.openai" in found
-    assert "azure.ai-search" in found
+def test_pyproject_all_dependency_tables(tmp_path, catalog):
+    write(tmp_path, {"pyproject.toml": (
+        '[project]\ndependencies = ["openai>=1"]\n'
+        '[dependency-groups]\ndev = ["langsmith"]\n'
+        '[tool.poetry.group.ml.dependencies]\ntavily-python = "*"\n'
+    )})  # fmt: skip
+    hits = found(tmp_path, catalog)
+    assert {"openai", "langsmith", "tavily"} <= hits.keys()
+    assert hits["openai"][0].line == 2
 
 
-def test_azure_openai_claims_the_shared_openai_import(project, catalog):
-    """`AzureOpenAI` lives in the `openai` package; it must not be reported twice."""
-    findings = match(collect_facts(project, catalog), catalog)
-    assert "openai.api" not in {f.entry.id for f in findings}
+def test_python_imports_and_prefix(tmp_path, catalog):
+    write(tmp_path, {"app.py": "from azure.search.documents.indexes import SearchIndexClient\n"})
+    assert "azure-ai-search" in found(tmp_path, catalog)
 
 
-def test_symbol_match_respects_identifier_boundaries(tmp_path, catalog):
-    """`OpenAI(` must not match inside `AzureOpenAI(`."""
-    (tmp_path / "a.py").write_text("x = AzureOpenAI()\n", encoding="utf-8")
-    facts = collect_facts(tmp_path, catalog)
-    assert not [f for f in facts if f.kind == "python_symbol" and f.value == "OpenAI("]
+def test_python2_file_still_yields_imports(tmp_path, catalog):
+    write(tmp_path, {"old.py": "import pinecone\nprint 'hello'\n"})
+    assert "pinecone" in found(tmp_path, catalog)
 
 
-def test_every_finding_cites_evidence(project, catalog):
-    for finding in match(collect_facts(project, catalog), catalog):
-        for fact in finding.facts:
-            assert fact.line > 0
-            assert fact.evidence.strip(), "a finding that cannot cite its source does not exist"
+def test_relative_import_is_not_a_package(tmp_path, catalog):
+    write(tmp_path, {"pkg/x.py": "from .openai import helper\n"})
+    assert "openai" not in found(tmp_path, catalog)
 
 
-def test_skips_vendored_directories(project, catalog):
-    junk = project / "node_modules" / "pkg"
-    junk.mkdir(parents=True)
-    (junk / "x.py").write_text("import cohere\n", encoding="utf-8")
-    findings = match(collect_facts(project, catalog), catalog)
-    assert "cohere.api" not in {f.entry.id for f in findings}
+def test_notebook_imports_install_magic_and_line_numbers(tmp_path, catalog):
+    nb = {
+        "cells": [
+            {"cell_type": "markdown", "source": ["import pinecone  # prose, not code\n"]},
+            {"cell_type": "code", "source": ["!pip install -q anthropic\n", "import cohere\n"]},
+        ]
+    }
+    write(tmp_path, {"demo.ipynb": json.dumps(nb, indent=1)})
+    hits = found(tmp_path, catalog)
+    assert "anthropic" in hits and "cohere" in hits
+    assert "pinecone" not in hits
+    text = (tmp_path / "demo.ipynb").read_text().splitlines()
+    assert "import cohere" in text[hits["cohere"][0].line - 1]
 
 
-def test_clean_project_reports_nothing(tmp_path, catalog):
-    """A project with no AI dependency must report none.
-
-    The old fixture was an *empty* project, not a clean one — nothing in it came
-    near a signature, so the test could not fail. This one is ordinary code that
-    happens to contain words the catalog once treated as vendor signatures:
-    `upsert(` was a Pinecone signature, `api_version=` an Azure OpenAI one, and a
-    bare `boto3` import meant AWS Bedrock. All three are ordinary Python.
-    """
-    (tmp_path / "db.py").write_text(
-        "def upsert(conn, row):\n    conn.execute('INSERT ... ON CONFLICT', row)\n",
-        encoding="utf-8",
-    )
-    (tmp_path / "client.py").write_text(
-        "import requests\n\n\ndef call(api_version='2024-01-01'):\n"
-        "    return requests.get('https://example.com')\n",
-        encoding="utf-8",
-    )
-    (tmp_path / "upload.py").write_text(
-        'import boto3\n\ns3 = boto3.client("s3")\n', encoding="utf-8"
-    )
-    found = match(collect_facts(tmp_path, catalog), catalog)
-    assert found == [], f"named vendors that are not there: {[f.entry.name for f in found]}"
+def test_pip_install_in_dockerfile(tmp_path, catalog):
+    write(tmp_path, {"Dockerfile": "FROM python:3.12\nRUN pip install --no-cache-dir -r req.txt elevenlabs==1.0\n"})
+    assert "elevenlabs" in found(tmp_path, catalog)
 
 
-def test_scanning_a_repo_that_merely_mentions_vendors(tmp_path, catalog):
-    """Documentation is not a dependency.
-
-    lockin could not scan its own source tree without reporting twelve findings,
-    because its catalog names the very signatures it searches for. Any repo with an
-    ADR, a docs page or a prompt fixture has the same problem.
-    """
-    docs = tmp_path / "docs"
-    docs.mkdir()
-    (docs / "adr-003.yaml").write_text(
-        "title: Why we did not choose Azure AI Search\n"
-        "considered:\n"
-        "  - SearchClient and SemanticConfiguration looked promising\n"
-        "  - bedrock_client was evaluated and rejected\n",
-        encoding="utf-8",
-    )
-    found = match(collect_facts(tmp_path, catalog), catalog)
-    assert found == [], f"mistook documentation for dependencies: {[f.entry.name for f in found]}"
+# --- JavaScript ecosystem -----------------------------------------------------
 
 
-def test_a_project_below_a_skipped_directory_name_is_still_scanned(tmp_path, catalog):
-    """`build/myapp` is a project, not a build artefact.
+def test_js_package_names():
+    assert js_package("@ai-sdk/openai/internal") == "@ai-sdk/openai"
+    assert js_package("npm:openai@4") == "openai"
+    assert js_package("openai/resources") == "openai"
+    assert js_package("./openai") is None
+    assert js_package("node:fs") is None
 
-    The skip list was matched against every ancestor of the scan root, so a checkout
-    under any directory called build, target, env or dist reported itself clean.
-    """
+
+def test_package_json_cites_the_right_line(tmp_path, catalog):
+    write(tmp_path, {"package.json": '{\n "dependencies": {\n  "@ai-sdk/openai": "1",\n  "openai": "4"\n }\n}\n'})
+    cited = found(tmp_path, catalog)["openai"]
+    assert {f.line for f in cited} == {3, 4}
+
+
+def test_multiline_js_import(tmp_path, catalog):
+    write(tmp_path, {"src/a.ts": 'import {\n  Pinecone,\n} from "@pinecone-database/pinecone";\n'})
+    assert "pinecone" in found(tmp_path, catalog)
+
+
+def test_block_comment_is_ignored(tmp_path, catalog):
+    write(tmp_path, {"a.js": "/*\n const c = new Anthropic();\n ANTHROPIC_API_KEY\n*/\n"})
+    assert "anthropic" not in found(tmp_path, catalog)
+
+
+# --- other ecosystems ---------------------------------------------------------
+
+
+def test_go_mod_skips_indirect(tmp_path, catalog):
+    write(tmp_path, {"go.mod": (
+        "module example.com/app\n\nrequire (\n"
+        "\tgithub.com/openai/openai-go/v2 v2.1.0\n"
+        "\tgithub.com/pinecone-io/go-pinecone v1.0.0 // indirect\n)\n"
+    )})  # fmt: skip
+    hits = found(tmp_path, catalog)
+    assert "openai" in hits and "pinecone" not in hits
+
+
+def test_jvm_dotnet_ruby_php_rust(tmp_path, catalog):
+    write(tmp_path, {
+        "pom.xml": "<dependency>\n<groupId>com.anthropic</groupId>\n<artifactId>anthropic-java</artifactId>\n</dependency>\n",
+        "app/build.gradle.kts": 'dependencies { implementation("com.google.genai:google-genai:1.0") }\n',
+        "Api.csproj": '<PackageReference Include="Azure.AI.OpenAI" Version="2.0" />\n',
+        "Gemfile": "gem 'ruby-openai'\n",
+        "composer.json": '{"require": {"openai-php/client": "^0.10"}}',
+        "Cargo.toml": '[dependencies]\nbedrock = { package = "aws-sdk-bedrockruntime", version = "1" }\n',
+    })  # fmt: skip
+    hits = found(tmp_path, catalog)
+    assert {"anthropic", "google-gemini", "azure-openai", "openai", "aws-bedrock"} <= hits.keys()
+
+
+def test_terraform(tmp_path, catalog):
+    write(tmp_path, {"infra/main.tf": 'resource "azurerm_search_service" "s" {}\n'})
+    assert "azure-ai-search" in found(tmp_path, catalog)
+
+
+# --- text needles -------------------------------------------------------------
+
+
+def test_env_files_and_env_reads(tmp_path, catalog):
+    write(tmp_path, {
+        ".env.example": "# PINECONE_API_KEY= commented out\nTAVILY_API_KEY=\n",
+        "main.go": 'key := os.Getenv("GROQ_API_KEY")\n',
+    })  # fmt: skip
+    hits = found(tmp_path, catalog)
+    assert "tavily" in hits and "groq" in hits
+    assert "pinecone" not in hits
+
+
+def test_endpoints_in_any_language(tmp_path, catalog):
+    write(tmp_path, {"Client.java": 'var url = "https://API.Anthropic.com/v1/messages";\n'})
+    assert "anthropic" in found(tmp_path, catalog)
+
+
+def test_model_ids_but_not_open_weights(tmp_path, catalog):
+    write(tmp_path, {"models.ts": (
+        'const a = "openai/gpt-oss-120b";\n'
+        'const b = "deepseek/deepseek-v3.2";\n'
+        'const c = "xai/grok-4-fast";\n'
+    )})  # fmt: skip
+    hits = found(tmp_path, catalog)
+    assert "xai" in hits
+    assert "openai" not in hits, "gpt-oss is open-weight"
+    assert "deepseek-api" not in hits, "DeepSeek weights are open; the gateway is the dependency"
+
+
+def test_model_prefix_is_bounded(tmp_path, catalog):
+    write(tmp_path, {"a.py": 'x = "chatgpt-4-like"\nimport lib.bedrock\ny = "./bedrock/client"\n'})
+    hits = found(tmp_path, catalog)
+    assert "openai" not in hits and "aws-bedrock" not in hits
+
+
+def test_symbol_boundaries(tmp_path, catalog):
+    write(tmp_path, {"a.py": "client = AzureOpenAI(azure_endpoint=e)\n"})
+    hits = found(tmp_path, catalog)
+    assert "azure-openai" in hits and "openai" not in hits
+
+
+def test_python_comments_and_docstrings_are_prose(tmp_path, catalog):
+    write(tmp_path, {"a.py": '"""We migrated off Pinecone(api_key) last year."""\n# client = Anthropic()\n'})
+    assert found(tmp_path, catalog) == {}
+
+
+def test_generic_strings_that_are_not_vendors(tmp_path, catalog):
+    write(tmp_path, {"a.py": (
+        "import textract\n"
+        'model.transcribe(audio, task="transcribe")\n'
+        'token = os.environ["HF_TOKEN"]\n'
+        'tools = [{"type": "file_search"}]\n'
+    )})  # fmt: skip
+    assert found(tmp_path, catalog) == {}
+
+
+def test_line_numbers_survive_unicode_line_separators(tmp_path, catalog):
+    write(tmp_path, {"a.js": 'const s = "a b";\nconst k = process.env.COHERE_API_KEY;\n'})
+    assert found(tmp_path, catalog)["cohere"][0].line == 2
+
+
+def test_crlf_files(tmp_path, catalog):
+    write(tmp_path, {"a.py": "import os\r\nimport anthropic\r\n"})
+    assert found(tmp_path, catalog)["anthropic"][0].line == 2
+
+
+def test_utf8_bom_manifest(tmp_path, catalog):
+    (tmp_path / "package.json").write_bytes(b'\xef\xbb\xbf{"dependencies": {"openai": "4"}}')
+    assert "openai" in found(tmp_path, catalog)
+
+
+def test_nul_byte_after_the_header_does_not_hide_a_file(tmp_path, catalog):
+    body = "x = 1\n" * 2000 + "k = '\0'\nkey = os.environ['VOYAGE_API_KEY']\n"
+    write(tmp_path, {"a.py": body})
+    assert "voyage" in found(tmp_path, catalog)
+
+
+def test_large_json_is_data_not_config(tmp_path, catalog):
+    write(tmp_path, {"data/dump.json": json.dumps([{"text": "uses OpenAI( and Pinecone("}] * 20000)})
+    assert found(tmp_path, catalog) == {}
+
+
+# --- overlaps -----------------------------------------------------------------
+
+
+def test_bare_openai_is_not_azure(tmp_path, catalog):
+    write(tmp_path, {"requirements.txt": "openai\n"})
+    assert set(found(tmp_path, catalog)) == {"openai"}
+
+
+def test_azure_claims_the_shared_evidence(tmp_path, catalog):
+    write(tmp_path, {
+        "requirements.txt": "openai\n",
+        "a.py": "from openai import AzureOpenAI\nc = AzureOpenAI()\n",
+    })  # fmt: skip
+    assert "azure-openai" in found(tmp_path, catalog)
+
+
+# --- which files ----------------------------------------------------------------
+
+
+def test_lockfiles_are_not_dependencies(tmp_path, catalog):
+    write(tmp_path, {
+        "uv.lock": '[[package]]\nname = "openai"\n',
+        "package-lock.json": '{"packages": {"node_modules/openai": {}}}',
+    })  # fmt: skip
+    assert found(tmp_path, catalog) == {}
+
+
+def test_vendored_dirs_and_virtualenvs_are_skipped(tmp_path, catalog):
+    write(tmp_path, {
+        "node_modules/x/index.js": 'require("openai")\n',
+        "myenv/pyvenv.cfg": "home = /usr\n",
+        "myenv/lib/a.py": "import anthropic\n",
+    })  # fmt: skip
+    assert found(tmp_path, catalog) == {}
+
+
+def test_project_under_build_dir_is_scanned(tmp_path, catalog):
     root = tmp_path / "build" / "myapp"
-    root.mkdir(parents=True)
-    (root / "app.py").write_text("from openai import OpenAI\n\nc = OpenAI()\n", encoding="utf-8")
-    found = {f.entry.id for f in match(collect_facts(root, catalog), catalog)}
-    assert "openai.api" in found, "a real dependency was skipped because of an ancestor's name"
-
-
-def test_inline_pyproject_dependencies_are_read(tmp_path, catalog):
-    """`dependencies = ["openai"]` on one line is the form this project's own uses."""
-    (tmp_path / "pyproject.toml").write_text(
-        '[project]\nname = "x"\ndependencies = ["openai>=1.0", "pinecone-client>=5"]\n',
-        encoding="utf-8",
-    )
-    found = {f.entry.id for f in match(collect_facts(tmp_path, catalog), catalog)}
-    assert {"openai.api", "pinecone"} <= found, f"missed inline dependencies, got {found}"
-
-
-def test_requirement_names_are_normalised(tmp_path, catalog):
-    """PEP 503: `huggingface-hub` and `huggingface_hub` are the same package."""
-    (tmp_path / "requirements.txt").write_text("Pinecone_Client==5.0.1\n", encoding="utf-8")
-    found = {f.entry.id for f in match(collect_facts(tmp_path, catalog), catalog)}
-    assert "pinecone" in found
+    write(root, {"a.py": "import anthropic\n"})
+    assert "anthropic" in found(root, catalog)
 
 
-def test_a_malformed_package_json_does_not_kill_the_scan(tmp_path, catalog):
-    """One bad file in a big tree must not take the run down."""
-    (tmp_path / "package.json").write_text("[]", encoding="utf-8")
-    (tmp_path / "app.py").write_text("from openai import OpenAI\n", encoding="utf-8")
-    found = {f.entry.id for f in match(collect_facts(tmp_path, catalog), catalog)}
-    assert "openai.api" in found
-
-
-# --- reporting -------------------------------------------------------------
-
-
-def test_reports_render(project, catalog):
-    findings = match(collect_facts(project, catalog), catalog)
-    md = to_markdown(findings, project, catalog)
-    assert "What you lose" in md
-    assert "Lock-in report" in md
+def test_lockinignore_and_exclude(tmp_path, catalog):
+    write(tmp_path, {
+        ".lockinignore": "# fixtures\nfixtures/\n",
+        "fixtures/a.py": "import anthropic\n",
+        "scripts/b.py": "import cohere\n",
+    })  # fmt: skip
+    assert found(tmp_path, catalog, exclude=["scripts/*.py"]) == {}
 
-    import json
-
-    payload = json.loads(to_json(findings, project, catalog))
-    assert payload["summary"]["dependencies_found"] == len(findings)
-    assert all(f["evidence"] for f in payload["findings"])
 
+@pytest.mark.skipif(not shutil.which("git"), reason="git not installed")
+def test_gitignored_files_are_skipped(tmp_path, catalog):
+    write(tmp_path, {".gitignore": "generated/\n", "generated/a.py": "import anthropic\n", "a.py": "import cohere\n"})
+    subprocess.run(["git", "init", "-q"], cwd=tmp_path, check=True)
+    assert set(found(tmp_path, catalog)) == {"cohere"}
 
-def test_summary_counts_match(project, catalog):
-    """Every finding lands in exactly one bucket, detected ones included.
 
-    The old assertion left `unassessed` out, so it was false the moment a detected
-    entry matched. It passed only because the fixture happened not to trip one.
-    """
-    (project / "extra.py").write_text("import langchain\n", encoding="utf-8")
-    findings = match(collect_facts(project, catalog), catalog)
-    s = summarise(findings)
-    assert s["unassessed"] > 0, "fixture should trip a detected entry"
-    assert s["locked"] + s["friction"] + s["portable"] + s["unassessed"] == s["dependencies_found"]
+def test_symlink_loop_does_not_hang(tmp_path, catalog):
+    write(tmp_path, {"a.py": "import anthropic\n"})
+    try:
+        os.symlink(tmp_path, tmp_path / "loop", target_is_directory=True)
+    except (OSError, NotImplementedError):
+        pytest.skip("symlinks unavailable")
+    assert "anthropic" in found(tmp_path, catalog)
 
 
-def test_plain_openai_is_not_reported_as_azure(tmp_path, catalog):
-    """`excludes` must not let a specific entry claim evidence it cannot support.
+# --- reports ------------------------------------------------------------------
 
-    A codebase with nothing Azure in it must never be told it depends on Azure.
-    """
-    (tmp_path / "requirements.txt").write_text("openai==1.51.0\n", encoding="utf-8")
-    found = {f.entry.id for f in match(collect_facts(tmp_path, catalog), catalog)}
-    assert "azure.openai" not in found
-    assert "openai.api" in found
 
+def test_reports(tmp_path, catalog):
+    write(tmp_path, {"a.py": "import anthropic\n", "b.py": "import pinecone\n"})
+    findings = match(collect_facts(tmp_path, catalog), catalog)
+    md = to_markdown(findings, tmp_path, catalog)
+    assert "Anthropic API" in md and "Open source alternatives" in md and "a.py:1" in md
+    data = json.loads(to_json(findings, tmp_path, catalog))
+    assert {f["id"] for f in data["found"]} == {"anthropic", "pinecone"}
+    assert "vector-db" in data["alternatives"]
 
-# --- methodology (METHODOLOGY.md) ------------------------------------------
 
+def test_empty_report(tmp_path, catalog):
+    write(tmp_path, {"a.py": "print(1)\n"})
+    assert "No closed AI services found" in to_markdown([], tmp_path, catalog)
 
-def test_every_label_follows_the_rubric(catalog):
-    """The codebook is executable: labels are derived, not asserted."""
-    for entry in catalog.entries:
-        if entry.tier != "assessed":
-            continue
-        assert entry.assessment is not None, f"{entry.id} has no assessment axes"
-        assert entry.assessment.label == entry.lockin, (
-            f"{entry.id}: axes give '{entry.assessment.label}', entry says '{entry.lockin}'"
-        )
 
+def test_cli_scan(tmp_path, capsys):
+    write(tmp_path, {"a.py": "import anthropic\n"})
+    assert main(["scan", str(tmp_path)]) == 0
+    assert "Anthropic API" in capsys.readouterr().out
+    assert main(["scan", str(tmp_path / "missing")]) == 2
 
-def test_a_label_contradicting_its_axes_is_rejected(tmp_path):
-    """An entry cannot quietly drift away from METHODOLOGY.md §3."""
-    from lockin.catalog import CatalogError
 
-    (tmp_path / "bad.yaml").write_text(
-        "- id: x.y\n"
-        "  name: X\n"
-        "  category: test\n"
-        "  lockin: locked\n"  # claims locked...
-        "  assessment: {interface: 0, data: 0, behaviour: 0}\n"  # ...but axes say portable
-        "  why: test\n"
-        "  detect: {python_import: [xylophone]}\n"
-        "  alternatives:\n"
-        "    - name: A\n      kind: k\n      compat: c\n      effort: low\n"
-        "      loses: something concrete that is long enough to count\n"
-        "  verified: 2026-09-20\n",
-        encoding="utf-8",
-    )
-    with pytest.raises(CatalogError, match="METHODOLOGY"):
-        load_catalog(tmp_path)
+# --- ranking ------------------------------------------------------------------
 
 
-def test_scan_is_deterministic(project, catalog):
-    """Same code plus same catalog version must give byte-identical output."""
-    first = to_json(match(collect_facts(project, catalog), catalog), project, catalog)
-    second = to_json(match(collect_facts(project, catalog), catalog), project, catalog)
-    import json
+def _refresh_module():
+    spec = importlib.util.spec_from_file_location("refresh", ROOT / "scripts" / "refresh.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
-    a, b = json.loads(first), json.loads(second)
-    a.pop("scanned_at"), b.pop("scanned_at")
-    assert a == b
 
+def test_momentum_needs_four_weeks_and_scales(search_mode):
+    import datetime as dt
 
-def test_an_unassessed_alternative_is_marked_as_such(catalog):
-    """An alternative may name a candidate; the report must not pass it off as vetted.
+    refresh = _refresh_module()
+    today = dt.date(2026, 9, 26)
+    assert refresh.momentum([["2026-09-20", 100], ["2026-09-26", 150]], today) is None
+    assert refresh.momentum([["2026-08-27", 100], ["2026-09-26", 400]], today) == 900
 
-    "Here is the open option, and nobody has verified it for you" is more use than
-    silence, but only if the second half is said out loud.
-    """
-    gateway = catalog.by_id("vercel.ai-gateway")
-    assert gateway, "the platform catalog should cover the gateway layer"
-    litellm = next(a for a in gateway.alternatives if a.component == "litellm")
-    assert not litellm.component_assessed
 
-    findings = [type("F", (), {"entry": gateway, "facts": (), "cited": [], "confidence": "high"})()]
-    md = to_markdown(findings, Path("/tmp"), catalog)
-    assert "not assessed" in md
+def test_newcomers_rank_after_projects_with_momentum(search_mode):
+    refresh = _refresh_module()
+    ranked, by = refresh.rank_github([
+        {"repo": "a/big", "stars": 90000, "stars_90d": 100},
+        {"repo": "b/hot", "stars": 5000, "stars_90d": 3000},
+        {"repo": "c/new", "stars": 99999, "stars_90d": None},
+    ])  # fmt: skip
+    assert by == "momentum"
+    assert [p["repo"] for p in ranked] == ["b/hot", "a/big", "c/new"]
 
 
-def test_the_catalog_covers_the_template_stack(catalog):
-    """The most-forked AI starter scored zero until the platform layer existed.
-
-    Most AI apps are not the enterprise RAG stack; they are a forked template, and
-    the template brings a platform nobody chose.
-    """
-    for entry_id in ("vercel.ai-gateway", "vercel.blob", "vercel.platform"):
-        assert catalog.by_id(entry_id), f"missing platform entry {entry_id}"
-
-
-def test_something_portable_is_labelled_portable(catalog):
-    """A scan that flags everything it recognises is one nobody believes twice."""
-    sdk = catalog.by_id("vercel.ai-sdk")
-    assert sdk and sdk.lockin == "portable"
-
-
-def test_live_check_fails_soft(monkeypatch):
-    """A scan is useful without the network.
-
-    The tool's core promise is that nothing leaves the machine; it must keep working
-    when nothing can. A registry lookup that fails is reported, never fatal, and
-    never cached as though it were an answer.
-    """
-    import sys
-
-    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-    from lockin import live
-
-    def explode(url):
-        raise OSError("no network")
-
-    monkeypatch.setattr(live, "_get", explode)
-    monkeypatch.setattr(live, "_load_cache", dict)
-    monkeypatch.setattr(live, "_save_cache", lambda cache: None)
-
-    facts = live.check({("pypi", "openai"), ("npm", "ai")})
-    assert len(facts) == 2
-    assert all(f.error for f in facts.values())
-    assert not any(f.is_notable for f in facts.values())
-
-
-def test_live_is_opt_in():
-    """The default scan makes no network calls, so --live must be a flag."""
-    import sys
-
-    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-    from lockin.cli import build_parser
-
-    args = build_parser().parse_args(["scan", "."])
-    assert args.live is False
-
-
-# --- the CLI contract -------------------------------------------------------
-
-
-def test_fail_on_is_a_ci_contract(tmp_path):
-    """`--fail-on` is documented as a CI gate and had no coverage at all."""
-    import sys
-
-    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-    from lockin.cli import main
-
-    (tmp_path / "requirements.txt").write_text("pinecone-client==5.0.1\n", encoding="utf-8")
-    out = tmp_path / "r.md"
-    assert main(["scan", str(tmp_path), "-o", str(out)]) == 0
-    assert main(["scan", str(tmp_path), "-o", str(out), "--fail-on", "friction"]) == 1
-    assert main(["scan", str(tmp_path), "-o", str(out), "--fail-on", "locked"]) == 0
-
-
-def test_bad_input_is_an_error_not_a_traceback(tmp_path):
-    """A tool that tracebacks at a user is one they stop trusting."""
-    import sys
-
-    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-    from lockin.cli import main
-
-    assert main(["scan", str(tmp_path / "nope")]) == 2
-    assert main(["scan", str(tmp_path), "--catalog", str(tmp_path / "nope")]) == 2
-
-    broken = tmp_path / "cat"
-    broken.mkdir()
-    (broken / "x.yaml").write_text("this: [is: not: valid\n", encoding="utf-8")
-    assert main(["scan", str(tmp_path), "--catalog", str(broken)]) == 2
-
-    (broken / "x.yaml").write_text("- just a string\n", encoding="utf-8")
-    assert main(["scan", str(tmp_path), "--catalog", str(broken)]) == 2
-
-
-def test_confidence_reflects_corroboration(project, catalog):
-    """Four branches, none of them previously asserted."""
-    findings = {f.entry.id: f for f in match(collect_facts(project, catalog), catalog)}
-
-    # An import and a manifest entry are two independent kinds agreeing.
-    assert {x.kind for x in findings["pinecone"].facts} >= {"python_import", "requirement"}
-    assert findings["pinecone"].confidence == "high"
-
-    # A Terraform resource alone is one strong kind and nothing corroborating it.
-    assert {x.kind for x in findings["azure.ai-search"].facts} == {"terraform_resource"}
-    assert findings["azure.ai-search"].confidence == "medium"
-
-    # A lone environment variable is the weakest thing the catalog accepts.
-    weak = [f for f in findings.values() if {x.kind for x in f.facts} == {"env"}]
-    assert all(f.confidence == "low" for f in weak)
-
-
-def test_a_docstring_mentioning_a_vendor_is_not_a_dependency(tmp_path, catalog):
-    """Writing about a thing is not depending on it — but a client call still is."""
-    (tmp_path / "notes.py").write_text(
-        '"""We evaluated bedrock_client and SearchClient and chose neither."""\n'
-        "# AzureOpenAI was also considered\n",
-        encoding="utf-8",
-    )
-    assert match(collect_facts(tmp_path, catalog), catalog) == []
-
-    (tmp_path / "real.py").write_text(
-        'client = boto3.client("bedrock-runtime")\n', encoding="utf-8"
-    )
-    found = {f.entry.id for f in match(collect_facts(tmp_path, catalog), catalog)}
-    assert "aws.bedrock" in found, "a string literal naming the service is real evidence"
+def test_same_lab_fine_tunes_are_original(search_mode):
+    refresh = _refresh_module()
+    assert refresh._original("Qwen", {"base_model": "Qwen/Qwen3-8B-Base"})
+    assert not refresh._original("Qwen", {"base_model": "meta-llama/Llama-3.1-8B"})
