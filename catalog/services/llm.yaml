@@ -75,6 +75,14 @@
           AZURE_OPENAI_API_VERSION, AZURE_OPENAI_DEPLOYMENT_NAME, AZURE_RESOURCE_NAME]
     terraform_resource: [azurerm_cognitive_deployment]
 
+- id: github-models
+  name: GitHub Models
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  detect:
+    endpoint: [models.github.ai, models.inference.ai.azure.com]
+    model: ["github:"]
+
 - id: azure-ai-foundry
   name: Azure AI Foundry
   category: LLM API
@@ -89,7 +97,7 @@
     python_import: [azure.ai.inference, azure.ai.projects, azure.ai.agents, langchain_azure_ai,
                     llama_index.llms.azure_inference, llama_index.embeddings.azure_inference,
                     agent_framework.foundry, agent_framework_foundry, agent_framework_azure_ai]
-    endpoint: [services.ai.azure.com, models.inference.ai.azure.com, models.github.ai]
+    endpoint: [services.ai.azure.com]
     env: [AZURE_AI_PROJECT_ENDPOINT, AZURE_INFERENCE_ENDPOINT, AZURE_AI_FOUNDRY_PROJECT_ENDPOINT,
           ANTHROPIC_FOUNDRY_API_KEY, ANTHROPIC_FOUNDRY_RESOURCE, ANTHROPIC_FOUNDRY_BASE_URL]
     terraform_resource: [azurerm_ai_foundry, azurerm_ai_foundry_project, azurerm_ai_services,
@@ -197,6 +205,8 @@
   name: Amazon Bedrock
   category: LLM API
   excludes: [anthropic]
+  # `anthropic.claude-code` is the VS Code extension id, not a Bedrock model.
+  open_models: [claude-code]
   replace_with: [open-llm, llm-serving, llm-gateway]
   detect:
     go: [github.com/aws/aws-sdk-go-v2/service/bedrockruntime,
@@ -445,7 +455,8 @@
 - id: huggingface-inference
   name: Hugging Face Inference Providers
   category: LLM API
-  weak: [HUGGINGFACE_API_KEY]
+  # langchain-huggingface also runs models locally (HuggingFaceEmbeddings, pipelines).
+  weak: [HUGGINGFACE_API_KEY, langchain-huggingface]
   replace_with: [open-llm, llm-serving]
   detect:
     requirement: [langchain-huggingface, llama-index-llms-huggingface-api,
@@ -682,6 +693,8 @@
 - id: snowflake-cortex
   name: Snowflake Cortex AI
   category: LLM API
+  # Snowflake's Arctic embedding models are Apache-2.0 weights anyone can run.
+  open_models: [arctic-embed]
   replace_with: [open-llm, llm-serving]
   detect:
     requirement: [langchain-snowflake, llama-index-llms-cortex]
