@@ -26,6 +26,12 @@ jobs:
         # inactive or no longer open source. The rankings are still written; the
         # pull request says the catalog needs attention.
         run: uv run python scripts/refresh.py 2> problems.txt || echo "problems=true" >> "$GITHUB_OUTPUT"
+      # Pull requests opened with GITHUB_TOKEN do not trigger ci.yml, so the new
+      # snapshot is validated here, before anyone is asked to merge it.
+      - name: Validate
+        run: |
+          uv run lockin catalog --validate
+          uv run pytest -q
       - uses: peter-evans/create-pull-request@v7
         with:
           branch: refresh-rankings

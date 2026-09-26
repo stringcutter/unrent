@@ -9,7 +9,7 @@
 # the network.
 #
 #   github pools       — ranked by stars gained in the last 90 days. Archived repos,
-#                        repos with no push in 180 days and repos whose licence is not
+#                        repos with no push in 365 days and repos whose licence is not
 #                        OSI-approved are dropped from the ranking.
 #   huggingface pools  — open-weight models, discovered rather than listed: the newest
 #                        original (non-derived) models from the listed publishers, with
@@ -20,6 +20,10 @@
 # projects count when the core is OSI-licensed and the closed part sits apart (an
 # `ee/` directory); the declared licence is the core's. Licences that add terms to
 # an OSI licence (commercial thresholds, use restrictions) do not count.
+#
+# A project that runs a model is only as open as its weights. GitHub reports the
+# code's licence, so check the weights by hand before listing one: Orpheus (Llama
+# licence), Marker and Surya (revenue-capped OpenRAIL-M) are left out on that ground.
 
 pools:
 
@@ -141,17 +145,28 @@ pools:
                  lightonai, cross-encoder, tomaarsen, contextual-ai]
 
   - id: document-parsing
-    name: Document parsing and OCR
+    name: Document parsing
     source: github
     projects:
       - {repo: docling-project/docling, what: "Parses PDF, DOCX, PPTX and more into structured output for AI"}
-      - {repo: datalab-to/marker, what: Converts PDF and documents to Markdown quickly and accurately}
       - {repo: Unstructured-IO/unstructured, what: Open source ETL for unstructured documents}
       - {repo: microsoft/markitdown, what: Converts files and office documents to Markdown}
       - {repo: allenai/olmocr, what: PDF linearisation with a vision-language model}
       - {repo: PaddlePaddle/PaddleOCR, what: "OCR and document parsing toolkit, 100+ languages"}
       - {repo: deepseek-ai/DeepSeek-OCR, what: Vision-language OCR model with optical context compression}
       - {repo: studio-dots-ai/dots.ocr, what: Multilingual document layout parsing in a single VLM}
+
+  - id: ocr
+    name: OCR and document understanding
+    source: github
+    projects:
+      - {repo: PaddlePaddle/PaddleOCR, what: "OCR and document parsing toolkit, 100+ languages"}
+      - {repo: docling-project/docling, what: "Layout analysis, tables and OCR for PDFs and scans"}
+      - {repo: allenai/olmocr, what: PDF and scan linearisation with a vision-language model}
+      - {repo: deepseek-ai/DeepSeek-OCR, what: Vision-language OCR model with optical context compression}
+      - {repo: studio-dots-ai/dots.ocr, what: Multilingual document layout parsing in a single VLM}
+      - {repo: mindee/doctr, what: Deep-learning OCR for documents}
+      - {repo: JaidedAI/EasyOCR, what: Ready-to-use OCR for 80+ languages}
 
   # ---------------------------------------------------------------- operations
 
@@ -189,7 +204,6 @@ pools:
     source: github
     projects:
       - {repo: resemble-ai/chatterbox, what: "Expressive TTS with voice cloning, MIT weights"}
-      - {repo: canopyai/Orpheus-TTS, what: "Human-like speech synthesis on a Llama backbone"}
       - {repo: nari-labs/dia, what: "Dialogue TTS model generating multi-speaker conversation"}
       - {repo: QwenAudio/CosyVoice, what: "Multilingual voice generation with zero-shot cloning"}
       - {repo: microsoft/VibeVoice, what: "Long-form, multi-speaker conversational speech synthesis"}
@@ -225,8 +239,7 @@ pools:
     projects:
       - {repo: searxng/searxng, what: "Self-hosted metasearch engine with a JSON API"}
       - {repo: ItzCrazyKns/Vane, what: "AI-powered answer engine, open source Perplexity alternative"}
-      - {repo: assafelovic/gpt-researcher, what: Autonomous agent for deep web research}
-      - {repo: stanford-oval/storm, what: Research agent that writes grounded reports from web search}
+      - {repo: yacy/yacy_search_server, what: "Self-hosted, peer-to-peer web search engine with its own index", licence: GPL-2.0}
 
   - id: web-scraping
     name: Web scraping for LLMs

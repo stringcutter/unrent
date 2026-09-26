@@ -17,9 +17,12 @@
 - id: openai
   name: OpenAI API
   category: LLM API
+  local_compatible: true
   replace_with: [open-llm, llm-serving]
   open_models: [gpt-oss]
   detect:
+    pub: [dart_openai, openai_dart, langchain_openai]
+    swift: [github.com/macpaw/openai]
     go: [github.com/openai/openai-go, github.com/sashabaranov/go-openai]
     cargo: [async-openai, openai-api-rs]
     maven: ["com.openai:openai-java", "dev.langchain4j:langchain4j-open-ai", "org.springframework.ai:spring-ai-openai",
@@ -74,6 +77,8 @@
   category: LLM API
   replace_with: [open-llm, llm-serving]
   detect:
+    pub: [anthropic_sdk_dart]
+    swift: [github.com/jamesrochabrun/swiftanthropic]
     go: [github.com/anthropics/anthropic-sdk-go, github.com/liushuangls/go-anthropic]
     maven: ["com.anthropic:anthropic-java", "dev.langchain4j:langchain4j-anthropic",
             "org.springframework.ai:spring-ai-anthropic", "org.springframework.ai:spring-ai-starter-model-anthropic"]
@@ -94,6 +99,8 @@
   category: LLM API
   replace_with: [open-llm, llm-serving]
   detect:
+    pub: [google_generative_ai, firebase_ai, firebase_vertexai, langchain_google]
+    swift: [github.com/google/generative-ai-swift]
     go: [google.golang.org/genai, github.com/google/generative-ai-go]
     maven: ["com.google.genai:google-genai", "dev.langchain4j:langchain4j-google-ai-gemini"]
     nuget: [Google.GenAI]
@@ -131,6 +138,7 @@
 - id: aws-bedrock
   name: Amazon Bedrock
   category: LLM API
+  excludes: [anthropic]
   replace_with: [open-llm, llm-serving, llm-gateway]
   detect:
     go: [github.com/aws/aws-sdk-go-v2/service/bedrockruntime, github.com/aws/aws-sdk-go-v2/service/bedrockagentruntime]
@@ -188,6 +196,7 @@
 - id: xai
   name: xAI API
   category: LLM API
+  excludes: [openai]
   replace_with: [open-llm, llm-serving]
   detect:
     requirement: [xai-sdk, langchain-xai]
@@ -201,6 +210,7 @@
 - id: deepseek-api
   name: DeepSeek API
   category: LLM API
+  excludes: [openai]
   replace_with: [open-llm, llm-serving]
   detect:
     requirement: [langchain-deepseek]
@@ -216,6 +226,7 @@
 - id: groq
   name: Groq
   category: LLM API
+  excludes: [openai]
   replace_with: [open-llm, llm-serving]
   detect:
     requirement: [groq, langchain-groq, llama-index-llms-groq]
@@ -229,6 +240,8 @@
 - id: together
   name: Together AI
   category: LLM API
+  weak: [together]
+  excludes: [openai]
   replace_with: [open-llm, llm-serving]
   detect:
     requirement: [together, langchain-together, llama-index-llms-together]
@@ -242,6 +255,8 @@
 - id: fireworks
   name: Fireworks AI
   category: LLM API
+  weak: [fireworks]
+  excludes: [openai]
   replace_with: [open-llm, llm-serving]
   detect:
     requirement: [fireworks-ai, langchain-fireworks, llama-index-llms-fireworks]
@@ -255,6 +270,7 @@
 - id: cerebras
   name: Cerebras Inference
   category: LLM API
+  excludes: [openai]
   replace_with: [open-llm, llm-serving]
   detect:
     requirement: [cerebras-cloud-sdk, langchain-cerebras]
@@ -267,6 +283,7 @@
 - id: deepinfra
   name: DeepInfra
   category: LLM API
+  excludes: [openai]
   replace_with: [open-llm, llm-serving]
   detect:
     npm: ["@ai-sdk/deepinfra"]
@@ -277,6 +294,8 @@
 - id: perplexity
   name: Perplexity API
   category: LLM API
+  weak: [perplexity]
+  excludes: [openai]
   replace_with: [web-search, open-llm]
   detect:
     requirement: [perplexityai, langchain-perplexity]
@@ -302,6 +321,7 @@
 - id: nvidia-nim-api
   name: NVIDIA API Catalog (hosted NIM)
   category: LLM API
+  excludes: [openai]
   replace_with: [open-llm, llm-serving]
   detect:
     requirement: [langchain-nvidia-ai-endpoints, llama-index-llms-nvidia]
@@ -309,7 +329,8 @@
     python_import: [langchain_nvidia_ai_endpoints, llama_index.llms.nvidia]
     symbol: [ChatNVIDIA, NVIDIAEmbeddings]
     endpoint: [integrate.api.nvidia.com, ai.api.nvidia.com]
-    env: [NVIDIA_API_KEY, NGC_API_KEY]
+    # Not NGC_API_KEY: that pulls self-hosted NIM containers.
+    env: [NVIDIA_API_KEY]
 
 - id: huggingface-inference
   name: Hugging Face Inference Providers
@@ -377,6 +398,8 @@
 - id: openrouter
   name: OpenRouter
   category: LLM gateway
+  weak: [openrouter]
+  excludes: [openai]
   replace_with: [llm-gateway, llm-serving]
   detect:
     requirement: [openrouter, langchain-openrouter]

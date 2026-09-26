@@ -10,7 +10,7 @@
     {
      "repo": "ollama/ollama",
      "url": "https://github.com/ollama/ollama",
-     "stars": 181762,
+     "stars": 181764,
      "licence": "MIT",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -20,7 +20,7 @@
     {
      "repo": "ggml-org/llama.cpp",
      "url": "https://github.com/ggml-org/llama.cpp",
-     "stars": 129577,
+     "stars": 129581,
      "licence": "MIT",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -50,7 +50,7 @@
     {
      "repo": "sgl-project/sglang",
      "url": "https://github.com/sgl-project/sglang",
-     "stars": 36448,
+     "stars": 36449,
      "licence": "Apache-2.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -70,7 +70,7 @@
     {
      "repo": "ai-dynamo/dynamo",
      "url": "https://github.com/ai-dynamo/dynamo",
-     "stars": 8162,
+     "stars": 8163,
      "licence": "Apache-2.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -99,9 +99,9 @@
      "id": "XiaomiMiMo/MiMo-V2.6-Pro-RL",
      "url": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL",
      "licence": "mit",
-     "trending": 506,
+     "trending": 509,
      "downloads": 74497,
-     "likes": 516,
+     "likes": 519,
      "created": "2026-09-21",
      "pipeline_tag": "text-generation"
     },
@@ -121,7 +121,7 @@
      "licence": "apache-2.0",
      "trending": 447,
      "downloads": 6652309,
-     "likes": 16324,
+     "likes": 16328,
      "created": "2026-08-05",
      "pipeline_tag": "image-text-to-text"
     },
@@ -131,7 +131,7 @@
      "licence": "mit",
      "trending": 345,
      "downloads": 640577,
-     "likes": 3764,
+     "likes": 3767,
      "created": "2026-09-10",
      "pipeline_tag": "image-text-to-text"
     },
@@ -159,9 +159,9 @@
      "id": "google/gemma-4-31B-it",
      "url": "https://huggingface.co/google/gemma-4-31B-it",
      "licence": "apache-2.0",
-     "trending": 45,
+     "trending": 46,
      "downloads": 9436030,
-     "likes": 3936,
+     "likes": 3937,
      "created": "2026-03-11",
      "pipeline_tag": "image-text-to-text"
     },
@@ -169,7 +169,7 @@
      "id": "Qwen/Qwen3.5-9B",
      "url": "https://huggingface.co/Qwen/Qwen3.5-9B",
      "licence": "apache-2.0",
-     "trending": 44,
+     "trending": 43,
      "downloads": 9958288,
      "likes": 2041,
      "created": "2026-02-27",
@@ -226,7 +226,7 @@
     {
      "repo": "songquanpeng/one-api",
      "url": "https://github.com/songquanpeng/one-api",
-     "stars": 37022,
+     "stars": 37023,
      "licence": "MIT",
      "pushed": "2026-01-09",
      "status": "ok",
@@ -246,7 +246,7 @@
     {
      "repo": "maximhq/bifrost",
      "url": "https://github.com/maximhq/bifrost",
-     "stars": 8376,
+     "stars": 8377,
      "licence": "Apache-2.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -284,7 +284,7 @@
     {
      "repo": "unslothai/unsloth",
      "url": "https://github.com/unslothai/unsloth",
-     "stars": 76816,
+     "stars": 76817,
      "licence": "Apache-2.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -294,7 +294,7 @@
     {
      "repo": "hiyouga/LlamaFactory",
      "url": "https://github.com/hiyouga/LlamaFactory",
-     "stars": 75019,
+     "stars": 75020,
      "licence": "Apache-2.0",
      "pushed": "2026-09-14",
      "status": "ok",
@@ -304,7 +304,7 @@
     {
      "repo": "verl-project/verl",
      "url": "https://github.com/verl-project/verl",
-     "stars": 23635,
+     "stars": 23638,
      "licence": "Apache-2.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -400,7 +400,7 @@
     {
      "repo": "qdrant/qdrant",
      "url": "https://github.com/qdrant/qdrant",
-     "stars": 34833,
+     "stars": 34836,
      "licence": "Apache-2.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -546,7 +546,7 @@
     {
      "repo": "infiniflow/ragflow",
      "url": "https://github.com/infiniflow/ragflow",
-     "stars": 91327,
+     "stars": 91328,
      "licence": "Apache-2.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -556,7 +556,7 @@
     {
      "repo": "run-llama/llama_index",
      "url": "https://github.com/run-llama/llama_index",
-     "stars": 52324,
+     "stars": 52325,
      "licence": "MIT",
      "pushed": "2026-09-25",
      "status": "ok",
@@ -566,7 +566,7 @@
     {
      "repo": "HKUDS/LightRAG",
      "url": "https://github.com/HKUDS/LightRAG",
-     "stars": 39869,
+     "stars": 39870,
      "licence": "MIT",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -586,7 +586,7 @@
     {
      "repo": "onyx-dot-app/onyx",
      "url": "https://github.com/onyx-dot-app/onyx",
-     "stars": 32255,
+     "stars": 32254,
      "licence": "MIT",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -617,7 +617,7 @@
      "licence": "mit",
      "trending": 25,
      "downloads": 36622223,
-     "likes": 3660,
+     "likes": 3664,
      "created": "2024-01-27",
      "pipeline_tag": "sentence-similarity"
     },
@@ -881,14 +881,14 @@
    "dropped": []
   },
   "document-parsing": {
-   "name": "Document parsing and OCR",
+   "name": "Document parsing",
    "source": "github",
    "ranked_by": "stars",
    "ranked": [
     {
      "repo": "microsoft/markitdown",
      "url": "https://github.com/microsoft/markitdown",
-     "stars": 187118,
+     "stars": 187123,
      "licence": "MIT",
      "pushed": "2026-09-21",
      "status": "ok",
@@ -898,7 +898,7 @@
     {
      "repo": "PaddlePaddle/PaddleOCR",
      "url": "https://github.com/PaddlePaddle/PaddleOCR",
-     "stars": 90243,
+     "stars": 90244,
      "licence": "Apache-2.0",
      "pushed": "2026-09-16",
      "status": "ok",
@@ -908,22 +908,12 @@
     {
      "repo": "docling-project/docling",
      "url": "https://github.com/docling-project/docling",
-     "stars": 67984,
+     "stars": 67985,
      "licence": "MIT",
      "pushed": "2026-09-25",
      "status": "ok",
      "stars_90d": null,
      "what": "Parses PDF, DOCX, PPTX and more into structured output for AI"
-    },
-    {
-     "repo": "datalab-to/marker",
-     "url": "https://github.com/datalab-to/marker",
-     "stars": 39983,
-     "licence": "Apache-2.0",
-     "pushed": "2026-09-13",
-     "status": "ok",
-     "stars_90d": null,
-     "what": "Converts PDF and documents to Markdown quickly and accurately"
     },
     {
      "repo": "deepseek-ai/DeepSeek-OCR",
@@ -938,7 +928,7 @@
     {
      "repo": "allenai/olmocr",
      "url": "https://github.com/allenai/olmocr",
-     "stars": 19663,
+     "stars": 19664,
      "licence": "Apache-2.0",
      "pushed": "2026-03-25",
      "status": "ok",
@@ -958,12 +948,90 @@
     {
      "repo": "studio-dots-ai/dots.ocr",
      "url": "https://github.com/studio-dots-ai/dots.ocr",
-     "stars": 9153,
+     "stars": 9152,
      "licence": "MIT",
      "pushed": "2026-03-24",
      "status": "ok",
      "stars_90d": null,
      "what": "Multilingual document layout parsing in a single VLM"
+    }
+   ],
+   "dropped": []
+  },
+  "ocr": {
+   "name": "OCR and document understanding",
+   "source": "github",
+   "ranked_by": "stars",
+   "ranked": [
+    {
+     "repo": "PaddlePaddle/PaddleOCR",
+     "url": "https://github.com/PaddlePaddle/PaddleOCR",
+     "stars": 90244,
+     "licence": "Apache-2.0",
+     "pushed": "2026-09-16",
+     "status": "ok",
+     "stars_90d": null,
+     "what": "OCR and document parsing toolkit, 100+ languages"
+    },
+    {
+     "repo": "docling-project/docling",
+     "url": "https://github.com/docling-project/docling",
+     "stars": 67985,
+     "licence": "MIT",
+     "pushed": "2026-09-25",
+     "status": "ok",
+     "stars_90d": null,
+     "what": "Layout analysis, tables and OCR for PDFs and scans"
+    },
+    {
+     "repo": "JaidedAI/EasyOCR",
+     "url": "https://github.com/JaidedAI/EasyOCR",
+     "stars": 30032,
+     "licence": "Apache-2.0",
+     "pushed": "2025-12-05",
+     "status": "ok",
+     "stars_90d": null,
+     "what": "Ready-to-use OCR for 80+ languages"
+    },
+    {
+     "repo": "deepseek-ai/DeepSeek-OCR",
+     "url": "https://github.com/deepseek-ai/DeepSeek-OCR",
+     "stars": 23911,
+     "licence": "MIT",
+     "pushed": "2026-01-27",
+     "status": "ok",
+     "stars_90d": null,
+     "what": "Vision-language OCR model with optical context compression"
+    },
+    {
+     "repo": "allenai/olmocr",
+     "url": "https://github.com/allenai/olmocr",
+     "stars": 19664,
+     "licence": "Apache-2.0",
+     "pushed": "2026-03-25",
+     "status": "ok",
+     "stars_90d": null,
+     "what": "PDF and scan linearisation with a vision-language model"
+    },
+    {
+     "repo": "studio-dots-ai/dots.ocr",
+     "url": "https://github.com/studio-dots-ai/dots.ocr",
+     "stars": 9152,
+     "licence": "MIT",
+     "pushed": "2026-03-24",
+     "status": "ok",
+     "stars_90d": null,
+     "what": "Multilingual document layout parsing in a single VLM"
+    },
+    {
+     "repo": "mindee/doctr",
+     "url": "https://github.com/mindee/doctr",
+     "stars": 6364,
+     "licence": "Apache-2.0",
+     "pushed": "2026-09-24",
+     "status": "ok",
+     "stars_90d": null,
+     "what": "Deep-learning OCR for documents"
     }
    ],
    "dropped": []
@@ -976,7 +1044,7 @@
     {
      "repo": "langfuse/langfuse",
      "url": "https://github.com/langfuse/langfuse",
-     "stars": 35070,
+     "stars": 35071,
      "licence": "MIT",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -996,7 +1064,7 @@
     {
      "repo": "promptfoo/promptfoo",
      "url": "https://github.com/promptfoo/promptfoo",
-     "stars": 25472,
+     "stars": 25474,
      "licence": "MIT",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -1026,7 +1094,7 @@
     {
      "repo": "traceloop/openllmetry",
      "url": "https://github.com/traceloop/openllmetry",
-     "stars": 7451,
+     "stars": 7452,
      "licence": "Apache-2.0",
      "pushed": "2026-09-24",
      "status": "ok",
@@ -1084,7 +1152,7 @@
     {
      "repo": "SYSTRAN/faster-whisper",
      "url": "https://github.com/SYSTRAN/faster-whisper",
-     "stars": 25583,
+     "stars": 25584,
      "licence": "MIT",
      "pushed": "2025-11-19",
      "status": "ok",
@@ -1114,7 +1182,7 @@
     {
      "repo": "k2-fsa/sherpa-onnx",
      "url": "https://github.com/k2-fsa/sherpa-onnx",
-     "stars": 14973,
+     "stars": 14974,
      "licence": "Apache-2.0",
      "pushed": "2026-09-22",
      "status": "ok",
@@ -1134,7 +1202,7 @@
     {
      "repo": "speaches-ai/speaches",
      "url": "https://github.com/speaches-ai/speaches",
-     "stars": 3679,
+     "stars": 3680,
      "licence": "MIT",
      "pushed": "2026-09-24",
      "status": "ok",
@@ -1162,7 +1230,7 @@
     {
      "repo": "microsoft/VibeVoice",
      "url": "https://github.com/microsoft/VibeVoice",
-     "stars": 54500,
+     "stars": 54502,
      "licence": "MIT",
      "pushed": "2026-09-03",
      "status": "ok",
@@ -1198,16 +1266,6 @@
      "status": "ok",
      "stars_90d": null,
      "what": "Dialogue TTS model generating multi-speaker conversation"
-    },
-    {
-     "repo": "canopyai/Orpheus-TTS",
-     "url": "https://github.com/canopyai/Orpheus-TTS",
-     "stars": 6347,
-     "licence": "Apache-2.0",
-     "pushed": "2025-12-05",
-     "status": "ok",
-     "stars_90d": null,
-     "what": "Human-like speech synthesis on a Llama backbone"
     },
     {
      "repo": "OHF-Voice/piper1-gpl",
@@ -1250,7 +1308,7 @@
     {
      "repo": "pipecat-ai/pipecat",
      "url": "https://github.com/pipecat-ai/pipecat",
-     "stars": 15892,
+     "stars": 15893,
      "licence": "BSD-2-Clause",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -1288,7 +1346,7 @@
     {
      "repo": "Comfy-Org/ComfyUI",
      "url": "https://github.com/Comfy-Org/ComfyUI",
-     "stars": 135051,
+     "stars": 135062,
      "licence": "GPL-3.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -1318,7 +1376,7 @@
     {
      "repo": "Tongyi-MAI/Z-Image",
      "url": "https://github.com/Tongyi-MAI/Z-Image",
-     "stars": 12050,
+     "stars": 12051,
      "licence": "Apache-2.0",
      "pushed": "2026-02-09",
      "status": "ok",
@@ -1328,7 +1386,7 @@
     {
      "repo": "QwenLM/Qwen-Image",
      "url": "https://github.com/QwenLM/Qwen-Image",
-     "stars": 8375,
+     "stars": 8376,
      "licence": "Apache-2.0",
      "pushed": "2026-02-10",
      "status": "ok",
@@ -1364,24 +1422,14 @@
      "what": "AI-powered answer engine, open source Perplexity alternative"
     },
     {
-     "repo": "stanford-oval/storm",
-     "url": "https://github.com/stanford-oval/storm",
-     "stars": 31507,
-     "licence": "MIT",
-     "pushed": "2025-09-30",
+     "repo": "yacy/yacy_search_server",
+     "url": "https://github.com/yacy/yacy_search_server",
+     "stars": 4045,
+     "licence": "GPL-2.0",
+     "pushed": "2026-09-23",
      "status": "ok",
      "stars_90d": null,
-     "what": "Research agent that writes grounded reports from web search"
-    },
-    {
-     "repo": "assafelovic/gpt-researcher",
-     "url": "https://github.com/assafelovic/gpt-researcher",
-     "stars": 29634,
-     "licence": "Apache-2.0",
-     "pushed": "2026-09-26",
-     "status": "ok",
-     "stars_90d": null,
-     "what": "Autonomous agent for deep web research"
+     "what": "Self-hosted, peer-to-peer web search engine with its own index"
     }
    ],
    "dropped": []
@@ -1394,7 +1442,7 @@
     {
      "repo": "firecrawl/firecrawl",
      "url": "https://github.com/firecrawl/firecrawl",
-     "stars": 184962,
+     "stars": 184985,
      "licence": "AGPL-3.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -1414,7 +1462,7 @@
     {
      "repo": "ScrapeGraphAI/Scrapegraph-ai",
      "url": "https://github.com/ScrapeGraphAI/Scrapegraph-ai",
-     "stars": 31317,
+     "stars": 31319,
      "licence": "MIT",
      "pushed": "2026-09-25",
      "status": "ok",
@@ -1452,7 +1500,7 @@
     {
      "repo": "browser-use/browser-use",
      "url": "https://github.com/browser-use/browser-use",
-     "stars": 116368,
+     "stars": 116374,
      "licence": "MIT",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -1462,7 +1510,7 @@
     {
      "repo": "microsoft/playwright",
      "url": "https://github.com/microsoft/playwright",
-     "stars": 96700,
+     "stars": 96699,
      "licence": "Apache-2.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -1482,7 +1530,7 @@
     {
      "repo": "browserbase/stagehand",
      "url": "https://github.com/browserbase/stagehand",
-     "stars": 25399,
+     "stars": 25400,
      "licence": "MIT",
      "pushed": "2026-09-25",
      "status": "ok",
@@ -1492,7 +1540,7 @@
     {
      "repo": "steel-dev/steel-browser",
      "url": "https://github.com/steel-dev/steel-browser",
-     "stars": 7695,
+     "stars": 7696,
      "licence": "Apache-2.0",
      "pushed": "2026-09-24",
      "status": "ok",
@@ -1510,7 +1558,7 @@
     {
      "repo": "firecracker-microvm/firecracker",
      "url": "https://github.com/firecracker-microvm/firecracker",
-     "stars": 36964,
+     "stars": 36965,
      "licence": "Apache-2.0",
      "pushed": "2026-09-25",
      "status": "ok",
@@ -1558,7 +1606,7 @@
     {
      "repo": "mem0ai/mem0",
      "url": "https://github.com/mem0ai/mem0",
-     "stars": 66017,
+     "stars": 66018,
      "licence": "Apache-2.0",
      "pushed": "2026-09-25",
      "status": "ok",
@@ -1578,7 +1626,7 @@
     {
      "repo": "topoteretes/cognee",
      "url": "https://github.com/topoteretes/cognee",
-     "stars": 30988,
+     "stars": 30989,
      "licence": "Apache-2.0",
      "pushed": "2026-09-26",
      "status": "ok",

@@ -72,7 +72,6 @@
     requirement: [google-cloud-speech, google-cloud-texttospeech]
     npm: ["@google-cloud/speech", "@google-cloud/text-to-speech"]
     python_import: [google.cloud.speech, google.cloud.speech_v2, google.cloud.texttospeech]
-    symbol: [SpeechClient, TextToSpeechClient]
     endpoint: [speech.googleapis.com, texttospeech.googleapis.com]
 
 - id: aws-transcribe-polly
@@ -165,7 +164,7 @@
   replace_with: [voice-agent, speech-to-text, text-to-speech]
   detect:
     npm: ["@openai/realtime-api-beta"]
-    symbol: ["beta.realtime", "realtime.connect", RealtimeAgent, RealtimeSession, OpenAIRealtimeWebRTC]
+    symbol: ["beta.realtime", RealtimeAgent, RealtimeSession, OpenAIRealtimeWebRTC]
     model: [gpt-4o-realtime-, gpt-4o-mini-realtime-, gpt-realtime]
     endpoint: [api.openai.com/v1/realtime]
 

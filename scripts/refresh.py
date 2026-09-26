@@ -63,19 +63,45 @@ DERIVED_NAME = re.compile(
 )
 
 
+class Transient(Exception):
+    """The source could not answer right now: rate-limited, down, or unreachable.
+    Not evidence that anything changed, so the previous snapshot stands."""
+
+
+MAX_RATE_LIMIT_WAIT = 120
+
+
+def _rate_limited(exc: urllib.error.HTTPError) -> bool:
+    return exc.code == 429 or (
+        exc.code == 403 and exc.headers.get("X-RateLimit-Remaining") == "0"
+    )
+
+
 def _get(url: str, headers: dict | None = None, timeout: int = 30, attempts: int = 4):
-    """GET JSON, backing off on rate limits and server errors."""
+    """GET JSON. Retries rate limits (GitHub signals them as 403 with no requests
+    remaining) and server errors; raises Transient when they persist, and
+    HTTPError only for real answers such as 404."""
     req = urllib.request.Request(url, headers={"User-Agent": "lockin-refresh", **(headers or {})})
     for attempt in range(attempts):
         try:
             with urllib.request.urlopen(req, timeout=timeout) as resp:
                 return json.load(resp)
         except urllib.error.HTTPError as exc:
-            if exc.code not in (429, 500, 502, 503, 504) or attempt == attempts - 1:
+            if _rate_limited(exc):
+                reset = int(exc.headers.get("X-RateLimit-Reset") or 0)
+                wait = max(reset - time.time(), 2 ** (attempt + 1)) if reset else 2 ** (attempt + 1)
+                if wait > MAX_RATE_LIMIT_WAIT or attempt == attempts - 1:
+                    raise Transient(f"rate-limited ({exc.code})") from exc
+                time.sleep(wait)
+                continue
+            if exc.code in (500, 502, 503, 504):
+                if attempt == attempts - 1:
+                    raise Transient(f"server error {exc.code}") from exc
+            else:
                 raise
-        except (urllib.error.URLError, TimeoutError):
+        except (urllib.error.URLError, TimeoutError, ValueError) as exc:
             if attempt == attempts - 1:
-                raise
+                raise Transient(str(exc)) from exc
         time.sleep(2 ** (attempt + 1))
     raise AssertionError("unreachable")
 
@@ -103,7 +129,7 @@ def github_project(repo: str, declared_licence: str | None, token: str | None) -
         data = _get(f"https://api.github.com/repos/{repo}", headers)
     except urllib.error.HTTPError as exc:
         return {**base, "status": "missing", "problem": f"GitHub returned {exc.code}"}
-    except (urllib.error.URLError, TimeoutError) as exc:
+    except Transient as exc:
         return {**base, "status": "unreachable", "problem": str(exc)}
 
     detected = (data.get("license") or {}).get("spdx_id")
@@ -169,7 +195,8 @@ def rank_github(projects: list[dict]) -> tuple[list[dict], str]:
 # ---------------------------------------------------------------- huggingface
 
 
-def hf_publisher_models(author: str) -> list[dict]:
+def hf_publisher_models(author: str) -> list[dict] | None:
+    """The publisher's models, or None when Hugging Face could not be asked."""
     query = urllib.parse.urlencode(
         [
             ("author", author),
@@ -190,8 +217,8 @@ def hf_publisher_models(author: str) -> list[dict]:
     )
     try:
         return _get(f"https://huggingface.co/api/models?{query}")
-    except (urllib.error.URLError, TimeoutError, ValueError):
-        return []
+    except (Transient, urllib.error.HTTPError):
+        return None
 
 
 def _original(author: str, card: dict) -> bool:
@@ -211,7 +238,7 @@ def hf_pool(pool: dict, by_author: dict[str, list[dict]]) -> list[dict]:
     must_contain = [s.lower() for s in pool.get("name_contains", [])]
     picked = []
     for author in pool["publishers"]:
-        for m in by_author.get(author, []):
+        for m in by_author.get(author) or []:
             card = m.get("cardData") or {}
             licence = str(card.get("license") or "").lower()
             name = m["id"].split("/", 1)[1]
@@ -245,6 +272,31 @@ def hf_pool(pool: dict, by_author: dict[str, list[dict]]) -> list[dict]:
 
 
 # ---------------------------------------------------------------- main
+
+
+def _previous_rankings() -> dict[str, dict]:
+    file = CATALOG / "rankings.json"
+    if not file.is_file():
+        return {}
+    try:
+        return json.loads(file.read_text("utf-8")).get("pools") or {}
+    except ValueError:
+        return {}
+
+
+def shrunk_pools(previous: dict[str, dict], current: dict[str, dict]) -> list[str]:
+    """Pools that came out empty, or with under half the entries they had.
+
+    That is what an outage looks like, not what the open source world does in a
+    week, and publishing it would leave users with no alternatives to read.
+    """
+    out = []
+    for pool_id, pool in current.items():
+        now = len(pool["ranked"])
+        before = len((previous.get(pool_id) or {}).get("ranked") or [])
+        if now == 0 or (before >= 4 and now < before / 2):
+            out.append(f"{pool_id}: {before} → {now}")
+    return out
 
 
 def main() -> int:
@@ -287,20 +339,33 @@ def main() -> int:
         history[repo] = [*points, [today.isoformat(), info["stars"]]]
         info["stars_90d"] = momentum(history[repo], today)
 
+    previous = _previous_rankings()
     problems = []
     out_pools: dict[str, dict] = {}
     for pool in pools:
+        before = previous.get(pool["id"], {})
         if pool["source"] == "github":
-            entries = [{**repos[p["repo"]], "what": p["what"]} for p in pool["projects"]]
+            last_seen = {e["repo"]: e for e in before.get("ranked", [])}
+            entries = []
+            for p in pool["projects"]:
+                entry = {**repos[p["repo"]], "what": p["what"]}
+                if entry["status"] == "unreachable" and p["repo"] in last_seen:
+                    # A failed request is not news: keep last week's facts.
+                    entry = {**last_seen[p["repo"]], "what": p["what"], "stale": True}
+                entries.append(entry)
             problems += [
                 f"{pool['id']}: {e['repo']} — {e['problem']}"
                 for e in entries
-                if e["status"] != "ok"
+                if e.get("status") != "ok"
             ]
-            ranked, ranked_by = rank_github([e for e in entries if e["status"] == "ok"])
-            dropped = [e for e in entries if e["status"] != "ok"]
+            ranked, ranked_by = rank_github([e for e in entries if e.get("status") == "ok"])
+            dropped = [e for e in entries if e.get("status") != "ok"]
         else:
             ranked, ranked_by, dropped = hf_pool(pool, by_author), "trending", []
+            failed = [a for a in pool["publishers"] if by_author.get(a) is None]
+            if failed and before.get("ranked"):
+                problems.append(f"{pool['id']}: Hugging Face unreachable for {', '.join(failed)}")
+                ranked = before["ranked"]  # a partial view would reorder on missing data
             if not ranked:
                 problems.append(f"{pool['id']}: no models survived the filters")
         out_pools[pool["id"]] = {
@@ -326,6 +391,13 @@ def main() -> int:
         print(f"\n{len(problems)} problem(s):", file=sys.stderr)
         for p in problems:
             print(f"  - {p}", file=sys.stderr)
+
+    collapsed = shrunk_pools(previous, out_pools)
+    if collapsed:
+        print("\nrefusing to write rankings; these pools emptied or halved:", file=sys.stderr)
+        for line in collapsed:
+            print(f"  - {line}", file=sys.stderr)
+        return 1
 
     if not args.check:
         payload = {
