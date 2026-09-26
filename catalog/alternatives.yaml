@@ -96,7 +96,6 @@ pools:
       - {repo: pgvector/pgvector, what: Vector similarity search inside Postgres, licence: PostgreSQL}
       - {repo: vespa-engine/vespa, what: Search and vector engine for big data serving}
       - {repo: facebookresearch/faiss, what: Library for efficient similarity search}
-      - {repo: timescale/pgvectorscale, what: "Postgres extension for high-performance, cost-efficient vector search"}
 
   - id: search-engine
     name: Search engine
@@ -109,16 +108,21 @@ pools:
       - {repo: quickwit-oss/tantivy, what: Full-text search engine library in Rust}
       - {repo: infiniflow/infinity, what: AI-native database for hybrid search}
 
-  - id: rag-engine
-    name: RAG engine
+  - id: rag-application
+    name: RAG application
     source: github
     projects:
       - {repo: infiniflow/ragflow, what: RAG engine with deep document understanding}
+      - {repo: onyx-dot-app/onyx, what: "Self-hostable enterprise search and chat over your documents", licence: MIT}
+
+  - id: rag-framework
+    name: RAG framework
+    source: github
+    projects:
       - {repo: HKUDS/LightRAG, what: Simple and fast graph-based RAG}
       - {repo: microsoft/graphrag, what: Graph-based retrieval-augmented generation}
       - {repo: run-llama/llama_index, what: Framework for building RAG over your data}
       - {repo: deepset-ai/haystack, what: Framework for production RAG pipelines}
-      - {repo: onyx-dot-app/onyx, what: "Self-hostable enterprise search and chat over your documents", licence: MIT}
 
   - id: embedding-model
     name: Open embedding model
@@ -182,10 +186,14 @@ pools:
       - {repo: traceloop/openllmetry, what: OpenTelemetry-based observability for LLM apps}
       - {repo: Helicone/helicone, what: "LLM observability with request logging and cost tracking"}
       - {repo: Agenta-AI/agenta, what: "Prompt management, evaluation and observability", licence: MIT}
+
+  - id: llm-evals
+    name: LLM evaluation
+    source: github
+    projects:
       - {repo: promptfoo/promptfoo, what: "Evals, red-teaming and regression testing for prompts"}
       - {repo: confident-ai/deepeval, what: Evaluation framework for LLM applications}
-
-  # ---------------------------------------------------------------- speech
+      - {repo: vibrantlabsai/ragas, what: Evaluation toolkit for RAG and LLM apps}
 
   - id: speech-to-text
     name: Speech-to-text
@@ -199,7 +207,6 @@ pools:
       - {repo: k2-fsa/sherpa-onnx, what: "Offline speech recognition and synthesis on any platform"}
       - {repo: NVIDIA-NeMo/Speech, what: "Framework behind the Parakeet and Canary speech models"}
       - {repo: kyutai-labs/delayed-streams-modeling, what: Kyutai's streaming speech-to-text and text-to-speech}
-      - {repo: pyannote/pyannote-audio, what: Speaker diarisation toolkit}
 
   - id: text-to-speech
     name: Text-to-speech
@@ -219,9 +226,6 @@ pools:
     projects:
       - {repo: pipecat-ai/pipecat, what: Framework for real-time voice and multimodal agents}
       - {repo: livekit/agents, what: Framework for real-time voice AI agents on WebRTC}
-      - {repo: kyutai-labs/moshi, what: Full-duplex speech-to-speech model}
-
-  # ---------------------------------------------------------------- images
 
   - id: image-generation
     name: Image generation
@@ -240,8 +244,15 @@ pools:
     source: github
     projects:
       - {repo: searxng/searxng, what: "Self-hosted metasearch engine with a JSON API"}
-      - {repo: ItzCrazyKns/Vane, what: "AI-powered answer engine, open source Perplexity alternative"}
       - {repo: yacy/yacy_search_server, what: "Self-hosted, peer-to-peer web search engine with its own index", licence: GPL-2.0}
+
+  - id: answer-engine
+    name: Answer engine
+    source: github
+    projects:
+      - {repo: ItzCrazyKns/Vane, what: "AI-powered answer engine, open source Perplexity alternative"}
+      - {repo: khoj-ai/khoj, what: Self-hostable AI answer engine and personal assistant}
+      - {repo: miurla/morphic, what: AI answer engine with a generative UI}
 
   - id: web-scraping
     name: Web scraping for LLMs
@@ -294,13 +305,13 @@ pools:
 projects:
   # ---------------------------------------------------------------- vector databases
   facebookresearch/faiss:
-    kind: library
+    kind: [library, embedded]
     detect:
       requirement: [faiss-cpu, faiss-gpu, faiss-gpu-cu12]
       python_import: [faiss]
       npm: [faiss-node]
   qdrant/qdrant:
-    kind: server
+    kind: [server]
     detect:
       requirement: [qdrant-client, langchain-qdrant, llama-index-vector-stores-qdrant]
       python_import: [qdrant_client]
@@ -313,7 +324,7 @@ projects:
       nuget: [Qdrant.Client, Microsoft.SemanticKernel.Connectors.Qdrant]
       image: [qdrant/qdrant]
   milvus-io/milvus:
-    kind: server
+    kind: [server]
     detect:
       requirement: [pymilvus, milvus-lite, langchain-milvus, llama-index-vector-stores-milvus]
       python_import: [pymilvus]
@@ -324,7 +335,7 @@ projects:
               "org.springframework.ai:spring-ai-milvus-store"]
       image: [milvusdb/milvus]
   weaviate/weaviate:
-    kind: server
+    kind: [server]
     detect:
       requirement: [weaviate-client, langchain-weaviate, llama-index-vector-stores-weaviate]
       python_import: [weaviate]
@@ -335,7 +346,7 @@ projects:
               "org.springframework.ai:spring-ai-starter-vector-store-weaviate",
               "org.springframework.ai:spring-ai-weaviate-store"]
   chroma-core/chroma:
-    kind: embedded or server
+    kind: [embedded, server]
     detect:
       requirement: [chromadb, chromadb-client, langchain-chroma, llama-index-vector-stores-chroma]
       python_import: [chromadb]
@@ -346,13 +357,13 @@ projects:
               "org.springframework.ai:spring-ai-chroma-store"]
       go: [github.com/amikos-tech/chroma-go]
   lancedb/lancedb:
-    kind: embedded
+    kind: [embedded]
     detect:
       requirement: [lancedb, llama-index-vector-stores-lancedb]
       python_import: [lancedb]
       npm: ["@lancedb/lancedb", vectordb]
   pgvector/pgvector:
-    kind: Postgres extension
+    kind: [Postgres extension]
     detect:
       requirement: [pgvector, langchain-postgres, llama-index-vector-stores-postgres]
       python_import: [pgvector]
@@ -364,19 +375,15 @@ projects:
       nuget: [Pgvector, Pgvector.EntityFrameworkCore, Microsoft.KernelMemory.Postgres]
       go: [github.com/pgvector/pgvector-go]
       sql_extension: [vector]
-  timescale/pgvectorscale:
-    kind: Postgres extension
-    detect:
-      sql_extension: [vectorscale]
   vespa-engine/vespa:
-    kind: server
+    kind: [server]
     detect:
       requirement: [pyvespa]
       image: [vespaengine/vespa]
 
   # ---------------------------------------------------------------- search engines
   opensearch-project/OpenSearch:
-    kind: server
+    kind: [server]
     detect:
       requirement: [opensearch-py, llama-index-vector-stores-opensearch]
       python_import: [opensearchpy]
@@ -387,14 +394,14 @@ projects:
       image: [opensearchproject/opensearch]
       go: [github.com/opensearch-project/opensearch-go]
   meilisearch/meilisearch:
-    kind: server
+    kind: [server]
     detect:
       requirement: [meilisearch]
       python_import: [meilisearch]
       npm: [meilisearch]
       image: [getmeili/meilisearch]
   typesense/typesense:
-    kind: server
+    kind: [server]
     detect:
       requirement: [typesense]
       python_import: [typesense]
@@ -403,69 +410,69 @@ projects:
       maven: ["org.springframework.ai:spring-ai-starter-vector-store-typesense",
               "org.springframework.ai:spring-ai-typesense-store"]
   paradedb/paradedb:
-    kind: Postgres extension
+    kind: [Postgres extension]
     detect:
       image: [paradedb/paradedb]
       sql_extension: [pg_search]
   quickwit-oss/tantivy:
-    kind: library
+    kind: [library]
     detect:
       requirement: [tantivy]
       python_import: [tantivy]
       cargo: [tantivy]
   infiniflow/infinity:
-    kind: server
+    kind: [server]
     detect:
       requirement: [infinity-sdk]
       image: [infiniflow/infinity]
 
   # ---------------------------------------------------------------- RAG
   infiniflow/ragflow:
-    kind: application
+    kind: [application]
     detect:
       requirement: [ragflow-sdk]
       image: [infiniflow/ragflow]
   HKUDS/LightRAG:
-    kind: library
+    kind: [library]
     detect:
       requirement: [lightrag-hku]
       python_import: [lightrag]
   microsoft/graphrag:
-    kind: library
+    kind: [library]
     detect:
       requirement: [graphrag]
       python_import: [graphrag]
   run-llama/llama_index:
-    kind: framework
+    kind: [framework]
     detect:
       requirement: [llama-index, llama-index-core]
       python_import: [llama_index]
       npm: [llamaindex]
   deepset-ai/haystack:
-    kind: framework
+    kind: [framework]
     detect:
       requirement: [haystack-ai, farm-haystack]
       python_import: [haystack]
   onyx-dot-app/onyx:
-    kind: application
+    kind: [application]
     detect:
       image: [onyxdotapp/onyx-backend]
 
   # ---------------------------------------------------------------- serving
   vllm-project/vllm:
-    kind: server
+    kind: [server]
     detect:
       requirement: [vllm]
       python_import: [vllm]
       image: [vllm/vllm-openai, lmcache/vllm-openai]
   sgl-project/sglang:
-    kind: server
+    kind: [server]
     detect:
       requirement: [sglang]
       python_import: [sglang]
       image: [lmsysorg/sglang]
   ggml-org/llama.cpp:
-    kind: server and library
+    kind: [server, library]
     detect:
       requirement: [llama-cpp-python]
       python_import: [llama_cpp]
@@ -474,7 +481,7 @@ projects:
       maven: ["de.kherud:llama"]
       nuget: [LLamaSharp]
   ollama/ollama:
-    kind: local server
+    kind: [server]
     detect:
       requirement: [ollama, langchain-ollama, llama-index-llms-ollama,
                     llama-index-embeddings-ollama]
@@ -490,23 +497,23 @@ projects:
       nuget: [OllamaSharp, Microsoft.Extensions.AI.Ollama,
               Microsoft.SemanticKernel.Connectors.Ollama]
   InternLM/lmdeploy:
-    kind: server
+    kind: [server]
     detect:
       requirement: [lmdeploy]
       python_import: [lmdeploy]
       image: [openmmlab/lmdeploy]
   NVIDIA/TensorRT-LLM:
-    kind: library
+    kind: [library]
     detect:
       requirement: [tensorrt-llm]
       python_import: [tensorrt_llm]
   mudler/LocalAI:
-    kind: local server
+    kind: [server]
     detect:
       image: [localai/localai, quay.io/go-skynet/local-ai]
       env: [LOCAL_AI_BASE_PATH, LOCALAI_BASE_URL]
   BerriAI/litellm:
-    kind: library and proxy
+    kind: [library, proxy]
     detect:
       requirement: [litellm]
       python_import: [litellm]
@@ -514,128 +521,128 @@ projects:
               ghcr.io/berriai/litellm-non_root]
       env: [LITE_LLM_BASE_PATH, LITELLM_BASE_URL, LITELLM_PROXY_URL, LITELLM_MASTER_KEY]
   Portkey-AI/gateway:
-    kind: proxy
+    kind: [proxy]
     detect:
       npm: ["@portkey-ai/gateway"]
       image: [portkeyai/gateway]
   maximhq/bifrost:
-    kind: proxy
+    kind: [proxy]
     detect:
       image: [maximhq/bifrost]
   songquanpeng/one-api:
-    kind: proxy
+    kind: [proxy]
     detect:
       image: [justsong/one-api]
   QuantumNous/new-api:
-    kind: proxy
+    kind: [proxy]
     detect:
       image: [calciumion/new-api]
   huggingface/text-embeddings-inference:
-    kind: server
+    kind: [server]
     detect:
       image: [ghcr.io/huggingface/text-embeddings-inference]
   michaelfeil/infinity:
-    kind: server
+    kind: [server]
     detect:
       requirement: [infinity-emb]
       python_import: [infinity_emb]
       image: [michaelf34/infinity]
   huggingface/sentence-transformers:
-    kind: library
+    kind: [library]
     detect:
       requirement: [sentence-transformers, llama-index-embeddings-huggingface]
       python_import: [sentence_transformers]
       symbol: [HuggingFaceEmbeddings, HuggingFaceBgeEmbeddings, SentenceTransformerEmbeddings]
   qdrant/fastembed:
-    kind: library
+    kind: [library]
     detect:
       requirement: [fastembed, fastembed-gpu]
       python_import: [fastembed]
 
   # ---------------------------------------------------------------- training and safety
   unslothai/unsloth:
-    kind: library
+    kind: [library]
     detect:
       requirement: [unsloth]
       python_import: [unsloth]
   hiyouga/LlamaFactory:
-    kind: framework
+    kind: [framework]
     detect:
       requirement: [llamafactory]
       python_import: [llamafactory]
   axolotl-ai-cloud/axolotl:
-    kind: framework
+    kind: [framework]
     detect:
       requirement: [axolotl]
       python_import: [axolotl]
   huggingface/trl:
-    kind: library
+    kind: [library]
     detect:
       requirement: [trl]
       python_import: [trl]
   meta-pytorch/torchtune:
-    kind: library
+    kind: [library]
     detect:
       requirement: [torchtune]
       python_import: [torchtune]
   verl-project/verl:
-    kind: framework
+    kind: [framework]
     detect:
       requirement: [verl]
       python_import: [verl]
   NVIDIA-NeMo/Guardrails:
-    kind: library
+    kind: [library]
     detect:
       requirement: [nemoguardrails]
       python_import: [nemoguardrails]
   guardrails-ai/guardrails:
-    kind: library
+    kind: [library]
     detect:
       requirement: [guardrails-ai]
       python_import: [guardrails]
 
   # ---------------------------------------------------------------- documents
   docling-project/docling:
-    kind: library
+    kind: [library]
     detect:
       requirement: [docling, docling-serve, langchain-docling, llama-index-readers-docling]
       python_import: [docling]
       env: [DOCLING_SERVER_URL, DOCLING_SERVE_URL]
       image: [quay.io/docling-project/docling-serve, ghcr.io/docling-project/docling-serve]
   Unstructured-IO/unstructured:
-    kind: library
+    kind: [library]
     detect:
       requirement: [unstructured]
       python_import: [unstructured]
   microsoft/markitdown:
-    kind: library
+    kind: [library]
     detect:
       requirement: [markitdown]
       python_import: [markitdown]
   allenai/olmocr:
-    kind: library
+    kind: [library]
     detect:
       requirement: [olmocr]
       python_import: [olmocr]
   PaddlePaddle/PaddleOCR:
-    kind: library
+    kind: [library]
     detect:
       requirement: [paddleocr]
       python_import: [paddleocr]
   mindee/doctr:
-    kind: library
+    kind: [library]
     detect:
       requirement: [python-doctr]
       python_import: [doctr]
   JaidedAI/EasyOCR:
-    kind: library
+    kind: [library]
     detect:
       requirement: [easyocr]
       python_import: [easyocr]
 
   # ---------------------------------------------------------------- observability
   langfuse/langfuse:
-    kind: server
+    kind: [server]
     detect:
       requirement: [langfuse]
       python_import: [langfuse]
@@ -643,200 +650,200 @@ projects:
       image: [langfuse/langfuse, langfuse/langfuse-worker]
       env: [LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY]
   comet-ml/opik:
-    kind: server
+    kind: [server]
     detect:
       requirement: [opik]
       python_import: [opik]
       npm: [opik]
   mlflow/mlflow:
-    kind: server
+    kind: [server]
     detect:
       requirement: [mlflow, mlflow-skinny]
       python_import: [mlflow]
   traceloop/openllmetry:
-    kind: library
+    kind: [library]
     detect:
       requirement: [traceloop-sdk]
       python_import: [traceloop]
       npm: ["@traceloop/node-server-sdk"]
   Agenta-AI/agenta:
-    kind: server
+    kind: [server]
     detect:
       requirement: [agenta]
       python_import: [agenta]
   promptfoo/promptfoo:
-    kind: cli
+    kind: [cli]
     detect:
       npm: [promptfoo]
   confident-ai/deepeval:
-    kind: library
+    kind: [library]
     detect:
       requirement: [deepeval]
       python_import: [deepeval]
 
   # ---------------------------------------------------------------- speech and voice
   openai/whisper:
-    kind: model and library
+    kind: [model, library]
     # `import whisper` is also the Graphite metrics database; the package name decides.
     weak: [whisper]
     detect:
       requirement: [openai-whisper]
       python_import: [whisper]
   SYSTRAN/faster-whisper:
-    kind: library
+    kind: [library]
     detect:
       requirement: [faster-whisper]
       python_import: [faster_whisper]
   ggml-org/whisper.cpp:
-    kind: library
+    kind: [library]
     detect:
       requirement: [pywhispercpp]
       python_import: [pywhispercpp]
   m-bain/whisperX:
-    kind: library
+    kind: [library]
     detect:
       requirement: [whisperx]
       python_import: [whisperx]
   speaches-ai/speaches:
-    kind: server
+    kind: [server]
     detect:
       image: [ghcr.io/speaches-ai/speaches]
   k2-fsa/sherpa-onnx:
-    kind: library
+    kind: [library]
     detect:
       requirement: [sherpa-onnx]
       python_import: [sherpa_onnx]
       npm: [sherpa-onnx]
   NVIDIA-NeMo/Speech:
-    kind: framework
+    kind: [framework]
     detect:
       requirement: [nemo-toolkit]
       python_import: [nemo.collections.asr]
-  pyannote/pyannote-audio:
-    kind: library
-    detect:
-      requirement: [pyannote.audio]
-      python_import: [pyannote.audio]
   resemble-ai/chatterbox:
-    kind: model and library
+    kind: [model, library]
     detect:
       requirement: [chatterbox-tts]
       python_import: [chatterbox]
   remsky/Kokoro-FastAPI:
-    kind: server
+    kind: [server]
     detect:
       image: [ghcr.io/remsky/kokoro-fastapi-cpu, ghcr.io/remsky/kokoro-fastapi-gpu]
       env: [TTS_KOKORO_ENDPOINT]
   OHF-Voice/piper1-gpl:
-    kind: library
+    kind: [library]
     detect:
       requirement: [piper-tts]
       python_import: [piper]
   pipecat-ai/pipecat:
-    kind: framework
+    kind: [framework]
     detect:
       requirement: [pipecat-ai]
       python_import: [pipecat]
   livekit/agents:
-    kind: framework
+    kind: [framework]
     detect:
       requirement: [livekit-agents]
       python_import: [livekit.agents]
       npm: ["@livekit/agents"]
-  kyutai-labs/moshi:
-    kind: model and library
-    detect:
-      requirement: [moshi]
-      python_import: [moshi]
 
   # ---------------------------------------------------------------- images
   huggingface/diffusers:
-    kind: library
+    kind: [library]
     detect:
       requirement: [diffusers]
       python_import: [diffusers]
   invoke-ai/InvokeAI:
-    kind: application
+    kind: [application]
     detect:
       requirement: [invokeai]
 
   # ---------------------------------------------------------------- agents
   searxng/searxng:
-    kind: server
+    kind: [server]
     detect:
       symbol: [SearxSearchWrapper]
       image: [searxng/searxng]
       env: [SEARXNG_URL, SEARX_HOST, SEARXNG_API_URL, SEARXNG_QUERY_URL, SEARXNG_INSTANCE_URL,
             SEARXNG_BASE_URL, AGENT_SEARXNG_API_URL]
   unclecode/crawl4ai:
-    kind: library and server
+    kind: [library, server]
     detect:
       requirement: [crawl4ai]
       python_import: [crawl4ai]
       image: [unclecode/crawl4ai]
   firecrawl/firecrawl:
-    kind: server
+    kind: [server]
     detect:
       image: [ghcr.io/firecrawl/firecrawl, ghcr.io/mendableai/firecrawl]
   ScrapeGraphAI/Scrapegraph-ai:
-    kind: library
+    kind: [library]
     detect:
       requirement: [scrapegraphai]
       python_import: [scrapegraphai]
   mishushakov/llm-scraper:
-    kind: library
+    kind: [library]
     detect:
       npm: [llm-scraper]
   browser-use/browser-use:
-    kind: library
+    kind: [library]
     detect:
       requirement: [browser-use]
       python_import: [browser_use]
   lightpanda-io/browser:
-    kind: browser
+    kind: [browser]
     detect:
       image: [lightpanda/browser]
   browserbase/stagehand:
-    kind: library
+    kind: [library]
     detect:
       npm: ["@browserbasehq/stagehand"]
       requirement: [stagehand]
       go: [github.com/browserbase/stagehand-go]
   superradcompany/microsandbox:
-    kind: server
+    kind: [server]
     detect:
       requirement: [microsandbox]
       npm: [microsandbox]
   mem0ai/mem0:
-    kind: library
+    kind: [library]
     detect:
       requirement: [mem0ai]
       python_import: [mem0]
       npm: [mem0ai]
   getzep/graphiti:
-    kind: library
+    kind: [library]
     detect:
       requirement: [graphiti-core]
       python_import: [graphiti_core]
   letta-ai/letta:
-    kind: server
+    kind: [server]
     detect:
       requirement: [letta]
       python_import: [letta]
   topoteretes/cognee:
-    kind: library
+    kind: [library]
     detect:
       requirement: [cognee]
       python_import: [cognee]
   xorbitsai/inference:
-    kind: server
+    kind: [server]
     detect:
       requirement: [xinference, xinference-client]
       python_import: [xinference]
       image: [xprobe/xinference]
       env: [XINFERENCE_SERVER_URL]
   gpustack/gpustack:
-    kind: server
+    kind: [server]
     detect:
       requirement: [gpustack]
       image: [gpustack/gpustack]
+  vibrantlabsai/ragas:
+    kind: [library]
+    detect:
+      requirement: [ragas]
+      python_import: [ragas]
+  khoj-ai/khoj:
+    kind: [application]
+    detect:
+      image: [ghcr.io/khoj-ai/khoj]
+      requirement: [khoj]

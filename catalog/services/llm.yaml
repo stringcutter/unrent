@@ -409,7 +409,7 @@
   category: LLM API
   weak: [perplexity, sonar-pro, sonar-reasoning, sonar-deep-research]
   excludes: [openai]
-  replace_with: [web-search, open-llm]
+  replace_with: [answer-engine, web-search, open-llm]
   detect:
     requirement: [perplexityai, langchain-perplexity, llama-index-llms-perplexity]
     npm: ["@ai-sdk/perplexity", "@perplexity-ai/perplexity_ai", "@langchain/perplexity",

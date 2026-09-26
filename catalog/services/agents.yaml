@@ -186,7 +186,7 @@
   name: OpenAI Assistants / Conversations state
   category: Agent memory
   part_of: openai
-  replace_with: [agent-memory, rag-engine]
+  replace_with: [agent-memory, rag-application, rag-framework]
   detect:
     symbol: ["beta.assistants", "beta.threads"]
 
@@ -195,7 +195,7 @@
 - id: langsmith
   name: LangSmith
   category: LLM observability
-  replace_with: [llm-observability]
+  replace_with: [llm-observability, llm-evals]
   detect:
     requirement: [langsmith]
     npm: [langsmith, "@mastra/langsmith"]
@@ -207,7 +207,7 @@
 - id: braintrust
   name: Braintrust
   category: LLM observability
-  replace_with: [llm-observability]
+  replace_with: [llm-observability, llm-evals]
   detect:
     requirement: [braintrust]
     npm: [braintrust, "@mastra/braintrust"]
@@ -250,7 +250,7 @@
 - id: humanloop
   name: Humanloop
   category: LLM observability
-  replace_with: [llm-observability]
+  replace_with: [llm-observability, llm-evals]
   detect:
     requirement: [humanloop]
     npm: [humanloop]
@@ -260,7 +260,7 @@
 - id: galileo
   name: Galileo
   category: LLM observability
-  replace_with: [llm-observability]
+  replace_with: [llm-observability, llm-evals]
   detect:
     requirement: [galileo, promptquality]
     npm: [galileo]
@@ -462,7 +462,7 @@
 - id: arize-ax
   name: Arize AX
   category: LLM observability
-  replace_with: [llm-observability]
+  replace_with: [llm-observability, llm-evals]
   detect:
     requirement: [arize]
     python_import: [arize]
@@ -472,7 +472,7 @@
 - id: honeyhive
   name: HoneyHive
   category: LLM observability
-  replace_with: [llm-observability]
+  replace_with: [llm-observability, llm-evals]
   detect:
     requirement: [honeyhive]
     npm: [honeyhive]
@@ -482,7 +482,7 @@
 - id: patronus
   name: Patronus AI
   category: LLM observability
-  replace_with: [llm-observability, guardrails]
+  replace_with: [llm-observability, llm-evals, guardrails]
   detect:
     requirement: [patronus]
     python_import: [patronus]
@@ -492,7 +492,7 @@
 - id: freeplay
   name: Freeplay
   category: LLM observability
-  replace_with: [llm-observability]
+  replace_with: [llm-observability, llm-evals]
   detect:
     requirement: [freeplay]
     python_import: [freeplay]

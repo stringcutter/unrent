@@ -38,14 +38,25 @@ def _compact(n: int | None) -> str:
     return str(n)
 
 
+def _params(n: int) -> str:
+    if n >= 1_000_000_000_000:
+        return f"{n / 1_000_000_000_000:.1f}T"
+    if n >= 1_000_000_000:
+        return f"{n / 1_000_000_000:.0f}B" if n >= 10_000_000_000 else f"{n / 1_000_000_000:.1f}B"
+    return f"{n / 1_000_000:.0f}M"
+
+
 def _stats(alt: Alternative, pool: Pool) -> list[str]:
     bits = []
     if pool.source == "github":
         if alt.stars is not None:
             gain = f", +{_compact(alt.stars_90d)} in 90 days" if alt.stars_90d is not None else ""
             bits.append(f"★ {_compact(alt.stars)}{gain}")
-    elif alt.downloads is not None:
-        bits.append(f"{_compact(alt.downloads)} downloads/month")
+    else:
+        if alt.params:
+            bits.append(f"{_params(alt.params)} params")
+        if alt.downloads is not None:
+            bits.append(f"{_compact(alt.downloads)} downloads/month")
     return bits
 
 
@@ -117,10 +128,18 @@ class Standing:
     pool: Pool
     rank: int | None  # None: no longer ranked (archived, inactive, relicensed)
     of: int
-    kind_rank: int | None  # among projects of the same kind
+    kind_rank: int | None  # among projects sharing a kind with it
     kind_of: int
-    ahead: list[Alternative]  # the ones gaining ground faster, same kind first
+    ahead: list[Alternative]  # every project ranked above it, in rank order
     own: Alternative | None
+
+
+def _kinds(kind: tuple[str, ...]) -> str:
+    return " and ".join(kind)
+
+
+def same_kind(a: Alternative, kind: tuple[str, ...]) -> bool:
+    return bool(set(a.kind) & set(kind))
 
 
 def standings(f: Finding, catalog: Catalog) -> list[Standing]:
@@ -129,17 +148,17 @@ def standings(f: Finding, catalog: Catalog) -> list[Standing]:
     for pool in catalog.alternatives_for(f.service):
         alts = list(pool.alternatives)
         position = next((i for i, a in enumerate(alts) if a.name == repo), None)
-        same_kind = [a for a in alts if a.kind == kind]
-        kind_position = next((i for i, a in enumerate(same_kind) if a.name == repo), None)
+        peers = [a for a in alts if same_kind(a, kind)]
+        kind_position = next((i for i, a in enumerate(peers) if a.name == repo), None)
         ahead = alts[:position] if position is not None else alts
-        ahead = sorted(ahead, key=lambda a: a.kind != kind)[:AHEAD_SHOWN]
+        same_kind_count = len(peers)
         out.append(
             Standing(
                 pool=pool,
                 rank=None if position is None else position + 1,
                 of=len(alts),
                 kind_rank=None if kind_position is None else kind_position + 1,
-                kind_of=len(same_kind),
+                kind_of=same_kind_count,
                 ahead=ahead,
                 own=alts[position] if position is not None else None,
             )
@@ -151,7 +170,7 @@ def _running_json(f: Finding, root: Path, catalog: Catalog) -> dict:
     return {
         "repo": f.service.repo,
         "name": f.service.name,
-        "kind": f.service.kind,
+        "kind": list(f.service.kind),
         "only_in_tests": f.test_only,
         "standing": [
             {
@@ -224,7 +243,7 @@ def _models_named(named: list[Finding], root: Path) -> list[str]:
     return out
 
 
-def _standing_line(s: Standing, kind: str | None) -> list[str]:
+def _standing_line(s: Standing, kind: tuple[str, ...]) -> list[str]:
     pool = s.pool
     if s.rank is None:
         return [
@@ -232,8 +251,8 @@ def _standing_line(s: Standing, kind: str | None) -> list[str]:
             "no longer open source."
         ]
     head = f"- **{pool.name}**: #{s.rank} of {s.of}"
-    if kind and s.kind_of > 1:
-        head += f", #{s.kind_rank} of {s.kind_of} {kind} projects"
+    if kind and s.kind_of > 1 and s.kind_of < s.of:
+        head += f", #{s.kind_rank} of {s.kind_of} of its kind"
     stats = _stats(s.own, pool) if s.own else []
     head += f" ({', '.join(stats)})" if stats else ""
     if s.rank == 1:
@@ -241,9 +260,13 @@ def _standing_line(s: Standing, kind: str | None) -> list[str]:
     # Only momentum says who is gaining ground; total stars say who is bigger.
     lead_in = "Gaining ground faster" if pool.ranked_by == "momentum" else "Ranked above it"
     lines = [f"{head}. {lead_in}:"]
-    for a in s.ahead:
-        label = f"{a.kind}, " if a.kind else ""
-        lines.append(f"  - [{a.name}]({a.url}) — {label}{', '.join(_stats(a, pool)) or a.what}")
+    for a in s.ahead[:AHEAD_SHOWN]:
+        mark = " *(same kind)*" if same_kind(a, kind) else ""
+        label = f"{_kinds(a.kind)}, " if a.kind else ""
+        stats_a = ", ".join(_stats(a, pool)) or a.what
+        lines.append(f"  - [{a.name}]({a.url}) — {label}{stats_a}{mark}")
+    if len(s.ahead) > AHEAD_SHOWN:
+        lines.append(f"  - …and {len(s.ahead) - AHEAD_SHOWN} more")
     return lines
 
 
@@ -260,10 +283,10 @@ def _running(running: list[Finding], root: Path, catalog: Catalog) -> list[str]:
         first = f.cited[0]
         tests = " *(only in tests)*" if f.test_only else ""
         out += [
-            f"### {f.service.name} ({f.service.kind}){tests}",
+            f"### {f.service.repo} ({_kinds(f.service.kind)}){tests}",
             "",
-            f"[{f.service.repo}](https://github.com/{f.service.repo}) · found at "
-            f"`{_rel(first.file, root)}:{first.line}` — `{first.evidence[:100]}`",
+            f"Found at `{_rel(first.file, root)}:{first.line}` — `{first.evidence[:100]}` · "
+            f"[GitHub](https://github.com/{f.service.repo})",
             "",
         ]
         for s in standings(f, catalog):

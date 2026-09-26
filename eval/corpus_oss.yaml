@@ -80,7 +80,8 @@ open_source:
       referenced but PineconeEmbedService also throws (closed side). Microsoft.ML is referenced in MinimalApi.csproj:25 
       but never imported. Redis is only an ASP.NET distributed cache (generic infra).
   Azure-Samples__azure-search-openai-demo-java:
-    open_source_expected: []
+    open_source_expected:
+    - vibrantlabsai/ragas
     open_source_tests_only: []
     open_source_uncertain: []
     open_source_evidence: {}
@@ -98,7 +99,8 @@ open_source:
       build the app images. "11434" hits in evals/ground_truth_kg.json are digits inside embedding floats. Redis only appears
       in Azure abbreviations/bicep descriptions. deploy/*/scripts/requirements.txt are Azure/msgraph auth scripts.'
   Azure-Samples__azure-search-openai-demo:
-    open_source_expected: []
+    open_source_expected:
+    - vibrantlabsai/ragas
     open_source_tests_only: []
     open_source_uncertain:
     - ollama/ollama

@@ -60,6 +60,13 @@ DETECT_KINDS = frozenset(
     }
 )  # fmt: skip
 POOL_SOURCES = frozenset({"github", "huggingface"})
+# What an open source project is, so a library is compared with libraries first. A
+# project can be several (llama.cpp is a server and a library); sharing any one kind
+# makes two projects comparable.
+KINDS = frozenset(
+    {"library", "embedded", "server", "proxy", "Postgres extension", "framework",
+     "application", "cli", "model", "browser"}
+)  # fmt: skip
 
 
 class CatalogError(ValueError):
@@ -78,8 +85,9 @@ class Alternative:
     # Hugging Face models
     downloads: int | None = None
     trending: int | None = None
+    params: int | None = None  # model parameter count
     # library, server, Postgres extension, ... (from alternatives.yaml `projects`)
-    kind: str | None = None
+    kind: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -126,7 +134,7 @@ class Service:
     # where the component a codebase already runs stands in its pool.
     open_source: bool = False
     repo: str | None = None
-    kind: str | None = None
+    kind: tuple[str, ...] = ()
 
 
 @dataclass
@@ -267,6 +275,7 @@ def _from_snapshot(entry: dict, source: str) -> Alternative:
         licence=entry.get("licence"),
         downloads=entry.get("downloads"),
         trending=entry.get("trending"),
+        params=entry.get("params"),
     )
 
 
@@ -360,7 +369,7 @@ def load_catalog(path: Path) -> Catalog:
         pools[pool_id] = dataclasses.replace(
             pool,
             alternatives=tuple(
-                dataclasses.replace(a, kind=kinds.get(a.name)) for a in pool.alternatives
+                dataclasses.replace(a, kind=kinds.get(a.name, ())) for a in pool.alternatives
             ),
         )
     return catalog
@@ -379,8 +388,14 @@ def _load_projects(path: Path, pools: dict[str, Pool]) -> list[Service]:
     for repo, spec in (raw.get("projects") or {}).items():
         if repo not in listed:
             raise CatalogError(f"{path.name}: project '{repo}' is not in any pool")
-        if not spec.get("kind"):
+        kind = _as_tuple(spec.get("kind"))
+        if not kind:
             raise CatalogError(f"{path.name}: project '{repo}' is missing 'kind'")
+        unknown = [k for k in kind if k not in KINDS]
+        if unknown:
+            raise CatalogError(
+                f"{path.name}: project '{repo}' has kind {unknown}; use one of {sorted(KINDS)}"
+            )
         pool_ids = listed[repo]
         service = _parse_service(
             {
@@ -394,9 +409,7 @@ def _load_projects(path: Path, pools: dict[str, Pool]) -> list[Service]:
             path,
             pools,
         )
-        out.append(
-            dataclasses.replace(service, open_source=True, repo=repo, kind=str(spec["kind"]))
-        )
+        out.append(dataclasses.replace(service, open_source=True, repo=repo, kind=kind))
     return out
 
 

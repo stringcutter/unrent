@@ -218,6 +218,7 @@ def hf_publisher_models(author: str) -> list[dict] | None:
                     "trendingScore",
                     "createdAt",
                     "pipeline_tag",
+                    "safetensors",
                 )
             ],
         ]
@@ -265,6 +266,8 @@ def hf_pool(pool: dict, by_author: dict[str, list[dict]]) -> list[dict]:
                     "likes": m.get("likes") or 0,
                     "created": (m.get("createdAt") or "")[:10],
                     "pipeline_tag": m.get("pipeline_tag"),
+                    # A 1T-parameter model and a 2B one are not the same replacement.
+                    "params": (m.get("safetensors") or {}).get("total"),
                 }
             )
     picked.sort(key=lambda m: (-m["trending"], -m["downloads"]))
