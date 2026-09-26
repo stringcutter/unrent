@@ -78,7 +78,19 @@ CONFIG_PREFIXES = (
     ".env", "dockerfile", "containerfile", "docker-compose", "compose.", "makefile",
     "procfile", "jenkinsfile", ".envrc", ".dev.vars", "gemfile",
 )  # fmt: skip
-JS_SUFFIXES = {".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".mts", ".cts", ".vue", ".svelte", ".astro"}
+JS_SUFFIXES = {
+    ".js",
+    ".jsx",
+    ".mjs",
+    ".cjs",
+    ".ts",
+    ".tsx",
+    ".mts",
+    ".cts",
+    ".vue",
+    ".svelte",
+    ".astro",
+}
 C_FAMILY = JS_SUFFIXES | {
     ".go", ".rs", ".java", ".kt", ".kts", ".scala", ".groovy", ".gradle", ".cs", ".fs",
     ".swift", ".dart", ".c", ".h", ".cc", ".cpp", ".cxx", ".hpp", ".m", ".mm", ".php",
@@ -101,7 +113,18 @@ GENERATED = re.compile(r"\.(min|bundle|chunk)\.(js|css)$|\.map$", re.IGNORECASE)
 TEST_DIRS = {"test", "tests", "__tests__", "spec", "specs", "e2e", "__mocks__", "mocks",
              "fixtures", "testdata", "test_data", "cypress", "playwright"}  # fmt: skip
 TEST_FILE = re.compile(r"(^test_.*\.py$|_test\.(py|go)$|\.(test|spec|e2e)\.[a-z]+$)", re.IGNORECASE)
-PACKAGE_KINDS = {"requirement", "npm", "go", "cargo", "maven", "nuget", "gem", "composer", "pub", "swift"}
+PACKAGE_KINDS = {
+    "requirement",
+    "npm",
+    "go",
+    "cargo",
+    "maven",
+    "nuget",
+    "gem",
+    "composer",
+    "pub",
+    "swift",
+}
 
 
 @dataclass(frozen=True)
@@ -686,7 +709,9 @@ def _python_imports(path: Path, text: str, lines: list[str]) -> list[Fact]:
     parse (Python 2, templates): an unparseable file still imports things."""
 
     def fact(name: str, n: int) -> Fact:
-        return Fact("python_import", name, path, n, _snippet(lines[n - 1]) if 0 < n <= len(lines) else "")
+        return Fact(
+            "python_import", name, path, n, _snippet(lines[n - 1]) if 0 < n <= len(lines) else ""
+        )
 
     facts: list[Fact] = []
     try:
@@ -814,7 +839,11 @@ def _install_commands(path: Path, lines: list[str], code: list[str]) -> list[Fac
                         name = js_package(token)
                     else:
                         name = _SPEC_SPLIT.split(token, 1)[0]
-                        name = normalise(name) if re.fullmatch(r"[A-Za-z0-9._-]+", name or "") else None
+                        name = (
+                            normalise(name)
+                            if re.fullmatch(r"[A-Za-z0-9._-]+", name or "")
+                            else None
+                        )
                     if name:
                         facts.append(Fact(kind, name, path, n, _snippet(lines[n - 1])))
     return facts
@@ -824,8 +853,10 @@ _BASE_URL = re.compile(
     r"""(?i)\b(?:base_?url|api_?base|openai_api_base|openai_base_url|basepath)\b["']?\s*[:=]\s*"""
     r"""[^\n"'`]*?["'`]?(?:https?://)?\[?([A-Za-z0-9.:-]+?)\]?(?::\d+)?(?:[/"'`\s]|$)"""
 )
-_LOCAL_HOSTS = {"localhost", "127.0.0.1", "0.0.0.0", "::1", "host.docker.internal", "ollama",
-                "vllm", "lmstudio", "localai", "llama-server", "llamacpp", "sglang", "tgi"}  # fmt: skip
+_LOCAL_HOSTS = {
+    "localhost", "127.0.0.1", "0.0.0.0", "::1", "host.docker.internal", "ollama", "vllm",
+    "lmstudio", "localai", "llama-server", "llamacpp", "sglang", "tgi",
+}  # fmt: skip
 _PRIVATE = re.compile(r"^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)|\.(local|internal|lan)$")
 
 
@@ -958,7 +989,9 @@ def _setup_py(path: Path, text: str, lines: list[str]) -> list[Fact]:
                         if isinstance(c, ast.Constant) and isinstance(c.value, str):
                             name = _requirement_spec(c.value)
                             if name:
-                                facts.append(_manifest_fact("requirement", name, path, lines, c.lineno))
+                                facts.append(
+                                    _manifest_fact("requirement", name, path, lines, c.lineno)
+                                )
     return facts
 
 
@@ -1010,11 +1043,17 @@ def _json(text: str):
         return None
 
 
-def _json_keys(kind: str, names: Iterable[str], path: Path, lines: list[str], lower=False) -> list[Fact]:
+def _json_keys(
+    kind: str, names: Iterable[str], path: Path, lines: list[str], lower=False
+) -> list[Fact]:
     """Cite `"name":` — the key — so `"keywords": ["openai"]` is never the citation."""
     return [
         _manifest_fact(
-            kind, n.lower() if lower else n, path, lines, _line_of(lines, f'"{n}":', f'"{n}" :', f'"{n}"')
+            kind,
+            n.lower() if lower else n,
+            path,
+            lines,
+            _line_of(lines, f'"{n}":', f'"{n}" :', f'"{n}"'),
         )
         for n in names
     ]
@@ -1073,7 +1112,9 @@ def _pubspec(path: Path, text: str, lines: list[str]) -> list[Fact]:
     ]
 
 
-_SWIFT_PACKAGE = re.compile(r"""\.package\s*\(\s*(?:name\s*:\s*"[^"]*"\s*,\s*)?url\s*:\s*"([^"]+)\"""")
+_SWIFT_PACKAGE = re.compile(
+    r"""\.package\s*\(\s*(?:name\s*:\s*"[^"]*"\s*,\s*)?url\s*:\s*"([^"]+)\""""
+)
 
 
 def _package_swift(path: Path, text: str, lines: list[str]) -> list[Fact]:
@@ -1092,7 +1133,11 @@ def _go_mod(path: Path, text: str, lines: list[str]) -> list[Fact]:
     for n, raw in enumerate(lines, start=1):
         m = _GO_REQUIRE.match(raw)
         # `// indirect` marks a dependency of a dependency, which is not yours.
-        if m and "// indirect" not in raw and not raw.lstrip().startswith(("module", "replace", "//")):
+        if (
+            m
+            and "// indirect" not in raw
+            and not raw.lstrip().startswith(("module", "replace", "//"))
+        ):
             facts.append(_manifest_fact("go", m.group(1), path, lines, n))
     return facts
 
@@ -1125,7 +1170,11 @@ def _pom_xml(path: Path, text: str, lines: list[str]) -> list[Fact]:
     view = _xml_view(text)
     return [
         _manifest_fact(
-            "maven", f"{m.group(1)}:{m.group(2)}".lower(), path, lines, view.count("\n", 0, m.start(2)) + 1
+            "maven",
+            f"{m.group(1)}:{m.group(2)}".lower(),
+            path,
+            lines,
+            view.count("\n", 0, m.start(2)) + 1,
         )
         for m in _MAVEN_DEP.finditer(view)
     ]
@@ -1143,7 +1192,9 @@ def _gradle(path: Path, text: str, lines: list[str]) -> list[Fact]:
     for n, raw in enumerate(view, start=1):
         for m in [*_GRADLE_COORD.finditer(raw), *_GRADLE_MAP.finditer(raw)]:
             if "." in m.group(1):  # skip `id "x:y"` plugin forms and other colon strings
-                facts.append(_manifest_fact("maven", f"{m.group(1)}:{m.group(2)}".lower(), path, lines, n))
+                facts.append(
+                    _manifest_fact("maven", f"{m.group(1)}:{m.group(2)}".lower(), path, lines, n)
+                )
     return facts
 
 
@@ -1248,9 +1299,11 @@ def _is_text_source(path: Path) -> bool:
 
 def _takes_install_commands(path: Path) -> bool:
     name = path.name.lower()
-    return path.suffix.lower() in INSTALL_SUFFIXES or name.startswith(
-        ("dockerfile", "containerfile", "makefile", "procfile", "jenkinsfile")
-    ) or name.endswith((".dockerfile", ".containerfile"))
+    return (
+        path.suffix.lower() in INSTALL_SUFFIXES
+        or name.startswith(("dockerfile", "containerfile", "makefile", "procfile", "jenkinsfile"))
+        or name.endswith((".dockerfile", ".containerfile"))
+    )
 
 
 def _notebook(path: Path, text: str, needles: Needles) -> list[Fact]:

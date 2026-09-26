@@ -72,9 +72,7 @@ MAX_RATE_LIMIT_WAIT = 120
 
 
 def _rate_limited(exc: urllib.error.HTTPError) -> bool:
-    return exc.code == 429 or (
-        exc.code == 403 and exc.headers.get("X-RateLimit-Remaining") == "0"
-    )
+    return exc.code == 429 or (exc.code == 403 and exc.headers.get("X-RateLimit-Remaining") == "0")
 
 
 def _get(url: str, headers: dict | None = None, timeout: int = 30, attempts: int = 4):
@@ -406,11 +404,12 @@ def main() -> int:
             "pools": out_pools,
         }
         (CATALOG / "rankings.json").write_text(
-            json.dumps(payload, indent=1, ensure_ascii=False) + "\n", "utf-8"
+            json.dumps(payload, indent=1, ensure_ascii=False) + "\n", "utf-8", newline="\n"
         )
         HISTORY.write_text(
             json.dumps(dict(sorted(history.items())), indent=0, separators=(",", ":")) + "\n",
             "utf-8",
+            newline="\n",
         )
         print("\nwrote catalog/rankings.json and catalog/star-history.json", file=sys.stderr)
     return 1 if problems else 0
