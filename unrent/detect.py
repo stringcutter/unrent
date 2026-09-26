@@ -35,6 +35,7 @@ import shutil
 import subprocess
 import tempfile
 import tokenize
+import warnings
 import tomllib
 from collections.abc import Iterable
 from dataclasses import dataclass
@@ -109,7 +110,7 @@ LOCKFILES = {
     "gemfile.lock", "composer.lock", "packages.lock.json", "gradle.lockfile", "pubspec.lock",
     "package.resolved",
 }  # fmt: skip
-GENERATED = re.compile(r"\.(min|bundle|chunk)\.(js|css)$|\.map$", re.IGNORECASE)
+GENERATED = re.compile(r"\.(min|bundle|chunk)\.(js|mjs|cjs|css)$|\.map$", re.IGNORECASE)
 TEST_DIRS = {"test", "tests", "__tests__", "spec", "specs", "e2e", "__mocks__", "mocks",
              "fixtures", "testdata", "test_data", "cypress", "playwright"}  # fmt: skip
 TEST_FILE = re.compile(r"(^test_.*\.py$|_test\.(py|go)$|\.(test|spec|e2e)\.[a-z]+$)", re.IGNORECASE)
@@ -277,7 +278,8 @@ def _git(root: Path, *args: str) -> list[str] | None:
         return None
     if out.returncode != 0:
         return None
-    return [p for p in out.stdout.decode("utf-8", "replace").split("\0") if p]
+    # fsdecode, not utf-8: a latin-1 file name on Linux must round-trip to a real path.
+    return [p for p in os.fsdecode(out.stdout).split("\0") if p]
 
 
 def _git_files(root: Path) -> list[Path] | None:
@@ -345,7 +347,9 @@ def iter_files(
         if is_ignored(rel, rules):
             continue
         try:
-            if not path.is_file():
+            # Symlinks are skipped here as in the walk: they loop, point outside the
+            # tree, and ripgrep does not follow them either.
+            if path.is_symlink() or not path.is_file():
                 continue
             size = path.stat().st_size
         except OSError:
@@ -365,6 +369,14 @@ def _is_relevant(path: Path) -> bool:
         or _is_text_source(path)
         or path.suffix.lower() == ".ipynb"
     )
+
+
+def _parse_python(text: str) -> ast.Module:
+    """ast.parse without the SyntaxWarnings (`invalid escape sequence`) that someone
+    else's code would print on our stderr. Raises SyntaxError/ValueError as usual."""
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        return ast.parse(text)
 
 
 def _split_lines(text: str) -> list[str]:
@@ -453,7 +465,7 @@ def _python_view(text: str) -> str:
     except (tokenize.TokenError, IndentationError, SyntaxError, ValueError):
         return _hash_like(text)
     try:
-        tree = ast.parse(text)
+        tree = _parse_python(text)
     except (SyntaxError, ValueError):
         return "\n".join(lines)
     for node in ast.walk(tree):
@@ -722,7 +734,7 @@ def _python_imports(path: Path, text: str, lines: list[str]) -> list[Fact]:
 
     facts: list[Fact] = []
     try:
-        tree = ast.parse(text)
+        tree = _parse_python(text)
     except (SyntaxError, ValueError):
         tree = None
     if tree is not None:
@@ -983,7 +995,7 @@ def _pyproject(path: Path, text: str, lines: list[str]) -> list[Fact]:
 
 def _setup_py(path: Path, text: str, lines: list[str]) -> list[Fact]:
     try:
-        tree = ast.parse(text)
+        tree = _parse_python(text)
     except (SyntaxError, ValueError):
         return []
     facts = []
@@ -1350,6 +1362,27 @@ def _takes_install_commands(path: Path) -> bool:
     )
 
 
+_KERNEL_SUFFIX = {
+    "python": ".py", "kotlin": ".kt", "java": ".java", "scala": ".scala", "c#": ".cs",
+    "csharp": ".cs", ".net (c#)": ".cs", "f#": ".fs", "javascript": ".js", "typescript": ".ts",
+    "go": ".go", "rust": ".rs", "r": ".r", "julia": ".jl", "bash": ".sh", "sh": ".sh",
+    "powershell": ".ps1", "ruby": ".rb", "sql": ".sql",
+}  # fmt: skip
+
+
+def _notebook_language(data: dict) -> str:
+    """The suffix whose comment syntax the notebook's cells use; Python by default."""
+    meta = data.get("metadata") or {}
+    names = [
+        (meta.get("kernelspec") or {}).get("language"),
+        (meta.get("language_info") or {}).get("name"),
+    ]
+    for name in names:
+        if isinstance(name, str) and name.strip().lower() in _KERNEL_SUFFIX:
+            return _KERNEL_SUFFIX[name.strip().lower()]
+    return ".py"
+
+
 def _notebook(path: Path, text: str, needles: Needles) -> list[Fact]:
     """Code cells, cited at the line of the .ipynb file where each source line sits.
 
@@ -1361,12 +1394,15 @@ def _notebook(path: Path, text: str, needles: Needles) -> list[Fact]:
     if not isinstance(data, dict):
         return []
     file_lines = _split_lines(text)
+    language = _notebook_language(data)
     facts: list[Fact] = []
     cursor = 0
     for cell in data.get("cells") or []:
         source = cell.get("source") or []
-        cell_lines = source if isinstance(source, list) else source.splitlines(True)
-        cell_lines = [ln.rstrip("\n") for ln in cell_lines]
+        # A list of lines, or one string; Colab writes a one-element list whose single
+        # string holds every line. Joining first handles all three shapes alike.
+        joined = "".join(str(s) for s in source) if isinstance(source, list) else str(source)
+        cell_lines = [ln.removesuffix("\r") for ln in joined.split("\n")]
         anchor = next(
             (i for i in range(cursor, len(file_lines)) if '"source"' in file_lines[i]), cursor
         )
@@ -1385,11 +1421,20 @@ def _notebook(path: Path, text: str, needles: Needles) -> list[Fact]:
         if cell.get("cell_type") != "code":
             continue
 
-        code = "\n".join("" if ln.lstrip().startswith(("!", "%")) else ln for ln in cell_lines)
-        view = _split_lines(_python_view(code))
+        magic = [ln.lstrip().startswith(("!", "%")) for ln in cell_lines]
+        code = "\n".join("" if m else ln for ln, m in zip(cell_lines, magic, strict=True))
+        if language == ".py":
+            view = _split_lines(_python_view(code))
+            imports = _python_imports(path, code, cell_lines)
+        else:  # Kotlin, JavaScript, R, ... notebooks: their own comment syntax
+            view = _split_lines(code_view(Path(f"cell{language}"), code))
+            imports = []
+        # Shell magics run as written; everything else is read through the
+        # comment-blanked view, so `# !pip install x` installs nothing.
+        install_view = [ln if m else v for ln, m, v in zip(cell_lines, magic, view, strict=True)]
         found_facts = (
-            _python_imports(path, code, cell_lines)
-            + _install_commands(path, cell_lines, cell_lines)
+            imports
+            + _install_commands(path, cell_lines, install_view)
             + needles.search(path, cell_lines, view)
         )
         for f in found_facts:
@@ -1397,6 +1442,11 @@ def _notebook(path: Path, text: str, needles: Needles) -> list[Fact]:
             inside = 0 <= idx < len(cell_lines)
             facts.append(dataclasses.replace(f, line=mapped[idx] if inside else 1))
     return facts
+
+
+def _is_unrent_report(text: str) -> bool:
+    head = text[:2000]
+    return head.lstrip().startswith("{") and '"scanned_at"' in head and '"catalog_services"' in head
 
 
 _API_SPEC = re.compile(r"""\A\s*(?:#[^\n]*\n\s*)*(?:\{\s*)?["']?(?:openapi|swagger)["']?\s*:""")
@@ -1408,9 +1458,15 @@ def facts_for_file(
     text = _read(path)
     if text is None:
         return []
+    if "\r" in text and "\n" not in text:
+        # Classic Mac line endings: one "line" to ripgrep, many to a reader. Split them
+        # here and search the file in Python, so both modes agree.
+        text, hit_lines = text.replace("\r", "\n"), None
     suffix = path.suffix.lower()
     if suffix == ".ipynb":
         return _notebook(path, text, needles)
+    if suffix == ".json" and _is_unrent_report(text):
+        return []  # a saved report cites every vendor it found; it is not a dependency
 
     lines = _split_lines(text)
     facts: list[Fact] = []
@@ -1480,7 +1536,7 @@ def collect_facts(
     """Read every relevant file once and extract every fact the catalog could care about."""
     needles = Needles(catalog)
     files = iter_files(root, exclude, skipped)
-    found = ripgrep_hits(root, needles)
+    found = ripgrep_hits(root, needles, files)
     local = _local_modules(root, files)
     facts: list[Fact] = []
     for path in files:
@@ -1496,48 +1552,76 @@ def collect_facts(
     return facts
 
 
-def ripgrep_hits(root: Path, needles: Needles) -> dict[str, list[int]] | None:
-    """Lines that contain any needle, per file, found by ripgrep in one pass.
+# Keep each ripgrep command line well under Windows' 32,767-character limit.
+_RG_ARGS_BUDGET = 24_000
+
+
+def ripgrep_hits(root: Path, needles: Needles, files: list[Path]) -> dict[str, list[int]] | None:
+    """Lines that contain any needle, per file, found by ripgrep.
 
     Optional and only an accelerator: ripgrep finds candidate lines (a superset —
     it matches case-insensitively), and the same Python checks as without it decide
     what counts. Without `rg` on PATH, or with UNRENT_NO_RIPGREP set, each file is
     searched in Python instead, with identical results.
+
+    ripgrep is handed exactly the files the scan reads, in batches — never the whole
+    tree, so a gitignored data directory costs nothing. Its output is streamed, and
+    the line text is suppressed: only file names and line numbers come back.
     """
     rg = shutil.which("rg")
     if not rg or os.environ.get("UNRENT_NO_RIPGREP"):
         return None
+    # Only the files whose text is searched for needles; notebooks are read as JSON.
+    rels = [p.relative_to(root).as_posix() for p in files if _is_text_source(p)]
     probes = sorted({probe for _, _, probe, _ in needles.items})
     with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False, encoding="utf-8") as f:
         f.write("\n".join(probes) + "\n")
     # --text: a NUL byte deep in a file must not end the search early, because the
     # Python reader only treats a file as binary on a NUL in its first 8 KB.
-    cmd = [
+    base = [
         rg, "--no-config", "--fixed-strings", "--ignore-case", "--line-number",
-        "--no-heading", "--with-filename", "--null", "--hidden", "--no-ignore", "--text",
-        "--no-messages", "--max-filesize", str(MAX_FILE_BYTES), "--file", f.name,
+        "--no-heading", "--with-filename", "--null", "--no-ignore", "--hidden", "--text",
+        "--no-messages", "--max-columns", "1", "--file", f.name, "--",
     ]  # fmt: skip
-    for name in sorted(SKIP_DIRS):
-        cmd += ["--glob", f"!{name}"]
-    cmd.append(".")
+    hits: dict[str, list[int]] = {}
     try:
-        out = subprocess.run(cmd, cwd=root, capture_output=True, timeout=600)
-    except (OSError, subprocess.SubprocessError):
-        return None
+        for batch in _batches(rels, _RG_ARGS_BUDGET - sum(len(a) + 3 for a in base)):
+            if not _ripgrep_batch([*base, *batch], root, hits):
+                return None
     finally:
         Path(f.name).unlink(missing_ok=True)
-    if out.returncode not in (0, 1):  # 1 means no matches
-        return None
-    hits: dict[str, list[int]] = {}
-    for record in out.stdout.split(b"\n"):
+    return hits
+
+
+def _batches(items: list[str], budget: int) -> Iterable[list[str]]:
+    batch: list[str] = []
+    size = 0
+    for item in items:
+        cost = len(item) + 3  # quotes and a space
+        if batch and size + cost > budget:
+            yield batch
+            batch, size = [], 0
+        batch.append(item)
+        size += cost
+    if batch:
+        yield batch
+
+
+def _ripgrep_batch(cmd: list[str], root: Path, hits: dict[str, list[int]]) -> bool:
+    try:
+        proc = subprocess.Popen(cmd, cwd=root, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+    except OSError:
+        return False
+    assert proc.stdout is not None
+    for record in proc.stdout:
         name, sep, rest = record.partition(b"\0")
         number = rest.split(b":", 1)[0]
         if not sep or not number.isdigit():
             continue
-        rel = name.decode("utf-8", "replace").replace("\\", "/")
+        rel = os.fsdecode(name).replace("\\", "/")
         rel = rel[2:] if rel.startswith("./") else rel
         hits.setdefault(rel, []).append(int(number))
-    return hits
+    return proc.wait() in (0, 1)  # 1 means no matches
 
 
 # --------------------------------------------------------------------------

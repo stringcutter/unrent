@@ -152,6 +152,24 @@ class Catalog:
         return sorted({s.category for s in self.services})
 
 
+def _load_yaml(path: Path):
+    """YAML, with parse errors naming the file rather than `<unicode string>`."""
+    try:
+        return yaml.safe_load(path.read_text("utf-8"))
+    except yaml.YAMLError as exc:
+        raise CatalogError(f"{path.name}: {exc}") from exc
+
+
+def _load_json(path: Path) -> dict:
+    try:
+        data = json.loads(path.read_text("utf-8"))
+    except json.JSONDecodeError as exc:
+        raise CatalogError(f"{path.name}: not valid JSON ({exc})") from exc
+    if not isinstance(data, dict):
+        raise CatalogError(f"{path.name}: expected a JSON object")
+    return data
+
+
 def _as_tuple(value) -> tuple[str, ...]:
     if value is None:
         return ()
@@ -161,7 +179,7 @@ def _as_tuple(value) -> tuple[str, ...]:
 
 
 def _load_pools(path: Path, rankings: dict) -> dict[str, Pool]:
-    raw = yaml.safe_load(path.read_text("utf-8")) or {}
+    raw = _load_yaml(path) or {}
     pools: dict[str, Pool] = {}
     for item in raw.get("pools") or []:
         pool_id = item.get("id")
@@ -301,15 +319,15 @@ def load_catalog(path: Path) -> Catalog:
         raise CatalogError(f"no service files found in {services_dir}")
 
     rankings_file = path / "rankings.json"
-    rankings = json.loads(rankings_file.read_text("utf-8")) if rankings_file.is_file() else {}
+    rankings = _load_json(rankings_file) if rankings_file.is_file() else {}
     pools = _load_pools(path / "alternatives.yaml", rankings)
 
     catalog = Catalog(pools=pools, rankings_date=rankings.get("generated"))
     seen: dict[str, Path] = {}
     for file in files:
-        raw = yaml.safe_load(file.read_text(encoding="utf-8")) or []
-        if not isinstance(raw, list):
-            raise CatalogError(f"{file.name}: expected a list of services")
+        raw = _load_yaml(file) or []
+        if not isinstance(raw, list) or not raw:
+            raise CatalogError(f"{file.name}: expected a non-empty list of services")
         for item in raw:
             if not isinstance(item, dict):
                 raise CatalogError(f"{file.name}: expected a service, found {type(item).__name__}")
@@ -342,7 +360,7 @@ def load_catalog(path: Path) -> Catalog:
 def _load_projects(path: Path, pools: dict[str, Pool]) -> list[Service]:
     """The `projects` section of alternatives.yaml: open source components a scan can
     recognise, each belonging to every pool that lists its repo."""
-    raw = yaml.safe_load(path.read_text("utf-8")) or {}
+    raw = _load_yaml(path) or {}
     listed = {
         p["repo"]: [pid for pid, pool in pools.items() if p["repo"] in _repos(raw, pid)]
         for item in raw.get("pools") or []
