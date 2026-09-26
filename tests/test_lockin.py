@@ -138,7 +138,12 @@ def test_notebook_imports_install_magic_and_line_numbers(tmp_path, catalog):
 
 
 def test_pip_install_in_dockerfile(tmp_path, catalog):
-    write(tmp_path, {"Dockerfile": "FROM python:3.12\nRUN pip install --no-cache-dir -r req.txt elevenlabs==1.0\n"})
+    write(
+        tmp_path,
+        {
+            "Dockerfile": "FROM python:3.12\nRUN pip install --no-cache-dir -r req.txt elevenlabs==1.0\n"
+        },
+    )
     assert "elevenlabs" in found(tmp_path, catalog)
 
 
@@ -154,7 +159,12 @@ def test_js_package_names():
 
 
 def test_package_json_cites_the_right_line(tmp_path, catalog):
-    write(tmp_path, {"package.json": '{\n "dependencies": {\n  "@ai-sdk/openai": "1",\n  "openai": "4"\n }\n}\n'})
+    write(
+        tmp_path,
+        {
+            "package.json": '{\n "dependencies": {\n  "@ai-sdk/openai": "1",\n  "openai": "4"\n }\n}\n'
+        },
+    )
     cited = found(tmp_path, catalog)["openai"]
     assert {f.line for f in cited} == {3, 4}
 
@@ -243,7 +253,10 @@ def test_symbol_boundaries(tmp_path, catalog):
 
 
 def test_python_comments_and_docstrings_are_prose(tmp_path, catalog):
-    write(tmp_path, {"a.py": '"""We migrated off Pinecone(api_key) last year."""\n# client = Anthropic()\n'})
+    write(
+        tmp_path,
+        {"a.py": '"""We migrated off Pinecone(api_key) last year."""\n# client = Anthropic()\n'},
+    )
     assert found(tmp_path, catalog) == {}
 
 
@@ -279,7 +292,9 @@ def test_nul_byte_after_the_header_does_not_hide_a_file(tmp_path, catalog):
 
 
 def test_large_json_is_data_not_config(tmp_path, catalog):
-    write(tmp_path, {"data/dump.json": json.dumps([{"text": "uses OpenAI( and Pinecone("}] * 20000)})
+    write(
+        tmp_path, {"data/dump.json": json.dumps([{"text": "uses OpenAI( and Pinecone("}] * 20000)}
+    )
     assert found(tmp_path, catalog) == {}
 
 
@@ -336,7 +351,14 @@ def test_lockinignore_and_exclude(tmp_path, catalog):
 
 @pytest.mark.skipif(not shutil.which("git"), reason="git not installed")
 def test_gitignored_files_are_skipped(tmp_path, catalog):
-    write(tmp_path, {".gitignore": "generated/\n", "generated/a.py": "import anthropic\n", "a.py": "import cohere\n"})
+    write(
+        tmp_path,
+        {
+            ".gitignore": "generated/\n",
+            "generated/a.py": "import anthropic\n",
+            "a.py": "import cohere\n",
+        },
+    )
     subprocess.run(["git", "init", "-q"], cwd=tmp_path, check=True)
     assert set(found(tmp_path, catalog)) == {"cohere"}
 

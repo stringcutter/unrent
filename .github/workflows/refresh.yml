@@ -1,0 +1,37 @@
+name: refresh rankings
+
+# Weekly: record every alternative's star count, re-rank the pools, and open a pull
+# request. Momentum is computed from this history, so a skipped week costs accuracy,
+# not correctness.
+on:
+  schedule:
+    - cron: "17 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Rank
+        id: rank
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # A non-zero exit means a listed project is missing, renamed, archived,
+        # inactive or no longer open source. The rankings are still written; the
+        # pull request says the catalog needs attention.
+        run: uv run python scripts/refresh.py 2> problems.txt || echo "problems=true" >> "$GITHUB_OUTPUT"
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          branch: refresh-rankings
+          commit-message: "Refresh rankings"
+          title: "Refresh rankings${{ steps.rank.outputs.problems && ' (catalog needs attention)' || '' }}"
+          body-path: problems.txt
+          add-paths: |
+            catalog/rankings.json
+            catalog/star-history.json

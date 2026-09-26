@@ -1,212 +1,118 @@
 # lockin
 
-Scans a codebase. Finds what binds you to a closed AI service. Names the open source
-replacement and what it costs you.
-
-No account, no upload, no telemetry, no network call by default. It reads files and
-prints a report.
+Point it at a codebase. It lists every closed AI service the code depends on, where,
+and the open source projects and open-weight models that replace each one — ranked by
+what is actually gaining ground right now.
 
 ```
-$ lockin scan .
+$ lockin scan ai-chatbot/
 
-# Lock-in report: ai-chatbot
+Found 2 closed AI services.
 
-Scanned 2026-09-25 (UTC) · catalog 2026.09 · 33 entries
+| Closed service    | Category    | Replace with                                             |
+|-------------------|-------------|----------------------------------------------------------|
+| xAI API           | LLM API     | Open-weight LLM: XiaomiMiMo/MiMo-V2.6-Pro-RL             |
+|                   |             | Inference server: ollama/ollama                          |
+| Vercel AI Gateway | LLM gateway | LLM gateway: BerriAI/litellm                             |
 
-Found 4 vendor dependencies: 0 locked, 3 friction, 1 portable, 0 not yet assessed.
-
-| Dependency                 | Lock-in  | Confidence | Best open source replacement  | Effort |
-|----------------------------|----------|------------|-------------------------------|--------|
-| Vercel AI Gateway          | Friction | high       | LiteLLM                       | low    |
-| Vercel Blob                | Friction | high       | Any S3-compatible provider    | low    |
-| Vercel platform primitives | Friction | medium     | A container and OpenTelemetry | medium |
-| Vercel AI SDK              | Portable | medium     | Keep it                       | low    |
+### Vercel AI Gateway
+- `.env.example:6` — `AI_GATEWAY_API_KEY=****`
+- `lib/ai/models.ts:126` — `const res = await fetch("https://ai-gateway.vercel.sh/v1/models", {`
+...
 ```
 
-## Who it is for
-
-Somebody who did not choose these dependencies.
-
-Increasingly, nobody did. An app is forked from a template or built by an agent, and
-the stack arrives with it. `vercel/ai-chatbot` — the most-forked AI starter there is —
-brings a gateway, an object store and a function runtime, and whoever now owns the
-result has never been told what any of it costs to leave.
-
-Meanwhile the hosted option has a marketing budget and the open one does not. Nobody's
-job is to tell you about vLLM at the moment you are choosing. This is that.
+Built for the moment you fork a template or inherit an app and want to know which AI
+components are rented, and what the best open replacement is today.
 
 ## Install
 
 ```bash
-uvx lockin scan .
-uv tool install lockin
+uvx lockin scan .          # run once
+pipx install lockin        # or keep it
 ```
 
-One runtime dependency (PyYAML), Python 3.11+, and `pip install lockin` works — the
-build produces ordinary wheels. A tool about exit costs should have one.
+Python 3.11+, one dependency (PyYAML). No account, no upload, no network: the scan
+reads files and prints a report.
+
+If [ripgrep](https://github.com/BurntSushi/ripgrep) is on your PATH, lockin uses it to
+find candidate lines and large monorepos scan about three times faster. The results
+are identical either way, and CI checks that they are.
 
 ## Use
 
 ```bash
-lockin scan .                        # markdown to stdout
-lockin scan . --format json -o r.json
-lockin scan . --live                 # also check PyPI and npm, opt-in
-lockin scan . --fail-on locked       # non-zero exit, for CI
-lockin catalog                       # what the catalog covers
-lockin catalog --validate
+lockin scan .                          # markdown report
+lockin scan . --top 5                  # more alternatives per kind
+lockin scan . --format json -o r.json  # every ranked alternative, every location
+lockin scan . --exclude "examples/*"   # or list globs in a .lockinignore file
+lockin catalog                         # what is covered
 ```
 
-## What it is not
+## What it finds
 
-**Not Dependabot or Renovate.** They ask whether a newer version of what you use
-exists. This asks whether you should be using it at all. They move you along the
-version axis; this one is about the vendor axis. Run both — the first is hygiene, the
-second is a decision. Version lag is deliberately not reported here.
+About 100 closed AI services: LLM APIs (OpenAI, Anthropic, Gemini, Vertex, Bedrock,
+Azure OpenAI, Mistral, xAI, Groq, Together, Fireworks, …), gateways, embeddings and
+rerankers, vector databases, RAG platforms, document parsing and OCR, observability,
+speech-to-text, text-to-speech, voice agents, image generation, web search and
+scraping, browser automation, code sandboxes and agent memory.
 
-**Not a security scanner.** Nothing here says whether a dependency is safe, only how
-hard it is to leave.
+A dependency is recognised from whichever evidence the codebase has:
 
-**Not a migration tool.** It describes; it does not move anything.
-
-## The three levels
-
-**Portable** — an open implementation speaks the same interface. You are paying for
-operations, not access. Leaving is a config change.
-
-**Friction** — replaceable, but not by repointing a URL. Real work, and a quality
-re-test at the end.
-
-**Locked** — no compatible replacement. Leaving means rewriting against a different
-model of the problem.
-
-The label is not a judgement call. Every entry scores three axes — interface
-substitutability, data extractability, behavioural equivalence — and the label is
-derived:
-
-```
-locked    if max(I, D, B) == 2
-portable  if I == 0 and D == 0 and B == 0
-friction  otherwise
-```
-
-The report shows the axes, so you can disagree with a score rather than with a
-verdict. An entry whose label does not follow from its axes fails CI.
-[METHODOLOGY.md](METHODOLOGY.md) is the codebook: decision rules, effort anchors, the
-evaluation protocol and the threats to validity.
-
-Two consequences worth knowing. A closed commercial SaaS can be `portable` — Qdrant
-Cloud is, because the engine is the open build and a snapshot moves you in-house. And
-a wire-compatible API can fail to be: the OpenAI API scores I0, but open weights behave
-differently, so you will re-run your evals. The interface was never the hard part.
-
-## Every alternative states what you lose
-
-Enforced in the test suite, not just in a style guide:
-
-```python
-def test_every_alternative_states_what_you_lose(catalog):
-    """An alternative with no stated cost is advocacy, not assessment."""
-```
-
-A tool that only ever says "self-host it" is an advertisement. Sometimes the managed
-service is the right call and the honest answer is "this will cost you six weeks and
-you will lose OCR". Say that, and the rest of the report becomes worth reading.
-
-Same reason `vercel.ai-sdk` sits in the catalog labelled **portable**: a scan that
-flags everything it recognises is one nobody believes twice.
-
-## Every finding cites its source
-
-```
-- `package.json:37` — `"@vercel/blob": "^0.24.1",`
-```
-
-File, line, and the text it was found in. A finding that cannot cite its evidence does
-not appear. Confidence reflects how many independent signature kinds agreed — a lone
-environment variable is weaker than an import plus a Terraform resource.
-
-## Two tiers, because the halves need different evidence
-
-**assessed** — axes scored and a named open alternative someone has run. Full report.
-
-**detected** — a signature and one documentable line about what it binds you through.
-No label, no alternative. A test fails if a detected entry carries either.
-
-*Whether* a service binds you is largely documentable: is there a self-hosted build,
-does the data export, is the API proprietary. You do not need to have run Pinecone to
-establish it has no self-hosted build. *Which* open alternative is best, and what the
-move costs, is experience — and stays scarce on purpose.
-
-Coverage is the binding constraint. A scan that returns nothing gets uninstalled the
-same day, and "you depend on Clerk for auth, nobody here has assessed the exit" is
-worth more than silence: it is where to look next.
-
-## Fetched, not stored
-
-The catalog holds two kinds of claim, and only one has a source that updates itself:
-
-| Upstream source | No upstream source |
+| Evidence | Read from |
 |---|---|
-| licence, last release, deprecated, yanked | the three axes |
-| package renamed or removed | `loses`, `effort` |
+| Packages | `requirements*.txt`, `pyproject.toml` (PEP 621, Poetry, PDM, uv groups), `setup.py`, `setup.cfg`, `Pipfile`, conda `environment.yml`, `package.json`, `go.mod`, `Cargo.toml`, `pom.xml`, Gradle and version catalogs, `.csproj` / `Directory.Packages.props`, `Gemfile`, `composer.json` |
+| Imports | Python (AST, Jupyter notebooks included), JavaScript and TypeScript `import` / `require` / dynamic `import()` |
+| Install commands | `pip install`, `uv add`, `poetry add`, `npm i`, `pnpm add`, … in Dockerfiles, shell scripts, CI config and notebook `!pip` cells |
+| Framework integrations | LangChain, LlamaIndex, Vercel AI SDK, Spring AI, LangChain4j, Semantic Kernel provider packages |
+| API hosts | `api.openai.com`, `*.openai.azure.com`, `ai-gateway.vercel.sh`, … in any source or config file |
+| Model ids | `gpt-4o`, `claude-sonnet-4`, `gemini-2.5-pro`, `xai/grok-4`, … — but not open-weight ones like `gpt-oss` or `deepseek-v3.2` |
+| Environment variables | read in code in any language, or set in `.env*`, compose files and CI config |
+| Terraform | `azurerm_search_service`, `aws_bedrockagent_agent`, … |
 
-Nobody publishes "moving from Pinecone to Qdrant is medium effort and you lose managed
-scaling". There is no feed to poll, and no amount of continuous scanning generates it —
-only invents it. So the right answer was never a faster cadence: the left column should
-not be stored at all.
+Every finding cites file, line and text. What it deliberately does not count:
 
-`--live` checks the packages the scan actually found — a handful, not the whole
-catalog — against PyPI and npm. Cached for a day, fetched in parallel, reported under
-the finding it belongs to. Opt-in, because the default promise is that nothing leaves
-the machine, and it fails soft: an unreachable registry is reported, never fatal, and
-never cached as though it were an answer.
+- **Lockfiles.** They list what your dependencies depend on. A gateway library that
+  pulls in the `openai` SDK does not make you an OpenAI customer.
+- **Comments, docstrings and docs.** Writing about a vendor is not using one.
+- **Ignored and vendored files.** `.gitignore` is respected; `node_modules`, `vendor`,
+  virtualenvs and minified bundles are skipped.
+- **Generic strings.** `task="transcribe"` is Whisper, not Amazon Transcribe;
+  `import textract` is an open source library, not AWS Textract; `HF_TOKEN` downloads
+  open weights and is not Hugging Face inference.
 
-```bash
-python tools_survey.py    # catalog health: is every alternative still alive
-```
+The test suite pins each of these, and many more, as one test per edge case.
 
-## Never our documentation
+## How alternatives are chosen
 
-The catalog records **which** component and **why**. Never **how** — that is what goes
-stale, and it is not ours to keep current. Where a vendor ships an official skill, the
-component points at it:
+Each closed service names the kinds of thing that replace it: the OpenAI API is
+replaced by an open-weight LLM *and* an inference server; Pinecone by a vector
+database. Each kind is a pool in [`catalog/alternatives.yaml`](catalog/alternatives.yaml),
+and `scripts/refresh.py` ranks every pool weekly:
 
-```bash
-npx skills add qdrant/skills/meta/qdrant-advisor
-npx skills add pydantic/skills
-```
+- **Open source projects** are ranked by momentum: GitHub stars gained over the last
+  90 days. GitHub no longer exposes when stars were given, and the public event
+  archives have undercounted since 2025, so lockin keeps its own history in
+  [`catalog/star-history.json`](catalog/star-history.json). Until a project has four
+  weeks of history, its pool is ranked by total stars and the report says so.
+- **Open-weight models** are discovered, not listed: the listed labs' own models
+  (not community fine-tunes or re-quantisations) under an open licence, ranked by
+  Hugging Face's trending score, at most two per lab.
+- **Only open source counts.** An OSI-approved licence for code; Apache, MIT, BSD or
+  CC-BY for weights. Licences that add use restrictions or commercial thresholds are
+  out, however popular the project. So are archived projects and projects without a
+  push in a year. The refresh fails loudly when a listed project is renamed, archived
+  or relicensed.
 
-Where none exists, the entry says so and gives the docs URL. A component pointing
-nowhere leaves an agent recalling an API from memory, which is the staleness this
-project exists to avoid.
+The scanner never touches the network: it reads the committed ranking snapshot.
 
-## What it gets wrong
+## Contributing
 
-An independent review found the tool naming vendors that were not there — a plain
-Postgres helper reported as Pinecone because `upsert(` was a signature, an S3 script
-reported as Bedrock because a bare `boto3` import was one, a chat-only app reported
-as **locked** into embeddings because `OPENAI_API_KEY` alone was enough. It also
-reported any project checked out under a directory named `build` or `target` as
-clean, and could not scan its own repository without inventing twelve findings from
-its own prose.
-
-Those are fixed and each has a test that fails without the fix. They are recorded
-here rather than quietly repaired because a scanner's whole value is that you can
-trust a finding, and the honest position is that this one has been wrong before.
-
-Known and unfixed: there is still no measured precision or recall. Until the
-evaluation in [METHODOLOGY.md](METHODOLOGY.md) §8 is run against a labelled corpus,
-nobody — including us — can say how often it is wrong. `confidence` is an ordering,
-not a probability.
-
-A dependency used only in test fixtures is reported like any other. That is usually
-correct: a test that mocks Pinecone means you use Pinecone.
-
-## Open source, not open contribution
-
-Read it, run it, fork it. Pull requests are not accepted; issues are — especially "this
-assessment is wrong, here is why". The catalog is only worth reading because every
-assessed entry was verified by someone who ran the thing.
+The catalog is plain YAML. To cover a new service, add it to
+[`catalog/services/`](catalog/services) with its signatures and the pools that replace
+it. To suggest an alternative, add it to a pool in
+[`catalog/alternatives.yaml`](catalog/alternatives.yaml) — the ranking decides where it
+lands. Every false positive or missed dependency is a bug: please open an issue with
+the line that fooled it.
 
 ## Licence
 

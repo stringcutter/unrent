@@ -136,7 +136,9 @@ def _load_pools(path: Path, rankings: dict) -> dict[str, Pool]:
             if not item.get(key):
                 raise CatalogError(f"{path.name}: pool '{pool_id}' is missing '{key}'")
         if item["source"] not in POOL_SOURCES:
-            raise CatalogError(f"{path.name}: pool '{pool_id}' has unknown source '{item['source']}'")
+            raise CatalogError(
+                f"{path.name}: pool '{pool_id}' has unknown source '{item['source']}'"
+            )
         if pool_id in pools:
             raise CatalogError(f"{path.name}: duplicate pool id '{pool_id}'")
 
@@ -148,7 +150,8 @@ def _load_pools(path: Path, rankings: dict) -> dict[str, Pool]:
             for p in projects:
                 if not p.get("repo") or p["repo"].count("/") != 1 or not p.get("what"):
                     raise CatalogError(
-                        f"{path.name}: pool '{pool_id}' has a project without 'owner/repo' and 'what'"
+                        f"{path.name}: pool '{pool_id}' has a project without "
+                        "'owner/repo' and 'what'"
                     )
                 if p.get("licence") and p["licence"] not in OPEN_LICENCES:
                     raise CatalogError(
@@ -264,7 +267,8 @@ def load_catalog(path: Path) -> Catalog:
             service = _parse_service(item, file, pools)
             if service.id in seen:
                 raise CatalogError(
-                    f"duplicate service id '{service.id}' in {file.name} and {seen[service.id].name}"
+                    f"duplicate service id '{service.id}' in {file.name} "
+                    f"and {seen[service.id].name}"
                 )
             seen[service.id] = file
             catalog.services.append(service)

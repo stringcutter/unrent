@@ -107,7 +107,8 @@ def to_markdown(findings: list[Finding], root: Path, catalog: Catalog, top: int 
     out: list[str] = [f"# AI dependencies in `{root.name}`", ""]
     ranked = f" · alternatives ranked {catalog.rankings_date}" if catalog.rankings_date else ""
     out += [
-        f"Scanned {_now().date().isoformat()} · {len(catalog)} closed AI services in the catalog{ranked}",
+        f"Scanned {_now().date().isoformat()} · "
+        f"{len(catalog)} closed AI services in the catalog{ranked}",
         "",
     ]
 
