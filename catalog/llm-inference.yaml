@@ -1,0 +1,242 @@
+# punkt-lockin catalog — LLM inference / model providers
+#
+# lockin:     portable | friction | locked
+# effort:     low | medium | high
+# Every entry must carry `verified` and every alternative must carry `loses`.
+# An entry without an honest `loses` is marketing, not a catalog.
+
+- id: openai.api
+  name: OpenAI API
+  category: llm-inference
+  lockin: friction
+  assessment:   # METHODOLOGY.md §2 — the label is derived from these
+    interface: 0
+    data: 0
+    behaviour: 1
+  binding: [api, data, economics]
+  why: >
+    The chat/completions wire format is a de-facto standard, so the API surface is
+    highly portable. The binding is the model itself: prompts, evals and tool-calling
+    behaviour are tuned to specific model versions that are deprecated on OpenAI's
+    schedule, and every request leaves your jurisdiction.
+  detect:
+    python_import: [openai]
+    python_symbol: ["openai.OpenAI", "openai.AsyncOpenAI", "OpenAI("]
+    requirement: [openai]
+    npm: [openai, "@ai-sdk/openai"]
+    env: [OPENAI_API_KEY, OPENAI_ORG_ID, OPENAI_BASE_URL]
+  alternatives:
+    - component: vllm
+      compat: >
+        Serves an OpenAI-compatible /v1 endpoint. In most codebases the change is
+        base_url + api_key and a model name.
+      effort: low
+      loses: >
+        You now own GPU capacity, batching, autoscaling and upgrades. Frontier-model
+        quality is not matched by open weights on every task — reasoning-heavy and
+        long-context work degrades most. No hosted moderation endpoint.
+    - name: llama.cpp / llama-server
+      url: https://github.com/ggml-org/llama.cpp
+      kind: self-hosted inference server
+      compat: OpenAI-compatible endpoint; runs on CPU and consumer GPUs.
+      effort: low
+      loses: >
+        Much lower throughput than vLLM under concurrency. Best for single-user,
+        edge or laptop deployment rather than a shared production service.
+    - name: SGLang
+      url: https://github.com/sgl-project/sglang
+      kind: self-hosted inference server
+      compat: OpenAI-compatible endpoint, structured-output oriented.
+      effort: low
+      loses: Smaller ecosystem than vLLM; fewer supported architectures.
+  verified: 2026-09-20
+
+- id: azure.openai
+  name: Azure OpenAI Service
+  category: llm-inference
+  lockin: friction
+  assessment:   # METHODOLOGY.md §2 — the label is derived from these
+    interface: 1
+    data: 0
+    behaviour: 1
+  binding: [api, ops, data]
+  # The Azure client ships inside the `openai` package, so a bare import is
+  # claimed here rather than being reported twice.
+  excludes: [openai.api]
+  why: >
+    Same wire format as OpenAI but with Azure-specific deployment names, api-version
+    pinning and AAD auth woven through the client. Portable at the protocol level,
+    sticky at the operational level.
+  detect:
+    python_import: [openai]
+    # `api_version=` was here. Every dated REST client in Python uses it.
+    python_symbol: [AzureOpenAI, AsyncAzureOpenAI, azure_endpoint]
+    requirement: [openai, azure-identity]
+    env: [AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_API_KEY, AZURE_OPENAI_DEPLOYMENT]
+    terraform_resource: [azurerm_cognitive_account, azurerm_cognitive_deployment]
+  alternatives:
+    - component: vllm
+      compat: >
+        OpenAI-compatible endpoint. Deployment names collapse back into plain model
+        names; api-version handling disappears.
+      effort: low
+      loses: >
+        Entra ID auth, private endpoints and the Azure compliance paperwork are now
+        yours to build. Content filtering must be replaced explicitly.
+    - name: LiteLLM Proxy
+      url: https://github.com/BerriAI/litellm
+      kind: routing gateway
+      compat: >
+        Put it in front of the app now and the provider becomes config. Does not
+        remove the dependency, but makes the exit cheap later.
+      effort: low
+      loses: >
+        One more hop to run and monitor. It is a mitigation, not an escape — you
+        still depend on whoever serves the model behind it.
+  verified: 2026-09-20
+
+- id: aws.bedrock
+  name: AWS Bedrock
+  category: llm-inference
+  lockin: friction
+  assessment:   # METHODOLOGY.md §2 — the label is derived from these
+    interface: 1
+    data: 0
+    behaviour: 1
+  escalates_when: >
+    Bedrock Agents or Knowledge Bases are used: those hold state and have no functional equivalent, pushing interface and data to 2.
+  binding: [api, ops, data]
+  why: >
+    Proprietary request/response shape (invoke_model, converse), IAM-bound auth and
+    per-vendor body schemas. Nothing outside AWS speaks it, so every call site has
+    to be rewritten rather than repointed.
+  detect:
+    # `boto3` is the whole AWS SDK; importing it says nothing about Bedrock. Only
+    # the bedrock-specific client names are evidence.
+    python_symbol: ["bedrock-runtime", "bedrock-agent-runtime", bedrock_client]
+    requirement: ["aws-sdk-bedrock"]
+    npm: ["@aws-sdk/client-bedrock-runtime"]
+    terraform_resource: [aws_bedrock_model_invocation_logging_configuration, aws_bedrockagent_agent]
+  alternatives:
+    - component: vllm  # vLLM behind an OpenAI-compatible gateway
+      compat: >
+        No wire compatibility. Each call site must be rewritten from the Bedrock
+        body schema to chat/completions.
+      effort: medium
+      loses: >
+        IAM-native auth, per-model guardrails, and the ability to switch between
+        third-party models under one contract.
+    - name: LiteLLM Proxy
+      url: https://github.com/BerriAI/litellm
+      kind: routing gateway
+      compat: Normalises Bedrock behind an OpenAI-shaped API; rewrite once, switch freely after.
+      effort: medium
+      loses: Bedrock-specific features (guardrails, agents) are not normalised.
+  verified: 2026-09-20
+
+- id: gcp.vertex
+  name: Google Vertex AI
+  category: llm-inference
+  lockin: friction
+  assessment:   # METHODOLOGY.md §2 — the label is derived from these
+    interface: 1
+    data: 0
+    behaviour: 1
+  escalates_when: >
+    Vertex AI Search grounding or Matching Engine are used: vendor-held retrieval state with no direct equivalent.
+  binding: [api, ops, data]
+  why: >
+    Project/location-scoped clients, proprietary SDK surface and GCP service-account
+    auth. Portable only by rewrite.
+  detect:
+    python_import: [vertexai, "google.cloud.aiplatform"]
+    python_symbol: ["GenerativeModel", "aiplatform.init"]
+    requirement: [google-cloud-aiplatform, vertexai]
+    # GOOGLE_APPLICATION_CREDENTIALS was here: it is how every Google client
+    # library authenticates, from Cloud Storage down.
+    env: [VERTEX_LOCATION, VERTEX_AI_PROJECT]
+    terraform_resource: [google_vertex_ai_endpoint, google_vertex_ai_index]
+  alternatives:
+    - component: vllm
+      compat: No wire compatibility with the Vertex SDK; call sites are rewritten.
+      effort: medium
+      loses: >
+        Managed grounding, Google-only model families and integrated GCP IAM.
+  verified: 2026-09-20
+
+- id: anthropic.api
+  name: Anthropic API
+  category: llm-inference
+  lockin: friction
+  assessment:   # METHODOLOGY.md §2 — the label is derived from these
+    interface: 1
+    data: 0
+    behaviour: 1
+  binding: [api, data, economics]
+  why: >
+    Its own Messages format, close enough to the common shape that translation is
+    mechanical. As with any hosted provider, the real binding is model behaviour
+    and data leaving your jurisdiction.
+  detect:
+    python_import: [anthropic]
+    python_symbol: ["anthropic.Anthropic", "messages.create"]
+    requirement: [anthropic]
+    npm: ["@anthropic-ai/sdk", "@ai-sdk/anthropic"]
+    env: [ANTHROPIC_API_KEY]
+  alternatives:
+    - component: vllm
+      compat: >
+        Messages-shaped requests must be mapped to chat/completions. Mechanical, but
+        touches every call site unless a gateway is used.
+      effort: low
+      loses: >
+        Frontier-model quality on hard reasoning and long-context tasks; hosted
+        safety tooling.
+  verified: 2026-09-20
+
+- id: cohere.api
+  name: Cohere API
+  category: llm-inference
+  lockin: friction
+  assessment:   # METHODOLOGY.md §2 — the label is derived from these
+    interface: 1
+    data: 0
+    behaviour: 1
+  binding: [api, data]
+  why: Proprietary SDK surface, but a small one — rerank and embed are the sticky parts.
+  detect:
+    python_import: [cohere]
+    requirement: [cohere]
+    env: [COHERE_API_KEY]
+  alternatives:
+    - component: vllm  # vLLM + BGE / Qwen embedding models
+      compat: Rewrite of embed/rerank call sites; both are simple, stateless calls.
+      effort: low
+      loses: Cohere's multilingual rerank quality is strong; open rerankers vary by language.
+  verified: 2026-09-20
+
+- id: huggingface.inference-endpoints
+  name: Hugging Face Inference Endpoints
+  category: llm-inference
+  lockin: portable
+  assessment:   # METHODOLOGY.md §2 — the label is derived from these
+    interface: 0
+    data: 0
+    behaviour: 0
+  binding: [ops]
+  why: >
+    The models are open weights and the serving layer (TGI) is open source. What you
+    buy is operations, not access — which is the cheapest kind of dependency to leave.
+  detect:
+    # huggingface_hub is how open weights are downloaded; it is not evidence of
+    # the hosted endpoints.
+    python_symbol: [InferenceEndpoint, "InferenceClient("]
+    env: [HF_TOKEN, HUGGINGFACE_API_KEY]
+  alternatives:
+    - name: Text Generation Inference (TGI), self-hosted
+      url: https://github.com/huggingface/text-generation-inference
+      kind: self-hosted inference server
+      compat: Same server they run for you. Point the client at your own host.
+      effort: low
+      loses: Autoscaling and on-demand GPU capacity become your problem.
+  verified: 2026-09-20
