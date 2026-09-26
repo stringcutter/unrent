@@ -33,14 +33,16 @@ pools:
     name: Inference server
     source: github
     projects:
-      - {repo: vllm-project/vllm, what: High-throughput production inference server, OpenAI-compatible API}
-      - {repo: sgl-project/sglang, what: Fast inference server for LLMs and multimodal models, OpenAI-compatible API}
+      - {repo: vllm-project/vllm, what: "High-throughput production inference server, OpenAI-compatible API"}
+      - {repo: sgl-project/sglang, what: "Fast inference server for LLMs and multimodal models, OpenAI-compatible API"}
       - {repo: ggml-org/llama.cpp, what: "LLM inference in C/C++ on CPU, GPU and Apple Silicon; OpenAI-compatible llama-server"}
-      - {repo: ollama/ollama, what: Run open models locally with one command, OpenAI-compatible API}
-      - {repo: InternLM/lmdeploy, what: Toolkit for compressing, deploying and serving LLMs}
+      - {repo: ollama/ollama, what: "Run open models locally with one command, OpenAI-compatible API"}
+      - {repo: InternLM/lmdeploy, what: "Toolkit for compressing, deploying and serving LLMs"}
       - {repo: NVIDIA/TensorRT-LLM, what: Optimised LLM inference on NVIDIA GPUs, licence: Apache-2.0}
-      - {repo: mudler/LocalAI, what: Self-hosted drop-in replacement for the OpenAI API, runs on consumer hardware}
+      - {repo: mudler/LocalAI, what: "Self-hosted drop-in replacement for the OpenAI API, runs on consumer hardware"}
       - {repo: ai-dynamo/dynamo, what: Datacenter-scale distributed inference serving framework, licence: Apache-2.0}
+      - {repo: xorbitsai/inference, what: 'Xinference: serve LLMs, embedding and speech models behind one API'}
+      - {repo: gpustack/gpustack, what: 'GPU cluster manager that serves models with vLLM, llama.cpp and more'}
 
   - id: open-llm
     name: Open-weight LLM
@@ -55,7 +57,7 @@ pools:
     source: github
     projects:
       - {repo: BerriAI/litellm, what: "Proxy exposing 100+ providers behind one OpenAI-compatible API, with keys, budgets and fallbacks", licence: MIT}
-      - {repo: Portkey-AI/gateway, what: Fast AI gateway with routing, retries and guardrails}
+      - {repo: Portkey-AI/gateway, what: "Fast AI gateway with routing, retries and guardrails"}
       - {repo: maximhq/bifrost, what: High-performance LLM gateway written in Go}
       - {repo: songquanpeng/one-api, what: "Unified OpenAI-compatible API over many providers, with key management"}
       - {repo: QuantumNous/new-api, what: "LLM gateway and key management, successor fork of one-api"}
@@ -225,7 +227,7 @@ pools:
     name: Image generation
     source: github
     projects:
-      - {repo: Comfy-Org/ComfyUI, what: Node-based engine for diffusion models, the de-facto standard}
+      - {repo: Comfy-Org/ComfyUI, what: "Node-based engine for diffusion models, the de-facto standard"}
       - {repo: huggingface/diffusers, what: Library for state-of-the-art diffusion models}
       - {repo: invoke-ai/InvokeAI, what: "Creative engine and UI for Stable Diffusion and FLUX"}
       - {repo: QwenLM/Qwen-Image, what: "Image generation and editing model, Apache-2.0 weights"}
@@ -256,7 +258,7 @@ pools:
     source: github
     projects:
       - {repo: browser-use/browser-use, what: Makes websites accessible to AI agents}
-      - {repo: microsoft/playwright, what: Browser automation for Chromium, Firefox and WebKit}
+      - {repo: microsoft/playwright, what: "Browser automation for Chromium, Firefox and WebKit"}
       - {repo: steel-dev/steel-browser, what: Self-hostable browser API for AI agents}
       - {repo: lightpanda-io/browser, what: Headless browser built for AI and automation}
       - {repo: browserbase/stagehand, what: AI browser automation framework}
@@ -300,56 +302,72 @@ projects:
   qdrant/qdrant:
     kind: server
     detect:
-      requirement: [qdrant-client]
+      requirement: [qdrant-client, langchain-qdrant, llama-index-vector-stores-qdrant]
       python_import: [qdrant_client]
-      npm: ["@qdrant/js-client-rest", "@qdrant/qdrant-js"]
+      npm: ["@qdrant/js-client-rest", "@qdrant/qdrant-js", "@langchain/qdrant"]
       go: [github.com/qdrant/go-client]
       cargo: [qdrant-client]
-      maven: ["io.qdrant:client"]
-      nuget: [Qdrant.Client]
+      maven: ["io.qdrant:client", "dev.langchain4j:langchain4j-qdrant",
+              "org.springframework.ai:spring-ai-starter-vector-store-qdrant",
+              "org.springframework.ai:spring-ai-qdrant-store"]
+      nuget: [Qdrant.Client, Microsoft.SemanticKernel.Connectors.Qdrant]
       image: [qdrant/qdrant]
   milvus-io/milvus:
     kind: server
     detect:
-      requirement: [pymilvus, milvus-lite]
+      requirement: [pymilvus, milvus-lite, langchain-milvus, llama-index-vector-stores-milvus]
       python_import: [pymilvus]
       npm: ["@zilliz/milvus2-sdk-node"]
       go: [github.com/milvus-io/milvus-sdk-go, github.com/milvus-io/milvus/client]
-      maven: ["io.milvus:milvus-sdk-java"]
+      maven: ["io.milvus:milvus-sdk-java", "dev.langchain4j:langchain4j-milvus",
+              "org.springframework.ai:spring-ai-starter-vector-store-milvus",
+              "org.springframework.ai:spring-ai-milvus-store"]
       image: [milvusdb/milvus]
   weaviate/weaviate:
     kind: server
     detect:
-      requirement: [weaviate-client]
+      requirement: [weaviate-client, langchain-weaviate, llama-index-vector-stores-weaviate]
       python_import: [weaviate]
-      npm: [weaviate-client, weaviate-ts-client]
+      npm: [weaviate-client, weaviate-ts-client, "@langchain/weaviate"]
       go: [github.com/weaviate/weaviate-go-client]
       image: [semitechnologies/weaviate, cr.weaviate.io/semitechnologies/weaviate]
+      maven: ["dev.langchain4j:langchain4j-weaviate", "io.weaviate:client",
+              "org.springframework.ai:spring-ai-starter-vector-store-weaviate",
+              "org.springframework.ai:spring-ai-weaviate-store"]
   chroma-core/chroma:
     kind: embedded or server
     detect:
-      requirement: [chromadb, chromadb-client]
+      requirement: [chromadb, chromadb-client, langchain-chroma, llama-index-vector-stores-chroma]
       python_import: [chromadb]
       npm: [chromadb]
-      image: [chromadb/chroma]
+      image: [chromadb/chroma, ghcr.io/chroma-core/chroma]
+      maven: ["dev.langchain4j:langchain4j-chroma",
+              "org.springframework.ai:spring-ai-starter-vector-store-chroma",
+              "org.springframework.ai:spring-ai-chroma-store"]
+      go: [github.com/amikos-tech/chroma-go]
   lancedb/lancedb:
     kind: embedded
     detect:
-      requirement: [lancedb]
+      requirement: [lancedb, llama-index-vector-stores-lancedb]
       python_import: [lancedb]
       npm: ["@lancedb/lancedb", vectordb]
   pgvector/pgvector:
     kind: Postgres extension
     detect:
-      requirement: [pgvector]
+      requirement: [pgvector, langchain-postgres, llama-index-vector-stores-postgres]
       python_import: [pgvector]
       npm: [pgvector]
-      symbol: ["CREATE EXTENSION vector", "CREATE EXTENSION IF NOT EXISTS vector"]
       image: [pgvector/pgvector, ankane/pgvector]
+      maven: ["org.springframework.ai:spring-ai-starter-vector-store-pgvector",
+              "org.springframework.ai:spring-ai-pgvector-store",
+              "dev.langchain4j:langchain4j-pgvector", "com.pgvector:pgvector"]
+      nuget: [Pgvector, Pgvector.EntityFrameworkCore, Microsoft.KernelMemory.Postgres]
+      go: [github.com/pgvector/pgvector-go]
+      sql_extension: [vector]
   timescale/pgvectorscale:
     kind: Postgres extension
     detect:
-      symbol: ["CREATE EXTENSION vectorscale", "CREATE EXTENSION IF NOT EXISTS vectorscale"]
+      sql_extension: [vectorscale]
   vespa-engine/vespa:
     kind: server
     detect:
@@ -360,11 +378,14 @@ projects:
   opensearch-project/OpenSearch:
     kind: server
     detect:
-      requirement: [opensearch-py]
+      requirement: [opensearch-py, llama-index-vector-stores-opensearch]
       python_import: [opensearchpy]
       npm: ["@opensearch-project/opensearch"]
-      maven: ["org.opensearch.client:opensearch-java"]
+      maven: ["org.opensearch.client:opensearch-java", "dev.langchain4j:langchain4j-opensearch",
+              "org.springframework.ai:spring-ai-starter-vector-store-opensearch",
+              "org.springframework.ai:spring-ai-opensearch-store"]
       image: [opensearchproject/opensearch]
+      go: [github.com/opensearch-project/opensearch-go]
   meilisearch/meilisearch:
     kind: server
     detect:
@@ -379,11 +400,13 @@ projects:
       python_import: [typesense]
       npm: [typesense]
       image: [typesense/typesense]
+      maven: ["org.springframework.ai:spring-ai-starter-vector-store-typesense",
+              "org.springframework.ai:spring-ai-typesense-store"]
   paradedb/paradedb:
     kind: Postgres extension
     detect:
-      symbol: ["CREATE EXTENSION pg_search", "CREATE EXTENSION IF NOT EXISTS pg_search"]
       image: [paradedb/paradedb]
+      sql_extension: [pg_search]
   quickwit-oss/tantivy:
     kind: library
     detect:
@@ -434,7 +457,7 @@ projects:
     detect:
       requirement: [vllm]
       python_import: [vllm]
-      image: [vllm/vllm-openai]
+      image: [vllm/vllm-openai, lmcache/vllm-openai]
   sgl-project/sglang:
     kind: server
     detect:
@@ -448,16 +471,24 @@ projects:
       python_import: [llama_cpp]
       npm: [node-llama-cpp]
       image: [ghcr.io/ggml-org/llama.cpp, ghcr.io/ggerganov/llama.cpp]
+      maven: ["de.kherud:llama"]
+      nuget: [LLamaSharp]
   ollama/ollama:
     kind: local server
     detect:
-      requirement: [ollama, langchain-ollama, llama-index-llms-ollama]
+      requirement: [ollama, langchain-ollama, llama-index-llms-ollama,
+                    llama-index-embeddings-ollama]
       python_import: [ollama, langchain_ollama]
       npm: [ollama, ollama-ai-provider, ollama-ai-provider-v2, "@langchain/ollama"]
       go: [github.com/ollama/ollama]
       image: [ollama/ollama]
       endpoint: ["localhost:11434", "127.0.0.1:11434"]
       env: [OLLAMA_HOST, OLLAMA_BASE_URL]
+      maven: ["org.springframework.ai:spring-ai-starter-model-ollama",
+              "org.springframework.ai:spring-ai-ollama", "dev.langchain4j:langchain4j-ollama",
+              "io.github.ollama4j:ollama4j"]
+      nuget: [OllamaSharp, Microsoft.Extensions.AI.Ollama,
+              Microsoft.SemanticKernel.Connectors.Ollama]
   InternLM/lmdeploy:
     kind: server
     detect:
@@ -473,12 +504,15 @@ projects:
     kind: local server
     detect:
       image: [localai/localai, quay.io/go-skynet/local-ai]
+      env: [LOCAL_AI_BASE_PATH, LOCALAI_BASE_URL]
   BerriAI/litellm:
     kind: library and proxy
     detect:
       requirement: [litellm]
       python_import: [litellm]
-      image: [ghcr.io/berriai/litellm]
+      image: [ghcr.io/berriai/litellm, ghcr.io/berriai/litellm-database,
+              ghcr.io/berriai/litellm-non_root]
+      env: [LITE_LLM_BASE_PATH, LITELLM_BASE_URL, LITELLM_PROXY_URL, LITELLM_MASTER_KEY]
   Portkey-AI/gateway:
     kind: proxy
     detect:
@@ -509,8 +543,9 @@ projects:
   huggingface/sentence-transformers:
     kind: library
     detect:
-      requirement: [sentence-transformers]
+      requirement: [sentence-transformers, llama-index-embeddings-huggingface]
       python_import: [sentence_transformers]
+      symbol: [HuggingFaceEmbeddings, HuggingFaceBgeEmbeddings, SentenceTransformerEmbeddings]
   qdrant/fastembed:
     kind: library
     detect:
@@ -563,8 +598,10 @@ projects:
   docling-project/docling:
     kind: library
     detect:
-      requirement: [docling]
+      requirement: [docling, docling-serve, langchain-docling, llama-index-readers-docling]
       python_import: [docling]
+      env: [DOCLING_SERVER_URL, DOCLING_SERVE_URL]
+      image: [quay.io/docling-project/docling-serve, ghcr.io/docling-project/docling-serve]
   Unstructured-IO/unstructured:
     kind: library
     detect:
@@ -603,7 +640,7 @@ projects:
       requirement: [langfuse]
       python_import: [langfuse]
       npm: [langfuse, langfuse-langchain, "@langfuse/tracing", "@langfuse/otel"]
-      image: [langfuse/langfuse]
+      image: [langfuse/langfuse, langfuse/langfuse-worker]
       env: [LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY]
   comet-ml/opik:
     kind: server
@@ -689,6 +726,7 @@ projects:
     kind: server
     detect:
       image: [ghcr.io/remsky/kokoro-fastapi-cpu, ghcr.io/remsky/kokoro-fastapi-gpu]
+      env: [TTS_KOKORO_ENDPOINT]
   OHF-Voice/piper1-gpl:
     kind: library
     detect:
@@ -728,7 +766,8 @@ projects:
     detect:
       symbol: [SearxSearchWrapper]
       image: [searxng/searxng]
-      env: [SEARXNG_URL, SEARX_HOST]
+      env: [SEARXNG_URL, SEARX_HOST, SEARXNG_API_URL, SEARXNG_QUERY_URL, SEARXNG_INSTANCE_URL,
+            SEARXNG_BASE_URL, AGENT_SEARXNG_API_URL]
   unclecode/crawl4ai:
     kind: library and server
     detect:
@@ -762,6 +801,7 @@ projects:
     detect:
       npm: ["@browserbasehq/stagehand"]
       requirement: [stagehand]
+      go: [github.com/browserbase/stagehand-go]
   superradcompany/microsandbox:
     kind: server
     detect:
@@ -788,3 +828,15 @@ projects:
     detect:
       requirement: [cognee]
       python_import: [cognee]
+  xorbitsai/inference:
+    kind: server
+    detect:
+      requirement: [xinference, xinference-client]
+      python_import: [xinference]
+      image: [xprobe/xinference]
+      env: [XINFERENCE_SERVER_URL]
+  gpustack/gpustack:
+    kind: server
+    detect:
+      requirement: [gpustack]
+      image: [gpustack/gpustack]

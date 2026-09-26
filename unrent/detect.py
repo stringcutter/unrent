@@ -553,8 +553,23 @@ def _needle_pattern(kind: str, needle: str) -> re.Pattern:
     endpoint  a host, matched case-insensitively; a subdomain may precede it, and a
               call may not follow it: `modal.run()` is code, `x.modal.run/` a host.
     env       an exact variable name.
+    image     a container image reference anywhere a string can hold one: Testcontainers
+              `new QdrantContainer("qdrant/qdrant:v1")`, `docker run qdrant/qdrant`.
+              Not inside a longer path (`github.com/qdrant/qdrant` is the repo).
+    sql_extension  `CREATE EXTENSION [IF NOT EXISTS] ["]vector["]`, any case.
     """
     escaped = re.escape(needle)
+    if kind == "image":
+        return re.compile(
+            r"(?<![A-Za-z0-9_./@-])" + escaped + r"(?![A-Za-z0-9_./-])", re.IGNORECASE
+        )
+    if kind == "sql_extension":
+        return re.compile(
+            r"\bcreate\s+extension\s+(?:if\s+not\s+exists\s+)?[\"'`]?"
+            + escaped
+            + r"[\"'`]?(?![A-Za-z0-9_])",
+            re.IGNORECASE,
+        )
     ends_word = needle[-1:].isalnum() or needle[-1:] == "_"
     if kind == "symbol":
         head = r"(?<![A-Za-z0-9_$])" if needle[:1].isalnum() or needle[:1] in "_$" else ""
@@ -565,6 +580,17 @@ def _needle_pattern(kind: str, needle: str) -> re.Pattern:
         tail = r"(?![A-Za-z0-9(-])" if ends_word else ""
         return re.compile(r"(?<![A-Za-z0-9-])" + escaped + tail, re.IGNORECASE)
     return re.compile(r"(?<![A-Za-z0-9_])" + escaped + r"(?![A-Za-z0-9_])")
+
+
+# Needle kinds searched without regard to case: hosts, image names, SQL.
+FOLDED_KINDS = frozenset({"endpoint", "image", "sql_extension"})
+
+
+def _probe(kind: str, needle: str) -> str:
+    """The literal a line must contain before the needle's pattern is tried."""
+    if kind == "sql_extension":
+        return "extension"
+    return needle.lower() if kind in FOLDED_KINDS else needle
 
 
 _NEWLINE = re.compile(r"\n")
@@ -585,7 +611,7 @@ def _offsets(text: str) -> list[int]:
 
 
 class Needles:
-    TEXT_KINDS = ("symbol", "model", "endpoint", "env")
+    TEXT_KINDS = ("symbol", "model", "endpoint", "env", "image", "sql_extension")
 
     def __init__(self, catalog: Catalog):
         self.items: list[Needle] = []
@@ -600,7 +626,7 @@ class Needles:
                     if (kind, needle) in seen:
                         continue
                     seen.add((kind, needle))
-                    probe = needle.lower() if kind == "endpoint" else needle
+                    probe = _probe(kind, needle)
                     self.items.append((kind, needle, probe, _needle_pattern(kind, needle)))
 
     def _hits(self, text: str) -> dict[int, list[Needle]]:
@@ -614,7 +640,7 @@ class Needles:
         offsets = {False: _offsets(text), True: None}
         hits: dict[int, list[Needle]] = {}
         for item in self.items:
-            folded = item[0] == "endpoint"
+            folded = item[0] in FOLDED_KINDS
             haystack = lowered if folded else text
             at = haystack.find(item[2])
             if at < 0:
@@ -630,7 +656,7 @@ class Needles:
 
     def _items_on(self, line: str) -> list[Needle]:
         lowered = line.lower()
-        return [it for it in self.items if it[2] in (lowered if it[0] == "endpoint" else line)]
+        return [it for it in self.items if it[2] in (lowered if it[0] in FOLDED_KINDS else line)]
 
     def _closed_model_at(self, needle: str, pattern: re.Pattern, line: str) -> re.Match | None:
         """The first occurrence of the prefix that names a closed model, if any."""
@@ -951,12 +977,24 @@ def _requirement_spec(spec: str) -> str | None:
     return normalise(m.group(1)) if m else None
 
 
+_EXTRAS = re.compile(r"^\s*[A-Za-z0-9][A-Za-z0-9._-]*\s*\[([^\]]+)\]")
+
+
+def _extras(spec: str) -> list[str]:
+    """`qdrant-client[fastembed]` installs fastembed: an extra named after a package is
+    that package."""
+    m = _EXTRAS.match(spec)
+    return [normalise(e.strip()) for e in m.group(1).split(",") if e.strip()] if m else []
+
+
 def _requirements_txt(path: Path, text: str, lines: list[str]) -> list[Fact]:
     facts = []
     for n, raw in _logical_lines(lines):
-        name = _requirement_spec(raw.split(" #", 1)[0])
+        spec = raw.split(" #", 1)[0]
+        name = _requirement_spec(spec)
         if name:
             facts.append(_manifest_fact("requirement", name, path, lines, n))
+            facts += [_manifest_fact("requirement", e, path, lines, n) for e in _extras(spec)]
     return facts
 
 
@@ -978,6 +1016,7 @@ def _specs_to_facts(specs: Iterable[str], path: Path, lines: list[str]) -> list[
             token=raw,
         )  # fmt: skip
         facts.append(_manifest_fact("requirement", name, path, lines, n))
+        facts += [_manifest_fact("requirement", e, path, lines, n) for e in _extras(spec)]
     return facts
 
 
@@ -1000,10 +1039,15 @@ def _pyproject(path: Path, text: str, lines: list[str]) -> list[Fact]:
         specs += list((env or {}).get("dependencies") or [])
         specs += list((env or {}).get("extra-dependencies") or [])
     poetry = tool.get("poetry") or {}
-    names = list(poetry.get("dependencies") or {}) + list(poetry.get("dev-dependencies") or {})
-    for group in (poetry.get("group") or {}).values():
-        names += list((group or {}).get("dependencies") or {})
-    specs += [n for n in names if n.lower() != "python"]
+    tables = [poetry.get("dependencies"), poetry.get("dev-dependencies")]
+    tables += [(group or {}).get("dependencies") for group in (poetry.get("group") or {}).values()]
+    for table in tables:
+        for name, spec in (table or {}).items():
+            if name.lower() == "python":
+                continue
+            # `qdrant-client = { extras = ["fastembed"] }`: the extras are packages too.
+            extras = spec.get("extras") if isinstance(spec, dict) else None
+            specs.append(f"{name}[{','.join(extras)}]" if extras else name)
     return _specs_to_facts(specs, path, lines)
 
 
@@ -1261,14 +1305,17 @@ def _gems(path: Path, text: str, lines: list[str]) -> list[Fact]:
 
 _TF_BLOCK = re.compile(r'^\s*(?:resource|data)\s+"([a-z0-9_]+)"')
 _IMAGE_KEY = re.compile(r"""^\s*(?:-\s*)?image:\s*["']?([^\s"'#]+)""")
-_HELM_REPOSITORY = re.compile(r"""^\s*repository:\s*["']?([^\s"'#]+)""")
+_HELM_REPOSITORY = re.compile(r"""^\s*(?:-\s*)?repository:\s*["']?([^\s"'#]+)""")
 _FROM = re.compile(r"^\s*FROM\s+(?:--platform=\S+\s+)?(\S+)", re.IGNORECASE)
+_COMPOSE_DEFAULT = re.compile(r"\$\{[A-Za-z_][A-Za-z0-9_]*:?-([^}]*)\}")
 
 
 def image_name(ref: str) -> str | None:
-    """`docker.io/qdrant/qdrant:v1.12@sha256:…` → `qdrant/qdrant`. Templated references
-    (`${REGISTRY}/…`, `{{ .Values… }}`) name no image we can know."""
-    if not ref or ref.startswith(("$", "{")) or "{{" in ref:
+    """`docker.io/qdrant/qdrant:v1.12@sha256:…` → `qdrant/qdrant`. A compose default,
+    `${IMAGE:-qdrant/qdrant}`, is the image that runs unless overridden. Other
+    templated references (`${REGISTRY}/…`, `{{ .Values… }}`) name no image we can know."""
+    ref = _COMPOSE_DEFAULT.sub(lambda m: m.group(1), ref or "")
+    if not ref or ref.startswith(("$", "{")) or "{{" in ref or "${" in ref:
         return None
     name = ref.split("@", 1)[0]
     head, _, last = name.rpartition("/")
@@ -1287,7 +1334,7 @@ def _images(path: Path, lines: list[str], code: list[str]) -> list[Fact]:
         (".dockerfile", ".containerfile")
     )
     patterns = [_FROM] if dockerfile else [_IMAGE_KEY]
-    if name.startswith("values") and not dockerfile:
+    if "values" in name and not dockerfile:  # values.yaml, prod-values.yaml, values-gpu.yaml
         patterns.append(_HELM_REPOSITORY)
     facts = []
     for n, view in enumerate(code, start=1):
@@ -1676,9 +1723,14 @@ def _lookup_keys(kind: str, value: str) -> list[str]:
 
     Imports and Go modules match by prefix at a separator: `azure.search.documents.x`
     matches `azure.search.documents`, `github.com/a/b/v3` matches `github.com/a/b`.
-    Everything else matches exactly.
+    An image also matches without its registry host: `docker.langfuse.com/langfuse/
+    langfuse` is `langfuse/langfuse`. Everything else matches exactly.
     """
     value = _canonical(kind, value)
+    if kind == "image":
+        head, _, rest = value.partition("/")
+        is_host = "." in head or ":" in head or head == "localhost"
+        return [value, rest] if rest and is_host and "/" in rest else [value]
     sep = PREFIX_SEPARATORS.get(kind)
     if not sep:
         return [value]

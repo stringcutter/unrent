@@ -1333,3 +1333,123 @@ def test_a_project_is_not_a_component_of_itself(tmp_path, catalog):
         check=True,
     )
     assert "infiniflow/ragflow" not in running(tmp_path, catalog)
+
+
+# --- open source recall: signatures, images, SQL, extras --------------------------------
+
+
+@pytest.mark.parametrize(
+    ("files", "repo"),
+    [
+        (
+            {
+                "QdrantExample.java": 'try (var qdrant = new QdrantContainer("qdrant/qdrant:v1.12.4")) {}\n'
+            },
+            "qdrant/qdrant",
+        ),
+        (
+            {"PgVectorExample.java": 'DockerImageName.parse("pgvector/pgvector:pg16")\n'},
+            "pgvector/pgvector",
+        ),
+        ({"run-qdrant.sh": "docker run -d -p 6333:6333 qdrant/qdrant\n"}, "qdrant/qdrant"),
+        (
+            {
+                "docker-compose.yml": "services:\n  db:\n    image: ${QDRANT_IMAGE:-qdrant/qdrant:v1.12}\n"
+            },
+            "qdrant/qdrant",
+        ),
+        (
+            {
+                "helm/prod-values.yaml": 'servingEngineSpec:\n  modelSpec:\n  - repository: "vllm/vllm-openai"\n'
+            },
+            "vllm-project/vllm",
+        ),
+        (
+            {
+                "charts/langfuse/values.yaml": "image:\n  repository: docker.langfuse.com/langfuse/langfuse\n"
+            },
+            "langfuse/langfuse",
+        ),
+        (
+            {
+                "supabase/migrations/001.sql": "create extension if not exists vector with schema extensions;\n"
+            },
+            "pgvector/pgvector",
+        ),
+        ({"m.sql": 'CREATE EXTENSION "vector";\n'}, "pgvector/pgvector"),
+        (
+            {
+                "pyproject.toml": '[tool.poetry.dependencies]\nqdrant-client = { extras = ["fastembed"], version = "^1.9" }\n'
+            },
+            "qdrant/fastembed",
+        ),
+        ({"requirements.txt": "qdrant-client[fastembed]>=1.9\n"}, "qdrant/fastembed"),
+        (
+            {
+                "build.gradle": "implementation 'org.springframework.ai:spring-ai-starter-model-ollama'\n"
+            },
+            "ollama/ollama",
+        ),
+        (
+            {
+                "pom.xml": "<dependency><groupId>dev.langchain4j</groupId><artifactId>langchain4j-chroma</artifactId></dependency>\n"
+            },
+            "chroma-core/chroma",
+        ),
+        (
+            {
+                "Directory.Packages.props": '<PackageVersion Include="LLamaSharp" Version="0.20.0" />\n'
+            },
+            "ggml-org/llama.cpp",
+        ),
+        (
+            {"go.mod": "module x\nrequire github.com/amikos-tech/chroma-go v0.1.0\n"},
+            "chroma-core/chroma",
+        ),
+        (
+            {"pyproject.toml": '[project]\ndependencies = ["llama-index-vector-stores-milvus"]\n'},
+            "milvus-io/milvus",
+        ),
+        (
+            {"config.py": 'SEARXNG_QUERY_URL = os.environ.get("SEARXNG_QUERY_URL", "")\n'},
+            "searxng/searxng",
+        ),
+        (
+            {"chains.py": 'emb = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")\n'},
+            "huggingface/sentence-transformers",
+        ),
+    ],
+    ids=lambda v: v if isinstance(v, str) else next(iter(v)),
+)
+def test_open_source_recall(tmp_path, catalog, files, repo):
+    write(tmp_path, files)
+    assert repo in running(tmp_path, catalog)
+
+
+def test_image_needles_do_not_match_repo_urls(tmp_path, catalog):
+    write(tmp_path, {"links.py": 'SEE = "https://github.com/qdrant/qdrant"\n'})
+    assert "qdrant/qdrant" not in running(tmp_path, catalog)
+
+
+def test_sql_about_other_extensions_is_not_pgvector(tmp_path, catalog):
+    write(
+        tmp_path, {"m.sql": "CREATE EXTENSION IF NOT EXISTS vectors;\nCREATE EXTENSION pg_trgm;\n"}
+    )
+    assert running(tmp_path, catalog) == {}
+
+
+def test_catalog_rejects_unquoted_commas_in_descriptions(tmp_path):
+    import shutil as sh
+
+    from unrent.catalog import CatalogError
+
+    cat = tmp_path / "cat"
+    sh.copytree(CATALOG_DIR, cat)
+    text = (cat / "alternatives.yaml").read_text(encoding="utf-8")
+    text = text.replace(
+        'what: "Run open models locally with one command, OpenAI-compatible API"',
+        "what: Run open models locally with one command, OpenAI-compatible API",
+    )
+    (cat / "alternatives.yaml").write_text(text, encoding="utf-8")
+    with pytest.raises(CatalogError, match="unexpected keys"):
+        load_catalog(cat)
