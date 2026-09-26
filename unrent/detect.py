@@ -168,7 +168,7 @@ def is_test_path(rel: str) -> bool:
 
 
 # --------------------------------------------------------------------------
-# Ignore rules: gitignore semantics, for .gitignore, .lockinignore and --exclude
+# Ignore rules: gitignore semantics, for .gitignore, .unrentignore and --exclude
 # --------------------------------------------------------------------------
 
 
@@ -255,8 +255,8 @@ def _rules_from(text: str, base: str = "") -> list[IgnoreRule]:
 
 
 def load_ignore(root: Path, exclude: Iterable[str] = ()) -> list[IgnoreRule]:
-    """.lockinignore plus --exclude patterns, both with .gitignore syntax."""
-    file = root / ".lockinignore"
+    """.unrentignore plus --exclude patterns, both with .gitignore syntax."""
+    file = root / ".unrentignore"
     text = file.read_text("utf-8", errors="replace") if file.is_file() else ""
     return _rules_from(text) + _rules_from("\n".join(exclude))
 
@@ -1446,11 +1446,11 @@ def ripgrep_hits(root: Path, needles: Needles) -> dict[str, list[int]] | None:
 
     Optional and only an accelerator: ripgrep finds candidate lines (a superset —
     it matches case-insensitively), and the same Python checks as without it decide
-    what counts. Without `rg` on PATH, or with LOCKIN_NO_RIPGREP set, each file is
+    what counts. Without `rg` on PATH, or with UNRENT_NO_RIPGREP set, each file is
     searched in Python instead, with identical results.
     """
     rg = shutil.which("rg")
-    if not rg or os.environ.get("LOCKIN_NO_RIPGREP"):
+    if not rg or os.environ.get("UNRENT_NO_RIPGREP"):
         return None
     probes = sorted({probe for _, _, probe, _ in needles.items})
     with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False, encoding="utf-8") as f:

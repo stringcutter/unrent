@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 
 import yaml
@@ -25,12 +26,20 @@ def _default_catalog() -> Path:
 DEFAULT_CATALOG = _default_catalog()
 
 
+def _version() -> str:
+    try:
+        return version("unrent")
+    except PackageNotFoundError:
+        return "unknown"
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
-        prog="lockin",
+        prog="unrent",
         description="Find the closed AI services a codebase depends on, and the open source "
         "alternatives that replace them.",
     )
+    p.add_argument("--version", action="version", version=f"%(prog)s {_version()}")
     sub = p.add_subparsers(dest="command", required=True)
 
     scan = sub.add_parser("scan", help="scan a directory")
@@ -43,7 +52,7 @@ def build_parser() -> argparse.ArgumentParser:
         default=[],
         metavar="GLOB",
         help="skip paths matching a .gitignore-style pattern (repeatable; "
-        "a .lockinignore file in the directory works the same way)",
+        "a .unrentignore file in the directory works the same way)",
     )
     scan.add_argument(
         "--skip-tests",
@@ -65,7 +74,7 @@ def build_parser() -> argparse.ArgumentParser:
 def cmd_scan(args) -> int:
     root = Path(args.path).resolve()
     if not root.is_dir():
-        print(f"lockin: {root} is not a directory", file=sys.stderr)
+        print(f"unrent: {root} is not a directory", file=sys.stderr)
         return 2
     catalog = load_catalog(args.catalog)
     skipped: list[Path] = []
@@ -111,11 +120,11 @@ def main(argv: list[str] | None = None) -> int:
             return cmd_scan(args)
         return cmd_catalog(args)
     except CatalogError as exc:
-        print(f"lockin: catalog error: {exc}", file=sys.stderr)
+        print(f"unrent: catalog error: {exc}", file=sys.stderr)
     except yaml.YAMLError as exc:
-        print(f"lockin: could not parse the catalog: {exc}", file=sys.stderr)
+        print(f"unrent: could not parse the catalog: {exc}", file=sys.stderr)
     except OSError as exc:
-        print(f"lockin: {exc}", file=sys.stderr)
+        print(f"unrent: {exc}", file=sys.stderr)
     return 2
 
 

@@ -1,6 +1,6 @@
 # Closed LLM APIs and gateways.
 #
-# Signature kinds (see lockin/detect.py for exactly how each is matched):
+# Signature kinds (see unrent/detect.py for exactly how each is matched):
 #   requirement         Python package: requirements*.txt, pyproject, setup.py/cfg, Pipfile, conda, pip install
 #   go, cargo, maven, nuget, gem, composer   package in that ecosystem's manifest
 #   npm                 package in package.json, a JS/TS import or require, or npm/pnpm/yarn/bun add

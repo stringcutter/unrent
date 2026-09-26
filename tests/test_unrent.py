@@ -15,10 +15,10 @@ import pytest
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from lockin.catalog import OPEN_LICENCES, OPEN_MODEL_LICENCES, load_catalog  # noqa: E402
-from lockin.cli import main  # noqa: E402
-from lockin.detect import collect_facts, js_package, match, redact  # noqa: E402
-from lockin.report import to_json, to_markdown  # noqa: E402
+from unrent.catalog import OPEN_LICENCES, OPEN_MODEL_LICENCES, load_catalog  # noqa: E402
+from unrent.cli import main  # noqa: E402
+from unrent.detect import collect_facts, js_package, match, redact  # noqa: E402
+from unrent.report import to_json, to_markdown  # noqa: E402
 
 CATALOG_DIR = ROOT / "catalog"
 
@@ -47,9 +47,9 @@ def search_mode(request, monkeypatch):
     if request.param == "ripgrep":
         if not shutil.which("rg"):
             pytest.skip("ripgrep not installed")
-        monkeypatch.delenv("LOCKIN_NO_RIPGREP", raising=False)
+        monkeypatch.delenv("UNRENT_NO_RIPGREP", raising=False)
     else:
-        monkeypatch.setenv("LOCKIN_NO_RIPGREP", "1")
+        monkeypatch.setenv("UNRENT_NO_RIPGREP", "1")
     return request.param
 
 
@@ -558,7 +558,7 @@ def test_findings_only_in_tests_are_marked_and_skippable(tmp_path, catalog):
 def test_ignore_files_use_gitignore_semantics(tmp_path, catalog):
     write(tmp_path, {
         # As in git: `/docs/*` then `!docs/keep.py` re-includes; `/docs` would not.
-        ".lockinignore": "tests\n**/fixtures/\n/docs/*\n!docs/keep.py\n",
+        ".unrentignore": "tests\n**/fixtures/\n/docs/*\n!docs/keep.py\n",
         "tests/t.py": "import anthropic\n",
         "src/fixtures/f.py": "import cohere\n",
         "docs/d.py": "import mistralai\n",
@@ -697,9 +697,9 @@ def test_project_under_build_dir_is_scanned(tmp_path, catalog):
     assert "anthropic" in found(root, catalog)
 
 
-def test_lockinignore_and_exclude(tmp_path, catalog):
+def test_unrentignore_and_exclude(tmp_path, catalog):
     write(tmp_path, {
-        ".lockinignore": "# fixtures\nfixtures/\n",
+        ".unrentignore": "# fixtures\nfixtures/\n",
         "fixtures/a.py": "import anthropic\n",
         "scripts/b.py": "import cohere\n",
     })  # fmt: skip

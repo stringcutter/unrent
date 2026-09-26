@@ -1,0 +1,32 @@
+name: New service or alternative
+description: Suggest a closed AI service to detect, or an open source project to recommend.
+labels: [catalog]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Suggestion
+      options:
+        - Detect a new closed service
+        - Add an open source alternative
+    validations:
+      required: true
+  - type: input
+    id: name
+    attributes:
+      label: Name and link
+      placeholder: https://github.com/owner/repo or https://vendor.example/docs
+    validations:
+      required: true
+  - type: textarea
+    id: signatures
+    attributes:
+      label: How it shows up in code (for services)
+      description: Package names, import paths, API hosts, model ids, environment variables.
+  - type: textarea
+    id: why
+    attributes:
+      label: Which closed service it replaces (for alternatives), and its licence
+  - type: markdown
+    attributes:
+      value: A pull request editing catalog/services/*.yaml or catalog/alternatives.yaml is even better; see CONTRIBUTING.md.
