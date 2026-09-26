@@ -123,7 +123,10 @@ def github_project(repo: str, declared_licence: str | None, token: str | None) -
     elif pushed and (dt.date.today() - dt.date.fromisoformat(pushed)).days > INACTIVE_AFTER_DAYS:
         out["status"], out["problem"] = "inactive", f"no push since {pushed}"
     elif licence not in OPEN_LICENCES:
-        out["status"], out["problem"] = "licence", f"licence {licence or 'unknown'} is not OSI-approved"
+        out["status"], out["problem"] = (
+            "licence",
+            f"licence {licence or 'unknown'} is not OSI-approved",
+        )
     return out
 
 
@@ -174,7 +177,14 @@ def hf_publisher_models(author: str) -> list[dict]:
             ("limit", "200"),
             *[
                 ("expand[]", f)
-                for f in ("cardData", "downloads", "likes", "trendingScore", "createdAt", "pipeline_tag")
+                for f in (
+                    "cardData",
+                    "downloads",
+                    "likes",
+                    "trendingScore",
+                    "createdAt",
+                    "pipeline_tag",
+                )
             ],
         ]
     )
@@ -262,9 +272,13 @@ def main() -> int:
     )
     with ThreadPoolExecutor(max_workers=8) as ex:
         repos = dict(
-            zip(declared, ex.map(lambda r: github_project(r, declared[r], token), declared))
+            zip(
+                declared,
+                ex.map(lambda r: github_project(r, declared[r], token), declared),
+                strict=True,
+            )
         )
-        by_author = dict(zip(publishers, ex.map(hf_publisher_models, publishers)))
+        by_author = dict(zip(publishers, ex.map(hf_publisher_models, publishers), strict=True))
 
     for repo, info in repos.items():
         if "stars" not in info:
@@ -279,7 +293,9 @@ def main() -> int:
         if pool["source"] == "github":
             entries = [{**repos[p["repo"]], "what": p["what"]} for p in pool["projects"]]
             problems += [
-                f"{pool['id']}: {e['repo']} — {e['problem']}" for e in entries if e["status"] != "ok"
+                f"{pool['id']}: {e['repo']} — {e['problem']}"
+                for e in entries
+                if e["status"] != "ok"
             ]
             ranked, ranked_by = rank_github([e for e in entries if e["status"] == "ok"])
             dropped = [e for e in entries if e["status"] != "ok"]
@@ -312,7 +328,11 @@ def main() -> int:
             print(f"  - {p}", file=sys.stderr)
 
     if not args.check:
-        payload = {"generated": today.isoformat(), "momentum_days": MOMENTUM_DAYS, "pools": out_pools}
+        payload = {
+            "generated": today.isoformat(),
+            "momentum_days": MOMENTUM_DAYS,
+            "pools": out_pools,
+        }
         (CATALOG / "rankings.json").write_text(
             json.dumps(payload, indent=1, ensure_ascii=False) + "\n", "utf-8"
         )

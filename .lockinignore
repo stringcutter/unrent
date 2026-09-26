@@ -1,0 +1,4 @@
+# lockin scans itself in CI. The catalog and the test fixtures name every vendor on
+# purpose, so they are not dependencies.
+catalog/
+tests/

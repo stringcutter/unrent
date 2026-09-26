@@ -88,8 +88,28 @@ CONFIG_SUFFIXES = {
     ".json", ".jsonc", ".json5", ".yaml", ".yml", ".toml", ".ini", ".cfg", ".conf",
     ".properties", ".xml", ".gradle", ".env", ".csproj", ".fsproj", ".vbproj", ".props",
 }  # fmt: skip
-CONFIG_NAMES = {"dockerfile", "makefile", "procfile", "jenkinsfile", ".envrc", ".dev.vars", "gemfile"}
-JS_SUFFIXES = {".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".mts", ".cts", ".vue", ".svelte", ".astro"}
+CONFIG_NAMES = {
+    "dockerfile",
+    "makefile",
+    "procfile",
+    "jenkinsfile",
+    ".envrc",
+    ".dev.vars",
+    "gemfile",
+}
+JS_SUFFIXES = {
+    ".js",
+    ".jsx",
+    ".mjs",
+    ".cjs",
+    ".ts",
+    ".tsx",
+    ".mts",
+    ".cts",
+    ".vue",
+    ".svelte",
+    ".astro",
+}
 LOCKFILES = {
     "package-lock.json", "npm-shrinkwrap.json", "yarn.lock", "pnpm-lock.yaml", "bun.lock",
     "poetry.lock", "uv.lock", "pdm.lock", "pipfile.lock", "cargo.lock", "go.sum",
@@ -518,7 +538,11 @@ def _install_commands(path: Path, lines: list[str], skip: set[int]) -> list[Fact
                         name = js_package(token)
                     else:
                         name = _SPEC_SPLIT.split(token, 1)[0]
-                        name = normalise(name) if re.fullmatch(r"[A-Za-z0-9._-]+", name or "") else None
+                        name = (
+                            normalise(name)
+                            if re.fullmatch(r"[A-Za-z0-9._-]+", name or "")
+                            else None
+                        )
                     if name:
                         facts.append(Fact(kind, name, path, n, raw.strip()[:200]))
     return facts
@@ -707,7 +731,11 @@ def _go_mod(path: Path, text: str, lines: list[str]) -> list[Fact]:
     for n, raw in enumerate(lines, start=1):
         m = _GO_REQUIRE.match(raw)
         # `// indirect` marks a dependency of a dependency, which is not yours.
-        if m and "// indirect" not in raw and not raw.lstrip().startswith(("module", "replace", "//")):
+        if (
+            m
+            and "// indirect" not in raw
+            and not raw.lstrip().startswith(("module", "replace", "//"))
+        ):
             facts.append(Fact("go", m.group(1), path, n, raw.strip()))
     return facts
 
