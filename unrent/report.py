@@ -62,33 +62,42 @@ def _pools_in_order(findings: list[Finding], catalog: Catalog) -> dict[str, list
     return pools
 
 
+def _split(findings: list[Finding]) -> tuple[list[Finding], list[Finding]]:
+    """Dependencies, and closed models that are only named."""
+    return [f for f in findings if not f.models_only], [f for f in findings if f.models_only]
+
+
+def _entry(f: Finding, root: Path) -> dict:
+    return {
+        "id": f.service.id,
+        "name": f.service.name,
+        "category": f.service.category,
+        "only_in_tests": f.test_only,
+        "replace_with": list(f.service.replace_with),
+        "evidence": [
+            {
+                "kind": fact.kind,
+                "value": fact.value,
+                "file": _rel(fact.file, root),
+                "line": fact.line,
+                "text": fact.evidence,
+            }
+            for fact in f.cited
+        ],
+    }
+
+
 def to_json(findings: list[Finding], root: Path, catalog: Catalog, skipped: list[Path] = ()) -> str:
+    findings, named = _split(findings)
     payload = {
         "scanned": str(root),
         "scanned_at": _now().isoformat(timespec="seconds"),
         "catalog_services": len(catalog),
         "rankings_date": catalog.rankings_date,
         "not_scanned": [_rel(p, root) for p in skipped],
-        "found": [
-            {
-                "id": f.service.id,
-                "name": f.service.name,
-                "category": f.service.category,
-                "only_in_tests": f.test_only,
-                "replace_with": list(f.service.replace_with),
-                "evidence": [
-                    {
-                        "kind": fact.kind,
-                        "value": fact.value,
-                        "file": _rel(fact.file, root),
-                        "line": fact.line,
-                        "text": fact.evidence,
-                    }
-                    for fact in f.cited
-                ],
-            }
-            for f in findings
-        ],
+        "found": [_entry(f, root) for f in findings],
+        # Closed model ids with no SDK, key, host or package behind them.
+        "models_named": [_entry(f, root) for f in named],
         "alternatives": {
             pool_id: {
                 "name": catalog.pools[pool_id].name,
@@ -103,6 +112,29 @@ def to_json(findings: list[Finding], root: Path, catalog: Catalog, skipped: list
         },
     }
     return json.dumps(payload, indent=2, ensure_ascii=False)
+
+
+def _models_named(named: list[Finding], root: Path) -> list[str]:
+    if not named:
+        return []
+    out = [
+        "",
+        "## Closed models named in code",
+        "",
+        "Model ids with no SDK, API key, API host or package behind them — a model menu, a "
+        "token-limit table, a model chosen inside another vendor's hosted agent. Not counted "
+        "as dependencies above; check whether any of them is actually called.",
+        "",
+    ]
+    for f in named:
+        first = f.cited[0]
+        more = f" (+{len(f.cited) - 1} more)" if len(f.cited) > 1 else ""
+        out.append(
+            f"- **{f.service.name}**: `{_rel(first.file, root)}:{first.line}` — "
+            f"`{first.evidence[:100]}`{more}"
+        )
+    out.append("")
+    return out
 
 
 def _not_scanned(skipped: list[Path], root: Path) -> list[str]:
@@ -128,12 +160,14 @@ def to_markdown(
         "",
     ]
     out += _not_scanned(list(skipped), root)
+    findings, named = _split(findings)
 
     if not findings:
         out.append(
             "No closed AI services found. Either this codebase has none, or it uses one "
             "the catalog does not cover yet — please open an issue if so."
         )
+        out += _models_named(named, root)
         return "\n".join(out)
 
     noun = "service" if len(findings) == 1 else "services"
@@ -167,6 +201,7 @@ def to_markdown(
             out.append(f"- …and {len(cited) - EVIDENCE_SHOWN} more")
         out.append("")
 
+    out += _models_named(named, root)
     out += ["## Open source alternatives", ""]
     for pool_id, services in _pools_in_order(findings, catalog).items():
         pool = catalog.pools[pool_id]

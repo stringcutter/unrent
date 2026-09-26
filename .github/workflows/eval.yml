@@ -1,0 +1,30 @@
+name: eval
+
+# The golden corpus: 39 real repos, pinned to a commit, with hand-labelled truth
+# (eval/corpus.yaml, rules in eval/TRUTH_RULES.md). A change to detection or to the
+# catalog must not make unrent worse at telling what a codebase depends on.
+on:
+  push:
+    branches: [main]
+    paths: ["unrent/**", "catalog/services/**", "eval/**"]
+  pull_request:
+    paths: ["unrent/**", "catalog/services/**", "eval/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  corpus:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+      - run: sudo apt-get update -q && sudo apt-get install -y -q ripgrep
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: eval/.cache
+          key: eval-corpus-${{ hashFiles('eval/corpus.yaml') }}
+      # Floors sit just under the measured scores (precision 0.992, recall 0.985 on
+      # 2026-09-26). Raise them when the scores rise; never lower them to pass.
+      - run: uv run --frozen python eval/run_eval.py --min-precision 0.98 --min-recall 0.97

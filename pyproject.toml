@@ -69,6 +69,8 @@ select = ["E", "F", "I", "B", "UP", "DTZ", "RUF", "SIM"]
 "tests/*" = ["E501", "RUF001"]
 # Rankings are dated by the maintainer's calendar day; a timezone adds nothing.
 "scripts/*" = ["DTZ011"]
+# Report tables are wide format strings.
+"eval/*" = ["E501"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

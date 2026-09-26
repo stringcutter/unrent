@@ -119,16 +119,19 @@
   name: Google Vertex AI
   category: LLM API
   replace_with: [open-llm, llm-serving]
-  excludes: [google-gemini]
+  excludes: [google-gemini, anthropic]
   detect:
     go: [cloud.google.com/go/vertexai, cloud.google.com/go/aiplatform]
     maven: ["com.google.cloud:google-cloud-vertexai", "com.google.cloud:google-cloud-aiplatform",
             "dev.langchain4j:langchain4j-vertex-ai-gemini", "org.springframework.ai:spring-ai-vertex-ai-gemini"]
     nuget: [Google.Cloud.AIPlatform.V1]
     requirement: [google-cloud-aiplatform, vertexai, langchain-google-vertexai, llama-index-llms-vertex]
-    npm: ["@google-cloud/vertexai", "@ai-sdk/google-vertex", "@langchain/google-vertexai"]
-    python_import: [vertexai, google.cloud.aiplatform, langchain_google_vertexai, llama_index.llms.vertex]
-    symbol: ["aiplatform.init", "vertexai.init", ChatVertexAI, VertexAI, createVertex, "vertexai=True"]
+    npm: ["@google-cloud/vertexai", "@ai-sdk/google-vertex", "@langchain/google-vertexai",
+          "@anthropic-ai/vertex-sdk"]
+    python_import: [vertexai, google.cloud.aiplatform, langchain_google_vertexai, llama_index.llms.vertex,
+                    anthropic.lib.vertex]
+    symbol: ["aiplatform.init", "vertexai.init", ChatVertexAI, VertexAI, createVertex, "vertexai=True",
+             AnthropicVertex, AsyncAnthropicVertex]
     model: ["google-vertex:gemini-", "vertex_ai/"]
     endpoint: [aiplatform.googleapis.com]
     env: [GOOGLE_VERTEX_PROJECT, GOOGLE_VERTEX_LOCATION, VERTEX_AI_PROJECT, VERTEX_LOCATION,
@@ -149,8 +152,9 @@
     gem: [aws-sdk-bedrockruntime]
     requirement: [langchain-aws, llama-index-llms-bedrock, llama-index-llms-bedrock-converse, anthropic-bedrock]
     npm: ["@aws-sdk/client-bedrock-runtime", "@aws-sdk/client-bedrock", "@aws-sdk/client-bedrock-agent-runtime",
-          "@ai-sdk/amazon-bedrock", "@langchain/aws"]
-    python_import: [langchain_aws, llama_index.llms.bedrock, llama_index.llms.bedrock_converse]
+          "@ai-sdk/amazon-bedrock", "@langchain/aws", "@anthropic-ai/bedrock-sdk"]
+    python_import: [langchain_aws, llama_index.llms.bedrock, llama_index.llms.bedrock_converse,
+                    anthropic.lib.bedrock]
     symbol: ['"bedrock-runtime"', "'bedrock-runtime'", '"bedrock-agent-runtime"', "'bedrock-agent-runtime'",
              BedrockRuntimeClient, ChatBedrock, ChatBedrockConverse, AnthropicBedrock, createAmazonBedrock]
     model: ["anthropic.claude-", "us.anthropic.claude-", "eu.anthropic.claude-", "amazon.titan-", "amazon.nova-",
@@ -183,7 +187,8 @@
   category: LLM API
   replace_with: [open-llm, llm-serving]
   detect:
-    maven: ["dev.langchain4j:langchain4j-mistral-ai", "org.springframework.ai:spring-ai-mistral-ai"]
+    maven: ["dev.langchain4j:langchain4j-mistral-ai", "org.springframework.ai:spring-ai-mistral-ai",
+            "org.springframework.ai:spring-ai-starter-model-mistral-ai"]
     requirement: [mistralai, langchain-mistralai, llama-index-llms-mistralai]
     npm: ["@mistralai/mistralai", "@ai-sdk/mistral", "@langchain/mistralai"]
     python_import: [mistralai, langchain_mistralai, llama_index.llms.mistralai]
@@ -370,6 +375,7 @@
 - id: openai-fine-tuning
   name: OpenAI fine-tuning
   category: Fine-tuning
+  part_of: openai
   replace_with: [fine-tuning, open-llm]
   detect:
     symbol: ["fine_tuning.jobs.create", "fineTuning.jobs.create", "FineTuningJob"]
@@ -378,6 +384,7 @@
 - id: openai-moderation
   name: OpenAI Moderation
   category: Guardrails
+  part_of: openai
   replace_with: [guardrails]
   detect:
     symbol: ["moderations.create"]

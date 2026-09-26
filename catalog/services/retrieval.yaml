@@ -3,17 +3,21 @@
 - id: openai-embeddings
   name: OpenAI Embeddings
   category: Embeddings
+  part_of: openai
   replace_with: [embedding-model, embedding-serving]
   detect:
     requirement: [llama-index-embeddings-openai]
     python_import: [llama_index.embeddings.openai]
     # `embeddings.create` is left out: every OpenAI-compatible client, local ones included, has it.
-    symbol: [OpenAIEmbeddings, OpenAIEmbedding, "openai.embedding(", "openai.textEmbeddingModel("]
+    # LlamaIndex's embed_model="default" resolves to OpenAI embeddings.
+    symbol: [OpenAIEmbeddings, OpenAIEmbedding, "openai.embedding(", "openai.textEmbeddingModel(",
+             'embed_model="default"', "embed_model='default'"]
     model: [text-embedding-3-, text-embedding-ada-]
 
 - id: google-embeddings
   name: Google Gemini / Vertex Embeddings
   category: Embeddings
+  part_of: [google-gemini, google-vertex]
   replace_with: [embedding-model, embedding-serving]
   detect:
     requirement: [llama-index-embeddings-gemini, llama-index-embeddings-google-genai, llama-index-embeddings-vertex]
@@ -23,6 +27,7 @@
 - id: aws-bedrock-embeddings
   name: Amazon Titan / Bedrock Embeddings
   category: Embeddings
+  part_of: aws-bedrock
   replace_with: [embedding-model, embedding-serving]
   detect:
     symbol: [BedrockEmbeddings]
@@ -54,6 +59,7 @@
 - id: mistral-embeddings
   name: Mistral Embeddings and OCR
   category: Embeddings
+  part_of: mistral
   replace_with: [embedding-model, ocr]
   detect:
     symbol: [MistralAIEmbeddings]
@@ -154,6 +160,8 @@
   category: Vector database
   replace_with: [vector-db]
   detect:
+    # cloud_inference is a Qdrant Cloud-only client option.
+    symbol: [cloud_inference]
     endpoint: [cloud.qdrant.io]
 
 - id: azure-ai-search
@@ -184,11 +192,13 @@
 - id: aws-bedrock-knowledge-bases
   name: Amazon Bedrock Knowledge Bases / Kendra
   category: RAG platform
+  weak: [knowledgeBaseId, RetrieveCommand]
   replace_with: [rag-engine, search-engine]
   detect:
     npm: ["@aws-sdk/client-kendra"]
     symbol: [AmazonKnowledgeBasesRetriever, AmazonKendraRetriever, '"kendra"', "'kendra'",
-             "retrieve_and_generate"]
+             "retrieve_and_generate", RetrieveCommand, RetrieveAndGenerateCommand, retrieveAndGenerate,
+             knowledgeBaseId]
     terraform_resource: [aws_bedrockagent_knowledge_base, aws_kendra_index]
 
 - id: google-vertex-search
@@ -205,6 +215,7 @@
 - id: openai-file-search
   name: OpenAI vector stores / file search
   category: RAG platform
+  part_of: openai
   replace_with: [rag-engine, vector-db]
   detect:
     # Not the bare "file_search" string: agent frameworks name their own tools that.

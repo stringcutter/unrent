@@ -107,7 +107,35 @@ What it deliberately does not count:
 Findings whose only evidence is in test, spec or fixture code are marked *only in
 tests*: usually a mock of a real dependency, sometimes a leftover.
 
+Closed model ids with nothing behind them — no SDK, key, API host or package — are
+listed separately as *closed models named in code*: a model menu, a token-limit table,
+a model picked inside another vendor's hosted agent. Worth a look, not a dependency.
+The Vercel AI SDK is the exception that proves the rule: with no provider package
+installed, `model: "openai/gpt-5"` is sent to Vercel's AI Gateway, so it is reported as
+a dependency on the gateway.
+
 Each of these is pinned by a test that fails without it.
+
+## How accurate it is
+
+Measured on a golden corpus of 39 real repositories unrent was never tuned on —
+provider quickstarts and templates from OpenAI, Anthropic, Google, AWS, Azure, Vercel,
+Supabase, LangChain, LlamaIndex and others, in Python, TypeScript, Go, Java, Kotlin and
+C#, plus apps that only run local models. Each repository is pinned to a commit and
+labelled by hand, independently of unrent's output
+([`eval/corpus.yaml`](https://github.com/niklasmellgren/unrent/blob/main/eval/corpus.yaml),
+rules in [`eval/TRUTH_RULES.md`](https://github.com/niklasmellgren/unrent/blob/main/eval/TRUTH_RULES.md)).
+
+| | |
+|---|---|
+| Precision (a reported service is really used) | **0.99** (132 of 133) |
+| Recall (a used service is reported) | **0.985** (132 of 134) |
+
+The misses are framework defaults no scanner can see in the code: Spring AI wiring an
+OpenAI embedding model into a vector store, LlamaIndex falling back to OpenAI
+embeddings. The one false positive is an `OPENAI_API_KEY` passed on under another name.
+CI runs the corpus on every change to detection or the catalog and fails below 0.98 /
+0.97. The corpus is small; treat the numbers as a floor to defend, not a guarantee.
 
 ## How alternatives are chosen
 

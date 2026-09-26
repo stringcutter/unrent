@@ -105,6 +105,9 @@ class Service:
     # The SDK doubles as the client for self-hosted OpenAI-compatible servers, so
     # evidence next to a local base URL (Ollama, vLLM, LM Studio) does not count.
     local_compatible: bool = False
+    # A capability of a broader service (OpenAI Embeddings is part of the OpenAI API).
+    # Its model ids count as real evidence when the broader service is itself in use.
+    part_of: tuple[str, ...] = ()
 
 
 @dataclass
@@ -258,6 +261,7 @@ def _parse_service(raw: dict, where: Path, pools: dict[str, Pool]) -> Service:
         open_models=_as_tuple(raw.get("open_models")),
         weak=_as_tuple(raw.get("weak")),
         local_compatible=bool(raw.get("local_compatible", False)),
+        part_of=_as_tuple(raw.get("part_of")),
     )
 
 
@@ -291,7 +295,7 @@ def load_catalog(path: Path) -> Catalog:
             catalog.services.append(service)
 
     for service in catalog.services:
-        for other in service.excludes:
+        for other in (*service.excludes, *service.part_of):
             if other not in seen:
-                raise CatalogError(f"service '{service.id}' excludes unknown service '{other}'")
+                raise CatalogError(f"service '{service.id}' names unknown service '{other}'")
     return catalog
