@@ -10,7 +10,7 @@
     {
      "repo": "ollama/ollama",
      "url": "https://github.com/ollama/ollama",
-     "stars": 181764,
+     "stars": 181767,
      "licence": "MIT",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -20,7 +20,7 @@
     {
      "repo": "ggml-org/llama.cpp",
      "url": "https://github.com/ggml-org/llama.cpp",
-     "stars": 129581,
+     "stars": 129586,
      "licence": "MIT",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -30,7 +30,7 @@
     {
      "repo": "vllm-project/vllm",
      "url": "https://github.com/vllm-project/vllm",
-     "stars": 92715,
+     "stars": 92718,
      "licence": "Apache-2.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -40,7 +40,7 @@
     {
      "repo": "mudler/LocalAI",
      "url": "https://github.com/mudler/LocalAI",
-     "stars": 49273,
+     "stars": 49275,
      "licence": "MIT",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -50,7 +50,7 @@
     {
      "repo": "sgl-project/sglang",
      "url": "https://github.com/sgl-project/sglang",
-     "stars": 36449,
+     "stars": 36454,
      "licence": "Apache-2.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -60,7 +60,7 @@
     {
      "repo": "NVIDIA/TensorRT-LLM",
      "url": "https://github.com/NVIDIA/TensorRT-LLM",
-     "stars": 14717,
+     "stars": 14718,
      "licence": "Apache-2.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -99,9 +99,9 @@
      "id": "XiaomiMiMo/MiMo-V2.6-Pro-RL",
      "url": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL",
      "licence": "mit",
-     "trending": 509,
+     "trending": 511,
      "downloads": 74497,
-     "likes": 519,
+     "likes": 521,
      "created": "2026-09-21",
      "pipeline_tag": "text-generation"
     },
@@ -109,9 +109,9 @@
      "id": "XiaomiMiMo/MiMo-V2.6-Flash-RL",
      "url": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Flash-RL",
      "licence": "mit",
-     "trending": 468,
+     "trending": 470,
      "downloads": 23000,
-     "likes": 473,
+     "likes": 475,
      "created": "2026-09-21",
      "pipeline_tag": "text-generation"
     },
@@ -121,7 +121,7 @@
      "licence": "apache-2.0",
      "trending": 447,
      "downloads": 6652309,
-     "likes": 16328,
+     "likes": 16336,
      "created": "2026-08-05",
      "pipeline_tag": "image-text-to-text"
     },
@@ -129,9 +129,9 @@
      "id": "deepseek-ai/DeepSeek-V4.1-Flash",
      "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash",
      "licence": "mit",
-     "trending": 345,
+     "trending": 342,
      "downloads": 640577,
-     "likes": 3767,
+     "likes": 3768,
      "created": "2026-09-10",
      "pipeline_tag": "image-text-to-text"
     },
@@ -139,7 +139,7 @@
      "id": "openbmb/MiniCPM5-2B",
      "url": "https://huggingface.co/openbmb/MiniCPM5-2B",
      "licence": "apache-2.0",
-     "trending": 100,
+     "trending": 99,
      "downloads": 726518,
      "likes": 1689,
      "created": "2026-09-06",
@@ -149,7 +149,7 @@
      "id": "zai-org/GLM-5.3-Flash",
      "url": "https://huggingface.co/zai-org/GLM-5.3-Flash",
      "licence": "mit",
-     "trending": 89,
+     "trending": 88,
      "downloads": 4242609,
      "likes": 2570,
      "created": "2026-08-25",
@@ -159,7 +159,7 @@
      "id": "google/gemma-4-31B-it",
      "url": "https://huggingface.co/google/gemma-4-31B-it",
      "licence": "apache-2.0",
-     "trending": 46,
+     "trending": 45,
      "downloads": 9436030,
      "likes": 3937,
      "created": "2026-03-11",
@@ -169,7 +169,7 @@
      "id": "Qwen/Qwen3.5-9B",
      "url": "https://huggingface.co/Qwen/Qwen3.5-9B",
      "licence": "apache-2.0",
-     "trending": 43,
+     "trending": 41,
      "downloads": 9958288,
      "likes": 2041,
      "created": "2026-02-27",
@@ -186,14 +186,14 @@
      "pipeline_tag": "image-text-to-text"
     },
     {
-     "id": "baidu/Unlimited-OCR",
-     "url": "https://huggingface.co/baidu/Unlimited-OCR",
-     "licence": "mit",
-     "trending": 26,
-     "downloads": 1924397,
-     "likes": 4297,
-     "created": "2026-06-19",
-     "pipeline_tag": "image-text-to-text"
+     "id": "openai/gpt-oss-120b",
+     "url": "https://huggingface.co/openai/gpt-oss-120b",
+     "licence": "apache-2.0",
+     "trending": 25,
+     "downloads": 4561423,
+     "likes": 5309,
+     "created": "2025-08-04",
+     "pipeline_tag": "text-generation"
     }
    ],
    "dropped": []
@@ -206,7 +206,7 @@
     {
      "repo": "BerriAI/litellm",
      "url": "https://github.com/BerriAI/litellm",
-     "stars": 59661,
+     "stars": 59664,
      "licence": "MIT",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -216,7 +216,7 @@
     {
      "repo": "QuantumNous/new-api",
      "url": "https://github.com/QuantumNous/new-api",
-     "stars": 48926,
+     "stars": 48930,
      "licence": "AGPL-3.0",
      "pushed": "2026-09-25",
      "status": "ok",
@@ -226,7 +226,7 @@
     {
      "repo": "songquanpeng/one-api",
      "url": "https://github.com/songquanpeng/one-api",
-     "stars": 37023,
+     "stars": 37022,
      "licence": "MIT",
      "pushed": "2026-01-09",
      "status": "ok",
@@ -236,7 +236,7 @@
     {
      "repo": "Portkey-AI/gateway",
      "url": "https://github.com/Portkey-AI/gateway",
-     "stars": 13084,
+     "stars": 13086,
      "licence": "MIT",
      "pushed": "2026-05-25",
      "status": "ok",
@@ -246,7 +246,7 @@
     {
      "repo": "maximhq/bifrost",
      "url": "https://github.com/maximhq/bifrost",
-     "stars": 8377,
+     "stars": 8379,
      "licence": "Apache-2.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -284,7 +284,7 @@
     {
      "repo": "unslothai/unsloth",
      "url": "https://github.com/unslothai/unsloth",
-     "stars": 76817,
+     "stars": 76822,
      "licence": "Apache-2.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -294,7 +294,7 @@
     {
      "repo": "hiyouga/LlamaFactory",
      "url": "https://github.com/hiyouga/LlamaFactory",
-     "stars": 75020,
+     "stars": 75021,
      "licence": "Apache-2.0",
      "pushed": "2026-09-14",
      "status": "ok",
@@ -304,7 +304,7 @@
     {
      "repo": "verl-project/verl",
      "url": "https://github.com/verl-project/verl",
-     "stars": 23638,
+     "stars": 23642,
      "licence": "Apache-2.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -352,7 +352,7 @@
     {
      "repo": "guardrails-ai/guardrails",
      "url": "https://github.com/guardrails-ai/guardrails",
-     "stars": 7451,
+     "stars": 7452,
      "licence": "Apache-2.0",
      "pushed": "2026-09-25",
      "status": "ok",
@@ -380,7 +380,7 @@
     {
      "repo": "milvus-io/milvus",
      "url": "https://github.com/milvus-io/milvus",
-     "stars": 46255,
+     "stars": 46254,
      "licence": "Apache-2.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -390,7 +390,7 @@
     {
      "repo": "facebookresearch/faiss",
      "url": "https://github.com/facebookresearch/faiss",
-     "stars": 40985,
+     "stars": 40986,
      "licence": "MIT",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -410,7 +410,7 @@
     {
      "repo": "chroma-core/chroma",
      "url": "https://github.com/chroma-core/chroma",
-     "stars": 29386,
+     "stars": 29387,
      "licence": "Apache-2.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -420,7 +420,7 @@
     {
      "repo": "pgvector/pgvector",
      "url": "https://github.com/pgvector/pgvector",
-     "stars": 23161,
+     "stars": 23162,
      "licence": "PostgreSQL",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -498,7 +498,7 @@
     {
      "repo": "quickwit-oss/tantivy",
      "url": "https://github.com/quickwit-oss/tantivy",
-     "stars": 16144,
+     "stars": 16145,
      "licence": "MIT",
      "pushed": "2026-09-25",
      "status": "ok",
@@ -508,7 +508,7 @@
     {
      "repo": "opensearch-project/OpenSearch",
      "url": "https://github.com/opensearch-project/OpenSearch",
-     "stars": 13776,
+     "stars": 13777,
      "licence": "Apache-2.0",
      "pushed": "2026-09-25",
      "status": "ok",
@@ -518,7 +518,7 @@
     {
      "repo": "paradedb/paradedb",
      "url": "https://github.com/paradedb/paradedb",
-     "stars": 9308,
+     "stars": 9309,
      "licence": "AGPL-3.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -546,7 +546,7 @@
     {
      "repo": "infiniflow/ragflow",
      "url": "https://github.com/infiniflow/ragflow",
-     "stars": 91328,
+     "stars": 91329,
      "licence": "Apache-2.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -556,7 +556,7 @@
     {
      "repo": "run-llama/llama_index",
      "url": "https://github.com/run-llama/llama_index",
-     "stars": 52325,
+     "stars": 52326,
      "licence": "MIT",
      "pushed": "2026-09-25",
      "status": "ok",
@@ -566,7 +566,7 @@
     {
      "repo": "HKUDS/LightRAG",
      "url": "https://github.com/HKUDS/LightRAG",
-     "stars": 39870,
+     "stars": 39871,
      "licence": "MIT",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -576,7 +576,7 @@
     {
      "repo": "microsoft/graphrag",
      "url": "https://github.com/microsoft/graphrag",
-     "stars": 36108,
+     "stars": 36109,
      "licence": "MIT",
      "pushed": "2026-09-24",
      "status": "ok",
@@ -586,7 +586,7 @@
     {
      "repo": "onyx-dot-app/onyx",
      "url": "https://github.com/onyx-dot-app/onyx",
-     "stars": 32254,
+     "stars": 32255,
      "licence": "MIT",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -596,7 +596,7 @@
     {
      "repo": "deepset-ai/haystack",
      "url": "https://github.com/deepset-ai/haystack",
-     "stars": 26610,
+     "stars": 26612,
      "licence": "Apache-2.0",
      "pushed": "2026-09-25",
      "status": "ok",
@@ -617,7 +617,7 @@
      "licence": "mit",
      "trending": 25,
      "downloads": 36622223,
-     "likes": 3664,
+     "likes": 3666,
      "created": "2024-01-27",
      "pipeline_tag": "sentence-similarity"
     },
@@ -722,7 +722,7 @@
     {
      "repo": "vllm-project/vllm",
      "url": "https://github.com/vllm-project/vllm",
-     "stars": 92715,
+     "stars": 92718,
      "licence": "Apache-2.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -732,7 +732,7 @@
     {
      "repo": "huggingface/sentence-transformers",
      "url": "https://github.com/huggingface/sentence-transformers",
-     "stars": 19123,
+     "stars": 19124,
      "licence": "Apache-2.0",
      "pushed": "2026-09-24",
      "status": "ok",
@@ -742,7 +742,7 @@
     {
      "repo": "huggingface/text-embeddings-inference",
      "url": "https://github.com/huggingface/text-embeddings-inference",
-     "stars": 5063,
+     "stars": 5064,
      "licence": "Apache-2.0",
      "pushed": "2026-09-23",
      "status": "ok",
@@ -791,7 +791,7 @@
      "id": "Qwen/Qwen3-Reranker-8B",
      "url": "https://huggingface.co/Qwen/Qwen3-Reranker-8B",
      "licence": "apache-2.0",
-     "trending": 7,
+     "trending": 6,
      "downloads": 420244,
      "likes": 273,
      "created": "2025-05-29",
@@ -888,7 +888,7 @@
     {
      "repo": "microsoft/markitdown",
      "url": "https://github.com/microsoft/markitdown",
-     "stars": 187123,
+     "stars": 187138,
      "licence": "MIT",
      "pushed": "2026-09-21",
      "status": "ok",
@@ -898,7 +898,7 @@
     {
      "repo": "PaddlePaddle/PaddleOCR",
      "url": "https://github.com/PaddlePaddle/PaddleOCR",
-     "stars": 90244,
+     "stars": 90245,
      "licence": "Apache-2.0",
      "pushed": "2026-09-16",
      "status": "ok",
@@ -908,7 +908,7 @@
     {
      "repo": "docling-project/docling",
      "url": "https://github.com/docling-project/docling",
-     "stars": 67985,
+     "stars": 67986,
      "licence": "MIT",
      "pushed": "2026-09-25",
      "status": "ok",
@@ -966,7 +966,7 @@
     {
      "repo": "PaddlePaddle/PaddleOCR",
      "url": "https://github.com/PaddlePaddle/PaddleOCR",
-     "stars": 90244,
+     "stars": 90245,
      "licence": "Apache-2.0",
      "pushed": "2026-09-16",
      "status": "ok",
@@ -976,7 +976,7 @@
     {
      "repo": "docling-project/docling",
      "url": "https://github.com/docling-project/docling",
-     "stars": 67985,
+     "stars": 67986,
      "licence": "MIT",
      "pushed": "2026-09-25",
      "status": "ok",
@@ -986,7 +986,7 @@
     {
      "repo": "JaidedAI/EasyOCR",
      "url": "https://github.com/JaidedAI/EasyOCR",
-     "stars": 30032,
+     "stars": 30034,
      "licence": "Apache-2.0",
      "pushed": "2025-12-05",
      "status": "ok",
@@ -1044,7 +1044,7 @@
     {
      "repo": "langfuse/langfuse",
      "url": "https://github.com/langfuse/langfuse",
-     "stars": 35071,
+     "stars": 35072,
      "licence": "MIT",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -1064,7 +1064,7 @@
     {
      "repo": "promptfoo/promptfoo",
      "url": "https://github.com/promptfoo/promptfoo",
-     "stars": 25474,
+     "stars": 25475,
      "licence": "MIT",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -1084,7 +1084,7 @@
     {
      "repo": "confident-ai/deepeval",
      "url": "https://github.com/confident-ai/deepeval",
-     "stars": 18451,
+     "stars": 18452,
      "licence": "Apache-2.0",
      "pushed": "2026-09-25",
      "status": "ok",
@@ -1132,7 +1132,7 @@
     {
      "repo": "openai/whisper",
      "url": "https://github.com/openai/whisper",
-     "stars": 109614,
+     "stars": 109616,
      "licence": "MIT",
      "pushed": "2026-08-31",
      "status": "ok",
@@ -1152,7 +1152,7 @@
     {
      "repo": "SYSTRAN/faster-whisper",
      "url": "https://github.com/SYSTRAN/faster-whisper",
-     "stars": 25584,
+     "stars": 25585,
      "licence": "MIT",
      "pushed": "2025-11-19",
      "status": "ok",
@@ -1172,7 +1172,7 @@
     {
      "repo": "NVIDIA-NeMo/Speech",
      "url": "https://github.com/NVIDIA-NeMo/Speech",
-     "stars": 18509,
+     "stars": 18508,
      "licence": "Apache-2.0",
      "pushed": "2026-09-24",
      "status": "ok",
@@ -1230,7 +1230,7 @@
     {
      "repo": "microsoft/VibeVoice",
      "url": "https://github.com/microsoft/VibeVoice",
-     "stars": 54502,
+     "stars": 54503,
      "licence": "MIT",
      "pushed": "2026-09-03",
      "status": "ok",
@@ -1260,7 +1260,7 @@
     {
      "repo": "nari-labs/dia",
      "url": "https://github.com/nari-labs/dia",
-     "stars": 19399,
+     "stars": 19400,
      "licence": "Apache-2.0",
      "pushed": "2025-11-19",
      "status": "ok",
@@ -1270,7 +1270,7 @@
     {
      "repo": "OHF-Voice/piper1-gpl",
      "url": "https://github.com/OHF-Voice/piper1-gpl",
-     "stars": 5688,
+     "stars": 5689,
      "licence": "GPL-3.0",
      "pushed": "2026-09-17",
      "status": "ok",
@@ -1308,7 +1308,7 @@
     {
      "repo": "pipecat-ai/pipecat",
      "url": "https://github.com/pipecat-ai/pipecat",
-     "stars": 15893,
+     "stars": 15894,
      "licence": "BSD-2-Clause",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -1318,7 +1318,7 @@
     {
      "repo": "livekit/agents",
      "url": "https://github.com/livekit/agents",
-     "stars": 14361,
+     "stars": 14363,
      "licence": "Apache-2.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -1346,7 +1346,7 @@
     {
      "repo": "Comfy-Org/ComfyUI",
      "url": "https://github.com/Comfy-Org/ComfyUI",
-     "stars": 135062,
+     "stars": 135076,
      "licence": "GPL-3.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -1366,9 +1366,9 @@
     {
      "repo": "invoke-ai/InvokeAI",
      "url": "https://github.com/invoke-ai/InvokeAI",
-     "stars": 28298,
+     "stars": 28299,
      "licence": "Apache-2.0",
-     "pushed": "2026-09-25",
+     "pushed": "2026-09-26",
      "status": "ok",
      "stars_90d": null,
      "what": "Creative engine and UI for Stable Diffusion and FLUX"
@@ -1376,7 +1376,7 @@
     {
      "repo": "Tongyi-MAI/Z-Image",
      "url": "https://github.com/Tongyi-MAI/Z-Image",
-     "stars": 12051,
+     "stars": 12050,
      "licence": "Apache-2.0",
      "pushed": "2026-02-09",
      "status": "ok",
@@ -1386,7 +1386,7 @@
     {
      "repo": "QwenLM/Qwen-Image",
      "url": "https://github.com/QwenLM/Qwen-Image",
-     "stars": 8376,
+     "stars": 8378,
      "licence": "Apache-2.0",
      "pushed": "2026-02-10",
      "status": "ok",
@@ -1404,7 +1404,7 @@
     {
      "repo": "searxng/searxng",
      "url": "https://github.com/searxng/searxng",
-     "stars": 37654,
+     "stars": 37656,
      "licence": "AGPL-3.0",
      "pushed": "2026-09-25",
      "status": "ok",
@@ -1414,7 +1414,7 @@
     {
      "repo": "ItzCrazyKns/Vane",
      "url": "https://github.com/ItzCrazyKns/Vane",
-     "stars": 36913,
+     "stars": 36914,
      "licence": "MIT",
      "pushed": "2026-09-01",
      "status": "ok",
@@ -1442,7 +1442,7 @@
     {
      "repo": "firecrawl/firecrawl",
      "url": "https://github.com/firecrawl/firecrawl",
-     "stars": 184985,
+     "stars": 185025,
      "licence": "AGPL-3.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -1452,7 +1452,7 @@
     {
      "repo": "unclecode/crawl4ai",
      "url": "https://github.com/unclecode/crawl4ai",
-     "stars": 84292,
+     "stars": 84297,
      "licence": "Apache-2.0",
      "pushed": "2026-09-25",
      "status": "ok",
@@ -1462,7 +1462,7 @@
     {
      "repo": "ScrapeGraphAI/Scrapegraph-ai",
      "url": "https://github.com/ScrapeGraphAI/Scrapegraph-ai",
-     "stars": 31319,
+     "stars": 31322,
      "licence": "MIT",
      "pushed": "2026-09-25",
      "status": "ok",
@@ -1500,7 +1500,7 @@
     {
      "repo": "browser-use/browser-use",
      "url": "https://github.com/browser-use/browser-use",
-     "stars": 116374,
+     "stars": 116383,
      "licence": "MIT",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -1510,7 +1510,7 @@
     {
      "repo": "microsoft/playwright",
      "url": "https://github.com/microsoft/playwright",
-     "stars": 96699,
+     "stars": 96701,
      "licence": "Apache-2.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -1520,7 +1520,7 @@
     {
      "repo": "lightpanda-io/browser",
      "url": "https://github.com/lightpanda-io/browser",
-     "stars": 35582,
+     "stars": 35583,
      "licence": "AGPL-3.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -1530,7 +1530,7 @@
     {
      "repo": "browserbase/stagehand",
      "url": "https://github.com/browserbase/stagehand",
-     "stars": 25400,
+     "stars": 25399,
      "licence": "MIT",
      "pushed": "2026-09-25",
      "status": "ok",
@@ -1558,7 +1558,7 @@
     {
      "repo": "firecracker-microvm/firecracker",
      "url": "https://github.com/firecracker-microvm/firecracker",
-     "stars": 36965,
+     "stars": 36966,
      "licence": "Apache-2.0",
      "pushed": "2026-09-25",
      "status": "ok",
@@ -1588,7 +1588,7 @@
     {
      "repo": "e2b-dev/runtime",
      "url": "https://github.com/e2b-dev/runtime",
-     "stars": 1620,
+     "stars": 1621,
      "licence": "Apache-2.0",
      "pushed": "2026-09-26",
      "status": "ok",
@@ -1606,7 +1606,7 @@
     {
      "repo": "mem0ai/mem0",
      "url": "https://github.com/mem0ai/mem0",
-     "stars": 66018,
+     "stars": 66021,
      "licence": "Apache-2.0",
      "pushed": "2026-09-25",
      "status": "ok",
@@ -1626,7 +1626,7 @@
     {
      "repo": "topoteretes/cognee",
      "url": "https://github.com/topoteretes/cognee",
-     "stars": 30989,
+     "stars": 30990,
      "licence": "Apache-2.0",
      "pushed": "2026-09-26",
      "status": "ok",
