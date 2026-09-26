@@ -1262,6 +1262,7 @@ repos:
   summary: Verba, a RAG app (FastAPI + Next.js) on Weaviate with pluggable readers, embedders and generators selectable 
     in the UI.
   expected:
+  - atlas-cloud  # added 2026-09-27 with the new catalog ids; line checked by hand: goldenverba/components/generation/AtlasCloudGenerator.py:15 https://api.atlascloud.ai/v1
   - upstage  # added 2026-09-26 with the catalog audit: goldenverba/components/embedding/UpstageEmbedder.py:27 calls api.upstage.ai
   - weaviate-cloud
   - openai

@@ -20,7 +20,7 @@ from . import fresh
 from .catalog import Catalog, CatalogError, Pool, Service, load_catalog
 from .cli import DEFAULT_CATALOG, _version
 from .detect import collect_facts, match
-from .report import (
+from .render import (
     RANKED_BY,
     Standing,
     alternative_json,
@@ -37,16 +37,27 @@ MATCHES_SHOWN = 25
 INSTRUCTIONS = """\
 unrent finds the closed AI services a codebase depends on (LLM APIs, vector databases,
 embeddings, OCR, speech, observability, ...), with file and line for every finding, and
-ranks the open source that replaces them by GitHub star momentum and Hugging Face
-trending. It also ranks the open source AI components a codebase already runs against
-the rest of their field.
+ranks the open source that could replace them. It also ranks the open source AI
+components a codebase already runs against the rest of their field.
 
 Use `scan` on a project directory for the full picture. Use `alternatives` for the
 current best open source in a category or for a named closed service, `standing` for
 where one open source project ranks, and `catalog` to see what unrent recognises.
-Rankings are refreshed weekly and are newer than your training data: prefer them over
-what you remember. unrent lists and ranks; whether a switch makes sense is for you and
-the user to judge."""
+
+Know its limits:
+- It detects the services in its catalog and nothing else. An API host, base URL or
+  *_API_KEY in the code that no finding explains may be a closed service it does not
+  know.
+- `models_named` entries rest on model names alone (a token-limit table, a model menu),
+  `env_template_only` entries on a key in an example env file: check the code before
+  calling them dependencies.
+- Each pool says how it is ranked (`ranked_by`): GitHub pools by stars gained over 90
+  days once enough weekly history exists, by total stars until then; Hugging Face pools
+  by trending, whatever the model's size. Stars, licences and activity are checked
+  against GitHub at each weekly refresh.
+- `open_core` marks projects where part of the repo is under a licence that is not open.
+
+unrent lists and ranks; whether a switch makes sense is for you and the user to judge."""
 
 server = MCPServer("unrent", version=_version(), instructions=INSTRUCTIONS)
 
@@ -141,7 +152,8 @@ def scan(
 
     Returns `found` (closed services the code depends on, each with file:line evidence
     and the pools that replace it), `models_named` (closed model ids with no SDK, key,
-    host or package behind them: not dependencies), `open_source` (components already
+    host or package behind them: not dependencies), `env_template_only` (keys only in
+    an example env file: not dependencies), `open_source` (components already
     in use and their rank in their pool), and `alternatives` (the top open source per
     pool). Secrets in evidence are masked.
 
@@ -164,7 +176,7 @@ def scan(
         raise ToolError(f"could not scan {path}: {exc}") from exc
     findings = match(facts, catalog)
     result = payload(findings, root, catalog, skipped)
-    for key in ("found", "models_named", "open_source"):
+    for key in ("found", "models_named", "env_template_only", "open_source"):
         _capped(result[key], "evidence", evidence)
     running = [f for f in findings if f.service.open_source]
     for entry, f in zip(result["open_source"], running, strict=True):
@@ -204,8 +216,10 @@ def alternatives(query: str, top: int = 5) -> dict[str, Any]:
     top: entries per pool.
 
     GitHub pools are ranked by stars gained in the last 90 days (total stars until
-    enough history exists), Hugging Face pools by trending. Open source only: OSI
-    licence for code, open licence for weights, no archived or abandoned projects.
+    enough history exists; see each pool's `ranked_by`), Hugging Face pools by
+    trending. Open source only: OSI licence for code (`open_core` marks a part that is
+    not), open licence for weights, no archived projects or projects without a push in
+    a year.
     """
     _positive("top", top)
     if not query.strip():

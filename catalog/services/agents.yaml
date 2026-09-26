@@ -497,3 +497,92 @@
     requirement: [freeplay]
     python_import: [freeplay]
     env: [FREEPLAY_API_KEY, FREEPLAY_SUBDOMAIN]
+
+- id: searchapi-io
+  name: SearchApi.io
+  category: Web search
+  replace_with: [web-search]
+  detect:
+    # Not `searchapi` on PyPI: that is an unrelated project.
+    requirement: [langchain-searchapi, llama-index-tools-searchapi]
+    python_import: [langchain_searchapi, llama_index.tools.searchapi]
+    symbol: [SearchApiAPIWrapper, SearchAPIResults, SearchAPIRun, SearchApiLoader,
+             SearchApiToolSpec, SearchApiRetriever]
+    endpoint: [searchapi.io/api]
+    env: [SEARCHAPI_API_KEY, AGENT_SEARCHAPI_API_KEY]
+
+
+- id: serply
+  name: Serply
+  category: Web search
+  replace_with: [web-search, web-scraping]
+  detect:
+    symbol: [SerplyWebSearchTool, SerplyNewsSearchTool, SerplyScholarSearchTool,
+             SerplyJobSearchTool, SerplyWebpageToMarkdownTool]
+    endpoint: [api.serply.io]
+    env: [SERPLY_API_KEY, AGENT_SERPLY_API_KEY]
+
+
+- id: fastcrw-cloud
+  name: fastCRW (hosted CRW)
+  category: Web scraping
+  # CRW is open source (AGPL) and self-hostable; its `crw` SDK talks to either. The key
+  # is what the managed cloud needs, but CRW is a short name others use too.
+  weak: [[CRW_API_KEY, AGENT_CRW_API_KEY]]
+  replace_with: [web-scraping, web-search]
+  detect:
+    endpoint: [fastcrw.com/api, api.fastcrw.com]
+    env: [CRW_API_KEY, AGENT_CRW_API_KEY]
+
+
+- id: keenable
+  name: Keenable
+  category: Web search
+  replace_with: [web-search, web-scraping]
+  detect:
+    requirement: [keenable, langchain-keenable, llama-index-tools-keenable]
+    npm: [keenable]
+    python_import: [keenable, langchain_keenable, llama_index.tools.keenable]
+    symbol: ["Keenable(", AsyncKeenable, KeenableSearch, KeenableFetch, KeenableToolSpec]
+    endpoint: [api.keenable.ai]
+    env: [KEENABLE_API_KEY, AGENT_KEENABLE_API_KEY]
+
+
+- id: anysearch
+  name: AnySearch
+  category: Web search
+  replace_with: [web-search, web-scraping]
+  detect:
+    # Not `anysearch` on PyPI: that is an Elasticsearch/OpenSearch compatibility library.
+    endpoint: [api.anysearch.com]
+    env: [ANYSEARCH_API_KEY, AGENT_ANYSEARCH_API_KEY]
+
+
+- id: bocha
+  name: Bocha AI Search (博查)
+  category: Web search
+  replace_with: [web-search, reranker]
+  detect:
+    endpoint: [api.bochaai.com]
+    env: [BOCHA_API_KEY]
+
+
+- id: groundroute
+  name: GroundRoute
+  category: Web search
+  replace_with: [web-search]
+  detect:
+    endpoint: [api.groundroute.ai]
+    env: [GROUNDROUTE_API_KEY]
+
+
+- id: okahu-cloud
+  name: Okahu Cloud
+  category: LLM observability
+  replace_with: [llm-observability, llm-evals]
+  detect:
+    # Not monocle_apptrace: Monocle is open source and exports to files and your own
+    # backends as well. The Okahu exporter is what sends traces to the hosted service.
+    symbol: [OkahuSpanExporter, OkahuEvalResultExporter]
+    endpoint: [ingest.okahu.co, api.okahu.co]
+    env: [OKAHU_API_KEY, OKAHU_INGESTION_ENDPOINT]

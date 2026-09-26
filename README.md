@@ -105,7 +105,7 @@ for six hours. When the fetch fails it uses the shipped snapshot and says so.
 
 ## What it detects
 
-**182 closed AI services** in 20 categories: LLM APIs, LLM gateways, embeddings, vector
+**203 closed AI services** in 20 categories: LLM APIs, LLM gateways, embeddings, vector
 databases, RAG platforms, document parsing, guardrails, LLM observability, model hosting,
 fine-tuning, speech-to-text, text-to-speech, voice agents, image generation, web search,
 web scraping, browser automation, code sandboxes, agent platforms, agent memory.
@@ -155,7 +155,8 @@ GitHub Action that merges itself.
 - **Models:** Hugging Face trending. Labs' own releases only, open licence, max two per lab.
 - **Open source only.** OSI licence for code. Apache, MIT, BSD or CC-BY for weights.
   Restricted weights are out, whatever the code licence. Archived projects and a year
-  without a push are out.
+  without a push are out. Open core is marked: LiteLLM's `enterprise/` or Langfuse's `ee/`
+  is not under the licence shown.
 - **No silent rot.** A renamed, archived or relicensed project blocks the auto-merge and
   waits for a human. A pool that empties or halves is not published.
 

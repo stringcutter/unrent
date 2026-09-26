@@ -824,6 +824,13 @@ repos:
   summary: RAGFlow, an open source RAG engine with its own DeepDoc document parser, agent canvas, a Python backend plus 
     a Go rewrite (internal/), a React web UI, and dozens of pluggable LLM, embedding, rerank, ASR, TTS and OCR providers
   expected:
+  - avian  # added 2026-09-27 with the new catalog ids; line checked by hand: conf/models/avian.json:4 https://api.avian.io
+  - gitee-ai  # added 2026-09-27 with the new catalog ids; line checked by hand: rag/llm/__init__.py:84 GiteeAI https://ai.gitee.com/v1/
+  - ppio  # added 2026-09-27 with the new catalog ids; line checked by hand: conf/models/ppio.json:4 https://api.ppio.com/openai/v1
+  - aimlapi  # added 2026-09-27 with the new catalog ids; line checked by hand: rag/llm/chat_model.py:2017 https://api.aimlapi.com/v1
+  - cometapi  # added 2026-09-27 with the new catalog ids; line checked by hand: rag/llm/__init__.py:75 https://api.cometapi.com/v1
+  - keenable  # added 2026-09-27 with the new catalog ids; line checked by hand: agent/tools/keenable.py:30 https://api.keenable.ai
+  - serply  # added 2026-09-27 with the new catalog ids; line checked by hand: rag/utils/serply_conn.py:28 https://api.serply.io/v1/search/
   - openai
   - openai-embeddings
   - openai-speech-to-text
@@ -1474,6 +1481,8 @@ repos:
     provider packages, Next.js web, dify-agent runtime, docker-compose deployment); model providers are external 
     marketplace plugins run by the plugin daemon
   expected:
+  - nomic-api  # added 2026-09-27 with the new catalog ids; line checked by hand: api/pytest.ini:27 NOMIC_API_KEY, test config only
+  - gitee-ai  # added 2026-09-27 with the new catalog ids; line checked by hand: api/pytest.ini:39 GITEE_AI_API_KEY, test config only
   - openai
   - openai-embeddings
   - openai-moderation
@@ -1500,6 +1509,8 @@ repos:
   - tencent-vectordb
   - volcengine-vikingdb
   tests_only:
+  - nomic-api
+  - gitee-ai
   - openai-speech-to-text
   - fireworks
   - upstage
@@ -1658,6 +1669,7 @@ repos:
   summary: LibreChat (formerly danny-avila/LibreChat), a self-hosted multi-provider AI chat platform (agents, 
     assistants, tools, web search, RAG, speech) with Node API, React client, docker-compose and Helm deployment
   expected:
+  - keenable  # added 2026-09-27 with the new catalog ids; line checked by hand: packages/data-schemas/src/app/web.ts:100 KEENABLE_API_KEY web search provider
   - openai
   - openai-assistants
   - openai-moderation
@@ -1960,6 +1972,17 @@ repos:
     LLM providers, 14 embedders, 10 vector DBs, TTS/STT/image-gen providers and agent web-search skills; plus the open-computer
     VM agent sub-project'
   expected:
+  - gitee-ai  # added 2026-09-27 with the new catalog ids; line checked by hand: server/utils/AiProviders/giteeai/index.js:27 https://ai.gitee.com/v1
+  - ppio  # added 2026-09-27 with the new catalog ids; line checked by hand: server/utils/AiProviders/ppio/index.js:32 api.ppinfra.com
+  - apipie  # added 2026-09-27 with the new catalog ids; line checked by hand: server/utils/AiProviders/apipie/index.js:28 https://apipie.ai/v1
+  - cometapi  # added 2026-09-27 with the new catalog ids; line checked by hand: server/utils/AiProviders/cometapi/index.js:29 api.cometapi.com
+  - privatemode  # added 2026-09-27 with the new catalog ids; line checked by hand: server/utils/AiProviders/privatemode/index.js:20 Privatemode proxy provider
+  - chroma-cloud  # added 2026-09-27 with the new catalog ids; line checked by hand: server/utils/vectorDbProviders/chromacloud/index.js:33 CloudClient
+  - searchapi-io  # added 2026-09-27 with the new catalog ids; line checked by hand: server/utils/agents/aibitat/plugins/web-browsing.js:457 searchapi.io
+  - serply  # added 2026-09-27 with the new catalog ids; line checked by hand: server/utils/agents/aibitat/plugins/web-browsing.js:928 api.serply.io
+  - fastcrw-cloud  # added 2026-09-27 with the new catalog ids; line checked by hand: server/utils/agents/aibitat/plugins/web-browsing.js:1444 fastCRW
+  - keenable  # added 2026-09-27 with the new catalog ids; line checked by hand: server/utils/agents/aibitat/plugins/web-browsing.js:1517 Keenable
+  - anysearch  # added 2026-09-27 with the new catalog ids; line checked by hand: server/utils/agents/aibitat/plugins/web-browsing.js:1759 AnySearch
   - openai
   - openai-embeddings
   - openai-images
@@ -2188,6 +2211,9 @@ repos:
   summary: Self-hosted AI chat platform (FastAPI backend + SvelteKit frontend) for Ollama and OpenAI-compatible APIs 
     with RAG, web search, speech and image generation
   expected:
+  - bocha  # added 2026-09-27 with the new catalog ids; line checked by hand: backend/open_webui/retrieval/web/bocha.py:41 api.bochaai.com
+  - searchapi-io  # added 2026-09-27 with the new catalog ids; line checked by hand: backend/open_webui/retrieval/web/searchapi.py:24 searchapi.io/api
+  - serply  # added 2026-09-27 with the new catalog ids; line checked by hand: backend/open_webui/retrieval/web/serply.py:32 api.serply.io
   - openai
   - openai-embeddings
   - openai-speech-to-text

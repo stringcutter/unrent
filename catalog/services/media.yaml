@@ -428,3 +428,16 @@
     model: [recraftv3, recraftv2]
     endpoint: [external.api.recraft.ai]
     env: [RECRAFT_API_TOKEN]
+
+- id: modelslab
+  name: ModelsLab
+  category: Image generation
+  replace_with: [image-generation]
+  detect:
+    requirement: [modelslab, modelslab-py, llama-index-llms-modelslab]
+    npm: [modelslab]
+    python_import: [modelslab_py, llama_index.llms.modelslab]
+    symbol: [ModelsLabLLM]
+    # With a path: the bare host is also the sign-up page named in error messages.
+    endpoint: [modelslab.com/api, modelslab.com/uncensored-chat]
+    env: [MODELSLAB_API_KEY]

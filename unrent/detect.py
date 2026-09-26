@@ -173,6 +173,23 @@ class Finding:
     def test_only(self) -> bool:
         return all(f.in_test for f in self.facts)
 
+    @property
+    def template_only(self) -> bool:
+        """Only keys in an example env file (`HELICONE_API_KEY=` in .env.example) that
+        nothing else backs: a placeholder, not proof the code calls the service."""
+        return all(f.kind == "env" and is_env_template(f.file.name) for f in self.facts)
+
+
+_ENV_TEMPLATE = re.compile(
+    # .env.example, .env.local.sample, env.template, example.env, .example.env
+    r"^(\.?env\..*(example|sample|template|dist|defaults?)|\.?(example|sample|template)\.env)$",
+    re.IGNORECASE,
+)
+
+
+def is_env_template(name: str) -> bool:
+    return bool(_ENV_TEMPLATE.match(name))
+
 
 _EVIDENCE_STRENGTH = {
     **{k: 0 for k in ("requirement", "npm", "go", "cargo", "maven", "nuget", "gem", "composer",
@@ -680,7 +697,9 @@ class Needles:
             token = _MODEL_TOKEN.match(line, m.start())
             model_id = token.group(0) if token else needle
             rest = model_id[len(needle) :]
-            if needle.endswith(("/", ":")) and not rest:
+            # A vendor prefix names a model only when a model name follows it: not the
+            # URI scheme `github://`, not the regex `/^snowflake/i`.
+            if needle.endswith(("/", ":")) and (len(rest) < 2 or not rest[0].isalnum()):
                 continue
             if _FILE_EXTENSION.search(model_id) and not rest[-1:].isdigit():
                 continue  # `bedrock/geology.csv` is a path
@@ -932,12 +951,21 @@ _LOCAL_HOSTS = {
 _PRIVATE = re.compile(r"^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)|\.(local|internal|lan)$")
 
 
+_LOCAL_INFERENCE = re.compile(r"""(?i)\binference_mode\b["']?\s*[:=]\s*["'`](local|dynamic)["'`]""")
+
+
 def _local_base_urls(path: Path, lines: list[str], code: list[str]) -> list[Fact]:
     """`base_url="http://localhost:11434/v1"`: an OpenAI-compatible client talking to
-    a server you run — Ollama, vLLM, LM Studio — not to OpenAI."""
+    a server you run — Ollama, vLLM, LM Studio — not to OpenAI. Also
+    `inference_mode="local"`: an SDK told to run the model here (Nomic)."""
     facts = []
     for n, view in enumerate(code, start=1):
         lowered = view.lower()
+        if "inference_mode" in lowered:
+            for m in _LOCAL_INFERENCE.finditer(view):
+                facts.append(
+                    Fact("local_mode", m.group(1).lower(), path, n, _snippet(lines[n - 1]))
+                )
         if "base" not in lowered:  # every spelling the pattern accepts contains it
             continue
         for m in _BASE_URL.finditer(view):
@@ -1765,6 +1793,7 @@ def match(facts: list[Fact], catalog: Catalog) -> list[Finding]:
                 hits_by_service.setdefault(service.id, {})[_key(fact)] = fact
 
     local = [f for f in facts if f.kind == "local_base_url"]
+    local_modes = [f for f in facts if f.kind == "local_mode"]
     own = {f.value for f in facts if f.kind == "own_repo"}
     findings: list[Finding] = []
     for service in catalog.detectable:
@@ -1774,6 +1803,8 @@ def match(facts: list[Fact], catalog: Catalog) -> list[Finding]:
         kept = tuple(sorted(hits.values(), key=lambda f: (str(f.file), f.line, f.kind, f.value)))
         if service.local_compatible:
             kept = _without_local_clients(kept, local)
+        if service.local_mode:
+            kept = _without_local_clients(kept, local_modes)
         if kept:
             findings.append(Finding(service=service, facts=kept))
 
@@ -1837,7 +1868,11 @@ def _mark_models_only(findings: list[Finding]) -> list[Finding]:
     """Flag findings whose only evidence is model names. A capability (OpenAI
     Embeddings) is exempt when the service it is part of has real evidence:
     `text-embedding-3-small` next to `from openai import OpenAI` is a real call."""
-    real = {f.service.id for f in findings if any(fact.kind != "model" for fact in f.facts)}
+    real = {
+        f.service.id
+        for f in findings
+        if any(fact.kind != "model" for fact in f.facts) and not f.template_only
+    }
     out = []
     for finding in findings:
         only_models = all(fact.kind == "model" for fact in finding.facts)
