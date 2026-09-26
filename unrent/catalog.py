@@ -329,15 +329,17 @@ def _parse_service(raw: dict, where: Path, pools: dict[str, Pool]) -> Service:
     )
 
 
-def load_catalog(path: Path) -> Catalog:
-    """Load a catalog directory: services/*.yaml, alternatives.yaml, rankings.json."""
+def load_catalog(path: Path, rankings: dict | None = None) -> Catalog:
+    """Load a catalog directory: services/*.yaml, alternatives.yaml, rankings.json.
+    `rankings` replaces the directory's rankings.json (a newer snapshot fetched online)."""
     services_dir = path / "services"
     files = sorted(services_dir.glob("*.yaml")) if services_dir.is_dir() else []
     if not files:
         raise CatalogError(f"no service files found in {services_dir}")
 
-    rankings_file = path / "rankings.json"
-    rankings = _load_json(rankings_file) if rankings_file.is_file() else {}
+    if rankings is None:
+        rankings_file = path / "rankings.json"
+        rankings = _load_json(rankings_file) if rankings_file.is_file() else {}
     pools = _load_pools(path / "alternatives.yaml", rankings)
 
     catalog = Catalog(pools=pools, rankings_date=rankings.get("generated"))

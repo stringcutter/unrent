@@ -58,6 +58,14 @@ jobs:
           uvx --from "$GITHUB_WORKSPACE"/dist/*.whl unrent --version
           uvx --from "$GITHUB_WORKSPACE"/dist/*.whl unrent catalog --validate
           uvx --from "$GITHUB_WORKSPACE"/dist/*.whl unrent scan fixture | grep -q "OpenAI API"
+      - name: MCP server from the wheel answers over stdio
+        env:
+          GITHUB_TOKEN: ${{ github.token }}  # the repo is private: raw rankings need it
+        run: |
+          cd "$RUNNER_TEMP"
+          wheel=$(ls "$GITHUB_WORKSPACE"/dist/*.whl)
+          uv run --no-project --with "unrent[mcp] @ file://$wheel" \
+            python "$GITHUB_WORKSPACE/scripts/mcp_smoke.py" fixture
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: dist

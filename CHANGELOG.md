@@ -8,6 +8,10 @@ each release ships the rankings as of its date.
 ## [Unreleased]
 
 ### Added
+- `unrent mcp`: an MCP server with `scan`, `alternatives`, `standing` and `catalog`
+  tools (install the `mcp` extra). It reads the latest rankings from the repository,
+  cached for six hours, and falls back to the shipped snapshot, saying why.
+  `UNRENT_OFFLINE=1` keeps it offline.
 - 19 closed services (182 in all): GitHub Models, SageMaker, Qianfan, SiliconFlow,
   Hunyuan, Spark, Baichuan, StepFun, Novita, Clarifai, Aleph Alpha, Reka, GigaChat and
   six managed vector databases.
