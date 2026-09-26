@@ -68,6 +68,7 @@ repos:
   summary: Collection of Claude API quickstarts (agents, computer/browser use, customer-support RAG, financial analyst,
     autonomous coding, Managed Agents integrations and self-hosted sandbox runners)
   expected:
+  - daytona-cloud  # added 2026-09-26 with the catalog audit: managed-agents/self-hosted-sandboxes/daytona/daytona_webhook.py:27 imports daytona_sdk
   - anthropic
   - aws-bedrock
   - google-vertex
@@ -369,6 +370,7 @@ repos:
   summary: AI on the command line - Go CLI that pipes stdin/prompts to many LLM providers selected via a YAML config
     (apis section).
   expected:
+  - sambanova  # added 2026-09-26 with the catalog audit: config_template.yml:308 ships a SambaNova provider (api.sambanova.ai, SAMBANOVA_API_KEY)
   - openai
   - anthropic
   - google-gemini
@@ -746,6 +748,8 @@ repos:
   summary: LangGraph deep-research agent (supervisor/researcher) with configurable LLMs and search APIs, plus a
     legacy graph/multi-agent implementation.
   expected:
+  - google-programmable-search  # added 2026-09-26 with the catalog audit: src/legacy/utils.py:990 calls www.googleapis.com/customsearch/v1
+  - linkup  # added 2026-09-26 with the catalog audit: pyproject linkup-sdk; src/legacy/utils.py:903 LinkupClient()
   - openai
   - anthropic
   - google-gemini
@@ -1235,6 +1239,7 @@ repos:
   summary: Verba, a RAG app (FastAPI + Next.js) on Weaviate with pluggable readers, embedders and generators selectable
     in the UI.
   expected:
+  - upstage  # added 2026-09-26 with the catalog audit: goldenverba/components/embedding/UpstageEmbedder.py:27 calls api.upstage.ai
   - weaviate-cloud
   - openai
   - openai-embeddings

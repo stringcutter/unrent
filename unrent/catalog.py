@@ -101,7 +101,14 @@ class Service:
     open_models: tuple[str, ...] = ()
     # Signature values that cannot establish the service alone, because something
     # unrelated shares them: `import fireworks` is also the FireWorks workflow library.
-    weak: tuple[str, ...] = ()
+    # Grouped: two weak signatures corroborate each other only across groups, so
+    # `mongodb.net` and `ATLAS_URI` (both just "Atlas") don't make vector search.
+    weak_groups: tuple[tuple[str, ...], ...] = ()
+
+    @property
+    def weak(self) -> tuple[str, ...]:
+        return tuple(v for group in self.weak_groups for v in group)
+
     # The SDK doubles as the client for self-hosted OpenAI-compatible servers, so
     # evidence next to a local base URL (Ollama, vLLM, LM Studio) does not count.
     local_compatible: bool = False
@@ -245,12 +252,18 @@ def _parse_service(raw: dict, where: Path, pools: dict[str, Pool]) -> Service:
                 f"which is not in alternatives.yaml"
             )
     signatures = {v for values in detect.values() for v in values}
-    for value in _as_tuple(raw.get("weak")):
-        if value not in signatures:
-            raise CatalogError(
-                f"{where.name}: service '{service_id}' marks '{value}' weak, "
-                f"but it is not one of its signatures"
-            )
+    # `weak: [a, b]` is two groups of one; `weak: [[a, b], c]` makes a and b one group.
+    weak_groups = tuple(
+        _as_tuple(item) if isinstance(item, list) else (str(item),)
+        for item in raw.get("weak") or []
+    )
+    for group in weak_groups:
+        for value in group:
+            if value not in signatures:
+                raise CatalogError(
+                    f"{where.name}: service '{service_id}' marks '{value}' weak, "
+                    f"but it is not one of its signatures"
+                )
     return Service(
         id=service_id,
         name=str(raw["name"]),
@@ -259,7 +272,7 @@ def _parse_service(raw: dict, where: Path, pools: dict[str, Pool]) -> Service:
         detect=detect,
         excludes=_as_tuple(raw.get("excludes")),
         open_models=_as_tuple(raw.get("open_models")),
-        weak=_as_tuple(raw.get("weak")),
+        weak_groups=weak_groups,
         local_compatible=bool(raw.get("local_compatible", False)),
         part_of=_as_tuple(raw.get("part_of")),
     )

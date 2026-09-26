@@ -9,11 +9,12 @@
   replace_with: [web-search, web-scraping]
   detect:
     requirement: [tavily-python, langchain-tavily, llama-index-tools-tavily-research]
-    npm: ["@tavily/core", "@langchain/tavily"]
-    python_import: [tavily, langchain_tavily]
+    npm: ["@tavily/core", "@langchain/tavily", "@mastra/tavily"]
+    python_import: [tavily, langchain_tavily, llama_index.tools.tavily_research]
     symbol: [TavilyClient, TavilySearch, TavilySearchResults, AsyncTavilyClient]
     endpoint: [api.tavily.com]
     env: [TAVILY_API_KEY]
+    maven: ["dev.langchain4j:langchain4j-web-search-engine-tavily"]
 
 - id: exa
   name: Exa
@@ -21,10 +22,10 @@
   replace_with: [web-search, web-scraping]
   detect:
     # Exa was called Metaphor until 2024.
-    requirement: [exa-py, langchain-exa, metaphor-python]
+    requirement: [exa-py, langchain-exa, metaphor-python, llama-index-tools-exa]
     npm: [exa-js, "@langchain/exa", metaphor-node]
     python_import: [exa_py, langchain_exa, metaphor_python, llama_hub.tools.metaphor,
-                    llama_index.tools.metaphor]
+                    llama_index.tools.metaphor, llama_index.tools.exa]
     symbol: [MetaphorToolSpec]
     endpoint: [api.exa.ai, api.metaphor.systems]
     env: [EXA_API_KEY]
@@ -58,6 +59,8 @@
     symbol: [BraveSearch]
     endpoint: [api.search.brave.com]
     env: [BRAVE_API_KEY, BRAVE_SEARCH_API_KEY]
+    requirement: [llama-index-tools-brave-search]
+    python_import: [llama_index.tools.brave_search]
 
 - id: bing-search
   name: Bing / Grounding with Bing Search
@@ -67,15 +70,17 @@
     symbol: [BingSearchAPIWrapper, BingGroundingTool]
     endpoint: [api.bing.microsoft.com]
     env: [BING_SUBSCRIPTION_KEY, BING_SEARCH_URL, BING_API_KEY]
+    requirement: [llama-index-tools-bing-search]
+    python_import: [llama_index.tools.bing_search]
 
 - id: firecrawl-cloud
   name: Firecrawl (hosted)
   category: Web scraping
   replace_with: [web-scraping]
   detect:
-    requirement: [firecrawl-py, firecrawl]
+    requirement: [firecrawl-py, firecrawl, langchain-firecrawl]
     npm: ["@mendable/firecrawl-js", firecrawl]
-    python_import: [firecrawl]
+    python_import: [firecrawl, langchain_firecrawl]
     symbol: [FirecrawlApp, FireCrawlLoader]
     endpoint: [api.firecrawl.dev]
     env: [FIRECRAWL_API_KEY]
@@ -85,9 +90,9 @@
   category: Web scraping
   replace_with: [web-scraping, browser-automation]
   detect:
-    requirement: [apify-client]
+    requirement: [apify-client, langchain-apify]
     npm: [apify-client]
-    python_import: [apify_client]
+    python_import: [apify_client, langchain_apify]
     endpoint: [api.apify.com]
     env: [APIFY_API_TOKEN, APIFY_TOKEN]
 
@@ -107,10 +112,11 @@
   category: Browser automation
   replace_with: [browser-automation]
   detect:
-    requirement: [hyperbrowser]
+    requirement: [hyperbrowser, langchain-hyperbrowser]
     npm: ["@hyperbrowser/sdk"]
-    python_import: [hyperbrowser]
+    python_import: [hyperbrowser, langchain_hyperbrowser]
     env: [HYPERBROWSER_API_KEY]
+    endpoint: [api.hyperbrowser.ai]
 
 - id: openai-computer-use
   name: OpenAI computer use / Operator
@@ -128,10 +134,10 @@
   category: Code sandbox
   replace_with: [code-sandbox]
   detect:
-    requirement: [e2b, e2b-code-interpreter, e2b-desktop]
-    npm: [e2b, "@e2b/code-interpreter", "@e2b/desktop"]
-    python_import: [e2b, e2b_code_interpreter, e2b_desktop]
-    endpoint: [e2b.app, e2b.dev]
+    requirement: [e2b, e2b-code-interpreter, e2b-desktop, langchain-e2b]
+    npm: [e2b, "@e2b/code-interpreter", "@e2b/desktop", "@mastra/e2b"]
+    python_import: [e2b, e2b_code_interpreter, e2b_desktop, langchain_e2b]
+    endpoint: [e2b.app, api.e2b.dev]
     env: [E2B_API_KEY]
 
 - id: modal
@@ -139,19 +145,19 @@
   category: Code sandbox
   replace_with: [code-sandbox, llm-serving]
   detect:
-    requirement: [modal]
-    python_import: [modal]
+    requirement: [modal, langchain-modal]
+    python_import: [modal, langchain_modal]
     symbol: ["modal.App", "modal.Image", "modal.Sandbox"]
     endpoint: [modal.run]
     env: [MODAL_TOKEN_ID, MODAL_TOKEN_SECRET]
+    npm: ["@langchain/modal"]
 
 - id: vercel-sandbox
   name: Vercel Sandbox
   category: Code sandbox
   replace_with: [code-sandbox]
   detect:
-    npm: ["@vercel/sandbox"]
-
+    npm: ["@vercel/sandbox", "@ai-sdk/sandbox-vercel"]
 
 # ---------------------------------------------------------------- memory
 
@@ -192,9 +198,9 @@
   replace_with: [llm-observability]
   detect:
     requirement: [langsmith]
-    npm: [langsmith]
+    npm: [langsmith, "@mastra/langsmith"]
     python_import: [langsmith]
-    symbol: ["@traceable", LangChainTracer, wrap_openai]
+    symbol: ["@traceable", LangChainTracer]
     endpoint: [api.smith.langchain.com]
     env: [LANGCHAIN_API_KEY, LANGCHAIN_TRACING_V2, LANGSMITH_API_KEY, LANGSMITH_TRACING]
 
@@ -203,10 +209,10 @@
   category: LLM observability
   replace_with: [llm-observability]
   detect:
-    requirement: [braintrust, autoevals]
-    npm: [braintrust, autoevals]
+    requirement: [braintrust]
+    npm: [braintrust, "@mastra/braintrust"]
     python_import: [braintrust]
-    endpoint: [api.braintrust.dev, braintrustdata.com]
+    endpoint: [api.braintrust.dev]
     env: [BRAINTRUST_API_KEY]
 
 - id: wandb-weave
@@ -229,6 +235,8 @@
   detect:
     endpoint: [oai.helicone.ai, anthropic.helicone.ai, gateway.helicone.ai, ai-gateway.helicone.ai]
     env: [HELICONE_API_KEY]
+    requirement: [llama-index-llms-helicone]
+    python_import: [llama_index.llms.helicone]
 
 - id: datadog-llm-observability
   name: Datadog LLM Observability
@@ -237,6 +245,7 @@
   detect:
     symbol: [LLMObs]
     env: [DD_LLMOBS_ENABLED, DD_LLMOBS_ML_APP]
+    npm: ["@mastra/datadog"]
 
 - id: humanloop
   name: Humanloop
@@ -256,4 +265,235 @@
     requirement: [galileo, promptquality]
     npm: [galileo]
     python_import: [galileo, promptquality]
-    env: [GALILEO_API_KEY]
+    env: [GALILEO_API_KEY, GALILEO_PROJECT, GALILEO_LOG_STREAM]
+    endpoint: [api.galileo.ai]
+
+- id: daytona-cloud
+  name: Daytona (hosted)
+  category: Code sandbox
+  replace_with: [code-sandbox]
+  detect:
+    requirement: [daytona, daytona-sdk, langchain-daytona]
+    npm: ["@daytonaio/sdk", "@mastra/daytona"]
+    python_import: [daytona, daytona_sdk, langchain_daytona]
+    endpoint: [app.daytona.io]
+    env: [DAYTONA_API_KEY]
+
+- id: runloop
+  name: Runloop
+  category: Code sandbox
+  replace_with: [code-sandbox]
+  detect:
+    requirement: [runloop-api-client, langchain-runloop]
+    npm: ["@runloop/api-client"]
+    python_import: [runloop_api_client, langchain_runloop]
+    endpoint: [api.runloop.ai]
+    env: [RUNLOOP_API_KEY]
+
+- id: codesandbox-sdk
+  name: CodeSandbox SDK
+  category: Code sandbox
+  replace_with: [code-sandbox]
+  detect:
+    npm: ["@codesandbox/sdk"]
+    endpoint: [api.codesandbox.io]
+    env: [CSB_API_KEY]
+
+- id: cloudflare-sandbox
+  name: Cloudflare Sandbox
+  category: Code sandbox
+  replace_with: [code-sandbox]
+  detect:
+    npm: ["@cloudflare/sandbox"]
+
+- id: steel
+  name: Steel (hosted browsers)
+  category: Browser automation
+  weak: [steel]
+  replace_with: [browser-automation]
+  detect:
+    requirement: [steel-sdk]
+    npm: [steel-sdk]
+    python_import: [steel]
+    endpoint: [api.steel.dev, connect.steel.dev]
+    env: [STEEL_API_KEY]
+
+- id: browser-use-cloud
+  name: Browser Use Cloud
+  category: Browser automation
+  replace_with: [browser-automation]
+  detect:
+    requirement: [browser-use-sdk]
+    npm: [browser-use-sdk]
+    python_import: [browser_use_sdk]
+    endpoint: [api.browser-use.com]
+    env: [BROWSER_USE_API_KEY]
+
+- id: anchor-browser
+  name: Anchor Browser
+  category: Browser automation
+  replace_with: [browser-automation]
+  detect:
+    requirement: [anchorbrowser, langchain-anchorbrowser]
+    npm: [anchorbrowser]
+    python_import: [anchorbrowser, langchain_anchorbrowser]
+    endpoint: [api.anchorbrowser.io, connect.anchorbrowser.io]
+    env: [ANCHORBROWSER_API_KEY]
+
+- id: kernel-browsers
+  name: Kernel (hosted browsers)
+  category: Browser automation
+  weak: [kernel]
+  replace_with: [browser-automation]
+  detect:
+    requirement: [kernel]
+    npm: ["@onkernel/sdk"]
+    python_import: [kernel]
+    endpoint: [api.onkernel.com]
+    env: [KERNEL_API_KEY]
+
+- id: parallel-web
+  name: Parallel Web Systems (Search / Extract / Task API)
+  category: Web search
+  weak: [parallel]
+  replace_with: [web-search, web-scraping]
+  detect:
+    requirement: [parallel-web, langchain-parallel, llama-index-tools-parallel-web-systems]
+    npm: [parallel-web, "@mastra/parallel"]
+    python_import: [parallel, langchain_parallel, llama_index.tools.parallel_web_systems]
+    model: [parallel_ai/]
+    endpoint: [api.parallel.ai]
+    env: [PARALLEL_API_KEY]
+
+- id: linkup
+  name: Linkup
+  category: Web search
+  replace_with: [web-search]
+  detect:
+    requirement: [linkup-sdk, langchain-linkup, llama-index-tools-linkup-research]
+    npm: [linkup-sdk]
+    python_import: [linkup, langchain_linkup, llama_index.tools.linkup_research]
+    symbol: [LinkupClient, LinkupSearchTool, LinkupSearchRetriever]
+    model: [linkup/]
+    endpoint: [api.linkup.so]
+    env: [LINKUP_API_KEY]
+
+- id: you-com
+  name: You.com Search API
+  category: Web search
+  replace_with: [web-search]
+  detect:
+    requirement: [youdotcom, langchain-youdotcom]
+    npm: ["@youdotcom-oss/sdk"]
+    python_import: [youdotcom, langchain_youdotcom]
+    symbol: [YouSearchAPIWrapper, YouRetriever]
+    model: [you_com/]
+    endpoint: [ydc-index.io, api.you.com]
+    env: [YDC_API_KEY]
+
+- id: bright-data
+  name: Bright Data (SERP / Web Unlocker / Browser API)
+  category: Web scraping
+  replace_with: [web-scraping, web-search, browser-automation]
+  detect:
+    requirement: [brightdata-sdk, langchain-brightdata]
+    npm: ["@brightdata/sdk", "@mastra/brightdata"]
+    python_import: [brightdata, langchain_brightdata]
+    endpoint: [api.brightdata.com]
+    env: [BRIGHTDATA_API_TOKEN, BRIGHTDATA_API_KEY]
+
+- id: scrapingbee
+  name: ScrapingBee
+  category: Web scraping
+  replace_with: [web-scraping]
+  detect:
+    requirement: [scrapingbee]
+    npm: [scrapingbee]
+    python_import: [scrapingbee]
+    symbol: [ScrapingBeeClient]
+    endpoint: [app.scrapingbee.com]
+    env: [SCRAPINGBEE_API_KEY]
+
+- id: google-programmable-search
+  name: Google Programmable Search (Custom Search JSON API)
+  category: Web search
+  replace_with: [web-search]
+  detect:
+    maven: ["dev.langchain4j:langchain4j-web-search-engine-google-custom"]
+    symbol: [GoogleSearchAPIWrapper]
+    endpoint: [customsearch.googleapis.com, www.googleapis.com/customsearch]
+    env: [GOOGLE_CSE_ID]
+
+- id: letta-cloud
+  name: Letta Cloud
+  category: Agent memory
+  local_compatible: true
+  replace_with: [agent-memory]
+  detect:
+    requirement: [letta-client]
+    npm: ["@letta-ai/letta-client"]
+    python_import: [letta_client]
+    endpoint: [api.letta.com]
+    env: [LETTA_API_KEY]
+
+- id: supermemory
+  name: Supermemory
+  category: Agent memory
+  replace_with: [agent-memory]
+  detect:
+    requirement: [supermemory]
+    npm: [supermemory]
+    python_import: [supermemory]
+    endpoint: [api.supermemory.ai]
+    env: [SUPERMEMORY_API_KEY]
+
+- id: pydantic-logfire
+  name: Pydantic Logfire
+  category: LLM observability
+  weak: [logfire]
+  replace_with: [llm-observability]
+  detect:
+    requirement: [logfire]
+    npm: [logfire, "@pydantic/logfire-node"]
+    python_import: [logfire]
+    endpoint: [logfire-us.pydantic.dev, logfire-eu.pydantic.dev, logfire-api.pydantic.dev]
+    env: [LOGFIRE_TOKEN, LOGFIRE_API_KEY]
+
+- id: arize-ax
+  name: Arize AX
+  category: LLM observability
+  replace_with: [llm-observability]
+  detect:
+    requirement: [arize]
+    python_import: [arize]
+    endpoint: [otlp.arize.com, api.arize.com]
+    env: [ARIZE_API_KEY, ARIZE_SPACE_ID]
+
+- id: honeyhive
+  name: HoneyHive
+  category: LLM observability
+  replace_with: [llm-observability]
+  detect:
+    requirement: [honeyhive]
+    npm: [honeyhive]
+    python_import: [honeyhive]
+    env: [HH_API_KEY, HONEYHIVE_API_KEY]
+
+- id: patronus
+  name: Patronus AI
+  category: LLM observability
+  replace_with: [llm-observability, guardrails]
+  detect:
+    requirement: [patronus]
+    python_import: [patronus]
+    endpoint: [api.patronus.ai, otel.patronus.ai]
+    env: [PATRONUS_API_KEY]
+
+- id: freeplay
+  name: Freeplay
+  category: LLM observability
+  replace_with: [llm-observability]
+  detect:
+    requirement: [freeplay]
+    python_import: [freeplay]
+    env: [FREEPLAY_API_KEY, FREEPLAY_SUBDOMAIN]

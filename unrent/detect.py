@@ -1630,19 +1630,27 @@ def _key(fact: Fact) -> tuple[str, int, str, str]:
 def _only_weak(finding: Finding) -> bool:
     """A signature marked weak (`import fireworks` is also the FireWorks workflow
     library) cannot establish a dependency on its own."""
-    weak = finding.service.weak
-    if not weak:
+    groups = finding.service.weak_groups
+    if not groups:
         return False
 
-    def weak_signature(fact: Fact) -> str | None:
+    def weak_group(fact: Fact) -> int | None:
         # Compare the signature that matched, not the observed value:
         # `from fireworks import Firework` is observed as `fireworks.Firework`.
         keys = set(_lookup_keys(fact.kind, fact.value))
-        return next((w for w in weak if _canonical(fact.kind, w) in keys), None)
+        return next(
+            (
+                i
+                for i, group in enumerate(groups)
+                for w in group
+                if _canonical(fact.kind, w) in keys
+            ),
+            None,
+        )
 
-    matched = [weak_signature(f) for f in finding.facts]
-    # Two different weak signatures corroborate each other: `$vectorSearch` next to
-    # a `mongodb.net` host is Atlas.
+    matched = [weak_group(f) for f in finding.facts]
+    # Weak signatures from two different groups corroborate each other:
+    # `$vectorSearch` next to a `mongodb.net` host is Atlas Vector Search.
     return None not in matched and len(set(matched)) < 2
 
 
