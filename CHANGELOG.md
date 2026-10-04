@@ -5,7 +5,9 @@ All notable changes to this project are documented here. The format follows
 [Semantic Versioning](https://semver.org/). Weekly ranking refreshes are not listed;
 each release ships the rankings as of its date.
 
-## [Unreleased]
+## [0.2.0] - unreleased
+
+First public release.
 
 ### Added
 - Snapped models: model ids the code selects that the vendor has retired (`snapped`) or
@@ -66,42 +68,6 @@ each release ships the rankings as of its date.
 - `env_template_only`: a key that appears only in `.env.example` or similar, with
   nothing in the code behind it, is listed apart and not counted as a dependency.
 
-### Changed
-- Faster scans of large repos, with identical results on all 54 corpus repos: from 1,500
-  files on, worker processes read the files (one per core, falling back to one process
-  where they can't start), each Python file is parsed once and only its statements are
-  walked, and ripgrep gets larger batches outside Windows. dify (14,000 files) went
-  from 59 s to 14 s, LibreChat (5,500) from 14 s to 6 s, the whole corpus from 193 s
-  to 112 s.
-- The MCP instructions state the limits: only catalog services are detected, and each
-  pool's `ranked_by` says whether it is ranked by 90-day star gain or total stars.
-- `unrent/report.py` is now `unrent/render.py`.
-
-### Fixed
-- A TOML dependency is cited at its own line (`llama-index = "0.9.7"`), not at a
-  `keywords` entry higher up that names the same package.
-- ripgrep only reads the files the scan covers: a repo with gigabytes of ignored data
-  went from 99 s to about 1 s.
-- Notebooks: source lists joined correctly, non-Python kernels read with their own
-  comment syntax.
-- Old Mac (CR-only) files, symlinks, non-UTF-8 paths, saved unrent reports and OpenAPI
-  specs no longer produce wrong lines or findings.
-- A repo is never listed as a component of itself.
-- Descriptions containing commas were cut short in the catalog; the loader now rejects
-  them unquoted and names the file on any catalog error.
-- `-o` is checked before the scan and excluded from it; `--top` must be positive.
-- Evidence is ordered strongest first; code spans survive backticks.
-- LangChain.js `VoyageEmbeddings` and `VOYAGEAI_API_KEY` are Voyage AI.
-- A vendor prefix needs a model name after it: `github://` URIs and `/^snowflake/i`
-  regexes no longer name GitHub Models or Snowflake Cortex.
-- Open source signatures: `SEARX_URL` and `SearxSearch` (SearXNG), vLLM behind an
-  OpenAI-compatible base URL, a self-hosted Firecrawl URL, LangChain's `FAISS`.
-
-## [0.2.0] - 2026-09-26
-
-First public release.
-
-### Added
 - `unrent scan <dir>`: finds closed AI services (about 160: LLM APIs, gateways,
   embeddings, vector databases, RAG, OCR, observability, speech, image generation,
   search, browser automation, sandboxes, agent memory) from packages, imports,
@@ -121,5 +87,39 @@ First public release.
   and each is placed in its pool, overall and among projects of the same kind.
 - A golden corpus of hand-labelled repositories (`eval/`), run in CI.
 
-[Unreleased]: https://github.com/stringcutter/unrent/compare/v0.2.0...HEAD
+### Changed
+- Faster scans of large repos, with identical results on all 54 corpus repos: from 1,500
+  files on, worker processes read the files (one per core, falling back to one process
+  where they can't start), each Python file is parsed once and only its statements are
+  walked, and ripgrep gets larger batches outside Windows. dify (14,000 files) went
+  from 59 s to 14 s, LibreChat (5,500) from 14 s to 6 s, the whole corpus from 193 s
+  to 112 s.
+- The MCP instructions state the limits: only catalog services are detected, and each
+  pool's `ranked_by` says whether it is ranked by 90-day star gain or total stars.
+- `unrent/report.py` is now `unrent/render.py`.
+
+### Fixed
+- Odd files no longer end a scan: invalid YAML dates, deep JSON or TOML, a `.py` file
+  that overflows the parser, or a manifest of the wrong shape (`dependencies = 3`) gives
+  no facts, and the rest of the repo is still reported. A malformed `--catalog` is a
+  catalog error, not a traceback.
+- A TOML dependency is cited at its own line (`llama-index = "0.9.7"`), not at a
+  `keywords` entry higher up that names the same package.
+- ripgrep only reads the files the scan covers: a repo with gigabytes of ignored data
+  went from 99 s to about 1 s.
+- Notebooks: source lists joined correctly, non-Python kernels read with their own
+  comment syntax.
+- Old Mac (CR-only) files, symlinks, non-UTF-8 paths, saved unrent reports and OpenAPI
+  specs no longer produce wrong lines or findings.
+- A repo is never listed as a component of itself.
+- Descriptions containing commas were cut short in the catalog; the loader now rejects
+  them unquoted and names the file on any catalog error.
+- `-o` is checked before the scan and excluded from it; `--top` must be positive.
+- Evidence is ordered strongest first; code spans survive backticks.
+- LangChain.js `VoyageEmbeddings` and `VOYAGEAI_API_KEY` are Voyage AI.
+- A vendor prefix needs a model name after it: `github://` URIs and `/^snowflake/i`
+  regexes no longer name GitHub Models or Snowflake Cortex.
+- Open source signatures: `SEARX_URL` and `SearxSearch` (SearXNG), vLLM behind an
+  OpenAI-compatible base URL, a self-hosted Firecrawl URL, LangChain's `FAISS`.
+
 [0.2.0]: https://github.com/stringcutter/unrent/releases/tag/v0.2.0
