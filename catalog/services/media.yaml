@@ -441,3 +441,14 @@
     # With a path: the bare host is also the sign-up page named in error messages.
     endpoint: [modelslab.com/api, modelslab.com/uncensored-chat]
     env: [MODELSLAB_API_KEY]
+
+# ---------------------------------------------------------------- added 2026-10-04
+
+- id: volcengine-speech
+  name: Volcengine Speech (ByteDance openspeech)
+  category: Text-to-speech
+  replace_with: [text-to-speech, speech-to-text]
+  detect:
+    endpoint: [openspeech.bytedance.com]
+    env: [VOLCENGINE_TTS_APPID, VOLCENGINE_TTS_ACCESS_TOKEN]
+

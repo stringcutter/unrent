@@ -880,6 +880,17 @@ repos:
   - stepfun-api
   - tencent-hunyuan
   - iflytek-spark
+  - 302ai  # added 2026-10-04 with the new catalog ids; line checked by hand: conf/models/302ai.json:4 https://api.302.ai; rag/llm/__init__.py:85 SupportedLiteLLMProvider.AI_302
+  - daoxe  # added 2026-10-04 with the new catalog ids; line checked by hand: conf/models/daoxe.json:4 https://api.daoxe.com/v1
+  - greenpt  # added 2026-10-04 with the new catalog ids; line checked by hand: rag/llm/chat_model.py:2030 base_url="https://api.greenpt.ai/v1"
+  - jiekou  # added 2026-10-04 with the new catalog ids; line checked by hand: rag/llm/__init__.py:87 SupportedLiteLLMProvider.JiekouAI https://api.jiekou.ai/openai
+  - longcat  # added 2026-10-04 with the new catalog ids; line checked by hand: rag/llm/__init__.py:74 SupportedLiteLLMProvider.LongCat https://api.longcat.chat/openai
+  - orcarouter  # added 2026-10-04 with the new catalog ids; line checked by hand: conf/models/orcarouter.json:4 https://api.orcarouter.ai
+  - ovhcloud  # added 2026-10-04 with the new catalog ids; line checked by hand: rag/llm/embedding_model.py:278 OVH AI Endpoints embeddings (oai.endpoints.kepler.ai.cloud.ovh.net)
+  - qiniu-ai  # added 2026-10-04 with the new catalog ids; line checked by hand: conf/models/qiniu.json:4 https://api.qnaigc.com/v1
+  - sofya  # added 2026-10-04 with the new catalog ids; line checked by hand: agent/tools/sofya.py:26 SOFYA_SEARCH_URL = https://sofya.co/v1/search
+  - tenki  # added 2026-10-04 with the new catalog ids; line checked by hand: agent/sandbox/providers/tenki.py:515 import tenki_sandbox; internal/agent/sandbox/tenki.go:144 TENKI_API_KEY
+  - xiaomi  # added 2026-10-04 with the new catalog ids; line checked by hand: rag/llm/chat_model.py:1420 base_url = https://api.xiaomimimo.com/v1
   tests_only:
   - google-programmable-search
   uncertain:

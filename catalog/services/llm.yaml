@@ -427,12 +427,12 @@
   detect:
     requirement: [ibm-watsonx-ai, ibm-watson-machine-learning, langchain-ibm, llama-index-llms-ibm,
                   llama-index-embeddings-ibm, llama-index-postprocessor-ibm]
-    npm: ["@ibm-cloud/watsonx-ai", "@langchain/ibm"]
+    npm: ["@ibm-cloud/watsonx-ai", "@langchain/ibm", watsonx-ai-provider]
     python_import: [ibm_watsonx_ai, ibm_watson_machine_learning, langchain_ibm,
                     llama_index.llms.ibm, llama_index.embeddings.ibm, llama_index.postprocessor.ibm]
     symbol: [ChatWatsonx, WatsonxLLM]
     endpoint: [ml.cloud.ibm.com, wxai.ibm.com]
-    env: [WATSONX_APIKEY, WATSONX_API_KEY, WATSONX_PROJECT_ID, WATSONX_URL]
+    env: [WATSONX_AI_APIKEY, WATSONX_APIKEY, WATSONX_API_KEY, WATSONX_PROJECT_ID, WATSONX_URL]
     maven: ["dev.langchain4j:langchain4j-watsonx"]
     model: [watsonx/]
 
@@ -564,6 +564,7 @@
   replace_with: [llm-gateway]
   detect:
     endpoint: [gateway.ai.cloudflare.com]
+    npm: [ai-gateway-provider]
     env: [CF_AI_GATEWAY, CLOUDFLARE_AI_GATEWAY, CLOUDFLARE_AI_GATEWAY_ID]
     requirement: [llama-index-llms-cloudflare-ai-gateway]
     python_import: [llama_index.llms.cloudflare_ai_gateway]
@@ -596,8 +597,9 @@
     npm: ["@ai-sdk/moonshotai"]
     symbol: [createMoonshotAI, MoonshotChat]
     model: [moonshot-v1-, kimi-latest, moonshot/, "moonshotai:"]
-    endpoint: [api.moonshot.ai, api.moonshot.cn]
-    env: [MOONSHOT_API_KEY]
+    # api.kimi.com / api.kimi.ai: the Kimi For Coding plans.
+    endpoint: [api.moonshot.ai, api.moonshot.cn, api.kimi.com, api.kimi.ai]
+    env: [MOONSHOT_API_KEY, KIMI_API_KEY]
 
 - id: zhipu-zai
   name: Z.ai / Zhipu BigModel API
@@ -711,6 +713,8 @@
     maven: ["dev.langchain4j:langchain4j-community-oci-genai"]
     python_import: [langchain_oci, llama_index.llms.oci_genai, oci.generative_ai_inference]
     symbol: [ChatOCIGenAI, OCIGenAIEmbeddings, GenerativeAiInferenceClient]
+    endpoint: [inference.generativeai]
+    env: [OCI_GENAI_API_KEY]
     model: [oci/]
     endpoint: [inference.generativeai.]
 
@@ -875,7 +879,8 @@
   detect:
     requirement: [tencentcloud-sdk-python-hunyuan]
     python_import: [tencentcloud.hunyuan]
-    endpoint: [hunyuan.tencentcloudapi.com, api.hunyuan.cloud.tencent.com]
+    # tokenhub.tencentmaas.com: Tencent TokenHub, the same MaaS behind one key.
+    endpoint: [hunyuan.tencentcloudapi.com, api.hunyuan.cloud.tencent.com, tokenhub.tencentmaas.com]
     env: [HUNYUAN_API_KEY, HUNYUAN_SECRET_ID, HUNYUAN_SECRET_KEY]
 
 - id: iflytek-spark
@@ -963,8 +968,8 @@
   replace_with: [open-llm, llm-serving]
   detect:
     # With a path: ai.gitee.com is also the marketplace and docs site.
-    endpoint: [ai.gitee.com/v1]
-    env: [GITEE_AI_API_KEY, GITEEAI_API_KEY]
+    endpoint: [ai.gitee.com/v1, moark.com/v1]
+    env: [GITEE_AI_API_KEY, GITEEAI_API_KEY, MOARK_API_KEY]
 
 
 - id: ppio
@@ -1079,3 +1084,98 @@
     symbol: [ChatNetmind, NetmindEmbeddings, NetmindLLM, NetmindEmbedding, AsyncNetMind]
     endpoint: [api.netmind.ai]
     env: [NETMIND_API_KEY]
+
+# ---------------------------------------------------------------- added 2026-10-04
+# From the skill evaluation (deer-flow, cline) and models.dev overlaps.
+
+- id: typesafe
+  name: TypeSafe AI (Jev)
+  category: Classification and scoring
+  # Jev, TypeSafe's "System One" model: hosted, closed weights. Used for
+  # classification, routing, relevance scoring (gpt-researcher's default context
+  # filter) and risk gating (deer-flow's guardrails and memory screening).
+  replace_with: [reranker, guardrails, open-llm]
+  detect:
+    # `typesafe` on PyPI is an unrelated decorator library: not a signature.
+    requirement: [typesafe-sdk, typesafe-ai, langchain-typesafe, jev]
+    npm: ["@typesafe-ai/sdk"]
+    python_import: [typesafe_sdk, langchain_typesafe]
+    symbol: [TypeSafeClient, AsyncTypeSafeClient, TypeSafeClassifier]
+    endpoint: [api.typesafe.ai]
+    env: [TYPESAFE_API_KEY]
+    model: [jev-latest, jev-1.]
+
+- id: github-copilot
+  name: GitHub Copilot API
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  detect:
+    # Not the bare api.githubcopilot.com: api.githubcopilot.com/mcp is GitHub's MCP
+    # server, which many agent configs name.
+    endpoint: [api.githubcopilot.com/chat, api.githubcopilot.com/models,
+               api.individual.githubcopilot.com, api.business.githubcopilot.com,
+               api.enterprise.githubcopilot.com, copilot-proxy.githubusercontent.com]
+
+- id: ollama-cloud
+  name: Ollama Cloud
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  detect:
+    # The hosted API at ollama.com itself. `//` keeps out api.ollama.com and other
+    # look-alikes in URL-handling tests; a local Ollama is localhost:11434.
+    endpoint: [//ollama.com/v1, //ollama.com/api/chat, //ollama.com/api/generate]
+    env: [OLLAMA_API_KEY]
+
+- id: asksage
+  name: Ask Sage
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  detect:
+    endpoint: [api.asksage.ai]
+    env: [ASKSAGE_API_KEY]
+
+- id: hicap
+  name: Hicap
+  category: LLM gateway
+  excludes: [openai]
+  replace_with: [llm-gateway]
+  detect:
+    endpoint: [api.hicap.ai]
+    env: [HICAP_API_KEY]
+
+- id: nous-research
+  name: Nous Research Inference API
+  category: LLM API
+  excludes: [openai]
+  replace_with: [open-llm, llm-serving]
+  detect:
+    endpoint: [inference-api.nousresearch.com]
+
+- id: huawei-maas
+  name: Huawei Cloud ModelArts MaaS
+  category: LLM API
+  excludes: [openai]
+  replace_with: [open-llm, llm-serving]
+  detect:
+    # infer-modelarts.<region>.myhuaweicloud.com
+    endpoint: [infer-modelarts]
+
+- id: sap-ai-core
+  name: SAP AI Core (generative AI hub)
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  detect:
+    npm: ["@sap-ai-sdk/orchestration", "@sap-ai-sdk/foundation-models", "@sap-ai-sdk/langchain",
+          "@sap-ai-sdk/ai-api", "@jerome-benoit/sap-ai-provider"]
+    requirement: [generative-ai-hub-sdk, sap-ai-sdk-gen]
+    # api.ai.<region>.aws.ml.hana.ondemand.com
+    endpoint: [ml.hana.ondemand.com]
+    env: [AICORE_SERVICE_KEY, AICORE_CLIENT_ID, AICORE_CLIENT_SECRET]
+
+- id: oracle-code-assist
+  name: Oracle Code Assist
+  category: LLM API
+  replace_with: [open-llm, llm-serving]
+  detect:
+    # code.aiservice.<region>.oci.oraclecloud.com: a LiteLLM endpoint run by Oracle
+    endpoint: [code.aiservice, code-internal.aiservice]

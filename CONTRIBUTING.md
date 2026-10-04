@@ -12,7 +12,17 @@ depends on both. Mask any real keys; unrent masks them in its own report.
 
 Add an entry to the right file in [`catalog/services/`](catalog/services): its
 `id`, `name`, `category`, the pools in `replace_with`, and `detect` signatures
-(packages, imports, hosts, model ids, environment variables). Then:
+(packages, imports, hosts, model ids, environment variables). Not to
+`models-dev.yaml`: that file is generated from [models.dev](https://models.dev) every
+week by `scripts/new_services.py`, and a hand-written entry sharing a host, key or
+package replaces its generated one at the next refresh. To see what is missing:
+
+```bash
+uv run python scripts/new_services.py --models-dev   # hosted providers on models.dev
+uv run unrent scan path/to/project                     # "Possibly closed AI services ..."
+```
+
+Then:
 
 ```bash
 uv run unrent catalog --validate

@@ -586,3 +586,48 @@
     symbol: [OkahuSpanExporter, OkahuEvalResultExporter]
     endpoint: [ingest.okahu.co, api.okahu.co]
     env: [OKAHU_API_KEY, OKAHU_INGESTION_ENDPOINT]
+
+# ---------------------------------------------------------------- added 2026-10-04
+
+- id: byteplus-infoquest
+  name: BytePlus InfoQuest
+  category: Web search
+  replace_with: [web-search, web-scraping]
+  detect:
+    endpoint: [search.infoquest.bytepluses.com, reader.infoquest.bytepluses.com]
+    env: [INFOQUEST_API_KEY]
+
+- id: sofya
+  name: Sofya
+  category: Web search
+  replace_with: [web-search, web-scraping]
+  detect:
+    # With a path: sofya.co is also the sign-up page.
+    endpoint: [sofya.co/v1]
+    env: [SOFYA_API_KEY]
+
+- id: tencent-wsa
+  name: Tencent Cloud Web Search API (WSA)
+  category: Web search
+  replace_with: [web-search]
+  detect:
+    endpoint: [api.wsa.cloud.tencent.com]
+    env: [TENCENTCLOUD_WSA_APIKEY]
+
+- id: unbrowse
+  name: Unbrowse
+  category: Browser automation
+  replace_with: [browser-automation, web-scraping]
+  detect:
+    endpoint: [unbrowse.ai/api]
+    env: [UNBROWSE_API_KEY]
+
+- id: tenki
+  name: Tenki cloud sandboxes
+  category: Code sandbox
+  replace_with: [code-sandbox]
+  detect:
+    requirement: [tenki]
+    python_import: [tenki_sandbox]
+    env: [TENKI_API_KEY]
+

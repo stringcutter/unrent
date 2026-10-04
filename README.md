@@ -105,10 +105,18 @@ for six hours. When the fetch fails it uses the shipped snapshot and says so.
 
 ## What it detects
 
-**203 closed AI services** in 20 categories: LLM APIs, LLM gateways, embeddings, vector
-databases, RAG platforms, document parsing, guardrails, LLM observability, model hosting,
-fine-tuning, speech-to-text, text-to-speech, voice agents, image generation, web search,
-web scraping, browser automation, code sandboxes, agent platforms, agent memory.
+**357 closed AI services** in 21 categories: LLM APIs, LLM gateways, embeddings, vector
+databases, RAG platforms, document parsing, guardrails, classification and scoring, LLM
+observability, model hosting, fine-tuning, speech-to-text, text-to-speech, voice agents,
+image generation, web search, web scraping, browser automation, code sandboxes, agent
+platforms, agent memory. 218 are written by hand; 139 hosted model providers come from
+[models.dev](https://models.dev) and are regenerated every week
+([`models-dev.yaml`](https://github.com/niklasmellgren/unrent/blob/main/catalog/services/models-dev.yaml)).
+
+**Services it does not know yet.** Every scan also lists `unknown_candidates`: API hosts
+and keys that no catalog entry explains and that look like a hosted AI API (a `/v1/...`
+path, an `api.` or `.ai` host, a matching `*_API_KEY`). They are candidates to check, not
+findings, and never counted.
 
 **89 open source projects**: vector databases, inference servers, gateways, RAG
 frameworks and applications, document parsers, observability, evals, speech, scraping,

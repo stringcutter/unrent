@@ -511,6 +511,7 @@ repos:
   - fireworks
   - xai
   - deepseek-api
+  - morph  # added 2026-10-04 with the new catalog ids; line checked by hand: lib/morph.ts:28 baseURL 'https://api.morphllm.com/v1', :18 MORPH_API_KEY
   tests_only: []
   uncertain: []
   evidence:

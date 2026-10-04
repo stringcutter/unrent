@@ -8,6 +8,20 @@ each release ships the rankings as of its date.
 ## [Unreleased]
 
 ### Added
+- `unknown_candidates` in every scan (JSON, Markdown and MCP): API hosts and keys that
+  no catalog entry explains and that look like a hosted AI API, grouped by domain with
+  their key (`TYPESAFE_API_KEY` with `api.typesafe.ai`). A generated provider catalog
+  is one candidate. Never counted as a finding.
+- 139 hosted model providers from [models.dev](https://models.dev), in the generated
+  `catalog/services/models-dev.yaml`; a weekly job regenerates it, runs the golden
+  corpus and opens a pull request. `scripts/new_services.py` also ranks the
+  `unknown_candidates` of the eval corpus in the eval's job summary.
+- 15 hand-written closed services (357 in all): TypeSafe AI (Jev), GitHub Copilot API,
+  Ollama Cloud, Ask Sage, Hicap, Nous Research, Huawei ModelArts MaaS, SAP AI Core,
+  Oracle Code Assist, BytePlus InfoQuest, Sofya, Tencent Cloud WSA, Unbrowse, Tenki and
+  Volcengine Speech. New endpoints and keys for Moonshot (Kimi For Coding), Gitee AI (MoArk),
+  Tencent (TokenHub), watsonx, Cloudflare AI Gateway and OCI Generative AI.
+- An agent skill, `skills/unrent`, with `sweep.py` and `repo_facts.py`.
 - `unrent mcp`: an MCP server with `scan`, `alternatives`, `standing` and `catalog`
   tools (install the `mcp` extra). It reads the latest rankings from the repository,
   cached for six hours, and falls back to the shipped snapshot, saying why.

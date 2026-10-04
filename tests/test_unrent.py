@@ -1876,3 +1876,31 @@ def test_key_in_an_env_template_and_read_in_code_is_a_dependency(tmp_path, catal
 def test_a_real_env_file_is_not_a_template(tmp_path, catalog):
     write(tmp_path, {".env": "HELICONE_API_KEY=sk-123\n"})
     assert "helicone-cloud" in deps(tmp_path, catalog)
+
+
+def test_github_mcp_server_is_not_copilot(tmp_path, catalog):
+    write(tmp_path, {"setup.sh": 'URL="https://api.githubcopilot.com/mcp/"\n'})
+    assert "github-copilot" not in deps(tmp_path, catalog)
+    write(tmp_path, {"chat.ts": 'fetch("https://api.githubcopilot.com/chat/completions")\n'})
+    assert "github-copilot" in deps(tmp_path, catalog)
+
+
+def test_ollama_cloud_is_the_hosted_api_only(tmp_path, catalog):
+    write(tmp_path, {"url.spec.ts": "const u = 'https://api.ollama.com/v1/chat/completions'\n"})
+    assert "ollama-cloud" not in deps(tmp_path, catalog)
+    write(tmp_path, {"client.py": 'BASE = "https://ollama.com/v1"\n'})
+    assert "ollama-cloud" in deps(tmp_path, catalog)
+
+
+def test_typesafe_jev(tmp_path, catalog):
+    write(
+        tmp_path,
+        {
+            "requirements.txt": "typesafe-sdk>=0.7\n",
+            "screen.py": "from typesafe_sdk import TypeSafeClient\nclient = TypeSafeClient()\n",
+        },
+    )
+    assert "typesafe" in deps(tmp_path, catalog)
+    # `typesafe` on PyPI is an unrelated decorator library
+    write(tmp_path / "other", {"requirements.txt": "typesafe==0.9.1\n"})
+    assert "typesafe" not in deps(tmp_path / "other", catalog)
