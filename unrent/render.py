@@ -11,7 +11,7 @@ from pathlib import Path
 
 from .catalog import Alternative, Catalog, Pool
 from .detect import Finding
-from .retired import Snap, replacement, snaps, state
+from .retired import Snap, _rel, replacement, snaps, state
 
 RANKED_BY = {
     "momentum": "ranked by GitHub stars gained in the last 90 days",
@@ -22,13 +22,6 @@ RANKED_BY = {
 EVIDENCE_SHOWN = 5
 _BACKTICKS = re.compile(r"`+")
 AHEAD_SHOWN = 3
-
-
-def _rel(path: Path, root: Path) -> str:
-    try:
-        return path.relative_to(root).as_posix()
-    except ValueError:
-        return str(path)
 
 
 def _compact(n: int | None) -> str:
@@ -82,12 +75,8 @@ def _code(text: str) -> str:
     return f"{fence}{pad}{text}{pad}{fence}" if text else "``"
 
 
-def _now() -> _dt.datetime:
-    return _dt.datetime.now(_dt.UTC)
-
-
 def today() -> _dt.date:
-    return _now().date()
+    return _dt.datetime.now(_dt.UTC).date()
 
 
 @dataclass
@@ -183,16 +172,14 @@ def standings_of(repo: str, kind: tuple[str, ...], pools: list[Pool]) -> list[St
         position = next((i for i, a in enumerate(alts) if a.name == repo), None)
         peers = [a for a in alts if same_kind(a, kind)]
         kind_position = next((i for i, a in enumerate(peers) if a.name == repo), None)
-        ahead = alts[:position] if position is not None else alts
-        same_kind_count = len(peers)
         out.append(
             Standing(
                 pool=pool,
                 rank=None if position is None else position + 1,
                 of=len(alts),
                 kind_rank=None if kind_position is None else kind_position + 1,
-                kind_of=same_kind_count,
-                ahead=ahead,
+                kind_of=len(peers),
+                ahead=alts[:position] if position is not None else alts,
                 own=alts[position] if position is not None else None,
             )
         )
@@ -266,7 +253,7 @@ def payload(
     retiring = snaps(findings, catalog, root)
     return {
         "scanned": root.name,  # the folder name; a full path would leak the user's home
-        "scanned_at": _now().isoformat(timespec="seconds"),
+        "scanned_at": _dt.datetime.now(_dt.UTC).isoformat(timespec="seconds"),
         "as_of": as_of.isoformat(),
         "catalog_services": len(catalog),
         "rankings_date": catalog.rankings_date,
@@ -311,25 +298,6 @@ def to_json(
 
 
 # ---------------------------------------------------------------- markdown
-
-
-def _models_named(named: list[Finding], root: Path) -> list[str]:
-    return _listed_apart(
-        named,
-        root,
-        "Closed models named in code",
-        "Model ids with no SDK, key, API host or package behind them. Not counted as dependencies.",
-    )
-
-
-def _env_templates(templates: list[Finding], root: Path) -> list[str]:
-    return _listed_apart(
-        templates,
-        root,
-        "Keys only in example env files",
-        "A placeholder in `.env.example` or similar, with nothing in the code behind it. "
-        "Not counted as dependencies.",
-    )
 
 
 def _listed_apart(findings: list[Finding], root: Path, title: str, why: str) -> list[str]:
@@ -488,7 +456,7 @@ def to_markdown(
     out: list[str] = [f"# AI dependencies in `{root.name}`", ""]
     ranked = f" · alternatives ranked {catalog.rankings_date}" if catalog.rankings_date else ""
     out += [
-        f"Scanned {_now().date().isoformat()} · "
+        f"Scanned {today().isoformat()} · "
         f"{len(catalog)} closed AI services and {len(catalog.projects)} open source "
         f"projects in the catalog{ranked}",
         "",
@@ -539,8 +507,19 @@ def to_markdown(
                 out.append(f"- …and {len(cited) - EVIDENCE_SHOWN} more")
             out.append("")
 
-    out += _models_named(split.named, root)
-    out += _env_templates(split.templates, root)
+    out += _listed_apart(
+        split.named,
+        root,
+        "Closed models named in code",
+        "Model ids with no SDK, key, API host or package behind them. Not counted as dependencies.",
+    )
+    out += _listed_apart(
+        split.templates,
+        root,
+        "Keys only in example env files",
+        "A placeholder in `.env.example` or similar, with nothing in the code behind it. "
+        "Not counted as dependencies.",
+    )
     out += _unknown(list(unknown or []))
 
     if closed:

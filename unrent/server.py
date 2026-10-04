@@ -6,6 +6,7 @@ week old (see fresh.py); the code being scanned never leaves the machine.
 
 from __future__ import annotations
 
+import collections
 import json
 import re
 import time
@@ -31,7 +32,6 @@ from .render import (
     standings_of,
 )
 
-CATALOG_DIR = DEFAULT_CATALOG
 RETRY_AFTER = 15 * 60  # seconds before a failed fetch is tried again
 MATCHES_SHOWN = 25
 
@@ -66,7 +66,7 @@ _state: dict[str, Any] = {}
 
 
 def _shipped() -> dict:
-    file = CATALOG_DIR / "rankings.json"
+    file = DEFAULT_CATALOG / "rankings.json"
     try:
         return json.loads(file.read_text("utf-8")) if file.is_file() else {}
     except (OSError, ValueError):
@@ -80,12 +80,12 @@ def _catalog() -> tuple[Catalog, fresh.Rankings]:
     shipped = _shipped()
     rankings = fresh.latest(shipped)
     try:
-        catalog = load_catalog(CATALOG_DIR, rankings.data)
+        catalog = load_catalog(DEFAULT_CATALOG, rankings.data)
     except (CatalogError, KeyError, TypeError, ValueError, AttributeError) as exc:
         if rankings.source == "shipped":
             raise ToolError(f"the unrent catalog did not load: {exc}") from exc
         rankings = fresh.Rankings(shipped, "shipped", f"the latest rankings did not load: {exc}")
-        catalog = load_catalog(CATALOG_DIR, shipped)
+        catalog = load_catalog(DEFAULT_CATALOG, shipped)
     ttl = fresh.MAX_AGE if rankings.note is None else RETRY_AFTER
     _state.update(catalog=catalog, rankings=rankings, until=time.monotonic() + ttl)
     return catalog, rankings
@@ -318,9 +318,7 @@ def catalog(query: str = "") -> dict[str, Any]:
     """
     cat, rankings = _catalog()
     if not query.strip():
-        categories: dict[str, int] = {}
-        for s in cat.services:
-            categories[s.category] = categories.get(s.category, 0) + 1
+        categories = collections.Counter(s.category for s in cat.services)
         return {
             "closed_services": len(cat.services),
             "categories": dict(sorted(categories.items())),

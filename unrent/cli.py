@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import datetime
-import json
 import os
 import shlex
 import shutil
@@ -12,8 +11,6 @@ import subprocess
 import sys
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
-
-import yaml
 
 from .catalog import CatalogError, load_catalog
 from .detect import collect_facts, match
@@ -181,16 +178,14 @@ def cmd_scan(args) -> int:
         hit = next(
             (f for f in findings if wanted in (f.service.id.lower(), f.service.name.lower())), None
         )
-        model = next(
-            (s for s in snaps(findings, catalog, root) if s.sites and s.id.lower() == wanted), None
-        )
+        picked = [s for s in snaps(findings, catalog, root) if s.sites]
+        model = next((s for s in picked if s.id.lower() == wanted), None)
         if hit is not None:
             text = why(hit, root, catalog, top=args.top, colour=colour)
         elif model is not None:
             text = why_model(model, root, catalog, as_of=args.as_of, colour=colour)
         else:
-            picked = [s.id for s in snaps(findings, catalog, root) if s.sites]
-            ids = ", ".join([f.service.id for f in findings] + picked) or "none"
+            ids = ", ".join([f.service.id for f in findings] + [s.id for s in picked]) or "none"
             print(f"unrent: {args.why} is not among what was found ({ids})", file=sys.stderr)
             return 2
     elif fmt == "json":
@@ -285,10 +280,6 @@ def main(argv: list[str] | None = None) -> int:
         return cmd_catalog(args)
     except CatalogError as exc:
         print(f"unrent: catalog error: {exc}", file=sys.stderr)
-    except yaml.YAMLError as exc:
-        print(f"unrent: could not parse the catalog: {exc}", file=sys.stderr)
-    except json.JSONDecodeError as exc:
-        print(f"unrent: could not parse the rankings snapshot: {exc}", file=sys.stderr)
     except OSError as exc:
         print(f"unrent: {exc}", file=sys.stderr)
     return 2

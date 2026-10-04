@@ -12,9 +12,9 @@ from pathlib import Path
 from typing import TextIO
 
 from .catalog import Catalog
-from .detect import Finding
-from .render import RANKED_BY, Split, _describe, _rel, _split, standings, today
-from .retired import Snap, replacement, snaps, state
+from .detect import Fact, Finding
+from .render import RANKED_BY, Split, _describe, _split, standings, today
+from .retired import Snap, _rel, replacement, snaps, state
 
 GAP = "  "
 NARROW = 60  # below this, alternatives drop to their own line even when they would fit
@@ -95,8 +95,7 @@ class Row:
     tests: bool
 
 
-def _first(f: Finding, root: Path) -> str:
-    fact = f.cited[0]
+def _loc(fact: Fact, root: Path) -> str:
     return _clean(f"{_rel(fact.file, root)}:{fact.line}")
 
 
@@ -129,13 +128,12 @@ def snap_rows(retiring: list[Snap], root: Path, catalog: Catalog, as_of) -> list
         r = s.retirement
         gone = state(r, as_of) == "snapped"
         use = replacement(r, catalog)
-        first = s.sites[0]
         out.append(
             Row(
                 "snapped" if gone else "snaps",
                 r.id,
                 r.id,
-                _clean(f"{_rel(first.file, root)}:{first.line}"),
+                _loc(s.sites[0], root),
                 len(s.sites) - 1,
                 f"{'retired' if gone else 'retires'} {r.retires.isoformat()}"
                 + (f" → {use}" if use else ""),
@@ -154,7 +152,7 @@ def rows(split: Split, root: Path, catalog: Catalog) -> list[Row]:
                 "cut" if best else "held",
                 f.service.id,
                 f.service.name,
-                _first(f, root),
+                _loc(f.cited[0], root),
                 len(f.cited) - 1,
                 best or "no open match yet",
                 f.test_only,
@@ -168,7 +166,7 @@ def rows(split: Split, root: Path, catalog: Catalog) -> list[Row]:
                 "runs",
                 f.service.id,
                 f.service.name,
-                _first(f, root),
+                _loc(f.cited[0], root),
                 len(f.cited) - 1,
                 _standing(f, catalog),
                 f.test_only,
@@ -327,6 +325,13 @@ def to_terminal(
     return "\n".join(out)
 
 
+def _where(facts: list[Fact], root: Path, st: Style) -> list[str]:
+    """One line per location, the locations aligned."""
+    where = [(_loc(x, root), _clean(x.evidence)) for x in facts]
+    w = max(len(loc) for loc, _ in where)
+    return [f"  {st.mute(f'{loc:<{w}}')}  {text[:120]}" for loc, text in where]
+
+
 def why(
     finding: Finding, root: Path, catalog: Catalog, *, top: int = 3, colour: bool = False
 ) -> str:
@@ -344,9 +349,7 @@ def why(
     bar = _bar(state, len(TAGS[state]), st) if state in TAGS else st.mute(f"│ {state}")
     tests = " (only in tests)" if f.test_only else ""
     out = ["", f"{bar}{GAP}{st.bold(f.service.name)}{tests}  {st.mute(f.service.category)}", ""]
-    where = [(_clean(f"{_rel(x.file, root)}:{x.line}"), _clean(x.evidence)) for x in f.cited]
-    w = max(len(loc) for loc, _ in where)
-    out += [f"  {st.mute(f'{loc:<{w}}')}  {text[:120]}" for loc, text in where]
+    out += _where(f.cited, root, st)
     out.append("")
     if f.service.open_source:
         for s in standings(f, catalog):
@@ -377,9 +380,7 @@ def why_model(s: Snap, root: Path, catalog: Catalog, *, as_of=None, colour: bool
     use = replacement(r, catalog)
     when = f"{'retired' if gone else 'retires'} {r.retires.isoformat()}"
     out = ["", f"{_bar(tag, len(TAGS[tag]), st)}{GAP}{st.bold(r.id)}  {st.amber(when)}", ""]
-    where = [(_clean(f"{_rel(x.file, root)}:{x.line}"), _clean(x.evidence)) for x in s.sites]
-    w = max(len(loc) for loc, _ in where)
-    out += [f"  {st.mute(f'{loc:<{w}}')}  {text[:120]}" for loc, text in where]
+    out += _where(s.sites, root, st)
     out.append("")
     if use:
         via = f" (via {r.replacement})" if r.replacement != use else ""
@@ -399,8 +400,8 @@ class Progress:
 
     FRAMES = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"
 
-    def __init__(self, stream: TextIO | None = None, enabled: bool | None = None):
-        self.stream = stream or sys.stderr
+    def __init__(self, enabled: bool | None = None):
+        self.stream = sys.stderr
         if enabled is None:
             enabled = (
                 self.stream.isatty() and os.environ.get("TERM") != "dumb" and _ansi_on_windows(-12)

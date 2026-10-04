@@ -123,11 +123,6 @@ class Service:
     # Grouped: two weak signatures corroborate each other only across groups, so
     # `mongodb.net` and `ATLAS_URI` (both just "Atlas") don't make vector search.
     weak_groups: tuple[tuple[str, ...], ...] = ()
-
-    @property
-    def weak(self) -> tuple[str, ...]:
-        return tuple(v for group in self.weak_groups for v in group)
-
     # The SDK doubles as the client for self-hosted OpenAI-compatible servers, so
     # evidence next to a local base URL (Ollama, vLLM, LM Studio) does not count.
     local_compatible: bool = False
@@ -473,11 +468,10 @@ def _load_projects(path: Path, pools: dict[str, Pool]) -> list[Service]:
     """The `projects` section of alternatives.yaml: open source components a scan can
     recognise, each belonging to every pool that lists its repo."""
     raw = _load_yaml(path) or {}
-    listed = {
-        p["repo"]: [pid for pid, pool in pools.items() if p["repo"] in _repos(raw, pid)]
-        for item in raw.get("pools") or []
-        for p in item.get("projects") or []
-    }
+    listed: dict[str, list[str]] = {}
+    for item in raw.get("pools") or []:
+        for p in item.get("projects") or []:
+            listed.setdefault(p["repo"], []).append(item["id"])
     out = []
     for repo, spec in (raw.get("projects") or {}).items():
         if repo not in listed:
@@ -505,8 +499,3 @@ def _load_projects(path: Path, pools: dict[str, Pool]) -> list[Service]:
         )
         out.append(dataclasses.replace(service, open_source=True, repo=repo, kind=kind))
     return out
-
-
-def _repos(raw: dict, pool_id: str) -> set[str]:
-    pool = next(p for p in raw.get("pools") or [] if p.get("id") == pool_id)
-    return {p["repo"] for p in pool.get("projects") or []}

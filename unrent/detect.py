@@ -84,18 +84,8 @@ CONFIG_PREFIXES = (
     "procfile", "jenkinsfile", ".envrc", ".dev.vars", "gemfile",
 )  # fmt: skip
 JS_SUFFIXES = {
-    ".js",
-    ".jsx",
-    ".mjs",
-    ".cjs",
-    ".ts",
-    ".tsx",
-    ".mts",
-    ".cts",
-    ".vue",
-    ".svelte",
-    ".astro",
-}
+    ".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".mts", ".cts", ".vue", ".svelte", ".astro",
+}  # fmt: skip
 C_FAMILY = JS_SUFFIXES | {
     ".go", ".rs", ".java", ".kt", ".kts", ".scala", ".groovy", ".gradle", ".cs", ".fs",
     ".swift", ".dart", ".c", ".h", ".cc", ".cpp", ".cxx", ".hpp", ".m", ".mm", ".php",
@@ -124,18 +114,6 @@ TEST_FILE = re.compile(
     r"|^(pytest\.ini|conftest\.py|tox\.ini|\.env\.test.*)$)",
     re.IGNORECASE,
 )
-PACKAGE_KINDS = {
-    "requirement",
-    "npm",
-    "go",
-    "cargo",
-    "maven",
-    "nuget",
-    "gem",
-    "composer",
-    "pub",
-    "swift",
-}
 
 
 @dataclass(frozen=True)
@@ -181,7 +159,7 @@ class Finding:
     def template_only(self) -> bool:
         """Only keys in an example env file (`HELICONE_API_KEY=` in .env.example) that
         nothing else backs: a placeholder, not proof the code calls the service."""
-        return all(f.kind == "env" and is_env_template(f.file.name) for f in self.facts)
+        return all(f.kind == "env" and _ENV_TEMPLATE.match(f.file.name) for f in self.facts)
 
 
 _ENV_TEMPLATE = re.compile(
@@ -189,10 +167,6 @@ _ENV_TEMPLATE = re.compile(
     r"^(\.?env\..*(example|sample|template|dist|defaults?)|\.?(example|sample|template)\.env)$",
     re.IGNORECASE,
 )
-
-
-def is_env_template(name: str) -> bool:
-    return bool(_ENV_TEMPLATE.match(name))
 
 
 _EVIDENCE_STRENGTH = {
@@ -968,14 +942,11 @@ def _install_commands(path: Path, lines: list[str], code: list[str]) -> list[Fac
         line = logical.lstrip().lstrip("!%").lstrip()  # notebook magics
         for pattern, kind in ((_PIP_INSTALL, "requirement"), (_NPM_INSTALL, "npm")):
             for m in pattern.finditer(line):
-                skip_next = False
-                for token in m.group(1).split():
+                tokens = iter(m.group(1).split())
+                for token in tokens:
                     token = token.strip("'\"`")
-                    if skip_next:
-                        skip_next = False
-                        continue
                     if token in _TAKES_VALUE:
-                        skip_next = True
+                        next(tokens, None)
                         continue
                     if not token or token.startswith(("-", ".", "/", "$", "{", "git+", "http")):
                         continue
@@ -1432,9 +1403,7 @@ def _images(path: Path, lines: list[str], code: list[str]) -> list[Fact]:
     """Images a project runs: compose and Kubernetes `image:`, Helm `repository:` in
     values files, and Dockerfile `FROM`."""
     name = path.name.lower()
-    dockerfile = name.startswith(("dockerfile", "containerfile")) or name.endswith(
-        (".dockerfile", ".containerfile")
-    )
+    dockerfile = _is_dockerfile(name)
     patterns = [_FROM] if dockerfile else [_IMAGE_KEY]
     if "values" in name and not dockerfile:  # values.yaml, prod-values.yaml, values-gpu.yaml
         patterns.append(_HELM_REPOSITORY)
@@ -1516,12 +1485,19 @@ def _is_text_source(path: Path) -> bool:
     )
 
 
+def _is_dockerfile(name: str) -> bool:
+    """`name` lower-cased."""
+    return name.startswith(("dockerfile", "containerfile")) or name.endswith(
+        (".dockerfile", ".containerfile")
+    )
+
+
 def _takes_install_commands(path: Path) -> bool:
     name = path.name.lower()
     return (
         path.suffix.lower() in INSTALL_SUFFIXES
-        or name.startswith(("dockerfile", "containerfile", "makefile", "procfile", "jenkinsfile"))
-        or name.endswith((".dockerfile", ".containerfile"))
+        or _is_dockerfile(name)
+        or name.startswith(("makefile", "procfile", "jenkinsfile"))
     )
 
 
@@ -1616,7 +1592,7 @@ _API_SPEC = re.compile(r"""\A\s*(?:#[^\n]*\n\s*)*(?:\{\s*)?["']?(?:openapi|swagg
 
 
 def facts_for_file(
-    path: Path, needles: Needles, hit_lines: Iterable[int] | None = None
+    needles: Needles, path: Path, hit_lines: Iterable[int] | None = None
 ) -> list[Fact]:
     text = _read(path)
     if text is None:
@@ -1651,11 +1627,7 @@ def facts_for_file(
         facts += _js_imports(path, view_text, lines)
     elif suffix in (".tf", ".hcl"):
         facts += _terraform(path, lines, code)
-    if (
-        suffix in (".yaml", ".yml")
-        or path.name.lower().startswith(("dockerfile", "containerfile"))
-        or path.name.lower().endswith((".dockerfile", ".containerfile"))
-    ):
+    if suffix in (".yaml", ".yml") or _is_dockerfile(path.name.lower()):
         facts += _images(path, lines, code)
     if _takes_install_commands(path):
         facts += _install_commands(path, lines, code)
@@ -1672,12 +1644,8 @@ def _local_modules(root: Path, files: list[Path]) -> set[str]:
         parts = path.relative_to(root).parts
         if parts[:1] == ("src",):
             parts = parts[1:]
-        if not parts:
-            continue
-        if len(parts) == 1 and path.suffix == ".py":
-            names.add(path.stem)
-        elif len(parts) > 1 and path.suffix == ".py":
-            names.add(parts[0])
+        if parts and path.suffix == ".py":
+            names.add(parts[0] if len(parts) > 1 else path.stem)
     return names
 
 
@@ -1717,7 +1685,7 @@ def collect_facts(
     tests = [is_test_path(rel) for rel in rels]
     todo = [i for i, in_test in enumerate(tests) if not (in_test and skip_tests)]
     per_file = map_files(
-        _file_facts,
+        facts_for_file,
         [(files[i], None if found is None else found.get(rels[i], ())) for i in todo],
         needles,
     )
@@ -1773,10 +1741,6 @@ def map_files(work: Callable, items: list[tuple], state: object) -> Iterator:
             pass
     for item in items[done:]:
         yield work(state, *item)
-
-
-def _file_facts(needles: Needles, path: Path, hit_lines: Iterable[int] | None) -> list[Fact]:
-    return facts_for_file(path, needles, hit_lines)
 
 
 _GITHUB_REMOTE = re.compile(r"github\.com[:/]+([^/\s]+/[^/\s]+?)(?:\.git)?/?$", re.IGNORECASE)
@@ -2034,10 +1998,6 @@ def _only_weak(finding: Finding) -> bool:
     return None not in matched and len(set(matched)) < 2
 
 
-def _only_declared(facts: Iterable[Fact]) -> bool:
-    return all(f.manifest for f in facts)
-
-
 def _without_local_clients(facts: tuple[Fact, ...], local: list[Fact]) -> tuple[Fact, ...]:
     """Drop evidence of an OpenAI-compatible SDK aimed at a server you run.
 
@@ -2056,7 +2016,7 @@ def _without_local_clients(facts: tuple[Fact, ...], local: list[Fact]) -> tuple[
         if f.file not in files
         and not (project_wide and not f.manifest and f.kind not in ("model", "endpoint"))
     )
-    if len(kept) < len(facts) and _only_declared(kept):
+    if len(kept) < len(facts) and all(f.manifest for f in kept):
         return ()
     return kept
 
@@ -2096,6 +2056,6 @@ def _resolve_overlaps(findings: list[Finding]) -> list[Finding]:
             surviving.append(finding)
             continue
         rest = tuple(f for f in finding.facts if _key(f) not in taken)
-        if rest and not _only_declared(rest):
+        if rest and not all(f.manifest for f in rest):
             surviving.append(Finding(service=finding.service, facts=rest))
     return surviving
