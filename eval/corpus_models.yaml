@@ -1,0 +1,215 @@
+# Ground truth for `snapped`: per repo, the model ids on the retirement list that the
+# project's own code selects (eval/MODEL_TRUTH_RULES.md). Labelled 2026-10-04 from the
+# code, independently of unrent's output, against catalog/retirements.yaml as of that
+# day: `labelled` lists those ids, and only they are scored. An id added to the
+# retirement list later is unscored until the corpus is checked for it.
+version: 1
+labelled: [ada, babbage, babbage-002, chatgpt-4o-latest, chatgpt-image-latest, claude-1.0, claude-1.1, claude-1.2, claude-1.3, claude-2.0, claude-2.1, claude-3-5-haiku-20241022, claude-3-5-sonnet-20240620, claude-3-5-sonnet-20241022, claude-3-7-sonnet-20250219, claude-3-haiku-20240307, claude-3-opus-20240229, claude-3-sonnet-20240229, claude-instant-1.0, claude-instant-1.1, claude-instant-1.2, claude-opus-4-1-20250805, claude-opus-4-20250514, claude-sonnet-4-20250514, claude-sonnet-4-5-20250929, code-cushman-001, code-cushman-002, code-davinci-001, code-davinci-002, code-davinci-edit-001, code-search-ada-code-001, code-search-ada-text-001, code-search-babbage-code-001, code-search-babbage-text-001, codex-mini-latest, computer-use-preview, computer-use-preview-2025-03-11, curie, dall-e-2, dall-e-3, davinci, davinci-002, embedding-001, embedding-2-preview, embedding-gecko-001, gemini-2.0-flash, gemini-2.0-flash-001, gemini-2.0-flash-lite, gemini-2.0-flash-lite-001, gemini-2.0-flash-lite-preview, gemini-2.0-flash-lite-preview-02-05, gemini-2.0-flash-live-001, gemini-2.0-flash-preview-image-generation, gemini-2.5-computer-use-preview-10-2025, gemini-2.5-flash-image, gemini-2.5-flash-image-preview, gemini-2.5-flash-lite-preview-09-2025, gemini-2.5-flash-preview-05-20, gemini-2.5-flash-preview-09-25, gemini-2.5-pro-preview-03-25, gemini-2.5-pro-preview-05-06, gemini-2.5-pro-preview-06-05, gemini-3-pro-image-preview, gemini-3-pro-preview, gemini-3.1-flash-image-preview, gemini-3.1-flash-lite, gemini-3.1-flash-lite-preview, gemini-embedding-001, gemini-embedding-exp, gemini-embedding-exp-03-07, gemini-live-2.5-flash-preview, gemini-robotics-er-1.5-preview, gemini-robotics-er-1.6-preview, gpt-3.5-turbo, gpt-3.5-turbo-0125, gpt-3.5-turbo-0301, gpt-3.5-turbo-0613, gpt-3.5-turbo-1106, gpt-3.5-turbo-16k-0613, gpt-3.5-turbo-instruct, gpt-4, gpt-4-0125-preview, gpt-4-0314, gpt-4-0613, gpt-4-1106-preview, gpt-4-1106-vision-preview, gpt-4-32k, gpt-4-32k-0314, gpt-4-32k-0613, gpt-4-turbo, gpt-4-turbo-2024-04-09, gpt-4-turbo-preview, gpt-4-vision-preview, gpt-4.1-nano, gpt-4.1-nano-2025-04-14, gpt-4.5-preview, gpt-4o-2024-05-13, gpt-4o-audio, gpt-4o-audio-preview, gpt-4o-audio-preview-2024-10-01, gpt-4o-mini-audio, gpt-4o-mini-audio-preview, gpt-4o-mini-realtime, gpt-4o-mini-realtime-preview, gpt-4o-mini-search-preview-2025-03-11, gpt-4o-mini-transcribe, gpt-4o-mini-transcribe-2025-03-20, gpt-4o-mini-tts-2025-03-20, gpt-4o-mini-tts-2025-12-15, gpt-4o-realtime, gpt-4o-realtime-preview, gpt-4o-realtime-preview-2024-10-01, gpt-4o-realtime-preview-2024-12-17, gpt-4o-realtime-preview-2025-06-03, gpt-4o-search-preview-2025-03-11, gpt-4o-transcribe, gpt-4o-transcribe-diarize, gpt-5-2025-08-07, gpt-5-chat-latest, gpt-5-codex, gpt-5-mini-2025-08-07, gpt-5-nano-2025-08-07, gpt-5-pro-2025-10-06, gpt-5.1, gpt-5.1-chat-latest, gpt-5.1-codex, gpt-5.1-codex-max, gpt-5.1-codex-mini, gpt-5.2-chat-latest, gpt-5.2-codex, gpt-5.3-chat-latest, gpt-5.3-codex, gpt-5.4-cyber, gpt-5.4-nano, gpt-audio, gpt-audio-mini, gpt-audio-mini-2025-10-06, gpt-image-1, gpt-image-1-mini, gpt-image-1.5, gpt-realtime, gpt-realtime-mini, gpt-realtime-mini-2025-10-06, imagen-3.0-generate-002, imagen-4.0-fast-generate-001, imagen-4.0-generate-001, imagen-4.0-generate-preview-06-06, imagen-4.0-ultra-generate-001, imagen-4.0-ultra-generate-preview-06-06, o1, o1-2024-12-17, o1-mini, o1-preview, o1-pro, o1-pro-2025-03-19, o3-2025-04-16, o3-deep-research, o3-deep-research-2025-06-26, o3-mini, o3-mini-2025-01-31, o3-pro-2025-06-10, o4-mini, o4-mini-2025-04-16, o4-mini-deep-research, o4-mini-deep-research-2025-06-26, sora-2, sora-2-2025-10-06, sora-2-2025-12-08, sora-2-pro, sora-2-pro-2025-10-06, text-ada-001, text-babbage-001, text-curie-001, text-davinci-001, text-davinci-002, text-davinci-003, text-davinci-edit-001, text-embedding-004, text-moderation-007, text-moderation-latest, text-moderation-stable, text-search-ada-doc-001, text-search-ada-query-001, text-search-babbage-doc-001, text-search-babbage-query-001, text-search-curie-doc-001, text-search-curie-query-001, text-search-davinci-doc-001, text-search-davinci-query-001, text-similarity-ada-001, text-similarity-babbage-001, text-similarity-curie-001, text-similarity-davinci-001, tts-1, tts-1-hd, veo-2.0-generate-001, veo-3.0-fast-generate-001, veo-3.0-fast-generate-preview, veo-3.0-generate-001, veo-3.0-generate-preview, veo-3.1-fast-generate-preview, veo-3.1-generate-preview, veo-3.1-lite-generate-preview, whisper-1]
+repos:
+  LibreChat-AI__LibreChat:
+    selects:
+      - dall-e-3  # api/app/clients/tools/structured/DALLE3.js:161 model: 'dall-e-3' in openai.images.generate
+      - gpt-image-1  # api/app/clients/tools/structured/OpenAIImageTools.js:85 process.env.IMAGE_GEN_OAI_MODEL || 'gpt-image-1'
+      - gemini-2.5-flash-image  # api/app/clients/tools/structured/GeminiImageGen.js:359 process.env.GEMINI_IMAGE_MODEL || 'gemini-2.5-flash-image'
+      - gpt-3.5-turbo  # api/server/services/Endpoints/assistants/title.js:25 model: 'gpt-3.5-turbo' in the assistants title completion
+    uncertain:
+      - claude-3-5-sonnet-20241022  # config/translations/anthropic.ts:32 const model; reason: a maintainer script that translates locale strings, not the app
+  open-webui__open-webui:
+    selects:
+      - dall-e-2  # backend/open_webui/routers/images.py:205 IMAGE_GENERATION_MODEL or 'dall-e-2' for the openai engine
+      - imagen-3.0-generate-002  # backend/open_webui/routers/images.py:207 IMAGE_GENERATION_MODEL or 'imagen-3.0-generate-002' for the gemini engine
+      - tts-1  # backend/open_webui/config.py:1638 os.getenv('AUDIO_TTS_MODEL', 'tts-1')
+    uncertain:
+      - gpt-3.5-turbo  # src/lib/utils/index.ts:859 model label for imported ChatGPT conversations; reason: sent only if the user continues that chat unchanged
+  Cinnamon__kotaemon:
+    selects:
+      - claude-3-5-sonnet-20240620  # flowsettings.py:235 shipped KH_LLMS["claude"] model_name
+      - text-embedding-004  # flowsettings.py:288 "models/text-embedding-004" in the shipped Google embedding entry
+    uncertain:
+      - text-davinci-003  # libs/kotaemon/kotaemon/llms/completions/langchain_based.py:115 class default model_name; reason: no call site found that builds it without a model
+  qdrant__qdrant_demo:
+    selects: []
+  weaviate__Verba:
+    selects:
+      - claude-3-5-sonnet-20240620  # goldenverba/components/generation/AnthrophicGenerator.py:24 the only model, sent to api.anthropic.com
+      - gpt-3.5-turbo  # goldenverba/components/generation/OpenAIGenerator.py:60 config.get("Model", {"value": "gpt-3.5-turbo"}) fallback
+  google-gemini__gemini-image-editing-nextjs-quickstart:
+    selects: []
+  e2b-dev__fragments:
+    selects:
+      - claude-sonnet-4-20250514  # app/page.tsx:34 default languageModel {model: 'claude-sonnet-4-20250514'}
+  langgenius__dify:
+    selects: []
+    uncertain:
+      - gpt-3.5-turbo  # api/constants/recommended_apps.json:447 built-in app template; reason: a template catalog the user picks from, used only when the remote one is unavailable
+      - gpt-3.5-turbo-0125  # api/constants/recommended_apps.json:421 built-in template; reason: as above
+      - gpt-4-1106-preview  # api/constants/recommended_apps.json:429 built-in template; reason: as above
+      - gpt-4-0125-preview  # api/constants/recommended_apps.json:437 built-in template; reason: as above
+      - claude-3-5-sonnet-20240620  # api/constants/pipeline_templates.json:4999 built-in pipeline template; reason: as above
+  kardolus__chatgpt-cli:
+    selects: []
+  ItzCrazyKns__Vane:
+    selects:
+      - gpt-3.5-turbo  # src/lib/models/providers/openai/index.ts:18 first of defaultChatModels; useChat.tsx:128 falls back to chatModels[0] when nothing is stored
+  dotnet__ai-samples:
+    selects:
+      - gpt-3.5-turbo  # src/quickstarts/openai/extensions-ai/01-HikeBenefitsSummary/Program.cs:13 string model = "gpt-3.5-turbo" passed to OpenAIClient
+    uncertain:
+      - dall-e-3  # src/quickstarts/azure-openai/infra/ai.bicep:32; reason: Azure OpenAI deployment
+  microsoft__kernel-memory:
+    selects:
+      - gpt-4  # examples/302-dotnet-sk-km-chat/Program.cs:51 AddOpenAIChatCompletion(modelId: "gpt-4")
+      - claude-3-sonnet-20240229  # extensions/Anthropic/AnthropicConfig.cs:35 TextModelName default
+      - claude-3-haiku-20240307  # service/Service/appsettings.json:231 Services.Anthropic.TextModelName in the shipped config
+  charmbracelet__mods:
+    selects: []
+    uncertain:
+      - gpt-4  # config_template.yml:99 fallback of the default gpt-4o after a 404; reason: reached only when the default fails
+  langchain-ai__open_deep_research:
+    selects:
+      - claude-sonnet-4-20250514  # src/legacy/configuration.py:82 supervisor_model default "anthropic:claude-sonnet-4-20250514"
+  aws-samples__bedrock-access-gateway:
+    selects: []
+    uncertain:
+      - claude-3-sonnet-20240229  # src/api/setting.py:14 DEFAULT_MODEL "anthropic.claude-3-sonnet-20240229-v1:0"; reason: AWS Bedrock
+  infiniflow__ragflow:
+    selects: []
+    uncertain:
+      - gpt-4-vision-preview  # rag/llm/cv_model.py:336 constructor default; reason: every call site passes the configured model
+      - tts-1  # rag/llm/tts_model.py:249 constructor default; reason: as above
+      - whisper-1  # rag/llm/sequence2txt_model.py:105 constructor default; reason: as above
+      - gemini-embedding-001  # rag/llm/embedding_model.py:796 constructor default; reason: as above
+  tmc__langchaingo:
+    selects:
+      - gpt-3.5-turbo  # llms/openai/internal/openaiclient/chat.go:17 defaultChatModel = "gpt-3.5-turbo"
+      - claude-3-5-sonnet-20240620  # llms/anthropic/internal/anthropicclient/anthropicclient.go:18 defaultModel
+      - gemini-2.0-flash  # llms/googleai/option.go:34 DefaultModel: "gemini-2.0-flash"
+      - embedding-001  # llms/googleai/option.go:35 DefaultEmbeddingModel: "embedding-001"
+      - claude-3-haiku-20240307  # examples/anthropic-tool-call-example/anthropic-tool-call-example.go:15 anthropic.WithModel(...)
+      - gpt-3.5-turbo-0125  # examples/openai-function-call-example/openai_function_call_example.go:15 openai.WithModel(...)
+      - gpt-4-turbo  # examples/openai-gpt4-turbo-example/openai_gpt4_turbo.go:13 openai.WithModel("gpt-4-turbo")
+      - gpt-4-turbo-preview  # examples/reasoning-tokens/main.go:62 openai.WithModel("gpt-4-turbo-preview")
+      - o1-mini  # examples/reasoning-tokens/main.go:33 openai.WithModel("o1-mini")
+      - o1-preview  # examples/openai-o1-example/openai_o1_chat_example.go:15 flag.String("model", "o1-preview", ...)
+      - claude-3-7-sonnet-20250219  # examples/anthropic-extended-capabilities/main.go:46 anthropic.WithModel(...)
+      - claude-3-sonnet-20240229  # examples/reasoning-tokens/main.go:72 anthropic.WithModel(...)
+      - claude-sonnet-4-20250514  # examples/anthropic-interleaved-thinking/main.go:227 anthropic.WithModel(...)
+      - claude-3-5-sonnet-20241022  # examples/prompt-caching/main.go:29 anthropic.WithModel(...)
+  anthropics__claude-quickstarts:
+    selects:
+      - claude-sonnet-4-20250514  # agents/agent.py:27 ModelConfig default model
+      - claude-3-7-sonnet-20250219  # agents/agent_demo.ipynb:126 ModelConfig(model=...) in the demo notebook
+      - claude-sonnet-4-5-20250929  # autonomous-coding/autonomous_agent_demo.py:24 DEFAULT_MODEL
+      - claude-3-5-sonnet-20241022  # browser-use-demo/browser_use_demo/tools/browser.py:949 client.messages.create(model=...)
+      - claude-3-5-sonnet-20240620  # financial-data-analyst/app/finance/page.tsx:202 useState("claude-3-5-sonnet-20240620")
+  vllm-project__production-stack:
+    selects: []
+  tjake__Jlama:
+    selects: []
+  langchain-ai__react-agent:
+    selects:
+      - claude-sonnet-4-5-20250929  # src/react_agent/context.py:25 default="anthropic/claude-sonnet-4-5-20250929" for init_chat_model
+  langchain4j__langchain4j-examples:
+    selects:
+      - gemini-embedding-001  # google-ai-gemini-examples/.../Example03_SimpleEmbedding.java:26 modelName("gemini-embedding-001")
+      - gemini-2.0-flash-lite  # payara-micro-example/src/main/resources/META-INF/microprofile-config.properties:6 chat-model.model-name
+      - claude-3-haiku-20240307  # anthropic-examples/src/main/java/AnthropicChatModelTest.java:22 modelName(...) in the module's examples
+    uncertain:
+      - dall-e-3  # azure-open-ai-examples/src/main/script/deploy-azure-openai-models.sh:67; reason: Azure OpenAI deployment
+      - claude-3-5-sonnet-20240620  # bedrock-examples/.../BedrockStreamingChatModelExample.java:21; reason: AWS Bedrock
+      - claude-3-7-sonnet-20250219  # bedrock-examples/.../BedrockChatModelExample.java:119; reason: AWS Bedrock
+  ThomasVitale__llm-apps-java-spring-ai:
+    selects:
+      - gpt-3.5-turbo  # models/chat/chat-openai/src/main/resources/application.yml:6 spring.ai.openai.chat.model
+      - dall-e-2  # models/image/image-openai/src/main/resources/application.yml:6 spring.ai.openai.image.model
+      - dall-e-3  # observability/models/observability-models-openai/src/main/resources/application.yml:20 image.model
+      - whisper-1  # models/audio/speech-to-text-openai/src/main/resources/application.yml:7 audio.transcription.model
+      - tts-1  # models/audio/text-to-speech-openai/src/main/java/com/thomasvitale/ai/spring/SpeechController.java:28 .model("tts-1")
+  Mintplex-Labs__anything-llm:
+    selects:
+      - whisper-1  # collector/utils/WhisperProviders/OpenAiWhisper.js:11 this.model = "whisper-1"
+      - tts-1  # server/utils/TextToSpeech/openAi/index.js:15 model: "tts-1" in the OpenAI TTS call
+      - gpt-4.1-nano  # server/utils/AiProviders/openAi/index.js:24 modelPreference || OPEN_MODEL_PREF || "gpt-4.1-nano"
+      - gemini-2.0-flash-lite  # server/utils/AiProviders/gemini/index.js:37 fallback when GEMINI_LLM_MODEL_PREF is unset
+      - gemini-embedding-001  # server/utils/EmbeddingEngines/gemini/index.js:15 EMBEDDING_MODEL_PREF || "gemini-embedding-001"
+      - gpt-image-1  # server/utils/ImageGenerators/openAi/index.js:15 IMAGE_GEN_MODEL_PREF || "gpt-image-1"
+      - gpt-4  # server/utils/agents/aibitat/example/websocket/websock-branding-collab.js:64 new AIbitat({provider: "openai", model: "gpt-4"})
+  khoj-ai__khoj:
+    selects:
+      - dall-e-3  # src/khoj/utils/initialization.py:95 default_text_to_image_model = "dall-e-3"
+      - whisper-1  # src/khoj/utils/initialization.py:78 default_speech2text_model = "whisper-1"
+      - imagen-3.0-generate-002  # src/khoj/utils/initialization.py:123 default Google text-to-image model
+      - computer-use-preview  # src/khoj/processor/operator/operator_agent_openai.py:208 model_name passed to responses.create
+      - gemini-2.0-flash  # src/khoj/utils/constants.py:15 first of default_gemini_chat_models, the default chat model on a Gemini-only setup
+  Azure-Samples__azure-search-openai-demo:
+    selects: []
+  android__ai-samples:
+    selects: []
+  docker__genai-stack:
+    selects:
+      - gpt-3.5-turbo  # chains.py:69 ChatOpenAI(model_name="gpt-3.5-turbo") for LLM=gpt-3.5
+      - embedding-001  # chains.py:51 GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+  jakobhoeg__nextjs-ollama-llm-ui:
+    selects: []
+  Azure-Samples__azure-search-openai-demo-java:
+    selects: []
+  Azure-Samples__azure-search-openai-demo-csharp:
+    selects: []
+  supabase-community__chatgpt-your-files:
+    selects:
+      - gpt-3.5-turbo-0125  # supabase/functions/chat/index.ts:119 model: 'gpt-3.5-turbo-0125'
+  elevenlabs__elevenlabs-examples:
+    selects: []
+    uncertain:
+      - gemini-2.0-flash  # agents/nextjs/quickstart/example/app/api/agent/route.ts:78 llm: "gemini-2.0-flash"; reason: run by the ElevenLabs agents platform
+  openai__openai-quickstart-python:
+    selects:
+      - gpt-3.5-turbo  # examples/chat-basic/app.py:38 model="gpt-3.5-turbo"
+      - gpt-3.5-turbo-0125  # examples/assistant-functions/functions.py:67 model="gpt-3.5-turbo-0125"
+  run-llama__rags:
+    selects:
+      - gpt-4-1106-preview  # core/builder_config.py:14 BUILDER_LLM = OpenAI(model="gpt-4-1106-preview")
+      - gpt-4-vision-preview  # core/utils.py:441 OpenAIMultiModal(model="gpt-4-vision-preview")
+  google-gemini__gemini-fullstack-langgraph-quickstart:
+    selects:
+      - gemini-2.0-flash  # backend/src/agent/configuration.py:12 query_generator_model default
+      - gemini-2.5-pro-preview-05-06  # backend/examples/cli_research.py:24 --reasoning-model default
+  spring-projects__spring-ai-examples:
+    selects: []
+  Nutlope__llamacoder:
+    selects: []
+  openai__openai-realtime-console:
+    selects:
+      - gpt-realtime  # server.js:21 model: "gpt-realtime" in the session request
+  eliben__gemini-cli:
+    selects:
+      - text-embedding-004  # internal/commands/embed.go:21 --model flag default
+  pinecone-io__pinecone-vercel-starter:
+    selects: []
+  openai__openai-quickstart-node:
+    selects:
+      - dall-e-3  # images/index.js:5 model: "dall-e-3"
+  openai__openai-cs-agents-demo:
+    selects: []
+  Azure-Samples__openai-chat-app-quickstart:
+    selects: []
+  Azure-Samples__openai-chat-app-quickstart-dotnet:
+    selects: []
+  deepgram-starters__live-nextjs-starter:
+    selects: []
+  exa-labs__exa-hallucination-detector:
+    selects: []
+  ggml-org__llama.vim:
+    selects: []
+  ivanfioravanti__chatbot-ollama:
+    selects: []
+  openai__openai-assistants-quickstart:
+    selects: []
+  vercel-labs__gemini-chatbot:
+    selects: []
+  vercel-labs__natural-language-postgres:
+    selects: []
+  langfuse__langfuse-k8s:
+    selects: []
+  otwld__ollama-helm:
+    selects: []

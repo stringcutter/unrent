@@ -11,6 +11,7 @@ from pathlib import Path
 
 from .catalog import Alternative, Catalog, Pool
 from .detect import Finding
+from .retired import Snap, replacement, snaps, state
 
 RANKED_BY = {
     "momentum": "ranked by GitHub stars gained in the last 90 days",
@@ -83,6 +84,10 @@ def _code(text: str) -> str:
 
 def _now() -> _dt.datetime:
     return _dt.datetime.now(_dt.UTC)
+
+
+def today() -> _dt.date:
+    return _now().date()
 
 
 @dataclass
@@ -222,6 +227,28 @@ def _running_json(f: Finding, root: Path, catalog: Catalog) -> dict:
     }
 
 
+# ---------------------------------------------------------------- retiring models
+
+
+def _snap_json(s: Snap, root: Path, catalog: Catalog, as_of: _dt.date) -> dict:
+    r = s.retirement
+    return {
+        "id": r.id,
+        "state": state(r, as_of),  # snapped: retired already; snaps: on `retires`
+        "retires": r.retires.isoformat(),
+        "vendor": r.vendor,
+        "service": s.finding.service.id,
+        "replacement": r.replacement,  # the vendor's recommendation
+        # The replacement after following any that retire too.
+        "use_instead": replacement(r, catalog),
+        "source": r.url,
+        "evidence": [
+            {"file": _rel(x.file, root), "line": x.line, "text": x.evidence} for x in s.sites
+        ],
+        "also_named": len(s.named),  # lines that name it without selecting it
+    }
+
+
 # ---------------------------------------------------------------- JSON
 
 
@@ -231,15 +258,24 @@ def payload(
     catalog: Catalog,
     skipped: list[Path] = (),
     unknown: list[dict] | None = None,
+    as_of: _dt.date | None = None,
 ) -> dict:
+    """`as_of`: the day retirements are judged against; today when None."""
     split = _split(findings)
+    as_of = as_of or today()
+    retiring = snaps(findings, catalog, root)
     return {
         "scanned": root.name,  # the folder name; a full path would leak the user's home
         "scanned_at": _now().isoformat(timespec="seconds"),
+        "as_of": as_of.isoformat(),
         "catalog_services": len(catalog),
         "rankings_date": catalog.rankings_date,
         "not_scanned": [_rel(p, root) for p in skipped],
         "found": [_entry(f, root) for f in split.closed],
+        # Model ids the code selects that are retired, or have a retirement date.
+        "models_retiring": [_snap_json(s, root, catalog, as_of) for s in retiring if s.sites],
+        # Retiring ids only named: in menus, tables, checks or sample data.
+        "models_retiring_named_only": [s.id for s in retiring if not s.sites],
         # Closed model ids with no SDK, key, host or package behind them.
         "models_named": [_entry(f, root) for f in split.named],
         # Keys in an example env file that nothing else backs.
@@ -267,9 +303,10 @@ def to_json(
     catalog: Catalog,
     skipped: list[Path] = (),
     unknown: list[dict] | None = None,
+    as_of: _dt.date | None = None,
 ) -> str:
     return json.dumps(
-        payload(findings, root, catalog, skipped, unknown), indent=2, ensure_ascii=False
+        payload(findings, root, catalog, skipped, unknown, as_of), indent=2, ensure_ascii=False
     )
 
 
@@ -402,6 +439,41 @@ def _unknown(unknown: list[dict]) -> list[str]:
     return out
 
 
+def _retiring(retiring: list[Snap], root: Path, catalog: Catalog, as_of: _dt.date) -> list[str]:
+    picked = [s for s in retiring if s.sites]
+    if not picked:
+        return []
+    noun = "model id the code selects" if len(picked) == 1 else "model ids the code selects"
+    out = [
+        "## Models that stop working",
+        "",
+        f"{len(picked)} {noun}: retired, or with a retirement date announced by the vendor "
+        f"(as of {as_of.isoformat()}). Requests to a retired model fail.",
+        "",
+        "| Model | Status | Date | Replace with | Where |",
+        "|---|---|---|---|---|",
+    ]
+    for s in picked:
+        r = s.retirement
+        status = "**retired**" if state(r, as_of) == "snapped" else "retires"
+        use = replacement(r, catalog)
+        first = s.sites[0]
+        more = f" (+{len(s.sites) - 1})" if len(s.sites) > 1 else ""
+        out.append(
+            f"| `{r.id}` | {status} | [{r.retires.isoformat()}]({r.url}) | "
+            f"{f'`{use}`' if use else '—'} | `{_rel(first.file, root)}:{first.line}`{more} |"
+        )
+    named = [s.id for s in retiring if not s.sites]
+    if named:
+        out += [
+            "",
+            f"Also named, not selected (menus, tables, checks): {', '.join(named[:10])}"
+            + (f" and {len(named) - 10} more." if len(named) > 10 else "."),
+        ]
+    out.append("")
+    return out
+
+
 def to_markdown(
     findings: list[Finding],
     root: Path,
@@ -409,8 +481,10 @@ def to_markdown(
     top: int = 3,
     skipped: list[Path] = (),
     unknown: list[dict] | None = None,
+    as_of: _dt.date | None = None,
 ) -> str:
     split = _split(findings)
+    as_of = as_of or today()
     out: list[str] = [f"# AI dependencies in `{root.name}`", ""]
     ranked = f" · alternatives ranked {catalog.rankings_date}" if catalog.rankings_date else ""
     out += [
@@ -420,6 +494,7 @@ def to_markdown(
         "",
     ]
     out += _not_scanned(list(skipped), root)
+    out += _retiring(snaps(findings, catalog, root), root, catalog, as_of)
 
     closed = split.closed
     n_running = len(split.running)

@@ -12,6 +12,7 @@ Two halves, kept apart on purpose:
 from __future__ import annotations
 
 import dataclasses
+import datetime
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -143,12 +144,25 @@ class Service:
     kind: tuple[str, ...] = ()
 
 
+@dataclass(frozen=True)
+class Retirement:
+    """A model id its vendor has retired, or will on `retires`, on its own API."""
+
+    id: str
+    vendor: str
+    url: str  # the vendor's page that announces it
+    services: tuple[str, ...]  # catalog services whose evidence the id can be
+    retires: datetime.date
+    replacement: str | None  # the vendor's recommendation
+
+
 @dataclass
 class Catalog:
     services: list[Service] = field(default_factory=list)  # closed services
     pools: dict[str, Pool] = field(default_factory=dict)
     rankings_date: str | None = None
     projects: list[Service] = field(default_factory=list)  # recognisable open source
+    retirements: dict[str, Retirement] = field(default_factory=dict)  # by model id
 
     def __len__(self) -> int:
         return len(self.services)
@@ -407,6 +421,7 @@ def load_catalog(path: Path, rankings: dict | None = None) -> Catalog:
                 raise CatalogError(f"service '{service.id}' names unknown service '{other}'")
 
     catalog.projects = _load_projects(path / "alternatives.yaml", pools)
+    catalog.retirements = _load_retirements(path / "retirements.yaml", set(seen))
     kinds = {p.repo: p.kind for p in catalog.projects}
     for pool_id, pool in pools.items():
         pools[pool_id] = dataclasses.replace(
@@ -416,6 +431,42 @@ def load_catalog(path: Path, rankings: dict | None = None) -> Catalog:
             ),
         )
     return catalog
+
+
+def _load_retirements(path: Path, service_ids: set[str]) -> dict[str, Retirement]:
+    """retirements.yaml, which a catalog may leave out."""
+    if not path.is_file():
+        return {}
+    raw = _load_yaml(path) or {}
+    vendors = raw.get("vendors") if isinstance(raw, dict) else None
+    if not isinstance(vendors, dict):
+        raise CatalogError(f"{path.name}: expected a `vendors` mapping")
+    out: dict[str, Retirement] = {}
+    for vendor, entry in vendors.items():
+        where = f"{path.name}: {vendor}"
+        if not isinstance(entry, dict) or not isinstance(entry.get("models"), dict):
+            raise CatalogError(f"{where}: expected `url`, `services` and `models`")
+        if not entry.get("url"):
+            raise CatalogError(f"{where}: `url` of the vendor's page is missing")
+        services = _as_tuple(entry.get("services"))
+        if not services:
+            raise CatalogError(f"{where}: `services` is missing")
+        unknown = [s for s in services if s not in service_ids]
+        if unknown:
+            raise CatalogError(f"{where}: unknown services {unknown}")
+        for model, spec in entry["models"].items():
+            spec = spec if isinstance(spec, dict) else {}
+            retires, replacement = spec.get("retires"), spec.get("replacement")
+            # A YAML timestamp is a datetime, which a date comparison would choke on.
+            if type(retires) is not datetime.date or not (
+                replacement is None or isinstance(replacement, str)
+            ):
+                raise CatalogError(f"{where}: {model} needs a `retires` date and a `replacement`")
+            if model in out:
+                raise CatalogError(f"{where}: {model} is also under {out[model].vendor}")
+            url = entry["url"]
+            out[model] = Retirement(str(model), vendor, url, services, retires, replacement)
+    return out
 
 
 def _load_projects(path: Path, pools: dict[str, Pool]) -> list[Service]:

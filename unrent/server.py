@@ -153,7 +153,9 @@ def scan(
 
     Returns `found` (closed services the code depends on, each with file:line evidence
     and the pools that replace it), `models_named` (closed model ids with no SDK, key,
-    host or package behind them: not dependencies), `env_template_only` (keys only in
+    host or package behind them: not dependencies), `models_retiring` (model ids the
+    code selects that the vendor has retired, `snapped`, or will retire on `retires`,
+    `snaps`, with `use_instead`), `env_template_only` (keys only in
     an example env file: not dependencies), `open_source` (components already
     in use and their rank in their pool), `unknown_candidates` (API hosts and keys that
     no catalog entry explains and that look like a hosted AI API: closed services
@@ -180,7 +182,7 @@ def scan(
     findings = match(facts, catalog)
     unknown = scan_unknown(root, catalog, list(exclude or []), skip_tests=skip_tests)
     result = payload(findings, root, catalog, skipped, unknown)
-    for key in ("found", "models_named", "env_template_only", "open_source"):
+    for key in ("found", "models_named", "models_retiring", "env_template_only", "open_source"):
         _capped(result[key], "evidence", evidence)
     running = [f for f in findings if f.service.open_source]
     for entry, f in zip(result["open_source"], running, strict=True):

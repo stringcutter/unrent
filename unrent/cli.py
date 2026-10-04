@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import datetime
 import json
 import os
 import shlex
@@ -18,7 +19,8 @@ from .catalog import CatalogError, load_catalog
 from .detect import collect_facts, match
 from .discover import scan_unknown
 from .render import to_json, to_markdown
-from .terminal import Progress, to_terminal, wants_colour, why
+from .retired import snaps
+from .terminal import Progress, to_terminal, wants_colour, why, why_model
 
 
 def _default_catalog() -> Path:
@@ -38,6 +40,13 @@ def _version() -> str:
         return version("unrent")
     except PackageNotFoundError:
         return "unknown"
+
+
+def _date(value: str) -> datetime.date:
+    try:
+        return datetime.date.fromisoformat(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError("expected YYYY-MM-DD") from None
 
 
 def _positive(value: str) -> int:
@@ -69,8 +78,14 @@ def build_parser() -> argparse.ArgumentParser:
     scan.add_argument(
         "--why",
         metavar="SERVICE",
-        help="every location behind one service or open source component, by id or name, "
-        "and what replaces it",
+        help="every location behind one service, open source component or retiring model "
+        "id, and what replaces it",
+    )
+    scan.add_argument(
+        "--as-of",
+        type=_date,
+        metavar="YYYY-MM-DD",
+        help="judge model retirements as of this day instead of today",
     )
     scan.add_argument("--output", "-o", type=Path, help="write to a file instead of stdout")
     scan.add_argument(
@@ -166,13 +181,20 @@ def cmd_scan(args) -> int:
         hit = next(
             (f for f in findings if wanted in (f.service.id.lower(), f.service.name.lower())), None
         )
-        if hit is None:
-            ids = ", ".join(f.service.id for f in findings) or "none"
+        model = next(
+            (s for s in snaps(findings, catalog, root) if s.sites and s.id.lower() == wanted), None
+        )
+        if hit is not None:
+            text = why(hit, root, catalog, top=args.top, colour=colour)
+        elif model is not None:
+            text = why_model(model, root, catalog, as_of=args.as_of, colour=colour)
+        else:
+            picked = [s.id for s in snaps(findings, catalog, root) if s.sites]
+            ids = ", ".join([f.service.id for f in findings] + picked) or "none"
             print(f"unrent: {args.why} is not among what was found ({ids})", file=sys.stderr)
             return 2
-        text = why(hit, root, catalog, top=args.top, colour=colour)
     elif fmt == "json":
-        text = to_json(findings, root, catalog, skipped, unknown)
+        text = to_json(findings, root, catalog, skipped, unknown, args.as_of)
     elif fmt == "terminal":
         text = to_terminal(
             findings,
@@ -183,9 +205,18 @@ def cmd_scan(args) -> int:
             colour=colour,
             skipped=skipped,
             unknown=unknown,
+            as_of=args.as_of,
         )
     else:
-        text = to_markdown(findings, root, catalog, top=args.top, skipped=skipped, unknown=unknown)
+        text = to_markdown(
+            findings,
+            root,
+            catalog,
+            top=args.top,
+            skipped=skipped,
+            unknown=unknown,
+            as_of=args.as_of,
+        )
     if args.output:
         args.output.write_text(text + "\n", encoding="utf-8")
         print(f"wrote {args.output}", file=sys.stderr)

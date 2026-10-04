@@ -11,14 +11,16 @@ The CLI runs offline. No account. No upload. No telemetry.
 ```
 $ unrent my-app
 
-3 strings attached. 3 can be cut.
+3 strings attached. 3 can be cut. 1 will snap.
 my-app · alternatives ranked 2026-09-28
 
-╎ cut   OpenAI API  requirements.txt:1  +3  ollama/ollama + MiMo-V2.6-Pro-RL
-╎ cut   Pinecone    requirements.txt:2  +3  milvus-io/milvus
-╎ cut   ElevenLabs  requirements.txt:4  +2  microsoft/VibeVoice + openai/whisper
+╎ cut    OpenAI API   requirements.txt:1  +4  ollama/ollama + MiMo-V2.6-Pro-RL
+╎ cut    Pinecone     requirements.txt:2  +3  milvus-io/milvus
+╎ cut    ElevenLabs   requirements.txt:4  +2  microsoft/VibeVoice + openai/whisper
 
-│ runs  faiss       requirements.txt:3      #2 of 8 · Vector database
+┆ snaps  gpt-4-turbo  main.py:9               retires 2026-10-23 → gpt-5.6-sol
+
+│ runs   faiss        requirements.txt:3      #2 of 8 · Vector database
 
   unrent my-app --why openai  every line behind one string
   unrent my-app -o unrent.md  the full report, every alternative ranked
@@ -26,8 +28,10 @@ my-app · alternatives ranked 2026-09-28
 
 Real output. One row per service, with its strongest location and how many more there
 are; `cut` has an open source replacement (the top of each ranking), `held` has none
-yet, `runs` is open source already in use and where it ranks. In a pipe or a file the
-same scan is a Markdown report that pastes straight into an issue or PR.
+yet, `runs` is open source already in use and where it ranks. `snapped` and `snaps` are
+model ids the code selects that the vendor has retired, or will on the date shown:
+requests to them fail. In a pipe or a file the same scan is a Markdown report that
+pastes straight into an issue or PR.
 
 ## Install
 
@@ -53,6 +57,8 @@ results either way.
 ```bash
 unrent .                               # the terminal view; Markdown in a pipe or file
 unrent . --why openai                  # every location of one service, and what replaces it
+unrent . --why gpt-4-turbo             # every line that selects a retiring model
+unrent . --as-of 2026-12-01            # judge retirements as of another day
 unrent . -o report.md                  # the Markdown report
 unrent . --format json -o r.json       # everything, machine-readable
 unrent . --top 5                       # more alternatives per kind
@@ -108,6 +114,15 @@ image generation, web search, web scraping, browser automation, code sandboxes, 
 platforms, agent memory. 218 are written by hand; 139 hosted model providers come from
 [models.dev](https://models.dev) and are regenerated every week
 ([`models-dev.yaml`](https://github.com/stringcutter/unrent/blob/main/catalog/services/models-dev.yaml)).
+
+**Models that stop working.** 204 model retirements announced by OpenAI, Anthropic and
+Google for their own APIs, with the date and the vendor's replacement, checked every
+week against their deprecation pages
+([`retirements.yaml`](https://github.com/stringcutter/unrent/blob/main/catalog/retirements.yaml)).
+A model id counts when a line selects it: a default, a config value, a model passed to
+a call. The same id in a model menu, a price table or a check on what the user picked
+is only counted. Azure OpenAI, Bedrock and Vertex keep their own schedules and are not
+covered. On the golden corpus: precision 0.939, recall 0.886.
 
 **Services it does not know yet.** Every scan also lists `unknown_candidates`: API hosts
 and keys that no catalog entry explains and that look like a hosted AI API (a `/v1/...`

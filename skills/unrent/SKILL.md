@@ -34,6 +34,9 @@ Call `scan` with the project path (MCP), or run `unrent scan <path> --format jso
 
 - `found`: closed services the code depends on, strongest evidence first.
 - `models_named`: model ids with no SDK, key, host or package behind them.
+- `models_retiring`: model ids the code selects that the vendor has retired (`snapped`,
+  requests fail now) or will retire on `retires` (`snaps`), with `use_instead` and the
+  lines that select them. Report these first: they break without anyone touching the code.
 - `env_template_only`: keys that appear only in an example env file.
 - `open_source`: open source AI the code already runs, with its rank in its pool.
 - `unknown_candidates`: API hosts and keys that no catalog entry explains and that look

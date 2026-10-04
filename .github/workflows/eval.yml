@@ -1,15 +1,16 @@
 name: eval
 
 # The golden corpus: 54 real repos, pinned to a commit, with hand-labelled truth for
-# closed services (eval/corpus.yaml, eval/TRUTH_RULES.md) and open source components
-# (eval/corpus_oss.yaml, eval/OSS_TRUTH_RULES.md). A change to detection or to the
-# catalog must not make unrent worse at telling what a codebase depends on.
+# closed services (eval/corpus.yaml, eval/TRUTH_RULES.md), open source components
+# (eval/corpus_oss.yaml, eval/OSS_TRUTH_RULES.md) and the retiring models the code
+# selects (eval/corpus_models.yaml, eval/MODEL_TRUTH_RULES.md). A change to detection
+# or to the catalog must not make unrent worse at telling what a codebase depends on.
 on:
   push:
     branches: [main]
-    paths: ["unrent/**", "catalog/services/**", "catalog/alternatives.yaml", "eval/**"]
+    paths: ["unrent/**", "catalog/services/**", "catalog/alternatives.yaml", "catalog/retirements.yaml", "eval/**"]
   pull_request:
-    paths: ["unrent/**", "catalog/services/**", "catalog/alternatives.yaml", "eval/**"]
+    paths: ["unrent/**", "catalog/services/**", "catalog/alternatives.yaml", "catalog/retirements.yaml", "eval/**"]
   workflow_dispatch:
 
 permissions:
@@ -27,12 +28,13 @@ jobs:
           path: eval/.cache
           key: eval-corpus-${{ hashFiles('eval/corpus.yaml', 'eval/corpus_oss.yaml') }}
       # Floors sit just under the measured scores on 2026-10-04: closed precision 0.993,
-      # recall 0.957; open source precision 1.000, recall 0.902. Raise them when the
-      # scores rise; never lower them to pass.
+      # recall 0.957; open source precision 1.000, recall 0.902; models precision 0.939,
+      # recall 0.886. Raise them when the scores rise; never lower them to pass.
       - run: >-
-          uv run --frozen python eval/run_eval.py --side both
+          uv run --frozen python eval/run_eval.py --side all
           --min-precision 0.98 --min-recall 0.94
           --min-oss-precision 0.98 --min-oss-recall 0.88
+          --min-model-precision 0.93 --min-model-recall 0.88
       # Hosts and keys in the corpus that no catalog entry explains, ranked by how many
       # repos name them: candidates for the catalog (unrent/discover.py).
       - name: Services the catalog does not know

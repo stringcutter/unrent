@@ -13,7 +13,8 @@ from typing import TextIO
 
 from .catalog import Catalog
 from .detect import Finding
-from .render import RANKED_BY, Split, _describe, _rel, _split, standings
+from .render import RANKED_BY, Split, _describe, _rel, _split, standings, today
+from .retired import Snap, replacement, snaps, state
 
 GAP = "  "
 NARROW = 60  # below this, alternatives drop to their own line even when they would fit
@@ -72,6 +73,10 @@ class Style:
     def mute(self, text: str) -> str:
         return self._sgr("38;5;245", text)
 
+    def amber(self, text: str) -> str:
+        truecolour = os.environ.get("COLORTERM") in ("truecolor", "24bit")
+        return self._sgr("38;2;242;181;68" if truecolour else "38;5;214", text)
+
     def bold(self, text: str) -> str:
         return self._sgr("1", text)
 
@@ -81,7 +86,7 @@ class Style:
 
 @dataclass
 class Row:
-    state: str  # cut, held, runs
+    state: str  # cut, held, snapped, snaps, runs
     id: str
     name: str
     where: str  # file:line of the strongest evidence
@@ -114,6 +119,30 @@ def _standing(f: Finding, catalog: Catalog) -> str:
         return "dropped from its ranking"
     s = min(ranked, key=lambda s: s.rank)
     return f"#{s.rank} of {s.of} · {s.pool.name}"
+
+
+def snap_rows(retiring: list[Snap], root: Path, catalog: Catalog, as_of) -> list[Row]:
+    out = []
+    for s in retiring:
+        if not s.sites:
+            continue
+        r = s.retirement
+        gone = state(r, as_of) == "snapped"
+        use = replacement(r, catalog)
+        first = s.sites[0]
+        out.append(
+            Row(
+                "snapped" if gone else "snaps",
+                r.id,
+                r.id,
+                _clean(f"{_rel(first.file, root)}:{first.line}"),
+                len(s.sites) - 1,
+                f"{'retired' if gone else 'retires'} {r.retires.isoformat()}"
+                + (f" → {use}" if use else ""),
+                False,
+            )
+        )
+    return out
 
 
 def rows(split: Split, root: Path, catalog: Catalog) -> list[Row]:
@@ -151,31 +180,52 @@ def rows(split: Split, root: Path, catalog: Catalog) -> list[Row]:
 # ---------------------------------------------------------------- layout
 
 
-def _bar(state: str, st: Style) -> str:
+TAGS = {
+    "cut": "╎ cut",
+    "held": "│ held",
+    "snapped": "┆ snapped",
+    "snaps": "┆ snaps",
+    "runs": "│ runs",
+}
+
+
+def _bar(state: str, w: int, st: Style) -> str:
+    tag = f"{TAGS[state]:<{w}}"
     if state == "cut":
-        return st.pink("╎ cut ")
-    if state == "held":
-        return "│ held"
-    return st.mute("│ runs")
+        return st.pink(tag)
+    if state in ("snapped", "snaps"):
+        return st.amber(tag)
+    return st.mute(tag) if state == "runs" else tag
 
 
-def _line(r: Row, widths: tuple[int, int, int], st: Style) -> str:
-    name_w, where_w, more_w = widths
+def _then(r: Row, st: Style, arrow: bool) -> str:
+    if r.state == "cut":
+        return f"→ {r.then}" if arrow else r.then
+    if r.state in ("snapped", "snaps"):
+        when, _, use = r.then.partition(" → ")
+        return st.amber(when) + (f" → {use}" if use else "")
+    return st.mute(r.then)
+
+
+def _line(r: Row, widths: tuple[int, int, int, int], st: Style) -> str:
+    bar_w, name_w, where_w, more_w = widths
     name = r.name + (" (tests)" if r.tests else "")
     more = f"+{r.more}" if r.more else ""
-    then = r.then if r.state == "cut" else st.mute(r.then)
     return (
-        f"{_bar(r.state, st)}{GAP}{name:<{name_w}}{GAP}"
-        f"{st.mute(f'{r.where:<{where_w}}  {more:<{more_w}}')}{GAP}{then}"
+        f"{_bar(r.state, bar_w, st)}{GAP}{name:<{name_w}}{GAP}"
+        f"{st.mute(f'{r.where:<{where_w}}  {more:<{more_w}}')}{GAP}{_then(r, st, False)}"
     ).rstrip()
 
 
-def _stacked(r: Row, st: Style) -> list[str]:
+def _stacked(r: Row, bar_w: int, st: Style) -> list[str]:
     name = r.name + (" (tests)" if r.tests else "")
-    indent = " " * (6 + len(GAP))
+    indent = " " * (bar_w + len(GAP))
     more = f"  +{r.more}" if r.more else ""
-    then = f"→ {r.then}" if r.state == "cut" else st.mute(r.then)
-    return [f"{_bar(r.state, st)}{GAP}{name}", indent + st.mute(r.where + more), indent + then]
+    return [
+        f"{_bar(r.state, bar_w, st)}{GAP}{name}",
+        indent + st.mute(r.where + more),
+        indent + _then(r, st, True),
+    ]
 
 
 def _blocks(groups: list[list[Row]], width: int, st: Style) -> list[str]:
@@ -184,30 +234,40 @@ def _blocks(groups: list[list[Row]], width: int, st: Style) -> list[str]:
     if not groups:
         return []
     group = [r for g in groups for r in g]
+    bar_w = max(len(TAGS[r.state]) for r in group)
     name_w = max(len(r.name) + (8 if r.tests else 0) for r in group)
     where_w = max(len(r.where) for r in group)
     more_w = max((len(f"+{r.more}") for r in group if r.more), default=0)
-    full = 6 + 3 * len(GAP) + name_w + where_w + 2 + more_w + max(len(r.then) for r in group)
+    full = bar_w + 3 * len(GAP) + name_w + where_w + 2 + more_w + max(len(r.then) for r in group)
     wide = width >= NARROW and full <= width
     out: list[str] = []
     for g in groups:
         if out:
             out.append("")
         for r in g:
-            out += [_line(r, (name_w, where_w, more_w), st)] if wide else _stacked(r, st)
+            if wide:
+                out.append(_line(r, (bar_w, name_w, where_w, more_w), st))
+            else:
+                out += _stacked(r, bar_w, st)
     return out
 
 
-def _headline(n: int, cut: int, st: Style) -> str:
-    if not n:
-        return st.bold("No strings attached.")
+def _headline(n: int, cut: int, snapped: int, snapping: int, st: Style) -> str:
     noun = "string" if n == 1 else "strings"
-    line = st.bold(f"{n} {noun} attached.")
-    return f"{line} {st.bold(st.pink(f'{cut} can be cut.'))}" if cut else line
+    parts = [st.bold(f"{n} {noun} attached." if n else "No strings attached.")]
+    if cut:
+        parts.append(st.bold(st.pink(f"{cut} can be cut.")))
+    if snapped:
+        parts.append(st.bold(st.amber(f"{snapped} {'has' if snapped == 1 else 'have'} snapped.")))
+    if snapping:
+        parts.append(st.bold(st.amber(f"{snapping} will snap.")))
+    return " ".join(parts)
 
 
-def _also(split: Split, skipped: list[Path], unknown: list[dict]) -> str:
+def _also(split: Split, skipped: list[Path], unknown: list[dict], named: int) -> str:
     bits = []
+    if named:
+        bits.append(f"{named} retiring model ids only named, in menus or tables")
     if split.named:
         bits.append(f"{len(split.named)} closed model ids named with nothing behind them")
     if split.templates:
@@ -229,23 +289,30 @@ def to_terminal(
     colour: bool = False,
     skipped: list[Path] = (),
     unknown: list[dict] | None = None,
+    as_of=None,
 ) -> str:
-    """`command` is how the user ran the scan, for the hints at the end."""
+    """`command` is how the user ran the scan, for the hints at the end; `as_of` the day
+    retirements are judged against (today when None)."""
     st = Style(colour)
     split = _split(findings)
     unknown = list(unknown or [])
-    all_rows = rows(split, root, catalog)
-    closed = [r for r in all_rows if r.state != "runs"]
-    running = [r for r in all_rows if r.state == "runs"]
+    retiring = snaps(findings, catalog, root)
+    tied = rows(split, root, catalog)
+    closed = [r for r in tied if r.state != "runs"]
+    running = [r for r in tied if r.state == "runs"]
+    snapping = snap_rows(retiring, root, catalog, as_of or today())
+    all_rows = closed + snapping + running
     cut = sum(1 for r in closed if r.state == "cut")
-    out = ["", _headline(len(closed), cut, st)]
+    gone = sum(1 for r in snapping if r.state == "snapped")
+    out = ["", _headline(len(closed), cut, gone, len(snapping) - gone, st)]
     ranked = f" · alternatives ranked {catalog.rankings_date}" if catalog.rankings_date else ""
     out += [st.mute(f"{root.name}{ranked}"), ""]
-    out += _blocks([closed, running], width, st)
+    out += _blocks([closed, snapping, running], width, st)
     if all_rows:
         out.append("")
 
-    also = _also(split, list(skipped), unknown)
+    named = sum(1 for s in retiring if not s.sites)
+    also = _also(split, list(skipped), unknown, named)
     if also:
         out += [st.mute(f"  also: {also}"), ""]
     hints = []
@@ -274,9 +341,7 @@ def why(
         state = "env template"
     else:
         state = "cut" if _best(f, catalog) else "held"
-    bar = {"cut": _bar("cut", st), "held": _bar("held", st), "runs": _bar("runs", st)}.get(
-        state, st.mute(f"│ {state}")
-    )
+    bar = _bar(state, len(TAGS[state]), st) if state in TAGS else st.mute(f"│ {state}")
     tests = " (only in tests)" if f.test_only else ""
     out = ["", f"{bar}{GAP}{st.bold(f.service.name)}{tests}  {st.mute(f.service.category)}", ""]
     where = [(_clean(f"{_rel(x.file, root)}:{x.line}"), _clean(x.evidence)) for x in f.cited]
@@ -300,6 +365,28 @@ def why(
             if not pool.alternatives:
                 out.append(st.mute("    no ranked alternatives in this catalog"))
     out.append("")
+    return "\n".join(out)
+
+
+def why_model(s: Snap, root: Path, catalog: Catalog, *, as_of=None, colour: bool = False) -> str:
+    """Every line that selects one retiring model, and what the vendor says to use."""
+    st = Style(colour)
+    r = s.retirement
+    gone = state(r, as_of or today()) == "snapped"
+    tag = "snapped" if gone else "snaps"
+    use = replacement(r, catalog)
+    when = f"{'retired' if gone else 'retires'} {r.retires.isoformat()}"
+    out = ["", f"{_bar(tag, len(TAGS[tag]), st)}{GAP}{st.bold(r.id)}  {st.amber(when)}", ""]
+    where = [(_clean(f"{_rel(x.file, root)}:{x.line}"), _clean(x.evidence)) for x in s.sites]
+    w = max(len(loc) for loc, _ in where)
+    out += [f"  {st.mute(f'{loc:<{w}}')}  {text[:120]}" for loc, text in where]
+    out.append("")
+    if use:
+        via = f" (via {r.replacement})" if r.replacement != use else ""
+        out.append(f"  {r.vendor} recommends {st.bold(use)}{via}")
+    if s.named:
+        out.append(st.mute(f"  also named on {len(s.named)} lines that don't select it"))
+    out += [st.mute(f"  {r.url}"), ""]
     return "\n".join(out)
 
 

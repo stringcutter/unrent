@@ -8,6 +8,16 @@ each release ships the rankings as of its date.
 ## [Unreleased]
 
 ### Added
+- Snapped models: model ids the code selects that the vendor has retired (`snapped`) or
+  will retire on an announced date (`snaps`), with the vendor's replacement, followed
+  while that one retires too. 204 retirements from OpenAI, Anthropic and Google in
+  `catalog/retirements.yaml`, checked weekly against their pages by
+  `scripts/retirements.py`, which opens a pull request. In the terminal view, the
+  Markdown report (`Models that stop working`), JSON and MCP (`models_retiring`).
+  `--why <model id>` and `--as-of YYYY-MM-DD`. A model menu, a price table, a check on
+  the user's choice, sample data and Bedrock or Vertex spellings are not counted as
+  selecting. A third eval side, `--side all`, scores it against hand-labelled truth
+  (`eval/corpus_models.yaml`, `eval/MODEL_TRUTH_RULES.md`): precision 0.939, recall 0.886.
 - A terminal view, the default when the output is a terminal: one row per service,
   `cut` (an open source replacement exists), `held` (none yet) or `runs` (open source in
   use, with its rank), with its strongest location and a count of the rest. Columns stack

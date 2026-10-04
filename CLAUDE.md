@@ -7,9 +7,12 @@ writes in Danish; answer in the language of their latest message.
 
 ## Scope (decided by the maintainer; don't reopen it)
 
-- unrent does exactly two things: detect closed AI dependencies (edge cases matter most)
-  and list open source alternatives ranked by momentum. No lock-in scores, effort levels
+- unrent does three things: detect closed AI dependencies (edge cases matter most), list
+  open source alternatives ranked by momentum, and flag model ids the code selects that
+  their vendor has retired or will retire (`snapped`). No lock-in scores, effort levels
   or "what you lose" text: they were removed on purpose.
+- unrent is a stringcutter product (`github.com/stringcutter/unrent`). The terminal view
+  speaks of strings: `cut`, `held`, `snapped`/`snaps`, `runs`.
 - Improvements go to detection precision and coverage, and to ranking quality.
 - unrent lists and ranks. Whether a switch is worth it is for the user (or an agent using
   the skill) to judge.
@@ -21,13 +24,15 @@ writes in Danish; answer in the language of their latest message.
 | `unrent/detect.py` | Facts from files (manifests, imports, code views without comments), matching against the catalog, overlap rules (`excludes`, `part_of`, models-only) |
 | `unrent/discover.py` | `unknown_candidates`: API hosts and keys no catalog entry explains that look like a hosted AI API. Never counted as findings |
 | `unrent/render.py` | JSON payload and Markdown report (`report.py` is the old name; don't recreate it) |
-| `unrent/terminal.py` | The terminal view (`cut`/`held`/`runs` rows), `--why`, colour and the progress line; stdlib only |
+| `unrent/terminal.py` | The terminal view (`cut`/`held`/`snapped`/`snaps`/`runs` rows), `--why`, colour and the progress line; stdlib only |
+| `unrent/retired.py` | Snapped models: which model facts select a retiring id (`selects`), the replacement chain |
 | `unrent/server.py` | `unrent mcp`: tools `scan`, `alternatives`, `standing`, `catalog` |
 | `unrent/fresh.py` | Live rankings from `catalog/rankings.json` on `main`, cached 6 h, else the shipped snapshot |
 | `catalog/services/*.yaml` | Closed services. `models-dev.yaml` is **generated**; the others are hand-written |
 | `catalog/alternatives.yaml` | Pools of open source alternatives and the open source projects recognised in code |
 | `catalog/rankings.json`, `star-history.json` | Written weekly by `scripts/refresh.py` |
-| `eval/` | Golden corpus (54 repos, pinned commits) with hand-labelled truth, `TRUTH_RULES.md`, `OSS_TRUTH_RULES.md`, `run_eval.py` |
+| `catalog/retirements.yaml` | Model retirements from the vendors' pages, rewritten weekly by `scripts/retirements.py` (pull request left open for review) |
+| `eval/` | Golden corpus (54 repos, pinned commits) with hand-labelled truth, `TRUTH_RULES.md`, `OSS_TRUTH_RULES.md`, `MODEL_TRUTH_RULES.md` (`corpus_models.yaml`), `run_eval.py` |
 | `scripts/` | `refresh.py` (rankings), `verify_packages.py`, `new_services.py` (models.dev + corpus candidates), `mcp_smoke.py` |
 | `skills/unrent/` | Agent skill (SKILL.md, `sweep.py`, `repo_facts.py`), installable with `npx skills add` once the repo is public |
 
@@ -39,8 +44,10 @@ uv run pytest -q                           # tests; with `rg` on PATH each detec
 uv run ruff check . && uv run ruff format --check .
 uv run unrent scan path/to/repo [--format json]
 uv run unrent catalog --validate           # after any catalog edit
-uv run python eval/run_eval.py --side both --min-precision 0.98 --min-recall 0.94 \
-  --min-oss-precision 0.98 --min-oss-recall 0.88   # first run clones 54 repos (UNRENT_EVAL_CACHE)
+uv run python eval/run_eval.py --side all --min-precision 0.98 --min-recall 0.94 \
+  --min-oss-precision 0.98 --min-oss-recall 0.88 \
+  --min-model-precision 0.93 --min-model-recall 0.88  # first run clones 54 repos (UNRENT_EVAL_CACHE)
+uv run python scripts/retirements.py       # retirements.yaml against the vendors' pages
 uv run python scripts/verify_packages.py   # every package signature exists in its registry
 uv run python scripts/new_services.py --models-dev                  # providers not in the catalog
 uv run python scripts/new_services.py --models-dev --write-catalog  # regenerate models-dev.yaml
@@ -76,14 +83,18 @@ uv run python scripts/refresh.py --check   # rankings, without writing
 
 - Truth is labelled from the code, independently of unrent's output (`eval/TRUTH_RULES.md`).
 - Floors in `.github/workflows/eval.yml` sit just under the measured scores (2026-10-04:
-  closed precision 0.993, recall 0.957; open source 1.000 / 0.902). Raise them when
-  scores rise; **never lower them to pass**.
+  closed precision 0.993, recall 0.957; open source 1.000 / 0.902; models 0.939 / 0.886).
+  Raise them when scores rise; **never lower them to pass**.
+- The models side scores only the ids `corpus_models.yaml` lists under `labelled`. When
+  `retirements.yaml` gains ids, grep the corpus for them, label any line that selects
+  one (`MODEL_TRUTH_RULES.md`), and add them to `labelled`.
 - A new false positive after a catalog change: open the cited line first. If the code
   really uses the service, add it to the truth with the line, in the existing format
   (`- id  # added YYYY-MM-DD with the new catalog ids; line checked by hand: file:line ...`).
   If not, fix the signature and add a regression test.
 - Known open FPs: `openai` in bedrock-access-gateway, `google-imagen` in anything-llm
-  (Gemini image model ids in a chat model list), `together` in langchaingo.
+  (Gemini image model ids in a chat model list), `together` in langchaingo. Models side:
+  dify's `RestrictModel(model=...)` allow-list (3) and a tokenizer default in kotaemon.
 
 ## Rankings and data sources
 

@@ -54,6 +54,7 @@ packages = ["unrent"]
 "catalog/services" = "unrent/catalog_data/services"
 "catalog/alternatives.yaml" = "unrent/catalog_data/alternatives.yaml"
 "catalog/rankings.json" = "unrent/catalog_data/rankings.json"
+"catalog/retirements.yaml" = "unrent/catalog_data/retirements.yaml"
 
 [tool.hatch.build.targets.sdist]
 include = ["unrent/", "catalog/", "tests/", "scripts/", "README.md", "LICENSE", "CHANGELOG.md", "pyproject.toml"]

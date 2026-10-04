@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import dataclasses
+import datetime
 import importlib.util
 import json
 import os
@@ -16,10 +17,16 @@ import pytest
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from unrent.catalog import OPEN_LICENCES, OPEN_MODEL_LICENCES, load_catalog  # noqa: E402
+from unrent.catalog import (  # noqa: E402
+    OPEN_LICENCES,
+    OPEN_MODEL_LICENCES,
+    CatalogError,
+    load_catalog,
+)
 from unrent.cli import main  # noqa: E402
 from unrent.detect import collect_facts, image_name, js_package, match, redact  # noqa: E402
-from unrent.render import standings, to_json, to_markdown  # noqa: E402
+from unrent.render import payload, standings, to_json, to_markdown  # noqa: E402
+from unrent.retired import replacement, snaps  # noqa: E402
 from unrent.terminal import Progress, to_terminal, wants_colour, why  # noqa: E402
 
 CATALOG_DIR = ROOT / "catalog"
@@ -2234,3 +2241,178 @@ def test_key_line_only_for_table_keys(tmp_path, catalog):
     facts = found(tmp_path, catalog)
     assert [f.line for f in facts["openai"]] == [3]
     assert [f.line for f in facts["anthropic"]] == [3]
+
+
+# ---------------------------------------------------------------- retiring models
+
+
+def _retiring(catalog, **models):
+    """The catalog with only these retirements: id=(date, replacement)."""
+    from unrent.catalog import Retirement
+
+    vendor = {"gpt": "openai", "cla": "anthropic", "gem": "google"}
+    services = {
+        "openai": ("openai", "openai-images"),
+        "anthropic": ("anthropic",),
+        "google": ("google-gemini", "google-embeddings"),
+    }
+    out = {}
+    for model, (date, use) in models.items():
+        model = model.replace("_", "-")
+        v = vendor[model[:3]]
+        out[model] = Retirement(model, v, "https://example.org/x", services[v], date, use)
+    return dataclasses.replace(catalog, retirements=out)
+
+
+def _snaps(root: Path, catalog):
+    return snaps(match(collect_facts(root, catalog), catalog), catalog, root)
+
+
+D = datetime.date
+
+
+@pytest.mark.parametrize(
+    "line",
+    [
+        'client.chat.completions.create(model="gpt-4-0613")',
+        'MODEL = "gpt-4-0613"',
+        'model: str = "gpt-4-0613"',
+        'model = os.getenv("CHAT_MODEL", "gpt-4-0613")',
+        'model = os.environ.get("CHAT_MODEL") or "gpt-4-0613"',
+        'llm = ChatOpenAI(model_name="openai/gpt-4-0613")',
+        'name = cfg.model if cfg.model else "gpt-4-0613"',
+        'model: str | None = "gpt-4-0613"',
+        'llm = {"provider": "openai", model: gpt-4-0613, "temperature": 0}',
+        'resp = client.chat.completions.create(max_tokens=100, model="gpt-4-0613")',
+    ],
+)
+def test_a_line_that_selects_a_retiring_model(tmp_path, catalog, line):
+    write(tmp_path, {"app.py": f"import openai\n{line}\n"})
+    found = _snaps(tmp_path, _retiring(catalog, gpt_4_0613=(D(2026, 10, 23), "gpt-5.6-sol")))
+    assert [(s.id, [x.line for x in s.sites]) for s in found] == [("gpt-4-0613", [2])]
+
+
+@pytest.mark.parametrize(
+    "line",
+    [
+        'if model == "gpt-4-0613":',
+        'MODELS = ["gpt-4-0613", "gpt-4o"]',
+        'PRICES = {"gpt-4-0613": 30.0}',
+        'ALLOWED = "gpt-4o,gpt-4-0613,"',
+        'default = "gpt-4-0613,gpt-4o"',
+        'return "gpt-4o" in model or "gpt-4-0613" in model',
+        'ok = supportsModel("gpt-4-0613")',
+        'deprecatedModel = "gpt-4-0613"',
+        'n = num_tokens_from_messages(msgs, model="gpt-4-0613")',
+    ],
+)
+def test_a_line_that_only_names_a_retiring_model(tmp_path, catalog, line):
+    write(tmp_path, {"app.py": f"import openai\n{line}\n"})
+    found = _snaps(tmp_path, _retiring(catalog, gpt_4_0613=(D(2026, 10, 23), None)))
+    assert [(s.id, s.sites, len(s.named)) for s in found] == [("gpt-4-0613", [], 1)]
+
+
+def test_partner_spellings_and_sample_data_are_not_snapped(tmp_path, catalog):
+    # Bedrock and Vertex keep their own schedules; fake data and mocks are not calls.
+    write(
+        tmp_path,
+        {
+            "bedrock.py": 'import boto3\nMODEL_ID = "anthropic.claude-3-haiku-20240307-v1:0"\n',
+            "vertex.py": 'import anthropic\nMODEL = "claude-3-haiku@20240307"\n',
+            "src/convos.fakeData.ts": "import Anthropic from '@anthropic-ai/sdk';\nconst c = { model: 'claude-3-haiku-20240307' };\n",
+        },
+    )
+    cat = _retiring(catalog, claude_3_haiku_20240307=(D(2026, 4, 20), "claude-haiku-4-5-20251001"))
+    assert all(not s.sites for s in _snaps(tmp_path, cat))
+
+
+def test_retired_or_retiring_depends_on_the_day(tmp_path, catalog):
+    write(tmp_path, {"app.py": 'import openai\nMODEL = "gpt-4-0613"\n'})
+    cat = _retiring(catalog, gpt_4_0613=(D(2026, 10, 23), "gpt-5.6-sol"))
+    findings = match(collect_facts(tmp_path, cat), cat)
+    before = payload(findings, tmp_path, cat, as_of=D(2026, 10, 22))["models_retiring"]
+    after = payload(findings, tmp_path, cat, as_of=D(2026, 10, 23))["models_retiring"]
+    assert [m["state"] for m in before + after] == ["snaps", "snapped"]
+
+
+def test_replacement_is_followed_while_it_retires_too(catalog):
+    cat = _retiring(
+        catalog,
+        gpt_4_0314=(D(2026, 3, 26), "gpt-5-2025-08-07"),
+        gpt_5_2025_08_07=(D(2026, 12, 11), "gpt-5.6-sol"),
+    )
+    assert replacement(cat.retirements["gpt-4-0314"], cat) == "gpt-5.6-sol"
+
+
+def test_reports_show_what_snaps(tmp_path, catalog):
+    write(
+        tmp_path, {"app.py": 'import openai\nMODEL = "gpt-4-0613"\nFALLBACK_MODEL = "gpt-4-0314"\n'}
+    )
+    cat = _retiring(
+        catalog,
+        gpt_4_0613=(D(2026, 10, 23), "gpt-5.6-sol"),
+        gpt_4_0314=(D(2026, 3, 26), "gpt-5.6-sol"),
+    )
+    findings = match(collect_facts(tmp_path, cat), cat)
+    kw = {"as_of": D(2026, 10, 4)}
+    text = to_terminal(findings, tmp_path, cat, **kw)
+    assert "1 has snapped. 1 will snap." in text
+    assert "┆ snapped" in text and "retired 2026-03-26 → gpt-5.6-sol" in text
+    assert "┆ snaps" in text and "retires 2026-10-23" in text
+    md = to_markdown(findings, tmp_path, cat, **kw)
+    assert "## Models that stop working" in md and "| `gpt-4-0314` | **retired** |" in md
+    data = payload(findings, tmp_path, cat, **kw)
+    assert [m["id"] for m in data["models_retiring"]] == ["gpt-4-0314", "gpt-4-0613"]
+    assert data["models_retiring"][0]["evidence"][0]["line"] == 3
+
+
+def test_why_and_as_of_on_the_command_line(tmp_path, capsys):
+    # A catalog of its own, so the vendors' pages changing cannot break the test.
+    shutil.copytree(CATALOG_DIR, tmp_path / "cat")
+    (tmp_path / "cat" / "retirements.yaml").write_text(
+        "vendors:\n  openai:\n    url: https://example.org/x\n    services: [openai]\n"
+        "    models:\n      gpt-4-0613: {retires: 2026-10-23, replacement: gpt-5.6-sol}\n",
+        encoding="utf-8",
+    )
+    app = write(tmp_path / "app", {"app.py": 'import openai\nMODEL = "gpt-4-0613"\n'})
+    cat = ["--catalog", str(tmp_path / "cat")]
+    assert main([str(app), "--why", "gpt-4-0613", "--as-of", "2030-01-01", *cat]) == 0
+    out = capsys.readouterr().out
+    assert "snapped" in out and "app.py:2" in out and "recommends gpt-5.6-sol" in out
+    with pytest.raises(SystemExit):
+        main([str(app), "--as-of", "soon"])
+
+
+@pytest.mark.parametrize(
+    ("body", "error"),
+    [
+        (
+            "vendors:\n  x:\n    url: u\n    services: [nope]\n    models: {}\n",
+            "unknown services",
+        ),
+        ("vendors:\n  x:\n    services: [openai]\n    models: {}\n", "`url`"),
+        (
+            "vendors:\n  x:\n    url: u\n    services: [openai]\n    models:\n      gpt-9: {retires: 2026-01-01 10:00:00, replacement: null}\n",
+            "needs a `retires` date",
+        ),
+        (
+            "vendors:\n  x:\n    url: u\n    services: [openai]\n    models:\n      gpt-9: {retires: soon}\n",
+            "needs a `retires` date",
+        ),
+        (
+            "vendors:\n  a:\n    url: u\n    services: [openai]\n    models:\n      m: {retires: 2026-01-01, replacement: null}\n"
+            "  b:\n    url: u\n    services: [openai]\n    models:\n      m: {retires: 2026-01-01, replacement: null}\n",
+            "also under a",
+        ),
+    ],
+)
+def test_retirements_file_is_validated(tmp_path, body, error):
+    shutil.copytree(CATALOG_DIR, tmp_path / "cat")
+    (tmp_path / "cat" / "retirements.yaml").write_text(body, encoding="utf-8")
+    with pytest.raises(CatalogError, match=error):
+        load_catalog(tmp_path / "cat")
+
+
+def test_shipped_retirements_load(catalog):
+    assert len(catalog.retirements) > 100
+    assert {r.vendor for r in catalog.retirements.values()} == {"openai", "anthropic", "google"}

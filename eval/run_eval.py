@@ -10,6 +10,9 @@ two sides:
                `open_source_expected` / `open_source_uncertain` /
                `open_source_tests_only`. Only repos that carry an
                `open_source_expected` list (possibly empty) are scored on this side.
+  models       the ids in the report's `models_retiring` list, against `selects` /
+               `uncertain` in corpus_models.yaml (MODEL_TRUTH_RULES.md), counting
+               only the ids that file says were labelled. `--side all` adds it.
 
 Several corpus files can be given (`--corpus a.yaml --corpus b.yaml`); by default
 corpus.yaml plus corpus_oss.yaml next to this script when it exists. A file's
@@ -31,6 +34,7 @@ Usage:
   python run_eval.py --unrent "uv run --quiet unrent" --unrent-cwd path/to/unrent
   python run_eval.py --min-precision 0.9 --min-recall 0.9   # CI gate (lenient scores)
   python run_eval.py --side oss --min-oss-precision 0.9 --min-oss-recall 0.8
+  python run_eval.py --side all --min-model-precision 0.9 --min-model-recall 0.85
 
 Needs git and PyYAML. When moved into unrent-dist (e.g. to eval/), the default runs
 unrent in-process from the checkout via `python -m`-style import, so no install is needed.
@@ -194,6 +198,35 @@ def score_oss(repo: dict, report: dict) -> dict | None:
     }
 
 
+def load_model_truth(path: Path) -> tuple[set[str], dict[str, dict]]:
+    """corpus_models.yaml: the labelled ids and, per repo, `selects` and `uncertain`."""
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    return set(data.get("labelled") or []), data.get("repos") or {}
+
+
+def score_models(name: str, report: dict, labelled: set[str], truth: dict) -> dict:
+    """The models side: retiring ids the code selects, by id."""
+    found = {m["id"]: m for m in report.get("models_retiring") or [] if m["id"] in labelled}
+    expected = set(truth.get("selects") or []) & labelled
+    uncertain = (set(truth.get("uncertain") or []) & labelled) - expected
+    got = set(found)
+    return {
+        "name": name,
+        "expected": expected,
+        "uncertain": uncertain,
+        "found": got,
+        "tp": expected & got,
+        "fp": got - expected - uncertain,
+        "fn": expected - got,
+        "unc_hit": uncertain & got,
+        "unc_miss": uncertain - got,
+        "tests_mismatch": [],
+        "evidence": {
+            i: [{**e, "kind": "model", "value": i} for e in found[i]["evidence"][:3]] for i in got
+        },
+    }
+
+
 def pr(tp: int, fp: int, fn: int) -> tuple[float, float]:
     p = tp / (tp + fp) if tp + fp else 1.0
     r = tp / (tp + fn) if tp + fn else 1.0
@@ -210,7 +243,10 @@ def main(argv: list[str] | None = None) -> int:
         help="corpus file; repeatable (default: corpus.yaml, plus corpus_oss.yaml if present)",
     )
     ap.add_argument(
-        "--side", choices=("closed", "oss", "both"), default="both", help="what to score"
+        "--side",
+        choices=("closed", "oss", "models", "both", "all"),
+        default="both",
+        help="what to score: both is closed and oss, all adds models",
     )
     ap.add_argument(
         "--cache",
@@ -241,6 +277,14 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--min-recall", type=float, default=None)
     ap.add_argument("--min-oss-precision", type=float, default=None)
     ap.add_argument("--min-oss-recall", type=float, default=None)
+    ap.add_argument("--min-model-precision", type=float, default=None)
+    ap.add_argument("--min-model-recall", type=float, default=None)
+    ap.add_argument(
+        "--models-truth",
+        type=Path,
+        default=HERE / "corpus_models.yaml",
+        help="truth for the models side (default: corpus_models.yaml)",
+    )
     ap.add_argument("--quiet", action="store_true", help="only the summary")
     ap.add_argument(
         "--results-json", type=Path, default=None, help="also write per-repo scores as JSON here"
@@ -264,7 +308,10 @@ def main(argv: list[str] | None = None) -> int:
         unrent_cmd, unrent_cwd = ["unrent"], args.unrent_cwd
 
     repo_by_name = {r["name"]: r for r in repos}
-    results, oss_results = [], []
+    labelled, model_truth = (
+        load_model_truth(args.models_truth) if args.models_truth.is_file() else (set(), {})
+    )
+    results, oss_results, model_results = [], [], []
     for repo in repos:
         report_file = out_dir / f"{repo['name']}.json"
         if args.reuse and report_file.is_file():
@@ -274,10 +321,14 @@ def main(argv: list[str] | None = None) -> int:
             report = run_unrent(src.resolve(), report_file.resolve(), unrent_cmd, unrent_cwd)
         results.append(score(repo, report) if "expected" in repo else None)
         oss_results.append(score_oss(repo, report))
+        if repo["name"] in model_truth:
+            model_results.append(
+                score_models(repo["name"], report, labelled, model_truth[repo["name"]])
+            )
 
     ok = True
     dump: dict[str, list] = {}
-    if args.side in ("closed", "both"):
+    if args.side in ("closed", "both", "all"):
         closed = [s for s in results if s is not None]
         p, r = print_side(
             "closed services", "service", closed, repo_by_name, "evidence", args.quiet
@@ -285,7 +336,7 @@ def main(argv: list[str] | None = None) -> int:
         dump["closed"] = closed
         ok &= gate("precision", p, args.min_precision)
         ok &= gate("recall", r, args.min_recall)
-    if args.side in ("oss", "both"):
+    if args.side in ("oss", "both", "all"):
         oss = [s for s in oss_results if s is not None]
         if oss:
             p, r = print_side(
@@ -302,6 +353,15 @@ def main(argv: list[str] | None = None) -> int:
             print("\nno repo in the corpus has open source truth (open_source_expected)")
             ok &= args.min_oss_precision is None and args.min_oss_recall is None
         dump["open_source"] = oss
+    if args.side in ("models", "all"):
+        if model_results:
+            p, r = print_side("models the code selects", "model", model_results, {}, "", args.quiet)
+            ok &= gate("model precision", p, args.min_model_precision)
+            ok &= gate("model recall", r, args.min_model_recall)
+        else:
+            print(f"\nno model truth for these repos in {args.models_truth.name}")
+            ok &= args.min_model_precision is None and args.min_model_recall is None
+        dump["models"] = model_results
 
     if args.results_json:
         args.results_json.write_text(
@@ -370,7 +430,7 @@ def print_side(
                         f"    FP {i}: {e['file']}:{e['line']} [{e['kind']}={e['value']}] {e['text'][:120]}"
                     )
             for i in sorted(s["fn"]):
-                truth = (repo_by_name[s["name"]].get(evidence_key) or {}).get(i, "")
+                truth = (repo_by_name.get(s["name"], {}).get(evidence_key) or {}).get(i, "")
                 print(f"    FN {i}: truth: {str(truth)[:200]}")
 
     if not quiet:
