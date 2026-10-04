@@ -1661,9 +1661,7 @@ def _local_modules(root: Path, files: list[Path]) -> set[str]:
     return names
 
 
-def _is_local_import(
-    fact: Fact, local: set[str], is_file: Callable[[Path], bool] = Path.is_file
-) -> bool:
+def _is_local_import(fact: Fact, local: set[str], is_file: Callable[[Path], bool]) -> bool:
     top = fact.value.split(".", 1)[0]
     if top in local:
         return True
@@ -1729,7 +1727,7 @@ def _start_worker(state: object) -> None:
     _worker_state = state
 
 
-def _in_worker(work: Callable, *item: object) -> object:
+def _in_worker(work: Callable, item: tuple) -> object:
     return work(_worker_state, *item)
 
 
@@ -1745,8 +1743,7 @@ def map_files(work: Callable, items: list[tuple], state: object) -> Iterator:
             with ProcessPoolExecutor(
                 max_workers=min(cores, 8), initializer=_start_worker, initargs=(state,)
             ) as pool:
-                columns = zip(*items, strict=True)
-                for result in pool.map(functools.partial(_in_worker, work), *columns, chunksize=32):
+                for result in pool.map(functools.partial(_in_worker, work), items, chunksize=32):
                     yield result
                     done += 1
         except (OSError, NotImplementedError, BrokenProcessPool):
