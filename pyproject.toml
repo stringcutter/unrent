@@ -1,7 +1,7 @@
 [project]
 name = "unrent"
 version = "0.2.2"
-description = "Find the strings your AI code hangs by: closed AI services to swap for open source, and models their vendor retires."
+description = "See which AI services your code depends on, what open source can replace them, and which models are about to stop working."
 readme = "README.md"
 requires-python = ">=3.11"  # tomllib
 license = "Apache-2.0"
