@@ -121,6 +121,9 @@ uv run python scripts/refresh.py --check   # rankings, without writing
 
 ## Conventions
 
+- Brand (name, voice, logo files, colours, the words `cut`/`held`/`snapped`/`snaps`/`runs`):
+  `docs/BRAND.md`. Follow it in README, docs and anything user-facing.
+
 - Match the surrounding code: comment density, naming, plain wording. Commit messages
   explain the why and include measured results where there are any.
 - Nothing machine-specific in committed files: no absolute paths, usernames or email
