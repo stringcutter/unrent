@@ -122,7 +122,7 @@ uv run python scripts/refresh.py --check   # rankings, without writing
 ## Conventions
 
 - The brand (voice, logo, colours) lives in the private repo `stringcutter/brand`;
-  `docs/unrent*.svg` are copies of its logos.
+  `docs/wordmark*.svg` are copies of its logos.
 
 - Match the surrounding code: comment density, naming, plain wording. Commit messages
   explain the why and include measured results where there are any.
