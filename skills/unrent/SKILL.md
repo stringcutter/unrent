@@ -2,23 +2,26 @@
 name: unrent
 description: >-
   Find the closed AI services a codebase depends on (OpenAI, Anthropic, Gemini, Bedrock,
-  Pinecone, Tavily, LangSmith, ElevenLabs, ...) with file:line evidence, and recommend
-  the current best open source replacements, using the unrent MCP server (tools scan,
-  alternatives, standing, catalog) or the unrent CLI. Use this whenever someone wants to
-  audit an AI stack for vendor lock-in, list which AI APIs or hosted models a repo
-  calls, replace a closed AI service with open source or self-hosted software, fork a
+  Pinecone, Tavily, LangSmith, ElevenLabs, ...) with file:line evidence, the model ids it
+  selects that OpenAI, Anthropic or Google have retired or will retire on an announced
+  date, and the current best open source replacements, using the unrent MCP server
+  (tools scan, alternatives, standing, catalog) or the unrent CLI. Use this whenever
+  someone wants to audit an AI stack for vendor lock-in, list which AI APIs or hosted
+  models a repo calls, check whether the models a repo uses are deprecated or shutting
+  down, replace a closed AI service with open source or self-hosted software, fork a
   provider's template and swap out its AI components, or asks which open source LLM,
   embedding model, vector database, search API or observability tool is best right now,
   even if they never say "unrent" or "lock-in".
 ---
 
-# unrent: closed AI dependencies and their open source replacements
+# unrent: closed AI dependencies, retiring models and their open source replacements
 
-unrent is a deterministic scanner with a hand-curated catalog of closed AI services and
-open source alternatives, ranked weekly from GitHub and Hugging Face. It is fast (seconds),
-its file:line evidence is exact, and its rankings are newer than your training data.
-What it cannot do is see services outside its catalog, or judge whether a replacement
-fits this particular codebase. Your job is to add exactly that, and not to redo what
+unrent (by stringcutter) is a deterministic scanner with a hand-curated catalog of closed
+AI services, the vendors' model retirements and open source alternatives, ranked weekly
+from GitHub and Hugging Face. It is fast (seconds), its file:line evidence is exact, and
+its rankings and retirement dates are newer than your training data. What it cannot do
+is see services outside its catalog, or judge whether a replacement fits this particular
+codebase. Your job is to add exactly that, and not to redo what
 unrent already did well.
 
 An evaluation of agents doing this task with and without unrent found that most time was
@@ -142,14 +145,16 @@ reason (a deprecated package, an API with an announced shutdown, an archived ups
 
 Unless the user asked for a specific format, answer with:
 
-1. **Closed AI services**: name, category, one or two `file:line` citations each, marked
+1. **Models that stop working**, from `models_retiring`: the id, `snapped` or the date it
+   `snaps`, the line that selects it, and `use_instead`.
+2. **Closed AI services**: name, category, one or two `file:line` citations each, marked
    when only in tests, when optional (a provider the user can pick), and when unrent did
    not detect it.
-2. **Open source already in use**, with its standing.
-3. **Replacements**, per closed service or category: the top two or three, one project
+3. **Open source already in use**, with its standing.
+4. **Replacements**, per closed service or category: the top two or three, one project
    per rank, each with one line on why, its licence (with `open_core` if set) and how it
    plugs in here.
-4. **What to watch**: silent defaults, deprecated or sunsetting APIs, and anything you
+5. **What to watch**: silent defaults, deprecated or sunsetting APIs, and anything you
    could not verify.
 
 Keep it to what the user can act on. Numbers you did not check yourself come from unrent;

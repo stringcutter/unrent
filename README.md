@@ -1,37 +1,36 @@
 # unrent
 
-Find the rented parts of your AI stack. Swap them for open source.
+*by [stringcutter](https://github.com/stringcutter)*
 
-- Lists every closed AI service a codebase calls, with file and line.
-- Names the open source replacements, ranked.
-- Ranks the open source you already run against its field.
+Find the strings your AI code hangs by. Cut them before they snap.
+
+- **Closed AI services** the code calls, with file and line, and the open source that
+  replaces each one, ranked.
+- **Models that stop working**: model ids the code selects that their vendor has retired,
+  or will on an announced date, and the vendor's replacement.
+- **Open source AI** the code already runs, and where it ranks in its field.
 
 The CLI runs offline. No account. No upload. No telemetry.
 
-```
-$ unrent my-app
+![unrent my-app: 3 strings attached, 3 can be cut, 1 will snap. Rows for OpenAI API, Pinecone and ElevenLabs marked cut with their open source replacements, gpt-4-turbo marked snaps with its retirement date and replacement, and faiss marked runs with its rank](https://github.com/stringcutter/unrent/raw/main/docs/terminal.svg)
 
-3 strings attached. 3 can be cut. 1 will snap.
-my-app · alternatives ranked 2026-09-28
+Real output. One row per string, with its strongest location and how many more there
+are:
 
-╎ cut    OpenAI API   requirements.txt:1  +4  ollama/ollama + MiMo-V2.6-Pro-RL
-╎ cut    Pinecone     requirements.txt:2  +3  milvus-io/milvus
-╎ cut    ElevenLabs   requirements.txt:4  +2  microsoft/VibeVoice + openai/whisper
+| | |
+|---|---|
+| `╎ cut` | A closed service with an open source replacement. The top of its ranking is on the row. |
+| `│ held` | A closed service with no open source replacement in the catalog yet. |
+| `┆ snapped` | A model id the code selects that its vendor has retired. Requests to it fail now. |
+| `┆ snaps` | The same, on the date shown. |
+| `│ runs` | Open source already in use, and where it ranks among its kind. |
 
-┆ snaps  gpt-4-turbo  main.py:9               retires 2026-10-23 → gpt-5.6-sol
+`--why` shows every line behind one row, and what replaces it:
 
-│ runs   faiss        requirements.txt:3      #2 of 8 · Vector database
+![unrent my-app --why gpt-4-turbo: main.py line 9 selects gpt-4-turbo, which retires on 2026-10-23; openai recommends gpt-5.6-sol, with the link to OpenAI's deprecations page](https://github.com/stringcutter/unrent/raw/main/docs/why.svg)
 
-  unrent my-app --why openai  every line behind one string
-  unrent my-app -o unrent.md  the full report, every alternative ranked
-```
-
-Real output. One row per service, with its strongest location and how many more there
-are; `cut` has an open source replacement (the top of each ranking), `held` has none
-yet, `runs` is open source already in use and where it ranks. `snapped` and `snaps` are
-model ids the code selects that the vendor has retired, or will on the date shown:
-requests to them fail. In a pipe or a file the same scan is a Markdown report that
-pastes straight into an issue or PR.
+In a pipe or a file the same scan is a Markdown report that pastes straight into an
+issue or PR.
 
 ## Install
 
@@ -96,7 +95,7 @@ Other clients:
 
 | Tool | |
 |---|---|
-| `scan` | Closed services, open source in use, alternatives. The report as JSON. |
+| `scan` | Closed services, models that stop working, open source in use, alternatives. The report as JSON. |
 | `alternatives` | Best open source for a category or a closed service: `"pinecone"`, `"speech-to-text"`. |
 | `standing` | Where one project ranks, overall and among its kind: `"qdrant/qdrant"`. |
 | `catalog` | What unrent recognises, and the signatures it looks for. |
@@ -118,7 +117,8 @@ platforms, agent memory. 218 are written by hand; 139 hosted model providers com
 **Models that stop working.** 204 model retirements announced by OpenAI, Anthropic and
 Google for their own APIs, with the date and the vendor's replacement, checked every
 week against their deprecation pages
-([`retirements.yaml`](https://github.com/stringcutter/unrent/blob/main/catalog/retirements.yaml)).
+([`retirements.yaml`](https://github.com/stringcutter/unrent/blob/main/catalog/retirements.yaml))
+and shipped with each release.
 A model id counts when a line selects it: a default, a config value, a model passed to
 a call. The same id in a model menu, a price table or a check on what the user picked
 is only counted. Azure OpenAI, Bedrock and Vertex keep their own schedules and are not
@@ -190,4 +190,5 @@ line that fooled it. [CONTRIBUTING.md](https://github.com/stringcutter/unrent/bl
 
 ## Licence
 
-[Apache-2.0](https://github.com/stringcutter/unrent/blob/main/LICENSE)
+[Apache-2.0](https://github.com/stringcutter/unrent/blob/main/LICENSE). unrent is made by
+[stringcutter](https://github.com/stringcutter).

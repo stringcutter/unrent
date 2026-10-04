@@ -1,7 +1,7 @@
 [project]
 name = "unrent"
 version = "0.2.0"
-description = "Find the rented parts of your AI stack. Swap them for open source. Rank the open source you already run."
+description = "Find the strings your AI code hangs by: closed AI services to swap for open source, and models their vendor retires."
 readme = "README.md"
 requires-python = ">=3.11"  # tomllib
 license = "Apache-2.0"
@@ -9,7 +9,7 @@ license-files = ["LICENSE"]
 authors = [{ name = "Niklas Mellgren" }]
 keywords = [
     "ai", "llm", "vendor-lock-in", "open-source", "alternatives", "dependency-scanner",
-    "openai", "static-analysis", "cli",
+    "openai", "static-analysis", "cli", "model-deprecation", "mcp",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
