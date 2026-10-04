@@ -2416,3 +2416,84 @@ def test_retirements_file_is_validated(tmp_path, body, error):
 def test_shipped_retirements_load(catalog):
     assert len(catalog.retirements) > 100
     assert {r.vendor for r in catalog.retirements.values()} == {"openai", "anthropic", "google"}
+
+
+# --------------------------------------------------------------------------
+# Speed: worker processes and the statement walk change nothing in the results
+# --------------------------------------------------------------------------
+
+SPREAD = {
+    "app.py": 'from openai import OpenAI\n# from anthropic import x\nOpenAI(model="gpt-4")\n',
+    "tools/search.py": 'import importlib\nexa = importlib.import_module("exa_py")\n',
+    "web/client.ts": 'import Anthropic from "@anthropic-ai/sdk";\nfetch("https://api.newco.ai/v1/chat")\n',
+    ".env.example": "NEWCO_API_KEY=\nPINECONE_API_KEY=\n",
+    "requirements.txt": "pinecone\nqdrant-client\n",
+    "tests/test_app.py": "import cohere\n",
+}
+
+
+def _scan(root, catalog, **kw):
+    from unrent.discover import scan_unknown
+
+    facts = sorted(map(repr, collect_facts(root, catalog, **kw)))
+    return facts, scan_unknown(root, catalog, skip_tests=kw.get("skip_tests", False))
+
+
+@pytest.mark.parametrize("skip_tests", [False, True])
+def test_worker_processes_find_what_one_process_finds(tmp_path, catalog, monkeypatch, skip_tests):
+    import unrent.detect as detect
+
+    write(tmp_path, SPREAD)
+    serial = _scan(tmp_path, catalog, skip_tests=skip_tests)
+    started = []
+    real = detect.ProcessPoolExecutor
+
+    def spy(*a, **kw):
+        started.append(kw["max_workers"])
+        return real(*a, **kw)
+
+    monkeypatch.setattr(detect, "PARALLEL_FILES", 1)
+    monkeypatch.setattr(detect, "ProcessPoolExecutor", spy)
+    if (os.cpu_count() or 1) < 2:
+        monkeypatch.setattr(detect.os, "cpu_count", lambda: 2)
+    assert _scan(tmp_path, catalog, skip_tests=skip_tests) == serial
+    assert len(started) == 2  # the facts, and the unknown candidates
+    assert any("openai" in f for f in serial[0])
+    assert any(c["name"] == "newco.ai" for c in serial[1])
+
+
+def test_scan_without_worker_processes(tmp_path, catalog, monkeypatch):
+    """A sandbox that can't start processes: the scan reads every file itself."""
+    import unrent.detect as detect
+
+    write(tmp_path, SPREAD)
+    serial = _scan(tmp_path, catalog)
+
+    def no_processes(*a, **kw):
+        raise OSError("no processes here")
+
+    monkeypatch.setattr(detect, "PARALLEL_FILES", 1)
+    monkeypatch.setattr(detect, "ProcessPoolExecutor", no_processes)
+    assert _scan(tmp_path, catalog) == serial
+
+
+def test_statement_walk_visits_what_ast_walk_visits():
+    import ast
+
+    from unrent.detect import _statements
+
+    tree = ast.parse(
+        '"""doc"""\nimport a\nclass C:\n    """c"""\n    import b\n'
+        "    def f(self):\n        try:\n            import c\n        except E:\n"
+        "            import d\n        else:\n            import e\n        finally:\n"
+        "            import f\n"
+        "match x:\n    case 1:\n        import g\n"
+        "for i in y:\n    import h\nelse:\n    import i\n"
+        "with z:\n    if q:\n        import j\n    else:\n        import k\n"
+        "async def g():\n    async with w:\n        import l\n"
+        "try:\n    pass\nexcept* E:\n    import m\n"
+    )
+    kinds = (ast.Module, ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef, ast.Import)
+    full = [n for n in ast.walk(tree) if isinstance(n, kinds)]
+    assert [n for n in _statements(tree) if isinstance(n, kinds)] == full
+    assert len([n for n in full if isinstance(n, ast.Import)]) == 13

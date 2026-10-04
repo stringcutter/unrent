@@ -33,6 +33,7 @@ from .detect import (
     code_view,
     is_test_path,
     iter_files,
+    map_files,
     redact,
     registered_domain,
 )
@@ -173,6 +174,55 @@ def _is_known_host(host: str, hosts: set[str], domains: set[str]) -> bool:
     return any(host.endswith("." + h) for h in hosts)
 
 
+def _observe(known: tuple, path: Path, rel: str) -> tuple[list, list, bool] | None:
+    """One file's unknown hosts (domain, host, line, text, looks like an API, AI words
+    near it) and settings (name, line, text, read from the environment or set in
+    config, AI words near it), and whether the file is generated. None when it has
+    neither a URL nor a key."""
+    known_hosts, known_domains, known_settings, known_names = known
+    text = _read(path)
+    if not text or ("://" not in text and "_KEY" not in text and "_TOKEN" not in text):
+        return None
+    lines = text.split("\n")
+    code = code_view(path, text).split("\n")
+    generated = bool(GENERATED_FILE.search(path.name) or GENERATED_HEADER.search(text[:600]))
+    config = bool(CONFIG_NAME.search(rel))
+    urls: list[tuple[str, str, int, str, bool, bool]] = []
+    settings: list[tuple[str, int, str, bool, bool]] = []
+    for n, view in enumerate(code, start=1):
+        if not view or len(view) > 2000:
+            continue
+        original = lines[n - 1] if n - 1 < len(lines) else view
+        for m in URL.finditer(view):
+            host = m.group(1).lower()
+            domain = registered_domain(host)
+            if (
+                domain in NOT_AI
+                or host in NOT_AI
+                or domain.split(".")[-1] in NOT_AI
+                or re.match(r"^\d+(\.\d+){3}$", host)
+                or _is_known_host(host, known_hosts, known_domains)
+                or _label(domain) in known_names  # docs of a vendor the catalog knows
+            ):
+                continue
+            path_part = m.group(2) or ""
+            looks_api = bool(AI_PATH.search(path_part)) or bool(AI_LABEL.match(host))
+            if domain.endswith(".ai"):
+                looks_api = True
+            window = " ".join(code[max(0, n - 1 - CONTEXT_LINES) : n + CONTEXT_LINES])
+            about_ai = bool(AI_WORDS.search(window.replace(host, " ")))
+            urls.append((domain, host, n, _snippet(original, m.start()), looks_api, about_ai))
+        for m in SETTING.finditer(view):
+            name = m.group(0)
+            if name in known_settings:
+                continue
+            read = bool(config or ENV_READ.search(view))
+            window = " ".join(code[max(0, n - 1 - CONTEXT_LINES) : n + CONTEXT_LINES])
+            ai = bool(AI_WORDS.search(window.replace(name, " ")))
+            settings.append((name, n, _snippet(original, m.start()), read, ai))
+    return urls, settings, generated
+
+
 def candidates(
     root: Path,
     files: list[Path],
@@ -191,6 +241,7 @@ def candidates(
     setting_ai: set[str] = set()
     per_file: dict[str, set[str]] = defaultdict(set)
 
+    jobs = []
     for path in files:
         if not _wanted(path):
             continue
@@ -198,55 +249,30 @@ def candidates(
         in_test = is_test_path(rel)
         if in_test and skip_tests:
             continue
-        text = _read(path)
-        if not text or ("://" not in text and "_KEY" not in text and "_TOKEN" not in text):
+        jobs.append((path, rel))
+    known = (known_hosts, known_domains, known_settings, known_names)
+    for (_, rel), seen in zip(jobs, map_files(_observe, jobs, known), strict=True):
+        if seen is None:
             continue
-        lines = text.split("\n")
-        code = code_view(path, text).split("\n")
-        generated = bool(GENERATED_FILE.search(path.name) or GENERATED_HEADER.search(text[:600]))
-        config = bool(CONFIG_NAME.search(rel))
-        for n, view in enumerate(code, start=1):
-            if not view or len(view) > 2000:
-                continue
-            original = lines[n - 1] if n - 1 < len(lines) else view
-            for m in URL.finditer(view):
-                host = m.group(1).lower()
-                domain = registered_domain(host)
-                if (
-                    domain in NOT_AI
-                    or host in NOT_AI
-                    or domain.split(".")[-1] in NOT_AI
-                    or re.match(r"^\d+(\.\d+){3}$", host)
-                    or _is_known_host(host, known_hosts, known_domains)
-                    or _label(domain) in known_names  # docs of a vendor the catalog knows
-                ):
-                    continue
-                path_part = m.group(2) or ""
-                looks_api = bool(AI_PATH.search(path_part)) or bool(AI_LABEL.match(host))
-                if domain.endswith(".ai"):
-                    looks_api = True
-                window = " ".join(code[max(0, n - 1 - CONTEXT_LINES) : n + CONTEXT_LINES])
-                about_ai = bool(AI_WORDS.search(window.replace(host, " ")))
-                g = groups.setdefault(domain, _Group(domain))
-                g.hosts.add(host)
-                g.files.add(rel)
-                if looks_api:
-                    g.signals.add("api")
-                if about_ai:
-                    g.signals.add("ai")
-                g.evidence.append((rel, n, _snippet(original, m.start()), in_test))
-                if generated:
-                    per_file[rel].add(domain)
-            for m in SETTING.finditer(view):
-                name = m.group(0)
-                if name in known_settings:
-                    continue
-                setting_hits[name].append((rel, n, _snippet(original, m.start()), in_test))
-                if config or ENV_READ.search(view):
-                    setting_read.add(name)
-                window = " ".join(code[max(0, n - 1 - CONTEXT_LINES) : n + CONTEXT_LINES])
-                if AI_WORDS.search(window.replace(name, " ")):
-                    setting_ai.add(name)
+        urls, settings, generated = seen
+        in_test = is_test_path(rel)
+        for domain, host, n, snippet, looks_api, about_ai in urls:
+            g = groups.setdefault(domain, _Group(domain))
+            g.hosts.add(host)
+            g.files.add(rel)
+            if looks_api:
+                g.signals.add("api")
+            if about_ai:
+                g.signals.add("ai")
+            g.evidence.append((rel, n, snippet, in_test))
+            if generated:
+                per_file[rel].add(domain)
+        for name, n, snippet, read, ai in settings:
+            setting_hits[name].append((rel, n, snippet, in_test))
+            if read:
+                setting_read.add(name)
+            if ai:
+                setting_ai.add(name)
 
     # Settings join the domain they name: TYPESAFE_API_KEY -> typesafe.ai.
     by_label: dict[str, list[str]] = defaultdict(list)

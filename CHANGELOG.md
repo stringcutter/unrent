@@ -67,6 +67,12 @@ each release ships the rankings as of its date.
   nothing in the code behind it, is listed apart and not counted as a dependency.
 
 ### Changed
+- Faster scans of large repos, with identical results on all 54 corpus repos: from 1,500
+  files on, worker processes read the files (one per core, falling back to one process
+  where they can't start), each Python file is parsed once and only its statements are
+  walked, and ripgrep gets larger batches outside Windows. dify (14,000 files) went
+  from 59 s to 14 s, LibreChat (5,500) from 14 s to 6 s, the whole corpus from 193 s
+  to 112 s.
 - The MCP instructions state the limits: only catalog services are detected, and each
   pool's `ranked_by` says whether it is ranked by 90-day star gain or total stars.
 - `unrent/report.py` is now `unrent/render.py`.

@@ -28,6 +28,7 @@ import ast
 import bisect
 import configparser
 import dataclasses
+import functools
 import json
 import os
 import re
@@ -37,7 +38,10 @@ import tempfile
 import tokenize
 import tomllib
 import warnings
-from collections.abc import Callable, Iterable
+from collections import deque
+from collections.abc import Callable, Iterable, Iterator
+from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures.process import BrokenProcessPool
 from dataclasses import dataclass
 from io import StringIO
 from pathlib import Path
@@ -407,12 +411,30 @@ def _is_relevant(path: Path) -> bool:
     )
 
 
+@functools.lru_cache(maxsize=4)  # the code view and the imports parse the same file
 def _parse_python(text: str) -> ast.Module:
     """ast.parse without the SyntaxWarnings (`invalid escape sequence`) that someone
-    else's code would print on our stderr. Raises SyntaxError/ValueError as usual."""
+    else's code would print on our stderr. Raises SyntaxError/ValueError as usual.
+    The tree is shared between callers: read it, never change it."""
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         return ast.parse(text)
+
+
+_STATEMENT_FIELDS = frozenset(("body", "orelse", "finalbody", "handlers", "cases"))
+
+
+def _statements(tree: ast.AST) -> Iterator[ast.AST]:
+    """The tree and every statement in it, nested ones too, in `ast.walk` order but
+    without the expressions, which are most of the nodes. Docstrings and imports are
+    statements. (`except` handlers and `case` clauses come along as containers.)"""
+    queue: deque[ast.AST] = deque([tree])
+    while queue:
+        node = queue.popleft()
+        yield node
+        for name in node._fields:
+            if name in _STATEMENT_FIELDS:
+                queue.extend(getattr(node, name))
 
 
 def _split_lines(text: str) -> list[str]:
@@ -504,7 +526,7 @@ def _python_view(text: str) -> str:
         tree = _parse_python(text)
     except (SyntaxError, ValueError):
         return "\n".join(lines)
-    for node in ast.walk(tree):
+    for node in _statements(tree):
         if not isinstance(node, ast.Module | ast.ClassDef | ast.FunctionDef | ast.AsyncFunctionDef):
             continue
         doc = node.body[0] if node.body else None
@@ -838,7 +860,10 @@ def _python_imports(path: Path, text: str, lines: list[str]) -> list[Fact]:
     except (SyntaxError, ValueError):
         tree = None
     if tree is not None:
-        for node in ast.walk(tree):
+        # A dynamic import is a call, which can sit in any expression: walk them all
+        # only when the file names one.
+        dynamic = "import_module" in text or "__import__" in text
+        for node in ast.walk(tree) if dynamic else _statements(tree):
             if isinstance(node, ast.Import):
                 facts += [fact(alias.name, node.lineno) for alias in node.names]
             elif isinstance(node, ast.ImportFrom) and node.module and not node.level:
@@ -1656,7 +1681,9 @@ def _local_modules(root: Path, files: list[Path]) -> set[str]:
     return names
 
 
-def _is_local_import(fact: Fact, local: set[str]) -> bool:
+def _is_local_import(
+    fact: Fact, local: set[str], is_file: Callable[[Path], bool] = Path.is_file
+) -> bool:
     top = fact.value.split(".", 1)[0]
     if top in local:
         return True
@@ -1664,9 +1691,9 @@ def _is_local_import(fact: Fact, local: set[str]) -> bool:
     # absolute, and never the importing file itself: `lancedb.py` saying `import
     # lancedb` is a wrapper around the real library.
     here = fact.file.parent
-    if (here / "__init__.py").is_file() or fact.file.stem == top:
+    if is_file(here / "__init__.py") or fact.file.stem == top:
         return False
-    return (here / f"{top}.py").is_file() or (here / top / "__init__.py").is_file()
+    return is_file(here / f"{top}.py") or is_file(here / top / "__init__.py")
 
 
 def collect_facts(
@@ -1685,23 +1712,71 @@ def collect_facts(
         progress(0, len(files))
     found = ripgrep_hits(root, needles, files)
     local = _local_modules(root, files)
+    is_file = functools.cache(Path.is_file)  # every import in a directory asks again
+    rels = [path.relative_to(root).as_posix() for path in files]
+    tests = [is_test_path(rel) for rel in rels]
+    todo = [i for i, in_test in enumerate(tests) if not (in_test and skip_tests)]
+    per_file = map_files(
+        _file_facts,
+        [(files[i], None if found is None else found.get(rels[i], ())) for i in todo],
+        needles,
+    )
     facts: list[Fact] = []
-    for done, path in enumerate(files, start=1):
+    for done, in_test in enumerate(tests, start=1):
         if progress:
             progress(done, len(files))
-        rel = path.relative_to(root).as_posix()
-        in_test = is_test_path(rel)
         if in_test and skip_tests:
             continue
-        hit_lines = None if found is None else found.get(rel, ())
-        for fact in facts_for_file(path, needles, hit_lines):
-            if fact.kind == "python_import" and _is_local_import(fact, local):
+        for fact in next(per_file):
+            if fact.kind == "python_import" and _is_local_import(fact, local, is_file):
                 continue
             facts.append(dataclasses.replace(fact, in_test=in_test) if in_test else fact)
     own = _own_repo(root)
     if own:
         facts.append(Fact("own_repo", own, root, 0, ""))
     return facts
+
+
+# From this many files on, worker processes read them; below it, starting the workers
+# costs more than they save.
+PARALLEL_FILES = 1500
+
+_worker_state: object = None
+
+
+def _start_worker(state: object) -> None:
+    global _worker_state
+    _worker_state = state
+
+
+def _in_worker(work: Callable, *item: object) -> object:
+    return work(_worker_state, *item)
+
+
+def map_files(work: Callable, items: list[tuple], state: object) -> Iterator:
+    """`work(state, *item)` for each item, in order. A large scan spreads the items over
+    one worker process per core, each given `state` once; where processes can't start
+    (some sandboxes and serverless runtimes), the rest run here, with the same results.
+    `work` must be a module-level function, so the workers can import it."""
+    done = 0
+    cores = os.cpu_count() or 1
+    if len(items) >= PARALLEL_FILES and cores > 1:
+        try:
+            with ProcessPoolExecutor(
+                max_workers=min(cores, 8), initializer=_start_worker, initargs=(state,)
+            ) as pool:
+                columns = zip(*items, strict=True)
+                for result in pool.map(functools.partial(_in_worker, work), *columns, chunksize=32):
+                    yield result
+                    done += 1
+        except (OSError, NotImplementedError, BrokenProcessPool):
+            pass
+    for item in items[done:]:
+        yield work(state, *item)
+
+
+def _file_facts(needles: Needles, path: Path, hit_lines: Iterable[int] | None) -> list[Fact]:
+    return facts_for_file(path, needles, hit_lines)
 
 
 _GITHUB_REMOTE = re.compile(r"github\.com[:/]+([^/\s]+/[^/\s]+?)(?:\.git)?/?$", re.IGNORECASE)
@@ -1715,8 +1790,10 @@ def _own_repo(root: Path) -> str | None:
     return match_.group(1).lower() if match_ else None
 
 
-# Keep each ripgrep command line well under Windows' 32,767-character limit.
-_RG_ARGS_BUDGET = 24_000
+# Keep each ripgrep command line well under Windows' 32,767-character limit. Elsewhere
+# the limit is a megabyte or more, and fewer, larger batches are 3x faster (each one
+# builds its matcher for every needle again).
+_RG_ARGS_BUDGET = 24_000 if os.name == "nt" else 200_000
 
 
 def ripgrep_hits(root: Path, needles: Needles, files: list[Path]) -> dict[str, list[int]] | None:

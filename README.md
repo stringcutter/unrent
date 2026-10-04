@@ -47,9 +47,10 @@ Or once, without installing:
 uvx --from git+https://github.com/stringcutter/unrent unrent scan .
 ```
 
-Python 3.11+. One dependency: PyYAML (the MCP server adds `mcp`). With [ripgrep](https://github.com/BurntSushi/ripgrep)
-on PATH it runs about 3× faster on large repos (18.4 s → 6.5 s on 5,500 files). Same
-results either way.
+Python 3.11+. One dependency: PyYAML (the MCP server adds `mcp`). Large repos are read
+on every core. With [ripgrep](https://github.com/BurntSushi/ripgrep) on PATH it is about
+twice as fast again: 6 s for 5,500 files, 14 s for 14,000 (13 s and 26 s without, on 4
+cores). Same results either way.
 
 ## Use
 
