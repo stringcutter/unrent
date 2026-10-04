@@ -21,7 +21,7 @@ concurrency:
 
 jobs:
   refresh:
-    if: github.repository == 'niklasmellgren/unrent'  # not on forks
+    if: github.repository == 'stringcutter/unrent'  # not on forks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -77,7 +77,7 @@ jobs:
   # removed package is a silent false negative. Separate from the ranking job, so a
   # catalog problem does not cost a week of star history.
   packages:
-    if: github.repository == 'niklasmellgren/unrent'
+    if: github.repository == 'stringcutter/unrent'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -97,7 +97,7 @@ jobs:
   # lists the providers, and the new endpoints of vendors the catalog already knows,
   # which a person adds to the hand-written entry.
   new-services:
-    if: github.repository == 'niklasmellgren/unrent'
+    if: github.repository == 'stringcutter/unrent'
     runs-on: ubuntu-latest
     permissions:
       contents: write

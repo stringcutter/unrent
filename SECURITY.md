@@ -5,7 +5,7 @@ and runs only `git ls-files` and, if installed, `rg` as subprocesses.
 
 Please report a vulnerability privately through GitHub:
 **Security → Report a vulnerability** on this repository
-(https://github.com/niklasmellgren/unrent/security/advisories/new). Do not open a
+(https://github.com/stringcutter/unrent/security/advisories/new). Do not open a
 public issue. Expect a reply within a week.
 
 In scope: anything that makes a scan execute code from the scanned repository, write

@@ -41,7 +41,7 @@ from unrent.discover import GENERIC_KEY, registered_domain  # noqa: E402
 
 MODELS_DEV = "https://models.dev/api.json"
 GENERATED = ROOT / "catalog" / "services" / "models-dev.yaml"
-UA = "unrent-new-services (+https://github.com/niklasmellgren/unrent)"
+UA = "unrent-new-services (+https://github.com/stringcutter/unrent)"
 # Packages shared by many providers: they name a protocol, not a vendor.
 SHARED_NPM = {"@ai-sdk/openai-compatible", "@ai-sdk/openai", "@ai-sdk/anthropic", "@ai-sdk/gateway"}
 LOCAL = re.compile(r"localhost|127\.0\.0\.1|0\.0\.0\.0|\{|\$")

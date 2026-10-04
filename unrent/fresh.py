@@ -20,7 +20,7 @@ import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 
-RANKINGS_URL = "https://raw.githubusercontent.com/niklasmellgren/unrent/main/catalog/rankings.json"
+RANKINGS_URL = "https://raw.githubusercontent.com/stringcutter/unrent/main/catalog/rankings.json"
 MAX_AGE = 6 * 3600  # seconds a fetched copy is reused before asking again
 TIMEOUT = 5
 MAX_BYTES = 5_000_000

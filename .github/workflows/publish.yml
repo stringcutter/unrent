@@ -2,7 +2,7 @@ name: publish
 
 # Publishes to PyPI when a GitHub release is published, with trusted publishing:
 # no API token is stored. One-time setup on PyPI: add a "pending publisher" for the
-# project with owner niklasmellgren, repository unrent, workflow publish.yml,
+# project with owner stringcutter, repository unrent, workflow publish.yml,
 # environment pypi.
 on:
   release:

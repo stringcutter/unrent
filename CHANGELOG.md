@@ -94,5 +94,5 @@ First public release.
   and each is placed in its pool, overall and among projects of the same kind.
 - A golden corpus of hand-labelled repositories (`eval/`), run in CI.
 
-[Unreleased]: https://github.com/niklasmellgren/unrent/compare/v0.2.0...HEAD
-[0.2.0]: https://github.com/niklasmellgren/unrent/releases/tag/v0.2.0
+[Unreleased]: https://github.com/stringcutter/unrent/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/stringcutter/unrent/releases/tag/v0.2.0

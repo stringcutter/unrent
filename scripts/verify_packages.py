@@ -35,7 +35,7 @@ from pathlib import Path
 
 import yaml
 
-UA = "unrent-catalog-check (+https://github.com/niklasmellgren/unrent)"
+UA = "unrent-catalog-check (+https://github.com/stringcutter/unrent)"
 PACKAGE_KINDS = (
     "requirement",
     "npm",

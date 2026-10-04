@@ -32,10 +32,10 @@ dependencies = ["pyyaml>=6.0"]
 mcp = ["mcp>=2.2,<3"]
 
 [project.urls]
-Homepage = "https://github.com/niklasmellgren/unrent"
-Source = "https://github.com/niklasmellgren/unrent"
-Issues = "https://github.com/niklasmellgren/unrent/issues"
-Changelog = "https://github.com/niklasmellgren/unrent/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/stringcutter/unrent"
+Source = "https://github.com/stringcutter/unrent"
+Issues = "https://github.com/stringcutter/unrent/issues"
+Changelog = "https://github.com/stringcutter/unrent/blob/main/CHANGELOG.md"
 
 [project.scripts]
 unrent = "unrent.cli:main"

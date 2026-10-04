@@ -42,14 +42,14 @@ straight into an issue or PR.
 Not on PyPI yet. Straight from GitHub:
 
 ```bash
-uv tool install git+https://github.com/niklasmellgren/unrent
+uv tool install git+https://github.com/stringcutter/unrent
 unrent scan .
 ```
 
 Or once, without installing:
 
 ```bash
-uvx --from git+https://github.com/niklasmellgren/unrent unrent scan .
+uvx --from git+https://github.com/stringcutter/unrent unrent scan .
 ```
 
 Python 3.11+. One dependency: PyYAML (the MCP server adds `mcp`). With [ripgrep](https://github.com/BurntSushi/ripgrep)
@@ -76,7 +76,7 @@ unrent as tools for Claude Code, Cursor, Copilot, or any agent that speaks MCP. 
 gets the facts; you decide what to swap.
 
 ```bash
-claude mcp add unrent -- uvx --from "unrent[mcp] @ git+https://github.com/niklasmellgren/unrent" unrent mcp
+claude mcp add unrent -- uvx --from "unrent[mcp] @ git+https://github.com/stringcutter/unrent" unrent mcp
 ```
 
 Other clients:
@@ -86,7 +86,7 @@ Other clients:
   "mcpServers": {
     "unrent": {
       "command": "uvx",
-      "args": ["--from", "unrent[mcp] @ git+https://github.com/niklasmellgren/unrent", "unrent", "mcp"]
+      "args": ["--from", "unrent[mcp] @ git+https://github.com/stringcutter/unrent", "unrent", "mcp"]
     }
   }
 }
@@ -111,7 +111,7 @@ observability, model hosting, fine-tuning, speech-to-text, text-to-speech, voice
 image generation, web search, web scraping, browser automation, code sandboxes, agent
 platforms, agent memory. 218 are written by hand; 139 hosted model providers come from
 [models.dev](https://models.dev) and are regenerated every week
-([`models-dev.yaml`](https://github.com/niklasmellgren/unrent/blob/main/catalog/services/models-dev.yaml)).
+([`models-dev.yaml`](https://github.com/stringcutter/unrent/blob/main/catalog/services/models-dev.yaml)).
 
 **Services it does not know yet.** Every scan also lists `unknown_candidates`: API hosts
 and keys that no catalog entry explains and that look like a hosted AI API (a `/v1/...`
@@ -155,7 +155,7 @@ Every rule above has a test that fails without it.
 
 ## Ranking
 
-Pools live in [`catalog/alternatives.yaml`](https://github.com/niklasmellgren/unrent/blob/main/catalog/alternatives.yaml). Re-ranked every Monday by a
+Pools live in [`catalog/alternatives.yaml`](https://github.com/stringcutter/unrent/blob/main/catalog/alternatives.yaml). Re-ranked every Monday by a
 GitHub Action that merges itself.
 
 - **Projects:** GitHub stars gained in the last 90 days, from unrent's own weekly
@@ -173,10 +173,10 @@ releases.
 
 ## Contribute
 
-The catalog is YAML. New service: [`catalog/services/`](https://github.com/niklasmellgren/unrent/tree/main/catalog/services). New alternative: a pool in
-[`catalog/alternatives.yaml`](https://github.com/niklasmellgren/unrent/blob/main/catalog/alternatives.yaml). False positive or miss: open an issue with the
-line that fooled it. [CONTRIBUTING.md](https://github.com/niklasmellgren/unrent/blob/main/CONTRIBUTING.md).
+The catalog is YAML. New service: [`catalog/services/`](https://github.com/stringcutter/unrent/tree/main/catalog/services). New alternative: a pool in
+[`catalog/alternatives.yaml`](https://github.com/stringcutter/unrent/blob/main/catalog/alternatives.yaml). False positive or miss: open an issue with the
+line that fooled it. [CONTRIBUTING.md](https://github.com/stringcutter/unrent/blob/main/CONTRIBUTING.md).
 
 ## Licence
 
-[Apache-2.0](https://github.com/niklasmellgren/unrent/blob/main/LICENSE)
+[Apache-2.0](https://github.com/stringcutter/unrent/blob/main/LICENSE)
