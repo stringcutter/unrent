@@ -46,7 +46,7 @@ unrent . --skip-tests            # ignore test code
 unrent . --exclude "examples/"   # .gitignore syntax, or a .unrentignore file
 ```
 
-`unrent --help` lists the rest.
+`unrent scan --help` lists the rest.
 
 ## Use it from an AI agent
 

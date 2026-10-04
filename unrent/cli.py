@@ -56,8 +56,8 @@ def _positive(value: str) -> int:
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="unrent",
-        description="Find the closed AI services a codebase depends on and the open source "
-        "that replaces them, and rank the open source AI it already runs.",
+        description="See which AI services a codebase depends on, what open source can "
+        "replace them, and which models are about to stop working.",
     )
     p.add_argument("--version", action="version", version=f"%(prog)s {_version()}")
     sub = p.add_subparsers(dest="command", metavar="{scan,catalog,mcp}")
