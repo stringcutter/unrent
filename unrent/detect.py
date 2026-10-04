@@ -27,6 +27,7 @@ from __future__ import annotations
 import ast
 import bisect
 import configparser
+import contextlib
 import dataclasses
 import functools
 import json
@@ -1606,8 +1607,14 @@ def facts_for_file(
         # here and search the file in Python, so both modes agree.
         text, hit_lines = text.replace("\r", "\n"), None
     suffix = path.suffix.lower()
+    # A manifest of an unexpected shape (`dependencies = 3`) is read like an unparseable
+    # one: the parsers assume the shapes each format documents.
+    shape_errors = (AttributeError, TypeError, KeyError, ValueError)
     if suffix == ".ipynb":
-        return _notebook(path, text, needles)
+        try:
+            return _notebook(path, text, needles)
+        except shape_errors:
+            return []
     if suffix == ".json" and _is_unrent_report(text):
         return []  # a saved report cites every vendor it found; it is not a dependency
 
@@ -1615,7 +1622,8 @@ def facts_for_file(
     facts: list[Fact] = []
     parser = _manifest_parser(path)
     if parser:
-        facts += parser(path, text, lines)
+        with contextlib.suppress(shape_errors):
+            facts += parser(path, text, lines)
     if not _is_text_source(path):
         return facts
     if suffix == ".json" and len(text) > MAX_JSON_BYTES:

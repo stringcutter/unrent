@@ -1296,6 +1296,17 @@ def test_python_syntax_warnings_stay_quiet(tmp_path, catalog, capsys):
         ("package.json", "[" * 200_000),
         ("notebook.ipynb", "[" * 200_000),
         ("app.py", "x = " + "-" * 100_000 + "1\n"),
+        # Valid, but not the shape the format documents.
+        ("pyproject.toml", "project = 3\n"),
+        ("pyproject.toml", "[tool.poetry]\ndependencies = 3\n"),
+        ("Pipfile", "packages = 3\n"),
+        ("Cargo.toml", "dependencies = 3\n"),
+        ("pnpm-workspace.yaml", "catalogs: [1]\n"),
+        ("pubspec.yaml", "dependencies: 3\n"),
+        ("environment.yml", "dependencies: [{pip: 3}]\n"),
+        ("composer.json", '{"require": [1]}'),
+        ("notebook.ipynb", '{"cells": [1]}'),
+        ("notebook.ipynb", '{"metadata": {"kernelspec": 3}}'),
     ],
     ids=lambda v: v if len(v) < 40 else f"{v[:8]}...",
 )
@@ -1328,6 +1339,7 @@ def test_bad_rankings_snapshot_is_a_clear_error(tmp_path, capsys):
     [
         ("services/zz.yaml", lambda _: "- {id: x, name: X, category: Y, replace_with: [p], detect: [a]}"),
         ("services/zz.yaml", lambda _: "- {id: x, added: 2020-13-45}\n"),
+        ("services/zz.yaml", lambda _: "[" * 100_000),
         # A project that is not a mapping, listed in a pool so it gets that far.
         ("alternatives.yaml", lambda t: t.replace("  facebookresearch/faiss:\n", "  facebookresearch/faiss: 3\n  x/faiss:\n")),
         ("rankings.json", lambda _: '{"pools": [1]}'),

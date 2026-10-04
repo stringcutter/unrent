@@ -204,14 +204,14 @@ def _load_yaml(path: Path):
     raises ValueError for a date like `2020-13-45`."""
     try:
         return yaml.load(path.read_text("utf-8"), Loader=_UniqueKeyLoader)
-    except (yaml.YAMLError, ValueError) as exc:
+    except (yaml.YAMLError, ValueError, RecursionError) as exc:
         raise CatalogError(f"{path.name}: {exc}") from exc
 
 
 def _load_json(path: Path) -> dict:
     try:
         data = json.loads(path.read_text("utf-8"))
-    except json.JSONDecodeError as exc:
+    except (json.JSONDecodeError, RecursionError) as exc:
         raise CatalogError(f"{path.name}: not valid JSON ({exc})") from exc
     if not isinstance(data, dict):
         raise CatalogError(f"{path.name}: expected a JSON object")
@@ -388,7 +388,7 @@ def load_catalog(path: Path, rankings: dict | None = None) -> Catalog:
         return _load_catalog(path, rankings)
     except CatalogError:
         raise
-    except (AttributeError, KeyError, TypeError, ValueError) as exc:
+    except (AttributeError, KeyError, TypeError, ValueError, RecursionError) as exc:
         raise CatalogError(f"{path}: malformed catalog ({type(exc).__name__}: {exc})") from exc
 
 
