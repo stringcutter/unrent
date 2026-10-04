@@ -5,6 +5,12 @@ All notable changes to this project are documented here. The format follows
 [Semantic Versioning](https://semver.org/). Weekly ranking refreshes are not listed;
 each release ships the rankings as of its date.
 
+## [0.2.2] - 2026-10-04
+
+### Changed
+- The README, which is also the PyPI page, shows the hand-drawn unrent wordmark, and its
+  screenshots show the output on paper with the strings drawn. No changes to detection.
+
 ## [0.2.1] - 2026-10-04
 
 ### Changed
@@ -129,5 +135,6 @@ First public release.
 - Open source signatures: `SEARX_URL` and `SearxSearch` (SearXNG), vLLM behind an
   OpenAI-compatible base URL, a self-hosted Firecrawl URL, LangChain's `FAISS`.
 
+[0.2.2]: https://github.com/stringcutter/unrent/releases/tag/v0.2.2
 [0.2.1]: https://github.com/stringcutter/unrent/releases/tag/v0.2.1
 [0.2.0]: https://github.com/stringcutter/unrent/releases/tag/v0.2.0
