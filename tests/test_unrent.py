@@ -1594,6 +1594,90 @@ def test_turbopuffer_regional_host_but_not_its_website(tmp_path, catalog):
     assert "turbopuffer" not in found(docs, catalog)
 
 
+# Hosts, SDKs and model ids from the vendors' current SDKs and docs (2026-10-04 review).
+CURRENT_SDKS_FOUND = [
+    ({"chat.js": 'await fetch("https://api.giga.chat/v1/chat/completions", opts);\n'}, "gigachat"),
+    (
+        {
+            "stt.ts": 'const client = new SonioxNodeClient({ apiUrl: "https://api.eu.soniox.com" });\n'
+        },
+        "soniox",
+    ),
+    ({"parse.py": 'BASE = "https://api.cloud.eu.llamaindex.ai/api/v1/parsing"\n'}, "llamaparse"),
+    ({"ade.py": 'URL = "https://api.va.eu-west-1.landing.ai/v1/ade/parse"\n'}, "landingai-ade"),
+    ({"calls.ts": 'const base = "https://api.eu.vapi.ai";\n'}, "vapi"),
+    (
+        {"agent.py": 'url = f"https://bedrock-agentcore-control.{region}.amazonaws.com"\n'},
+        "aws-bedrock-agentcore",
+    ),
+    ({"trace.py": 'HH_URL = "https://api.dp1.us.honeyhive.ai"\n'}, "honeyhive"),
+    (
+        {"gw.ts": 'const baseURL = "https://gateway-eu.pydantic.dev/proxy/openai";\n'},
+        "pydantic-ai-gateway",
+    ),
+    (
+        {"llm.py": 'client = Groq(base_url="https://groq.helicone.ai/openai/v1")\n'},
+        "helicone-cloud",
+    ),
+    ({"video.py": "from luma_agents import Luma\n\nclient = Luma()\n"}, "luma"),
+    ({"package.json": '{"dependencies": {"@github/copilot-sdk": "^1.0.0"}}\n'}, "github-copilot"),
+    (
+        {
+            "stream.py": "from aws_sdk_sagemaker_runtime_http2.client import AsyncSageMakerRuntimeHTTP2Client\n"
+        },
+        "aws-sagemaker",
+    ),
+    ({"search.py": "from google.cloud import vectorsearch_v1\n"}, "vertex-vector-search"),
+    (
+        {"search.py": 'r = requests.post("https://ollama.com/api/web_search", json=q)\n'},
+        "ollama-cloud",
+    ),
+    ({"prompts.ts": 'const api = "https://acme.freeplay.ai/api";\n'}, "freeplay"),
+]
+CURRENT_MODELS_FOUND = [
+    ('completion = client.chat.completions.create(model="jamba-mini", messages=m)', "ai21"),
+    ('tts = client.tts.generate(model_id="sonic-latest", transcript=t)', "cartesia"),
+    ('image = client.images.generate(model="recraftv4_1", prompt=p)', "recraft"),
+    (
+        'r = client.chat.completions.create(model="system.ai.claude-sonnet-4-5", messages=m)',
+        "databricks-model-serving",
+    ),
+]
+CURRENT_LOOKALIKES = [
+    # Jamba's open weights, run locally.
+    ({"llm.py": 'llm = LLM(model="ai21labs/AI21-Jamba-Mini-1.7")\n'}, "ai21"),
+    (
+        {"r.py": 'r = client.chat.completions.create(model="system.ai.gpt-oss-120b")\n'},
+        "databricks-model-serving",
+    ),
+    ({"links.md": "Pricing: https://freeplay.ai/pricing\n"}, "freeplay"),
+    # Weak alone: Sonic 3 is also the game.
+    ({"game.py": 'TITLE = "sonic-3"\n'}, "cartesia"),
+]
+
+
+@pytest.mark.parametrize(
+    "files,service", CURRENT_SDKS_FOUND, ids=lambda v: v if isinstance(v, str) else None
+)
+def test_current_sdks_and_hosts_are_found(tmp_path, catalog, files, service):
+    write(tmp_path, files)
+    assert service in deps(tmp_path, catalog)
+
+
+@pytest.mark.parametrize("line,service", CURRENT_MODELS_FOUND)
+def test_current_model_ids_are_found(tmp_path, catalog, line, service):
+    write(tmp_path, {"call.py": line + "\n"})
+    assert service in found(tmp_path, catalog)
+
+
+@pytest.mark.parametrize(
+    "files,service", CURRENT_LOOKALIKES, ids=lambda v: v if isinstance(v, str) else None
+)
+def test_current_lookalikes_are_not(tmp_path, catalog, files, service):
+    write(tmp_path, files)
+    assert service not in found(tmp_path, catalog)
+
+
 # --- catalog gaps from real repos ------------------------------------------------------
 
 

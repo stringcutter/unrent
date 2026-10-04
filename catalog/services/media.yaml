@@ -43,18 +43,23 @@
   category: Speech-to-text
   replace_with: [speech-to-text]
   detect:
-    requirement: [speechmatics-python, speechmatics-batch, speechmatics-rt]
-    npm: ["@speechmatics/batch-client", "@speechmatics/real-time-client"]
+    requirement: [speechmatics-python, speechmatics-batch, speechmatics-rt, speechmatics-tts,
+                  speechmatics-voice, speechmatics-flow]
+    npm: ["@speechmatics/batch-client", "@speechmatics/real-time-client", "@speechmatics/auth"]
     python_import: [speechmatics]
     env: [SPEECHMATICS_API_KEY]
-    endpoint: [asr.api.speechmatics.com, rt.speechmatics.com]
+    endpoint: [asr.api.speechmatics.com, rt.speechmatics.com, flow.api.speechmatics.com,
+               tts.speechmatics.com]
 
 - id: gladia
   name: Gladia
   category: Speech-to-text
   replace_with: [speech-to-text]
   detect:
-    npm: ["@ai-sdk/gladia", "@mastra/voice-gladia"]
+    npm: ["@gladiaio/sdk", "@ai-sdk/gladia", "@mastra/voice-gladia"]
+    requirement: [gladiaio-sdk]
+    python_import: [gladiaio_sdk]
+    symbol: [GladiaClient]
     endpoint: [api.gladia.io]
     env: [GLADIA_API_KEY]
 
@@ -84,14 +89,15 @@
   category: Speech-to-text
   replace_with: [speech-to-text, text-to-speech]
   detect:
-    requirement: [amazon-transcribe]
+    requirement: [amazon-transcribe, aws-sdk-transcribe-streaming, aws-sdk-polly]
     npm: ["@aws-sdk/client-transcribe", "@aws-sdk/client-transcribe-streaming",
           "@aws-sdk/client-polly"]
-    python_import: [amazon_transcribe]
+    python_import: [amazon_transcribe, aws_sdk_transcribe_streaming, aws_sdk_polly]
     # The client call, not the bare string: Whisper takes task="transcribe" too.
     symbol: ['client("transcribe"', "client('transcribe'", 'client("polly"', "client('polly'",
              'service_name="transcribe"', 'service_name="polly"', TranscribeClient, PollyClient,
-             TranscribeStreamingClient]
+             TranscribeStreamingClient, TranscribeStreamingAsyncClient,
+             AsyncTranscribeStreamingClient]
 
 - id: azure-speech
   name: Azure AI Speech
@@ -145,13 +151,13 @@
 - id: cartesia
   name: Cartesia
   category: Text-to-speech
-  weak: [sonic-2]
+  weak: [sonic-2, sonic-3]
   replace_with: [text-to-speech]
   detect:
     requirement: [cartesia]
     npm: ["@cartesia/cartesia-js", "@ai-sdk/cartesia"]
     python_import: [cartesia]
-    model: [sonic-2, sonic-english, sonic-multilingual, sonic-turbo]
+    model: [sonic-2, sonic-3, sonic-latest, sonic-english, sonic-multilingual, sonic-turbo]
     endpoint: [api.cartesia.ai]
     env: [CARTESIA_API_KEY]
 
@@ -199,8 +205,9 @@
   detect:
     requirement: [vapi-server-sdk]
     npm: ["@vapi-ai/web", "@vapi-ai/server-sdk", "@vapi-ai/react-native"]
+    go: [github.com/VapiAI/server-sdk-go]
     python_import: [vapi]
-    endpoint: [api.vapi.ai]
+    endpoint: [api.vapi.ai, api.eu.vapi.ai]
     env: [VAPI_API_KEY, VAPI_PRIVATE_KEY, VAPI_PUBLIC_KEY, NEXT_PUBLIC_VAPI_PUBLIC_KEY]
 
 - id: retell
@@ -219,6 +226,7 @@
   category: Voice agent
   replace_with: [voice-agent]
   detect:
+    npm: ["@blandsdk/client", bland-tts]
     endpoint: [api.bland.ai]
     env: [BLAND_API_KEY]
 
@@ -253,8 +261,8 @@
   detect:
     requirement: [stability-sdk]
     python_import: [stability_sdk]
-    endpoint: [api.stability.ai]
-    env: [STABILITY_API_KEY, STABILITY_KEY]
+    endpoint: [api.stability.ai, grpc.stability.ai]
+    env: [STABILITY_API_KEY, STABILITY_KEY, STABILITY_HOST]
     maven: ["org.springframework.ai:spring-ai-stability-ai",
             "org.springframework.ai:spring-ai-starter-model-stability-ai"]
 
@@ -296,6 +304,8 @@
   detect:
     requirement: [leonardo-ai-sdk]
     npm: ["@leonardo-ai/sdk"]
+    python_import: [leonardo_ai_sdk]
+    symbol: [LeonardoAiSDK]
     endpoint: [cloud.leonardo.ai]
     env: [LEONARDO_API_KEY]
 
@@ -309,18 +319,20 @@
     python_import: [runwayml]
     endpoint: [api.dev.runwayml.com]
     env: [RUNWAYML_API_SECRET]
-    model: [gen4_turbo, gen4_image, gen4.5]
+    model: [gen4_turbo, gen4_image, gen4_aleph, gen4.5]
+    # Required on every call to the API (docs.dev.runwayml.com/api-details/versioning).
+    symbol: [X-Runway-Version]
 
 - id: luma
   name: Luma AI
   category: Image generation
   replace_with: [image-generation]
   detect:
-    requirement: [lumaai]
+    requirement: [lumaai, luma-agents]
     npm: [lumaai, "@ai-sdk/luma"]
-    python_import: [lumaai]
-    endpoint: [api.lumalabs.ai]
-    env: [LUMAAI_API_KEY, LUMA_API_KEY]
+    python_import: [lumaai, luma_agents]
+    endpoint: [api.lumalabs.ai, agents.lumalabs.ai]
+    env: [LUMAAI_API_KEY, LUMA_API_KEY, LUMA_AGENTS_API_KEY]
 
 - id: soniox
   name: Soniox
@@ -330,9 +342,10 @@
     requirement: [soniox]
     npm: ["@soniox/node"]
     python_import: [soniox]
-    symbol: [SonioxClient, AsyncSonioxClient]
+    symbol: [SonioxClient, AsyncSonioxClient, SonioxNodeClient]
     model: [stt-async-v, stt-rt-v]
-    endpoint: [api.soniox.com, stt-rt.soniox.com]
+    endpoint: [api.soniox.com, stt-rt.soniox.com, tts-rt.soniox.com, api.eu.soniox.com,
+               stt-rt.eu.soniox.com]
     env: [SONIOX_API_KEY]
 
 - id: speechify
@@ -386,7 +399,10 @@
   excludes: [openai]
   replace_with: [text-to-speech, voice-agent]
   detect:
-    npm: ["@inworld/runtime", "@mastra/voice-inworld"]
+    npm: ["@inworld/runtime", "@inworld/tts", "@mastra/voice-inworld"]
+    requirement: [inworld-tts]
+    python_import: [inworld_tts]
+    symbol: [InworldTTS]
     endpoint: [api.inworld.ai]
     env: [INWORLD_API_KEY]
 
@@ -398,7 +414,7 @@
     requirement: [resemble]
     npm: ["@resemble/node"]
     python_import: [resemble]
-    endpoint: [app.resemble.ai, f.cluster.resemble.ai]
+    endpoint: [app.resemble.ai, cluster.resemble.ai]
     env: [RESEMBLE_API_KEY]
 
 - id: kling-ai
@@ -427,7 +443,7 @@
   excludes: [openai]
   replace_with: [image-generation]
   detect:
-    model: [recraftv3, recraftv2]
+    model: [recraftv4, recraftv3, recraftv2]
     endpoint: [external.api.recraft.ai]
     env: [RECRAFT_API_TOKEN]
 

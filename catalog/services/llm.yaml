@@ -565,7 +565,8 @@
   detect:
     endpoint: [gateway.ai.cloudflare.com]
     npm: [ai-gateway-provider]
-    env: [CF_AI_GATEWAY, CLOUDFLARE_AI_GATEWAY, CLOUDFLARE_AI_GATEWAY_ID]
+    env: [CF_AI_GATEWAY, CLOUDFLARE_AI_GATEWAY, CLOUDFLARE_AI_GATEWAY_ID, CF_AIG_TOKEN]
+    symbol: [cf-aig-authorization]
     requirement: [llama-index-llms-cloudflare-ai-gateway]
     python_import: [llama_index.llms.cloudflare_ai_gateway]
 
@@ -690,7 +691,7 @@
     symbol: [ChatDatabricks, DatabricksEmbeddings]
     model: [databricks-claude-, databricks-gpt-, databricks-gemini-, databricks-meta-llama-,
             databricks-llama-, databricks-qwen, databricks-glm, databricks-kimi-, databricks-grok,
-            databricks-deepseek-, databricks/]
+            databricks-deepseek-, databricks/, system.ai.claude-, system.ai.gpt-]
 
 - id: snowflake-cortex
   name: Snowflake Cortex AI
@@ -703,7 +704,7 @@
     requirement: [langchain-snowflake, llama-index-llms-cortex]
     python_import: [snowflake.cortex, langchain_snowflake, llama_index.llms.cortex]
     symbol: [ChatSnowflake, ChatSnowflakeCortex, SNOWFLAKE.CORTEX., "AI_COMPLETE("]
-    model: [snowflake/, "snowflake:"]
+    model: [snowflake/, "snowflake:", snowflake-llama-]
     # With a path: every Snowflake account is a subdomain of the bare host. The
     # OpenAI and Anthropic SDKs are pointed at /api/v2/cortex (cortex-rest-api docs).
     endpoint: [snowflakecomputing.com/api/v2/cortex]
@@ -731,7 +732,7 @@
     npm: [ai21]
     python_import: [ai21, langchain_ai21, llama_index.llms.ai21]
     symbol: [AI21Client, AsyncAI21Client, ChatAI21]
-    model: [jamba-large-, jamba-mini-, ai21/]
+    model: [jamba-large, jamba-mini, ai21/]
     endpoint: [api.ai21.com]
     env: [AI21_API_KEY]
 
@@ -779,8 +780,10 @@
   detect:
     model: ["gateway/openai:", "gateway/anthropic:", gateway/google, "gateway/groq:",
             "gateway/bedrock:"]
-    endpoint: [gateway-us.pydantic.dev, gateway.pydantic.info]
-    env: [PYDANTIC_AI_GATEWAY_API_KEY, PAIG_API_KEY, PYDANTIC_AI_GATEWAY_BASE_URL]
+    # gateway-{region}.pydantic.dev/proxy
+    endpoint: [gateway-us.pydantic.dev, gateway-eu.pydantic.dev, pydantic.dev/proxy,
+               gateway.pydantic.info]
+    env: [PYDANTIC_AI_GATEWAY_API_KEY, PAIG_API_KEY, PYDANTIC_AI_GATEWAY_BASE_URL, PAIG_BASE_URL]
 
 - id: aws-bedrock-agentcore
   name: Amazon Bedrock AgentCore
@@ -791,14 +794,16 @@
     cargo: [aws-sdk-bedrockagentcore]
     maven: ["software.amazon.awssdk:bedrockagentcore"]
     nuget: [AWSSDK.BedrockAgentCore]
-    requirement: [bedrock-agentcore, bedrock-agentcore-starter-toolkit]
+    requirement: [bedrock-agentcore, bedrock-agentcore-starter-toolkit, aws-sdk-bedrock-agentcore,
+                  aws-sdk-bedrock-agentcore-control]
     npm: [bedrock-agentcore, "@aws-sdk/client-bedrock-agentcore",
           "@aws-sdk/client-bedrock-agentcore-control"]
     python_import: [bedrock_agentcore]
     symbol: [BedrockAgentCoreApp, "\"bedrock-agentcore\"", "'bedrock-agentcore'",
              "\"bedrock-agentcore-control\"", "'bedrock-agentcore-control'"]
-    endpoint: [bedrock-agentcore.]
-    env: [BEDROCK_AGENTCORE_CONTROL_ENDPOINT, BEDROCK_AGENTCORE_DP_ENDPOINT]
+    endpoint: [bedrock-agentcore., bedrock-agentcore-control.]
+    env: [BEDROCK_AGENTCORE_CONTROL_ENDPOINT, BEDROCK_AGENTCORE_DP_ENDPOINT,
+          AGENTCORE_CONTROL_ENDPOINT, AGENTCORE_DATA_ENDPOINT]
     terraform_resource: [aws_bedrockagentcore_agent_runtime, aws_bedrockagentcore_gateway,
                          aws_bedrockagentcore_memory, aws_bedrockagentcore_browser,
                          aws_bedrockagentcore_code_interpreter]
@@ -823,6 +828,10 @@
   detect:
     requirement: [google-cloud-modelarmor]
     npm: ["@google-cloud/modelarmor"]
+    go: [cloud.google.com/go/modelarmor]
+    maven: ["com.google.cloud:google-cloud-modelarmor"]
+    nuget: [Google.Cloud.ModelArmor.V1]
+    composer: [google/cloud-modelarmor]
     python_import: [google.cloud.modelarmor, google.cloud.modelarmor_v1]
     symbol: [ModelArmorClient]
     endpoint: [modelarmor.]
@@ -843,13 +852,14 @@
   category: Model hosting
   replace_with: [llm-serving, open-llm]
   detect:
-    requirement: [sagemaker, llama-index-llms-sagemaker-endpoint]
+    requirement: [sagemaker, llama-index-llms-sagemaker-endpoint, aws-sdk-sagemaker-runtime-http2]
+    python_import: [aws_sdk_sagemaker_runtime_http2]
     npm: ["@aws-sdk/client-sagemaker-runtime"]
     go: [github.com/aws/aws-sdk-go-v2/service/sagemakerruntime]
     maven: ["software.amazon.awssdk:sagemakerruntime"]
     nuget: [AWSSDK.SageMakerRuntime]
     symbol: ['"sagemaker-runtime"', "'sagemaker-runtime'", SagemakerEndpoint, SageMakerRuntimeClient,
-             SagemakerEndpointEmbeddings]
+             SagemakerEndpointEmbeddings, AsyncSageMakerRuntimeHTTP2Client]
     endpoint: [runtime.sagemaker.]
     terraform_resource: [aws_sagemaker_endpoint, aws_sagemaker_model]
 
@@ -962,9 +972,11 @@
   replace_with: [open-llm, llm-serving]
   detect:
     requirement: [gigachat, langchain-gigachat]
+    npm: [gigachat, langchain-gigachat]
+    maven: ["chat.giga:gigachat-java"]
     python_import: [gigachat, langchain_gigachat]
-    endpoint: [gigachat.devices.sberbank.ru, ngw.devices.sberbank.ru]
-    env: [GIGACHAT_CREDENTIALS]
+    endpoint: [gigachat.devices.sberbank.ru, ngw.devices.sberbank.ru, api.giga.chat]
+    env: [GIGACHAT_CREDENTIALS, GIGACHAT_SCOPE]
 
 - id: gitee-ai
   name: Gitee AI / MoArk (模力方舟)
@@ -1115,6 +1127,12 @@
   category: LLM API
   replace_with: [open-llm, llm-serving]
   detect:
+    # The official Copilot SDK (github/copilot-sdk); it reads COPILOT_GITHUB_TOKEN first.
+    npm: ["@github/copilot-sdk"]
+    requirement: [github-copilot-sdk]
+    go: [github.com/github/copilot-sdk/go]
+    nuget: [GitHub.Copilot.SDK]
+    env: [COPILOT_GITHUB_TOKEN]
     # Not the bare api.githubcopilot.com: api.githubcopilot.com/mcp is GitHub's MCP
     # server, which many agent configs name.
     endpoint: [api.githubcopilot.com/chat, api.githubcopilot.com/models,
@@ -1128,7 +1146,8 @@
   detect:
     # The hosted API at ollama.com itself. `//` keeps out api.ollama.com and other
     # look-alikes in URL-handling tests; a local Ollama is localhost:11434.
-    endpoint: [//ollama.com/v1, //ollama.com/api/chat, //ollama.com/api/generate]
+    endpoint: [//ollama.com/v1, //ollama.com/api/chat, //ollama.com/api/generate,
+               //ollama.com/api/web_search, //ollama.com/api/web_fetch]
     env: [OLLAMA_API_KEY]
 
 - id: asksage
@@ -1137,6 +1156,9 @@
   excludes: [openai]
   replace_with: [open-llm, llm-serving]
   detect:
+    requirement: [asksageclient]
+    python_import: [asksageclient]
+    symbol: [AskSageClient]
     endpoint: [api.asksage.ai]
     env: [ASKSAGE_API_KEY]
 
@@ -1172,7 +1194,10 @@
   replace_with: [open-llm, llm-serving]
   detect:
     npm: ["@sap-ai-sdk/orchestration", "@sap-ai-sdk/foundation-models", "@sap-ai-sdk/langchain",
-          "@sap-ai-sdk/ai-api", "@jerome-benoit/sap-ai-provider"]
+          "@sap-ai-sdk/ai-api", "@sap-ai-sdk/prompt-registry", "@sap-ai-sdk/document-grounding",
+          "@jerome-benoit/sap-ai-provider"]
+    maven: ["com.sap.ai.sdk:orchestration", "com.sap.ai.sdk.foundationmodels:openai"]
+    python_import: [gen_ai_hub]
     requirement: [generative-ai-hub-sdk, sap-ai-sdk-gen]
     # api.ai.<region>.aws.ml.hana.ondemand.com
     endpoint: [ml.hana.ondemand.com]

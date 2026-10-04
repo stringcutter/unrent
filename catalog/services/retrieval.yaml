@@ -142,6 +142,7 @@
   detect:
     requirement: [turbopuffer, langchain-turbopuffer]
     npm: ["@turbopuffer/turbopuffer", "@mastra/turbopuffer"]
+    go: [github.com/turbopuffer/turbopuffer-go]
     python_import: [turbopuffer, langchain_turbopuffer]
     # The regional API hosts (turbopuffer.com/docs/regions). The bare host is also the
     # website and docs, which the SDK's own docstrings link to.
@@ -196,10 +197,13 @@
   category: Vector database
   replace_with: [vector-db]
   detect:
-    symbol: [MatchingEngineIndex, MatchingEngineIndexEndpoint, VectorSearchVectorStore]
+    symbol: [MatchingEngineIndex, MatchingEngineIndexEndpoint, VectorSearchVectorStore,
+             VectorSearchServiceClient, DataObjectSearchServiceClient]
     terraform_resource: [google_vertex_ai_index, google_vertex_ai_index_endpoint_deployed_index]
-    requirement: [llama-index-vector-stores-vertexaivectorsearch]
-    python_import: [llama_index.vector_stores.vertexaivectorsearch]
+    requirement: [llama-index-vector-stores-vertexaivectorsearch, google-cloud-vectorsearch]
+    python_import: [llama_index.vector_stores.vertexaivectorsearch, google.cloud.vectorsearch,
+                    google.cloud.vectorsearch_v1, google.cloud.vectorsearch_v1beta]
+    endpoint: [vectorsearch.googleapis.com]
 
 - id: zilliz-cloud
   name: Zilliz Cloud (hosted Milvus)
@@ -281,6 +285,7 @@
   detect:
     requirement: [google-cloud-discoveryengine]
     npm: ["@google-cloud/discoveryengine"]
+    maven: ["com.google.cloud:google-cloud-discoveryengine"]
     python_import: [google.cloud.discoveryengine]
     endpoint: [discoveryengine.googleapis.com]
     terraform_resource: [google_discovery_engine_search_engine, google_discovery_engine_data_store]
@@ -319,9 +324,10 @@
     python_import: [llama_parse, llama_cloud_services, llama_cloud, llama_index.readers.llama_parse,
                     llama_index.indices.managed.llama_cloud]
     symbol: [LlamaParse, LlamaCloudIndex]
-    endpoint: [api.cloud.llamaindex.ai]
+    endpoint: [api.cloud.llamaindex.ai, api.cloud.eu.llamaindex.ai]
     env: [LLAMA_CLOUD_API_KEY, LLAMA_PARSE_API_KEY]
     maven: ["dev.langchain4j:langchain4j-community-document-parser-llamaparse"]
+    go: [github.com/run-llama/llama-parse-go]
 
 - id: azure-document-intelligence
   name: Azure AI Document Intelligence
@@ -355,6 +361,9 @@
   detect:
     requirement: [google-cloud-documentai]
     npm: ["@google-cloud/documentai"]
+    go: [cloud.google.com/go/documentai]
+    maven: ["com.google.cloud:google-cloud-document-ai"]
+    nuget: [Google.Cloud.DocumentAI.V1]
     python_import: [google.cloud.documentai]
     symbol: [DocumentProcessorServiceClient]
     endpoint: [documentai.googleapis.com]
@@ -367,6 +376,8 @@
   detect:
     requirement: [google-cloud-vision]
     npm: ["@google-cloud/vision"]
+    go: [cloud.google.com/go/vision]
+    gem: [google-cloud-vision]
     python_import: [google.cloud.vision]
     symbol: [ImageAnnotatorClient]
     endpoint: [vision.googleapis.com]
@@ -403,7 +414,8 @@
   replace_with: [vector-db]
   detect:
     npm: ["@mastra/vectorize"]
-    symbol: [CloudflareVectorizeStore, VectorizeIndex, "[[vectorize]]"]
+    symbol: [CloudflareVectorizeStore, CloudflareVectorize, VectorizeIndex, "[[vectorize]]"]
+    python_import: [langchain_cloudflare.vectorstores]
 
 - id: mixedbread-api
   name: Mixedbread API
@@ -437,7 +449,7 @@
     requirement: [landingai-ade, agentic-doc]
     npm: [landingai-ade]
     python_import: [landingai_ade, agentic_doc]
-    endpoint: [api.va.landing.ai, api.ade.landing.ai]
+    endpoint: [api.va.landing.ai, api.va.eu-west-1.landing.ai, api.ade.landing.ai]
     env: [VISION_AGENT_API_KEY]
 
 - id: datalab
@@ -470,7 +482,13 @@
   detect:
     requirement: [llama-index-vector-stores-azurecosmosnosql, llama-index-vector-stores-azurecosmosmongo]
     nuget: [Microsoft.SemanticKernel.Connectors.AzureCosmosDBNoSQL,
-            Microsoft.SemanticKernel.Connectors.AzureCosmosDBMongoDB]
+            Microsoft.SemanticKernel.Connectors.AzureCosmosDBMongoDB,
+            Microsoft.SemanticKernel.Connectors.CosmosNoSql,
+            Microsoft.SemanticKernel.Connectors.CosmosMongoDB,
+            CommunityToolkit.VectorData.CosmosNoSql, CommunityToolkit.VectorData.CosmosMongoDB,
+            CommunityToolkit.VectorData.AzureCosmosDB, CommunityToolkit.VectorData.AzureDocumentDB]
+    npm: ["@langchain/azure-cosmosdb"]
+    python_import: [semantic_kernel.connectors.azure_cosmos_db]
     symbol: [AzureCosmosDBNoSqlVectorSearch, AzureCosmosDBVectorSearch, vectorEmbeddingPolicy,
              vector_embedding_policy]
 
@@ -505,6 +523,7 @@
   detect:
     requirement: [dashvector]
     python_import: [dashvector]
+    endpoint: [dashvector.cn-hangzhou.aliyuncs.com]
 
 - id: volcengine-vikingdb
   name: Volcengine VikingDB

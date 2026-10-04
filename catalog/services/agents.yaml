@@ -179,7 +179,7 @@
   replace_with: [agent-memory]
   detect:
     symbol: [MemoryClient, AsyncMemoryClient]
-    endpoint: [api.mem0.ai]
+    endpoint: [api.mem0.ai, mcp.mem0.ai]
     env: [MEM0_API_KEY]
 
 - id: openai-assistants
@@ -233,7 +233,13 @@
   category: LLM observability
   replace_with: [llm-observability, llm-gateway]
   detect:
-    endpoint: [oai.helicone.ai, anthropic.helicone.ai, gateway.helicone.ai, ai-gateway.helicone.ai]
+    # The gateway and the per-provider proxy hosts (docs.helicone.ai, integration-method).
+    endpoint: [oai.helicone.ai, anthropic.helicone.ai, gateway.helicone.ai, ai-gateway.helicone.ai,
+               together.helicone.ai, openrouter.helicone.ai, fireworks.helicone.ai,
+               groq.helicone.ai, deepinfra.helicone.ai, perplexity.helicone.ai,
+               mistral.helicone.ai, deepseek.helicone.ai, x.helicone.ai, bedrock.helicone.ai,
+               nebius.helicone.ai, novita.helicone.ai, qstash.helicone.ai,
+               firecrawl.helicone.ai]
     env: [HELICONE_API_KEY]
     requirement: [llama-index-llms-helicone]
     python_import: [llama_index.llms.helicone]
@@ -244,7 +250,8 @@
   replace_with: [llm-observability]
   detect:
     symbol: [LLMObs]
-    env: [DD_LLMOBS_ENABLED, DD_LLMOBS_ML_APP]
+    python_import: [ddtrace.llmobs]
+    env: [DD_LLMOBS_ENABLED, DD_LLMOBS_ML_APP, DD_LLMOBS_AGENTLESS_ENABLED]
     npm: ["@mastra/datadog"]
 
 - id: humanloop
@@ -262,9 +269,9 @@
   category: LLM observability
   replace_with: [llm-observability, llm-evals]
   detect:
-    requirement: [galileo, promptquality]
+    requirement: [galileo, promptquality, galileo-adk]
     npm: [galileo]
-    python_import: [galileo, promptquality]
+    python_import: [galileo, promptquality, galileo_adk]
     env: [GALILEO_API_KEY, GALILEO_PROJECT, GALILEO_LOG_STREAM]
     endpoint: [api.galileo.ai]
 
@@ -348,6 +355,7 @@
   detect:
     requirement: [kernel]
     npm: ["@onkernel/sdk"]
+    go: [github.com/kernel/kernel-go-sdk]
     python_import: [kernel]
     endpoint: [api.onkernel.com]
     env: [KERNEL_API_KEY]
@@ -397,7 +405,7 @@
   replace_with: [web-scraping, web-search, browser-automation]
   detect:
     requirement: [brightdata-sdk, langchain-brightdata]
-    npm: ["@brightdata/sdk", "@mastra/brightdata"]
+    npm: ["@brightdata/sdk", "@brightdata/mcp", "@mastra/brightdata"]
     python_import: [brightdata, langchain_brightdata]
     endpoint: [api.brightdata.com]
     env: [BRIGHTDATA_API_TOKEN, BRIGHTDATA_API_KEY]
@@ -431,7 +439,7 @@
   replace_with: [agent-memory]
   detect:
     requirement: [letta-client]
-    npm: ["@letta-ai/letta-client"]
+    npm: ["@letta-ai/letta-client", "@letta-ai/letta-agent-sdk"]
     python_import: [letta_client]
     endpoint: [api.letta.com]
     env: [LETTA_API_KEY]
@@ -475,16 +483,17 @@
   replace_with: [llm-observability, llm-evals]
   detect:
     requirement: [honeyhive]
-    npm: [honeyhive]
+    npm: [honeyhive, "@honeyhive/api-client"]
     python_import: [honeyhive]
     env: [HH_API_KEY, HONEYHIVE_API_KEY]
+    endpoint: [api.dp1.us.honeyhive.ai]
 
 - id: patronus
   name: Patronus AI
   category: LLM observability
   replace_with: [llm-observability, llm-evals, guardrails]
   detect:
-    requirement: [patronus]
+    requirement: [patronus, patronus-api]
     python_import: [patronus]
     endpoint: [api.patronus.ai, otel.patronus.ai]
     env: [PATRONUS_API_KEY]
@@ -496,6 +505,10 @@
   detect:
     requirement: [freeplay]
     python_import: [freeplay]
+    npm: [freeplay]
+    maven: ["ai.freeplay:client"]
+    # <subdomain>.freeplay.ai/api; with the path, as the bare host is the website.
+    endpoint: [freeplay.ai/api]
     env: [FREEPLAY_API_KEY, FREEPLAY_SUBDOMAIN]
 
 - id: searchapi-io
@@ -611,7 +624,7 @@
   category: Web search
   replace_with: [web-search]
   detect:
-    endpoint: [api.wsa.cloud.tencent.com]
+    endpoint: [api.wsa.cloud.tencent.com, wsa.tencentcloudapi.com]
     env: [TENCENTCLOUD_WSA_APIKEY]
 
 - id: unbrowse
