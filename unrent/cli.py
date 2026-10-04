@@ -243,7 +243,7 @@ def cmd_catalog(args) -> int:
     return 0
 
 
-MCP_INSTALL = "uv tool install 'unrent[mcp] @ git+https://github.com/stringcutter/unrent'"
+MCP_INSTALL = "uv tool install 'unrent[mcp]'"
 
 
 def cmd_mcp(args) -> int:

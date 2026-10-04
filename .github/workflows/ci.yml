@@ -60,7 +60,7 @@ jobs:
           uvx --from "$GITHUB_WORKSPACE"/dist/*.whl unrent scan fixture | grep -q "OpenAI API"
       - name: MCP server from the wheel answers over stdio
         env:
-          GITHUB_TOKEN: ${{ github.token }}  # the repo is private: raw rankings need it
+          GITHUB_TOKEN: ${{ github.token }}  # what a private fork needs for its raw rankings
         run: |
           cd "$RUNNER_TEMP"
           wheel=$(ls "$GITHUB_WORKSPACE"/dist/*.whl)

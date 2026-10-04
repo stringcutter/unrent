@@ -34,17 +34,15 @@ issue or PR.
 
 ## Install
 
-Not on PyPI yet. Straight from GitHub:
-
 ```bash
-uv tool install git+https://github.com/stringcutter/unrent
-unrent scan .
+uv tool install unrent      # or: pipx install unrent
+unrent .
 ```
 
 Or once, without installing:
 
 ```bash
-uvx --from git+https://github.com/stringcutter/unrent unrent scan .
+uvx unrent .
 ```
 
 Python 3.11+. One dependency: PyYAML (the MCP server adds `mcp`). Large repos are read
@@ -78,7 +76,7 @@ unrent as tools for Claude Code, Cursor, Copilot, or any agent that speaks MCP. 
 gets the facts; you decide what to swap.
 
 ```bash
-claude mcp add unrent -- uvx --from "unrent[mcp] @ git+https://github.com/stringcutter/unrent" unrent mcp
+claude mcp add unrent -- uvx --from "unrent[mcp]" unrent mcp
 ```
 
 Other clients:
@@ -88,7 +86,7 @@ Other clients:
   "mcpServers": {
     "unrent": {
       "command": "uvx",
-      "args": ["--from", "unrent[mcp] @ git+https://github.com/stringcutter/unrent", "unrent", "mcp"]
+      "args": ["--from", "unrent[mcp]", "unrent", "mcp"]
     }
   }
 }
@@ -104,6 +102,9 @@ Other clients:
 Rankings come from this repo's `main`, refreshed weekly, not from the install. Cached
 for six hours. When the fetch fails it uses the shipped snapshot and says so.
 `UNRENT_OFFLINE=1` never fetches. Only rankings come in. Your code never goes out.
+
+For agents that use skills, `npx skills add stringcutter/unrent` adds a workflow on top:
+check what unrent can't see, sweep for services outside the catalog, and write the report.
 
 ## What it detects
 

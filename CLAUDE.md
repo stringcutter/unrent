@@ -34,7 +34,7 @@ writes in Danish; answer in the language of their latest message.
 | `catalog/retirements.yaml` | Model retirements from the vendors' pages, rewritten weekly by `scripts/retirements.py` (pull request left open for review) |
 | `eval/` | Golden corpus (54 repos, pinned commits) with hand-labelled truth, `TRUTH_RULES.md`, `OSS_TRUTH_RULES.md`, `MODEL_TRUTH_RULES.md` (`corpus_models.yaml`), `run_eval.py` |
 | `scripts/` | `refresh.py` (rankings), `verify_packages.py`, `new_services.py` (models.dev + corpus candidates), `mcp_smoke.py` |
-| `skills/unrent/` | Agent skill (SKILL.md, `sweep.py`, `repo_facts.py`), installable with `npx skills add` once the repo is public |
+| `skills/unrent/` | Agent skill (SKILL.md, `sweep.py`, `repo_facts.py`), installable with `npx skills add stringcutter/unrent` |
 
 ## Commands
 
@@ -116,8 +116,7 @@ uv run python scripts/refresh.py --check   # rankings, without writing
   and the corpus, opens a PR that merges itself when all pass).
 - `publish.yml`: PyPI on a GitHub release (trusted publishing).
 - The bots push to `main` weekly: pull before you start.
-- The repo is **private** for now. While it is, `unrent mcp` cannot fetch live rankings
-  (raw URL 404) and uses the shipped snapshot. Renaming the repo or moving
+- The repo is public and unrent is on PyPI. Renaming the repo or moving
   `catalog/rankings.json` breaks live rankings for every installed MCP server.
 
 ## Conventions

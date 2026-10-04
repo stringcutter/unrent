@@ -5,7 +5,7 @@ All notable changes to this project are documented here. The format follows
 [Semantic Versioning](https://semver.org/). Weekly ranking refreshes are not listed;
 each release ships the rankings as of its date.
 
-## [0.2.0] - unreleased
+## [0.2.0] - 2026-10-04
 
 First public release.
 
