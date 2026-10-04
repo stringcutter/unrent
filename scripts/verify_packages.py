@@ -3,7 +3,8 @@
 Usage:  python scripts/verify_packages.py [CATALOG_DIR] [--out results.json] [--extra extra.yaml]
 
 Exits 1 when a signature names a package that does not exist: a typo there is a
-silent false negative, because nothing will ever match it.
+silent false negative, because nothing will ever match it. Only a 404/410 counts as
+"does not exist"; a timeout or a 5xx is reported as "could not check".
 
 For every (service, kind, value) of a package kind, looks the value up in the
 registry and records: exists, latest version, last release date, deprecation /
@@ -74,13 +75,17 @@ def get(url: str, accept: str = "application/json", tries: int = 3):
 
 
 def jget(url: str):
+    """None only when the registry says the package is not there (404/410). Anything
+    else that is not a JSON 200 raises, so the caller records 'could not check'."""
     status, data = get(url)
-    if status == 200:
-        try:
-            return json.loads(data)
-        except ValueError:
-            return None
-    return None
+    if status in (404, 410):
+        return None
+    if status != 200:
+        raise RuntimeError(f"{url} returned {status or 'no response'}")
+    try:
+        return json.loads(data)
+    except ValueError as e:
+        raise RuntimeError(f"{url} returned invalid JSON") from e
 
 
 # ------------------------------------------------------------------ registries
@@ -143,8 +148,10 @@ def check_maven(ga):
     g, a = ga.split(":")
     url = f"https://repo1.maven.org/maven2/{g.replace('.', '/')}/{a}/maven-metadata.xml"
     status, data = get(url, accept="application/xml")
-    if status != 200:
+    if status in (404, 410):
         return {"exists": False}
+    if status != 200:
+        raise RuntimeError(f"{url} returned {status or 'no response'}")
     txt = data.decode("utf-8", "replace")
     import re
 
