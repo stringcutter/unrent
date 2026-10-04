@@ -81,7 +81,7 @@ def _catalog() -> tuple[Catalog, fresh.Rankings]:
     rankings = fresh.latest(shipped)
     try:
         catalog = load_catalog(DEFAULT_CATALOG, rankings.data)
-    except (CatalogError, KeyError, TypeError, ValueError, AttributeError) as exc:
+    except CatalogError as exc:
         if rankings.source == "shipped":
             raise ToolError(f"the unrent catalog did not load: {exc}") from exc
         rankings = fresh.Rankings(shipped, "shipped", f"the latest rankings did not load: {exc}")

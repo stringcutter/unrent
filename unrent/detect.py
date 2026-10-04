@@ -388,11 +388,15 @@ def _is_relevant(path: Path) -> bool:
 @functools.lru_cache(maxsize=4)  # the code view and the imports parse the same file
 def _parse_python(text: str) -> ast.Module:
     """ast.parse without the SyntaxWarnings (`invalid escape sequence`) that someone
-    else's code would print on our stderr. Raises SyntaxError/ValueError as usual.
-    The tree is shared between callers: read it, never change it."""
+    else's code would print on our stderr. Raises SyntaxError/ValueError as usual, also
+    for code nested too deep to parse. The tree is shared between callers: read it,
+    never change it."""
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        return ast.parse(text)
+        try:
+            return ast.parse(text)
+        except (MemoryError, RecursionError) as exc:  # "Parser stack overflowed"
+            raise SyntaxError(str(exc)) from None
 
 
 _STATEMENT_FIELDS = frozenset(("body", "orelse", "finalbody", "handlers", "cases"))
@@ -1095,7 +1099,7 @@ def _specs_to_facts(
 def _pyproject(path: Path, text: str, lines: list[str]) -> list[Fact]:
     try:
         data = tomllib.loads(text)
-    except tomllib.TOMLDecodeError:
+    except (tomllib.TOMLDecodeError, RecursionError):
         return []
     project = data.get("project") or {}
     tool = data.get("tool") or {}
@@ -1164,17 +1168,14 @@ def _setup_cfg(path: Path, text: str, lines: list[str]) -> list[Fact]:
 def _pipfile(path: Path, text: str, lines: list[str]) -> list[Fact]:
     try:
         data = tomllib.loads(text)
-    except tomllib.TOMLDecodeError:
+    except (tomllib.TOMLDecodeError, RecursionError):
         return []
     names = list(data.get("packages") or {}) + list(data.get("dev-packages") or {})
     return _specs_to_facts(names, path, lines, keyed=True)
 
 
 def _conda_env(path: Path, text: str, lines: list[str]) -> list[Fact]:
-    try:
-        data = yaml.safe_load(text)
-    except yaml.YAMLError:
-        return []
+    data = _yaml(text)
     if not isinstance(data, dict) or not isinstance(data.get("dependencies"), list):
         return []
     specs: list[str] = []
@@ -1189,7 +1190,16 @@ def _conda_env(path: Path, text: str, lines: list[str]) -> list[Fact]:
 def _json(text: str):
     try:
         return json.loads(text)
-    except ValueError:
+    except (ValueError, RecursionError):
+        return None
+
+
+def _yaml(text: str):
+    """None for YAML that doesn't load: besides YAMLError, PyYAML raises ValueError for
+    `2020-13-45`, AttributeError and KeyError for a bad `!!timestamp` or `!!bool`."""
+    try:
+        return yaml.safe_load(text)
+    except (yaml.YAMLError, ValueError, AttributeError, KeyError, RecursionError):
         return None
 
 
@@ -1223,10 +1233,7 @@ def _package_json(path: Path, text: str, lines: list[str]) -> list[Fact]:
 def _pnpm_workspace(path: Path, text: str, lines: list[str]) -> list[Fact]:
     """pnpm catalogs: versions declared once for the workspace, referenced from
     package.json as `"openai": "catalog:"`."""
-    try:
-        data = yaml.safe_load(text)
-    except yaml.YAMLError:
-        return []
+    data = _yaml(text)
     if not isinstance(data, dict):
         return []
     names = list(data.get("catalog") or {})
@@ -1248,10 +1255,7 @@ def _composer_json(path: Path, text: str, lines: list[str]) -> list[Fact]:
 
 
 def _pubspec(path: Path, text: str, lines: list[str]) -> list[Fact]:
-    try:
-        data = yaml.safe_load(text)
-    except yaml.YAMLError:
-        return []
+    data = _yaml(text)
     if not isinstance(data, dict):
         return []
     names = [n for s in ("dependencies", "dev_dependencies") for n in (data.get(s) or {})]
@@ -1295,7 +1299,7 @@ def _go_mod(path: Path, text: str, lines: list[str]) -> list[Fact]:
 def _cargo_toml(path: Path, text: str, lines: list[str]) -> list[Fact]:
     try:
         data = tomllib.loads(text)
-    except tomllib.TOMLDecodeError:
+    except (tomllib.TOMLDecodeError, RecursionError):
         return []
     tables = [data.get(k) for k in ("dependencies", "dev-dependencies", "build-dependencies")]
     tables.append((data.get("workspace") or {}).get("dependencies"))

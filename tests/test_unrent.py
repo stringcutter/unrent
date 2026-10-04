@@ -1285,6 +1285,27 @@ def test_python_syntax_warnings_stay_quiet(tmp_path, catalog, capsys):
     assert "SyntaxWarning" not in capsys.readouterr().err
 
 
+@pytest.mark.parametrize(
+    ("name", "body"),
+    [
+        ("environment.yml", "created: 2020-13-45\ndependencies: [anthropic]\n"),
+        ("pnpm-workspace.yaml", "catalog: {x: !!timestamp foo}\n"),
+        ("pubspec.yaml", "flag: !!bool maybe\n"),
+        ("environment.yaml", "[" * 100_000),
+        ("pyproject.toml", "a = " + "[" * 100_000),
+        ("package.json", "[" * 200_000),
+        ("notebook.ipynb", "[" * 200_000),
+        ("app.py", "x = " + "-" * 100_000 + "1\n"),
+    ],
+    ids=lambda v: v if len(v) < 40 else f"{v[:8]}...",
+)
+def test_files_that_break_their_parser_are_skipped(tmp_path, catalog, name, body):
+    """A scanned file is untrusted: one the parser chokes on is skipped like any
+    unparseable file, and the scan still reports the rest of the repo."""
+    write(tmp_path, {name: body, "requirements.txt": "openai\n"})
+    assert "openai" in deps(tmp_path, catalog)
+
+
 def test_ripgrep_reads_only_the_scanned_files(tmp_path, catalog, search_mode):
     write(tmp_path, {".gitignore": "cache/\n", "src/a.py": "import anthropic\n"})
     for i in range(50):
@@ -1300,6 +1321,25 @@ def test_bad_rankings_snapshot_is_a_clear_error(tmp_path, capsys):
     (cat / "rankings.json").write_text("{not json", encoding="utf-8")
     assert main(["catalog", "--validate", "--catalog", str(cat)]) == 2
     assert "rankings.json" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize(
+    ("file", "edit"),
+    [
+        ("services/zz.yaml", lambda _: "- {id: x, name: X, category: Y, replace_with: [p], detect: [a]}"),
+        ("services/zz.yaml", lambda _: "- {id: x, added: 2020-13-45}\n"),
+        # A project that is not a mapping, listed in a pool so it gets that far.
+        ("alternatives.yaml", lambda t: t.replace("  facebookresearch/faiss:\n", "  facebookresearch/faiss: 3\n  x/faiss:\n")),
+        ("rankings.json", lambda _: '{"pools": [1]}'),
+    ],
+)  # fmt: skip
+def test_malformed_catalog_is_a_clear_error(tmp_path, capsys, file, edit):
+    cat = tmp_path / "cat"
+    shutil.copytree(CATALOG_DIR, cat)
+    target = cat / file
+    target.write_text(edit(target.read_text("utf-8") if target.is_file() else ""), "utf-8")
+    assert main(["catalog", "--validate", "--catalog", str(cat)]) == 2
+    assert "unrent: catalog error:" in capsys.readouterr().err
 
 
 # --- acceptance test findings: precision -----------------------------------------------
@@ -2381,6 +2421,10 @@ def test_why_and_as_of_on_the_command_line(tmp_path, capsys):
         (
             "vendors:\n  x:\n    url: u\n    services: [openai]\n    models:\n      gpt-9: {retires: soon}\n",
             "needs a `retires` date",
+        ),
+        (
+            "vendors:\n  x:\n    url: u\n    services: [openai]\n    models:\n      gpt-9: {retires: 2020-13-45}\n",
+            "retirements.yaml: month must be in 1..12",
         ),
         (
             "vendors:\n  a:\n    url: u\n    services: [openai]\n    models:\n      m: {retires: 2026-01-01, replacement: null}\n"

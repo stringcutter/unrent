@@ -200,10 +200,11 @@ _UniqueKeyLoader.add_constructor(
 
 
 def _load_yaml(path: Path):
-    """YAML, with parse errors naming the file rather than `<unicode string>`."""
+    """YAML, with parse errors naming the file rather than `<unicode string>`. PyYAML
+    raises ValueError for a date like `2020-13-45`."""
     try:
         return yaml.load(path.read_text("utf-8"), Loader=_UniqueKeyLoader)
-    except yaml.YAMLError as exc:
+    except (yaml.YAMLError, ValueError) as exc:
         raise CatalogError(f"{path.name}: {exc}") from exc
 
 
@@ -381,7 +382,17 @@ def _parse_service(raw: dict, where: Path, pools: dict[str, Pool]) -> Service:
 
 def load_catalog(path: Path, rankings: dict | None = None) -> Catalog:
     """Load a catalog directory: services/*.yaml, alternatives.yaml, rankings.json.
-    `rankings` replaces the directory's rankings.json (a newer snapshot fetched online)."""
+    `rankings` replaces the directory's rankings.json (a newer snapshot fetched online).
+    Anything the checks below miss (a list where a mapping belongs) is a CatalogError too."""
+    try:
+        return _load_catalog(path, rankings)
+    except CatalogError:
+        raise
+    except (AttributeError, KeyError, TypeError, ValueError) as exc:
+        raise CatalogError(f"{path}: malformed catalog ({type(exc).__name__}: {exc})") from exc
+
+
+def _load_catalog(path: Path, rankings: dict | None) -> Catalog:
     services_dir = path / "services"
     files = sorted(services_dir.glob("*.yaml")) if services_dir.is_dir() else []
     if not files:
