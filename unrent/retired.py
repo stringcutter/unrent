@@ -128,8 +128,6 @@ def snaps(findings: list[Finding], catalog: Catalog, root: Path) -> list[Snap]:
     """Every retiring id outside tests in findings of the vendor's own services, oldest
     retirement first. Those with `sites` are snapped or snapping; the rest are only
     named (menus, tables, checks, sample data)."""
-    if not catalog.retirements:
-        return []
     found: dict[str, Snap] = {}
     for f in findings:
         for fact in f.facts:

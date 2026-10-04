@@ -3,7 +3,7 @@
 
 Clones every repo in corpus.yaml at its pinned commit (cached), runs `unrent scan
 --format json` on it, and compares what it found with the hand-labelled truth, on
-two sides:
+three sides:
 
   closed       the closed services in the report's `found` list, against `expected`
   open source  the projects in the report's `open_source` list (by `repo`), against
@@ -12,7 +12,7 @@ two sides:
                `open_source_expected` list (possibly empty) are scored on this side.
   models       the ids in the report's `models_retiring` list, against `selects` /
                `uncertain` in corpus_models.yaml (MODEL_TRUTH_RULES.md), counting
-               only the ids that file says were labelled. `--side all` adds it.
+               only the ids that file says were labelled.
 
 The repos come from corpus.yaml and corpus_oss.yaml. A file's `open_source:` mapping
 (repo name -> the open_source_* keys) is merged into the repo of that name, so open
@@ -28,7 +28,7 @@ Ids listed as `uncertain` in the corpus are reported but scored two ways:
 Usage:
   python run_eval.py                          # all repos
   python run_eval.py --only openai__openai-quickstart-python
-  python run_eval.py --side all --gate        # CI: lenient scores against FLOORS
+  python run_eval.py --gate                   # CI: lenient scores against FLOORS
 
 Needs git and PyYAML. unrent runs from this checkout, so no install is needed.
 """
@@ -203,9 +203,9 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument(
         "--side",
-        choices=("closed", "oss", "models", "both", "all"),
-        default="both",
-        help="what to score: both is closed and oss, all adds models",
+        choices=("closed", "oss", "models", "all"),
+        default="all",
+        help="what to score (default: all)",
     )
     ap.add_argument(
         "--cache",
@@ -247,13 +247,13 @@ def main(argv: list[str] | None = None) -> int:
             )
 
     ok = True
-    if args.side in ("closed", "both", "all"):
+    if args.side in ("closed", "all"):
         closed = [s for s in results if s is not None]
         p, r = print_side(
             "closed services", "service", closed, repo_by_name, "evidence", args.quiet
         )
         ok &= not args.gate or gate("closed", p, r)
-    if args.side in ("oss", "both", "all"):
+    if args.side in ("oss", "all"):
         oss = [s for s in oss_results if s is not None]
         if oss:
             p, r = print_side(

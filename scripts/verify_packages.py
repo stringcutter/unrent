@@ -49,16 +49,9 @@ PACKAGE_KINDS = (
 
 
 def get(url: str, accept: str = "application/json", tries: int = 3, headers=None):
+    headers = {"User-Agent": UA, "Accept": accept, "Accept-Encoding": "gzip", **(headers or {})}
+    req = urllib.request.Request(url, headers=headers)
     for i in range(tries):
-        req = urllib.request.Request(
-            url,
-            headers={
-                "User-Agent": UA,
-                "Accept": accept,
-                "Accept-Encoding": "gzip",
-                **(headers or {}),
-            },
-        )
         try:
             with urllib.request.urlopen(req, timeout=30) as r:
                 data = r.read()
