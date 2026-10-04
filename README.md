@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/stringcutter/unrent/raw/main/docs/wordmark-on-dark.svg?v=2">
-  <img alt="unrent" src="https://github.com/stringcutter/unrent/raw/main/docs/wordmark.svg?v=2" width="320">
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/stringcutter/unrent/raw/main/docs/wordmark-on-dark.svg?v=3">
+  <img alt="unrent" src="https://github.com/stringcutter/unrent/raw/main/docs/wordmark.svg?v=3" width="320">
 </picture>
 
 
@@ -22,7 +22,7 @@ which models are about to stop working.**
 uvx unrent .
 ```
 
-![unrent my-app: 3 strings attached, 3 can be cut, 1 will snap. Rows for OpenAI API, Pinecone and ElevenLabs marked cut with their open source replacements, gpt-4-turbo marked snaps with its retirement date and replacement, and faiss marked runs with its rank](https://github.com/stringcutter/unrent/raw/main/docs/scan.svg?v=2)
+![unrent my-app: 3 strings attached, 3 can be cut, 1 will snap. Rows for OpenAI API, Pinecone and ElevenLabs marked cut with their open source replacements, gpt-4-turbo marked snaps with its retirement date and replacement, and faiss marked runs with its rank](https://github.com/stringcutter/unrent/raw/main/docs/scan.svg?v=3)
 
 ## What each row means
 
@@ -36,7 +36,7 @@ uvx unrent .
 
 Every row points to a file and line. `--why` shows all of them, and what to use instead:
 
-![unrent my-app --why gpt-4-turbo: main.py line 9 selects gpt-4-turbo, which retires on 2026-10-23; openai recommends gpt-5.6-sol, with the link to OpenAI's deprecations page](https://github.com/stringcutter/unrent/raw/main/docs/why-model.svg?v=2)
+![unrent my-app --why gpt-4-turbo: main.py line 9 selects gpt-4-turbo, which retires on 2026-10-23; openai recommends gpt-5.6-sol, with the link to OpenAI's deprecations page](https://github.com/stringcutter/unrent/raw/main/docs/why-model.svg?v=3)
 
 > [!NOTE]
 > unrent runs on your machine. No account, no upload, no telemetry.
