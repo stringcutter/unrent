@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"  # tomllib
 license = "Apache-2.0"
 license-files = ["LICENSE"]
-authors = [{ name = "Niklas Mellgren" }]
+authors = [{ name = "stringcutter" }]
 keywords = [
     "ai", "llm", "vendor-lock-in", "open-source", "alternatives", "dependency-scanner",
     "openai", "static-analysis", "cli", "model-deprecation", "mcp",
