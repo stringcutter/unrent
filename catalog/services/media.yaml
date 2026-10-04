@@ -383,6 +383,7 @@
 - id: inworld-tts
   name: Inworld TTS / Runtime
   category: Text-to-speech
+  excludes: [openai]
   replace_with: [text-to-speech, voice-agent]
   detect:
     npm: ["@inworld/runtime", "@mastra/voice-inworld"]
@@ -423,6 +424,7 @@
 - id: recraft
   name: Recraft API
   category: Image generation
+  excludes: [openai]
   replace_with: [image-generation]
   detect:
     model: [recraftv3, recraftv2]
@@ -432,6 +434,7 @@
 - id: modelslab
   name: ModelsLab
   category: Image generation
+  excludes: [openai]
   replace_with: [image-generation]
   detect:
     requirement: [modelslab, modelslab-py, llama-index-llms-modelslab]

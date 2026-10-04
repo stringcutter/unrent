@@ -143,7 +143,18 @@
     requirement: [turbopuffer, langchain-turbopuffer]
     npm: ["@turbopuffer/turbopuffer", "@mastra/turbopuffer"]
     python_import: [turbopuffer, langchain_turbopuffer]
-    endpoint: [turbopuffer.com]
+    # The regional API hosts (turbopuffer.com/docs/regions). The bare host is also the
+    # website and docs, which the SDK's own docstrings link to.
+    endpoint: [aws-ap-south-1.turbopuffer.com, aws-ap-southeast-2.turbopuffer.com,
+               aws-ca-central-1.turbopuffer.com, aws-eu-central-1.turbopuffer.com,
+               aws-eu-west-1.turbopuffer.com, aws-eu-west-2.turbopuffer.com,
+               aws-sa-east-1.turbopuffer.com, aws-us-east-1.turbopuffer.com,
+               aws-us-east-2.turbopuffer.com, aws-us-west-2.turbopuffer.com,
+               azure-eastus2.turbopuffer.com, gcp-asia-northeast3.turbopuffer.com,
+               gcp-asia-southeast1.turbopuffer.com, gcp-europe-west1.turbopuffer.com,
+               gcp-europe-west3.turbopuffer.com, gcp-northamerica-northeast2.turbopuffer.com,
+               gcp-us-central1.turbopuffer.com, gcp-us-east1.turbopuffer.com,
+               gcp-us-east4.turbopuffer.com, gcp-us-west1.turbopuffer.com]
     env: [TURBOPUFFER_API_KEY]
 
 - id: astra-db
@@ -397,6 +408,7 @@
 - id: mixedbread-api
   name: Mixedbread API
   category: Embeddings
+  excludes: [openai]
   replace_with: [embedding-model, embedding-serving, reranker]
   detect:
     requirement: [mixedbread]

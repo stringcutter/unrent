@@ -168,10 +168,32 @@ class Catalog:
         return sorted({s.category for s in self.services})
 
 
+class _UniqueKeyLoader(yaml.SafeLoader):
+    """SafeLoader that refuses a key given twice in one mapping. PyYAML keeps the last
+    one silently, so a second `endpoint:` in a service drops the first one's needles."""
+
+
+def _construct_unique_mapping(loader: _UniqueKeyLoader, node: yaml.MappingNode, deep=False):
+    keys = set()
+    for key_node, _ in node.value:
+        key = loader.construct_object(key_node, deep=deep)
+        if key in keys:
+            raise yaml.constructor.ConstructorError(
+                None, None, f"duplicate key '{key}'", key_node.start_mark
+            )
+        keys.add(key)
+    return loader.construct_mapping(node, deep=deep)
+
+
+_UniqueKeyLoader.add_constructor(
+    yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _construct_unique_mapping
+)
+
+
 def _load_yaml(path: Path):
     """YAML, with parse errors naming the file rather than `<unicode string>`."""
     try:
-        return yaml.safe_load(path.read_text("utf-8"))
+        return yaml.load(path.read_text("utf-8"), Loader=_UniqueKeyLoader)
     except yaml.YAMLError as exc:
         raise CatalogError(f"{path.name}: {exc}") from exc
 

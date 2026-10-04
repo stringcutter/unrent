@@ -695,6 +695,7 @@
 - id: snowflake-cortex
   name: Snowflake Cortex AI
   category: LLM API
+  excludes: [openai, anthropic]
   # Snowflake's Arctic embedding models are Apache-2.0 weights anyone can run.
   open_models: [arctic-embed]
   replace_with: [open-llm, llm-serving]
@@ -703,20 +704,23 @@
     python_import: [snowflake.cortex, langchain_snowflake, llama_index.llms.cortex]
     symbol: [ChatSnowflake, ChatSnowflakeCortex, SNOWFLAKE.CORTEX., "AI_COMPLETE("]
     model: [snowflake/, "snowflake:"]
+    # With a path: every Snowflake account is a subdomain of the bare host. The
+    # OpenAI and Anthropic SDKs are pointed at /api/v2/cortex (cortex-rest-api docs).
+    endpoint: [snowflakecomputing.com/api/v2/cortex]
 
 - id: oci-generative-ai
   name: Oracle OCI Generative AI
   category: LLM API
+  excludes: [openai]
   replace_with: [open-llm, llm-serving]
   detect:
     requirement: [langchain-oci, llama-index-llms-oci-genai]
     maven: ["dev.langchain4j:langchain4j-community-oci-genai"]
     python_import: [langchain_oci, llama_index.llms.oci_genai, oci.generative_ai_inference]
     symbol: [ChatOCIGenAI, OCIGenAIEmbeddings, GenerativeAiInferenceClient]
-    endpoint: [inference.generativeai]
+    endpoint: [inference.generativeai.]
     env: [OCI_GENAI_API_KEY]
     model: [oci/]
-    endpoint: [inference.generativeai.]
 
 - id: ai21
   name: AI21 Labs API
@@ -945,6 +949,7 @@
 - id: reka
   name: Reka API
   category: LLM API
+  excludes: [openai]
   replace_with: [open-llm, llm-serving]
   detect:
     requirement: [reka-api]
@@ -1129,6 +1134,7 @@
 - id: asksage
   name: Ask Sage
   category: LLM API
+  excludes: [openai]
   replace_with: [open-llm, llm-serving]
   detect:
     endpoint: [api.asksage.ai]

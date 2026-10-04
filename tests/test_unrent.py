@@ -1499,6 +1499,76 @@ def test_catalog_rejects_unquoted_commas_in_descriptions(tmp_path):
         load_catalog(cat)
 
 
+def test_catalog_rejects_a_key_given_twice(tmp_path):
+    import shutil as sh
+
+    from unrent.catalog import CatalogError
+
+    cat = tmp_path / "cat"
+    sh.copytree(CATALOG_DIR, cat)
+    text = (cat / "services" / "llm.yaml").read_text(encoding="utf-8")
+    text = text.replace(
+        "    endpoint: [api.reka.ai]\n",
+        "    endpoint: [api.reka.ai]\n    endpoint: [reka.ai/v1]\n",
+    )
+    (cat / "services" / "llm.yaml").write_text(text, encoding="utf-8")
+    with pytest.raises(CatalogError, match=r"llm\.yaml: .*duplicate key 'endpoint'"):
+        load_catalog(cat)
+
+
+# The vendors' own examples point the OpenAI (or Anthropic) SDK at their host
+# (2026-10-04 review of the catalog against current docs).
+SDK_POINTED_AT_VENDOR = [
+    ("reka", "openai", 'base_url="https://api.reka.ai/v1"'),
+    ("asksage", "openai", 'base_url="https://api.asksage.ai/server/openai/v1"'),
+    ("inworld-tts", "openai", 'base_url="https://api.inworld.ai/v1"'),
+    ("mixedbread-api", "openai", 'base_url="https://api.mixedbread.com/v1"'),
+    (
+        "oci-generative-ai",
+        "openai",
+        'base_url="https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/openai/v1"',
+    ),
+    ("modelslab", "openai", 'base_url="https://modelslab.com/api/v7/llm"'),
+    ("recraft", "openai", 'base_url="https://external.api.recraft.ai/v1"'),
+    (
+        "snowflake-cortex",
+        "openai",
+        'base_url="https://myorg-myaccount.snowflakecomputing.com/api/v2/cortex/v1"',
+    ),
+    (
+        "snowflake-cortex",
+        "anthropic",
+        'base_url="https://myorg-myaccount.snowflakecomputing.com/api/v2/cortex"',
+    ),
+]
+
+
+@pytest.mark.parametrize("service,sdk,base_url", SDK_POINTED_AT_VENDOR)
+def test_sdk_pointed_at_a_vendor_is_that_vendor(tmp_path, catalog, service, sdk, base_url):
+    client = "OpenAI" if sdk == "openai" else "Anthropic"
+    write(tmp_path, {
+        "requirements.txt": f"{sdk}\n",
+        "client.py": f"from {sdk} import {client}\n\n"
+        f'client = {client}(api_key=os.environ["API_KEY"], {base_url})\n',
+    })  # fmt: skip
+    hits = deps(tmp_path, catalog)
+    assert service in hits and sdk not in hits
+
+
+def test_turbopuffer_regional_host_but_not_its_website(tmp_path, catalog):
+    api, docs = tmp_path / "api", tmp_path / "docs"
+    write(api, {
+        "upsert.py": "import requests\n\n"
+        'URL = "https://gcp-us-central1.turbopuffer.com/v2/namespaces/docs"\n'
+        "requests.post(URL, json=rows)\n",
+    })  # fmt: skip
+    write(docs, {
+        "stores.py": 'VECTOR_DBS = {"turbopuffer": "https://turbopuffer.com/docs/quickstart"}\n',
+    })  # fmt: skip
+    assert "turbopuffer" in deps(api, catalog)
+    assert "turbopuffer" not in found(docs, catalog)
+
+
 # --- catalog gaps from real repos ------------------------------------------------------
 
 
