@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/stringcutter/unrent/raw/main/docs/unrent-on-dark.png">
-  <img alt="unrent" src="https://github.com/stringcutter/unrent/raw/main/docs/unrent.png" width="320">
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/stringcutter/unrent/raw/main/docs/unrent-on-dark.svg">
+  <img alt="unrent" src="https://github.com/stringcutter/unrent/raw/main/docs/unrent.svg" width="320">
 </picture>
 
 
