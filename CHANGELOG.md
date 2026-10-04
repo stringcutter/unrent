@@ -8,6 +8,15 @@ each release ships the rankings as of its date.
 ## [Unreleased]
 
 ### Added
+- A terminal view, the default when the output is a terminal: one row per service,
+  `cut` (an open source replacement exists), `held` (none yet) or `runs` (open source in
+  use, with its rank), with its strongest location and a count of the rest. Columns stack
+  on narrow terminals; colour follows `NO_COLOR` and `FORCE_COLOR`. A pipe or `-o` still
+  gets the Markdown report. `--format terminal|markdown|json|auto` and `-f`.
+- `--why SERVICE`: every location behind one service or open source component, and its
+  ranked alternatives or standing.
+- `unrent <path>` as short for `unrent scan <path>`, and a status line on stderr while
+  a terminal scan runs.
 - `unknown_candidates` in every scan (JSON, Markdown and MCP): API hosts and keys that
   no catalog entry explains and that look like a hosted AI API, grouped by domain with
   their key (`TYPESAFE_API_KEY` with `api.typesafe.ai`). A generated provider catalog
@@ -53,6 +62,8 @@ each release ships the rankings as of its date.
 - `unrent/report.py` is now `unrent/render.py`.
 
 ### Fixed
+- A TOML dependency is cited at its own line (`llama-index = "0.9.7"`), not at a
+  `keywords` entry higher up that names the same package.
 - ripgrep only reads the files the scan covers: a repo with gigabytes of ignored data
   went from 99 s to about 1 s.
 - Notebooks: source lists joined correctly, non-Python kernels read with their own

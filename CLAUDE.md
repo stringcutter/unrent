@@ -21,6 +21,7 @@ writes in Danish; answer in the language of their latest message.
 | `unrent/detect.py` | Facts from files (manifests, imports, code views without comments), matching against the catalog, overlap rules (`excludes`, `part_of`, models-only) |
 | `unrent/discover.py` | `unknown_candidates`: API hosts and keys no catalog entry explains that look like a hosted AI API. Never counted as findings |
 | `unrent/render.py` | JSON payload and Markdown report (`report.py` is the old name; don't recreate it) |
+| `unrent/terminal.py` | The terminal view (`cut`/`held`/`runs` rows), `--why`, colour and the progress line; stdlib only |
 | `unrent/server.py` | `unrent mcp`: tools `scan`, `alternatives`, `standing`, `catalog` |
 | `unrent/fresh.py` | Live rankings from `catalog/rankings.json` on `main`, cached 6 h, else the shipped snapshot |
 | `catalog/services/*.yaml` | Closed services. `models-dev.yaml` is **generated**; the others are hand-written |

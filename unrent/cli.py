@@ -4,6 +4,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import shlex
+import shutil
+import subprocess
 import sys
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
@@ -14,6 +18,7 @@ from .catalog import CatalogError, load_catalog
 from .detect import collect_facts, match
 from .discover import scan_unknown
 from .render import to_json, to_markdown
+from .terminal import Progress, to_terminal, wants_colour, why
 
 
 def _default_catalog() -> Path:
@@ -55,9 +60,17 @@ def build_parser() -> argparse.ArgumentParser:
     scan.add_argument("path", nargs="?", default=".", help="directory to scan (default: .)")
     scan.add_argument(
         "--format",
-        choices=("markdown", "json"),
-        default="markdown",
-        help="markdown report (default) or JSON with every finding and alternative",
+        "-f",
+        choices=("auto", "terminal", "markdown", "json"),
+        default="auto",
+        help="auto (default): the terminal view on a terminal, the Markdown report in a "
+        "pipe or file; json has every finding and alternative",
+    )
+    scan.add_argument(
+        "--why",
+        metavar="SERVICE",
+        help="every location behind one service or open source component, by id or name, "
+        "and what replaces it",
     )
     scan.add_argument("--output", "-o", type=Path, help="write to a file instead of stdout")
     scan.add_argument(
@@ -79,7 +92,7 @@ def build_parser() -> argparse.ArgumentParser:
         type=_positive,
         default=3,
         metavar="N",
-        help="alternatives listed per kind in markdown (default: 3)",
+        help="alternatives listed per kind in markdown and --why (default: 3)",
     )
     scan.add_argument("--catalog", type=Path, default=DEFAULT_CATALOG, help=argparse.SUPPRESS)
 
@@ -107,6 +120,11 @@ def _output_problem(output: Path) -> str | None:
     return None
 
 
+def _quote(arg: str) -> str:
+    """As the user's shell would want it in a hint they copy."""
+    return subprocess.list2cmdline([arg]) if os.name == "nt" else shlex.quote(arg)
+
+
 def cmd_scan(args) -> int:
     root = Path(args.path).resolve()
     if not root.is_dir():
@@ -122,13 +140,50 @@ def cmd_scan(args) -> int:
         if target.is_relative_to(root):
             # Never scan the report we are about to write (or wrote last time).
             exclude.append("/" + target.relative_to(root).as_posix())
+    fmt = args.format
+    if args.why and fmt in ("markdown", "json"):
+        print(f"unrent: --why prints text; drop --format {fmt}", file=sys.stderr)
+        return 2
+    if fmt == "auto":
+        fmt = "terminal" if not args.output and sys.stdout.isatty() else "markdown"
     catalog = load_catalog(args.catalog)
     skipped: list[Path] = []
-    facts = collect_facts(root, catalog, exclude, skipped, skip_tests=args.skip_tests)
-    findings = match(facts, catalog)
-    unknown = scan_unknown(root, catalog, exclude, skip_tests=args.skip_tests)
-    if args.format == "json":
+    unknown: list[dict] = []
+    progress = Progress(enabled=None if fmt == "terminal" or args.why else False)
+    try:
+        facts = collect_facts(
+            root, catalog, exclude, skipped, skip_tests=args.skip_tests, progress=progress.files
+        )
+        findings = match(facts, catalog)
+        if not args.why:
+            progress.show("looking for AI APIs the catalog does not know")
+            unknown = scan_unknown(root, catalog, exclude, skip_tests=args.skip_tests)
+    finally:
+        progress.done()
+    colour = wants_colour(sys.stdout) and not args.output
+    if args.why:
+        wanted = args.why.lower()
+        hit = next(
+            (f for f in findings if wanted in (f.service.id.lower(), f.service.name.lower())), None
+        )
+        if hit is None:
+            ids = ", ".join(f.service.id for f in findings) or "none"
+            print(f"unrent: {args.why} is not among what was found ({ids})", file=sys.stderr)
+            return 2
+        text = why(hit, root, catalog, top=args.top, colour=colour)
+    elif fmt == "json":
         text = to_json(findings, root, catalog, skipped, unknown)
+    elif fmt == "terminal":
+        text = to_terminal(
+            findings,
+            root,
+            catalog,
+            command=f"unrent {_quote(args.path)}",
+            width=shutil.get_terminal_size((100, 24)).columns,
+            colour=colour,
+            skipped=skipped,
+            unknown=unknown,
+        )
     else:
         text = to_markdown(findings, root, catalog, top=args.top, skipped=skipped, unknown=unknown)
     if args.output:
@@ -183,6 +238,10 @@ def main(argv: list[str] | None = None) -> int:
         if hasattr(stream, "reconfigure"):
             stream.reconfigure(encoding="utf-8", errors="replace")
     parser = build_parser()
+    argv = sys.argv[1:] if argv is None else list(argv)
+    # `unrent .` is `unrent scan .`: anything that is not a command or a top-level flag.
+    if argv and argv[0] not in ("scan", "catalog", "mcp", "-h", "--help", "--version"):
+        argv.insert(0, "scan")
     args = parser.parse_args(argv)
     if args.command is None:
         parser.print_help(sys.stderr)

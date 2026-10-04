@@ -9,33 +9,25 @@ Find the rented parts of your AI stack. Swap them for open source.
 The CLI runs offline. No account. No upload. No telemetry.
 
 ```
-$ unrent scan my-app/
+$ unrent my-app
 
-Found 4 closed AI services, and 1 open source component already in use.
+3 strings attached. 3 can be cut.
+my-app · alternatives ranked 2026-09-28
 
-| Closed service | Category        | Replace with                                         |
-|----------------|-----------------|------------------------------------------------------|
-| OpenAI API     | LLM API         | Open-weight LLM: XiaomiMiMo/MiMo-V2.6-Pro-RL         |
-|                |                 | Inference server: ollama/ollama                      |
-| Pinecone       | Vector database | Vector database: milvus-io/milvus                    |
-| ...            |                 |                                                      |
+╎ cut   OpenAI API  requirements.txt:1  +3  ollama/ollama + MiMo-V2.6-Pro-RL
+╎ cut   Pinecone    requirements.txt:2  +3  milvus-io/milvus
+╎ cut   ElevenLabs  requirements.txt:4  +2  microsoft/VibeVoice + openai/whisper
 
-### OpenAI API
-- requirements.txt:1  openai>=1
-- main.py:1           from openai import OpenAI
-- main.py:5           client = OpenAI()
-- .env.example:1      OPENAI_API_KEY=****
+│ runs  faiss       requirements.txt:3      #2 of 8 · Vector database
 
-## Open source you already run
-
-### facebookresearch/faiss (library and embedded)
-Found at requirements.txt:3 — faiss-cpu
-- Vector database: #2 of 8, #1 of 3 of its kind (★ 41.0k). Ranked above it:
-  - milvus-io/milvus — server, ★ 46.3k
+  unrent my-app --why openai  every line behind one string
+  unrent my-app -o unrent.md  the full report, every alternative ranked
 ```
 
-Real output, trimmed and with links stripped. The full report is Markdown and pastes
-straight into an issue or PR.
+Real output. One row per service, with its strongest location and how many more there
+are; `cut` has an open source replacement (the top of each ranking), `held` has none
+yet, `runs` is open source already in use and where it ranks. In a pipe or a file the
+same scan is a Markdown report that pastes straight into an issue or PR.
 
 ## Install
 
@@ -59,13 +51,17 @@ results either way.
 ## Use
 
 ```bash
-unrent scan .                          # markdown report
-unrent scan . --format json -o r.json  # everything, machine-readable
-unrent scan . --top 5                  # more alternatives per kind
-unrent scan . --skip-tests             # ignore test, spec and fixture code
-unrent scan . --exclude "examples/"    # .gitignore syntax; or a .unrentignore file
+unrent .                               # the terminal view; Markdown in a pipe or file
+unrent . --why openai                  # every location of one service, and what replaces it
+unrent . -o report.md                  # the Markdown report
+unrent . --format json -o r.json       # everything, machine-readable
+unrent . --top 5                       # more alternatives per kind
+unrent . --skip-tests                  # ignore test, spec and fixture code
+unrent . --exclude "examples/"         # .gitignore syntax; or a .unrentignore file
 unrent catalog                         # what it knows
 ```
+
+`unrent .` is short for `unrent scan .`. Colour follows `NO_COLOR` and `FORCE_COLOR`.
 
 On Windows PowerShell, write reports with `-o`, not `>`. The redirect re-encodes the
 file.

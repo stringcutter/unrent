@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 import importlib.util
 import json
 import os
@@ -19,6 +20,7 @@ from unrent.catalog import OPEN_LICENCES, OPEN_MODEL_LICENCES, load_catalog  # n
 from unrent.cli import main  # noqa: E402
 from unrent.detect import collect_facts, image_name, js_package, match, redact  # noqa: E402
 from unrent.render import standings, to_json, to_markdown  # noqa: E402
+from unrent.terminal import Progress, to_terminal, wants_colour, why  # noqa: E402
 
 CATALOG_DIR = ROOT / "catalog"
 
@@ -2083,3 +2085,152 @@ def test_typesafe_jev(tmp_path, catalog):
     # `typesafe` on PyPI is an unrelated decorator library
     write(tmp_path / "other", {"requirements.txt": "typesafe==0.9.1\n"})
     assert "typesafe" not in deps(tmp_path / "other", catalog)
+
+
+# ---------------------------------------------------------------- terminal view
+
+
+TIED = {
+    "requirements.txt": "openai>=1\npinecone\nfaiss-cpu\n",
+    ".env.example": "OPENAI_API_KEY=\n",
+    "app.py": 'import openai\nBASE = "https://api.openai.com/v1"\n',
+}
+
+
+def terminal(root: Path, catalog, **kw) -> str:
+    return to_terminal(match(collect_facts(root, catalog), catalog), root, catalog, **kw)
+
+
+def test_terminal_counts_one_string_per_service(tmp_path, catalog):
+    # The package, the key and the host are one dependency on OpenAI, not three.
+    text = terminal(write(tmp_path, TIED), catalog)
+    assert "2 strings attached. 2 can be cut." in text
+    openai = next(ln for ln in text.splitlines() if "OpenAI API" in ln)
+    assert openai.startswith("╎ cut") and "requirements.txt:1" in openai and "+" in openai
+    assert next(ln for ln in text.splitlines() if "faiss" in ln).startswith("│ runs")
+    assert "--why openai" in text  # the hint names the top row
+
+
+def test_terminal_holds_a_service_with_no_open_match(tmp_path, catalog):
+    empty = dataclasses.replace(
+        catalog,
+        pools={k: dataclasses.replace(p, alternatives=()) for k, p in catalog.pools.items()},
+    )
+    text = terminal(write(tmp_path, {"a.py": "import anthropic\n"}), empty)
+    assert "1 string attached." in text and "can be cut" not in text
+    assert "│ held" in text and "no open match yet" in text
+
+
+def test_terminal_with_nothing_found(tmp_path, catalog):
+    text = terminal(write(tmp_path, {"a.py": "print(1)\n"}), catalog)
+    assert "No strings attached." in text and "--why" not in text
+
+
+def test_terminal_stacks_rows_when_narrow(tmp_path, catalog):
+    write(tmp_path, TIED)
+    wide, narrow = terminal(tmp_path, catalog, width=200), terminal(tmp_path, catalog, width=50)
+    assert "→ " not in wide and "→ " in narrow
+    assert max(len(ln) for ln in narrow.splitlines() if "╎" in ln) <= 50
+
+
+def test_terminal_colour_only_when_asked(tmp_path, catalog):
+    write(tmp_path, TIED)
+    assert "\033[" not in terminal(tmp_path, catalog)
+    assert "\033[" in terminal(tmp_path, catalog, colour=True)
+
+
+class _Stream:
+    def __init__(self, tty: bool):
+        self.tty = tty
+
+    def isatty(self) -> bool:
+        return self.tty
+
+
+def test_colour_follows_no_color_and_force_color(monkeypatch):
+    for name in ("NO_COLOR", "FORCE_COLOR", "TERM"):
+        monkeypatch.delenv(name, raising=False)
+    assert not wants_colour(_Stream(False))
+    monkeypatch.setenv("FORCE_COLOR", "1")
+    assert wants_colour(_Stream(False))
+    monkeypatch.setenv("NO_COLOR", "1")
+    assert not wants_colour(_Stream(True))
+
+
+def test_progress_is_silent_off_a_terminal(capsys):
+    p = Progress()  # stderr is captured by pytest: not a terminal
+    p.files(3, 10)
+    p.done()
+    assert capsys.readouterr().err == ""
+
+
+def test_a_path_alone_scans_and_a_pipe_gets_markdown(tmp_path, capsys):
+    write(tmp_path, {"a.py": "import anthropic\n"})
+    assert main([str(tmp_path)]) == 0
+    out = capsys.readouterr().out
+    assert out.startswith("# AI dependencies") and "Anthropic API" in out
+    assert main([str(tmp_path), "-f", "terminal"]) == 0
+    assert "1 string attached." in capsys.readouterr().out
+
+
+def test_why_lists_every_location_of_one_string(tmp_path, capsys):
+    write(tmp_path, TIED)
+    assert main([str(tmp_path), "--why", "OpenAI API"]) == 0
+    out = capsys.readouterr().out
+    assert all(loc in out for loc in ("requirements.txt:1", ".env.example:1", "app.py:1"))
+    assert "Inference server" in out
+    assert main([str(tmp_path), "--why", "cohere"]) == 2
+    assert "not among what was found" in capsys.readouterr().err
+
+
+def test_toml_dependency_cited_at_its_key_not_its_keywords(tmp_path, catalog):
+    write(
+        tmp_path,
+        {
+            "pyproject.toml": '[tool.poetry]\nname = "x"\nkeywords = ["openai", "rag"]\n\n'
+            '[tool.poetry.dependencies]\npython = "^3.11"\nopenai = "^1.0"\n'
+        },
+    )
+    assert [(f.file.name, f.line) for f in found(tmp_path, catalog)["openai"]] == [
+        ("pyproject.toml", 7)
+    ]
+
+
+def test_why_strips_escape_sequences_from_scanned_lines(tmp_path, catalog):
+    write(
+        tmp_path, {"a.py": 'import anthropic\nc = anthropic.Anthropic(); t = "\x1b]0;pwned\x07"\n'}
+    )
+    f = next(
+        f for f in match(collect_facts(tmp_path, catalog), catalog) if f.service.id == "anthropic"
+    )
+    assert any("\x1b" in fact.evidence for fact in f.cited)  # the scan keeps the line as is
+    text = why(f, tmp_path, catalog)
+    assert "\x1b" not in text and "\x07" not in text and "pwned" in text
+
+
+def test_why_is_text_only(tmp_path, capsys):
+    write(tmp_path, {"a.py": "import anthropic\n"})
+    assert main([str(tmp_path), "-f", "json", "--why", "anthropic"]) == 2
+    assert "--why prints text" in capsys.readouterr().err
+
+
+def test_flags_before_the_path_still_scan(tmp_path, capsys):
+    write(tmp_path, {"a.py": "import anthropic\n"})
+    assert main(["-f", "json", str(tmp_path)]) == 0
+    assert json.loads(capsys.readouterr().out)["found"][0]["id"] == "anthropic"
+
+
+def test_key_line_only_for_table_keys(tmp_path, catalog):
+    # A `[tool.uv.sources]` entry or an extra named after the package is not where a
+    # PEP 621 dependency is declared.
+    write(
+        tmp_path,
+        {
+            "pyproject.toml": '[project]\nname = "x"\ndependencies = ["openai>=1", "anthropic>=0.3"]\n\n'
+            '[project.optional-dependencies]\nanthropic = ["tiktoken"]\n\n'
+            '[tool.uv.sources]\nopenai = { git = "https://github.com/openai/openai-python" }\n'
+        },
+    )
+    facts = found(tmp_path, catalog)
+    assert [f.line for f in facts["openai"]] == [3]
+    assert [f.line for f in facts["anthropic"]] == [3]

@@ -37,7 +37,7 @@ import tempfile
 import tokenize
 import tomllib
 import warnings
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from io import StringIO
 from pathlib import Path
@@ -1067,9 +1067,12 @@ def _requirements_txt(path: Path, text: str, lines: list[str]) -> list[Fact]:
     return facts
 
 
-def _specs_to_facts(specs: Iterable[str], path: Path, lines: list[str]) -> list[Fact]:
+def _specs_to_facts(
+    specs: Iterable[str], path: Path, lines: list[str], keyed: bool = False
+) -> list[Fact]:
     """Cite each spec where it is written: `"openai>=1"` as a quoted string, or
-    `openai = "*"` as a key — not the first line that happens to mention openai."""
+    `openai = "*"` as a key — not the first line that happens to mention openai.
+    `keyed`: the specs are table keys (Poetry, Pipfile), so the key line comes first."""
     facts = []
     for spec in specs:
         if not isinstance(spec, str):
@@ -1078,7 +1081,11 @@ def _specs_to_facts(specs: Iterable[str], path: Path, lines: list[str]) -> list[
         if not name:
             continue
         raw = (_REQ_NAME.match(spec.strip()) or re.match("(.*)", spec)).group(1)
-        n = _line_of(
+        # A table key first (`llama-index = "0.9.7"`): its quoted name may also sit in
+        # `keywords = ["llama-index"]` higher up.
+        key = re.compile(r"^\s*[\"']?" + re.escape(raw) + r"[\"']?\s*=", re.IGNORECASE)
+        at_key = (i for i, ln in enumerate(lines, start=1) if keyed and key.match(ln))
+        n = next(at_key, None) or _line_of(
             lines,
             f'"{spec}"', f"'{spec}'", f'"{raw}"', f"'{raw}'",
             f"{raw} =", f"{raw}=", f'"{raw}" =',
@@ -1110,14 +1117,15 @@ def _pyproject(path: Path, text: str, lines: list[str]) -> list[Fact]:
     poetry = tool.get("poetry") or {}
     tables = [poetry.get("dependencies"), poetry.get("dev-dependencies")]
     tables += [(group or {}).get("dependencies") for group in (poetry.get("group") or {}).values()]
+    keys: list[str] = []
     for table in tables:
         for name, spec in (table or {}).items():
             if name.lower() == "python":
                 continue
             # `qdrant-client = { extras = ["fastembed"] }`: the extras are packages too.
             extras = spec.get("extras") if isinstance(spec, dict) else None
-            specs.append(f"{name}[{','.join(extras)}]" if extras else name)
-    return _specs_to_facts(specs, path, lines)
+            keys.append(f"{name}[{','.join(extras)}]" if extras else name)
+    return _specs_to_facts(specs, path, lines) + _specs_to_facts(keys, path, lines, keyed=True)
 
 
 def _setup_py(path: Path, text: str, lines: list[str]) -> list[Fact]:
@@ -1163,7 +1171,7 @@ def _pipfile(path: Path, text: str, lines: list[str]) -> list[Fact]:
     except tomllib.TOMLDecodeError:
         return []
     names = list(data.get("packages") or {}) + list(data.get("dev-packages") or {})
-    return _specs_to_facts(names, path, lines)
+    return _specs_to_facts(names, path, lines, keyed=True)
 
 
 def _conda_env(path: Path, text: str, lines: list[str]) -> list[Fact]:
@@ -1667,14 +1675,20 @@ def collect_facts(
     exclude: Iterable[str] = (),
     skipped: list[Path] | None = None,
     skip_tests: bool = False,
+    progress: Callable[[int, int], None] | None = None,
 ) -> list[Fact]:
-    """Read every relevant file once and extract every fact the catalog could care about."""
+    """Read every relevant file once and extract every fact the catalog could care about.
+    `progress(done, total)` is called as files are read, for a status line."""
     needles = Needles(catalog)
     files = iter_files(root, exclude, skipped)
+    if progress:
+        progress(0, len(files))
     found = ripgrep_hits(root, needles, files)
     local = _local_modules(root, files)
     facts: list[Fact] = []
-    for path in files:
+    for done, path in enumerate(files, start=1):
+        if progress:
+            progress(done, len(files))
         rel = path.relative_to(root).as_posix()
         in_test = is_test_path(rel)
         if in_test and skip_tests:
