@@ -2,195 +2,142 @@
 
 *by [stringcutter](https://github.com/stringcutter)*
 
-Find the strings your AI code hangs by. Cut them before they snap.
-
-- **Closed AI services** the code calls, with file and line, and the open source that
-  replaces each one, ranked.
-- **Models that stop working**: model ids the code selects that their vendor has retired,
-  or will on an announced date, and the vendor's replacement.
-- **Open source AI** the code already runs, and where it ranks in its field.
-
-The CLI runs offline. No account. No upload. No telemetry.
-
-![unrent my-app: 3 strings attached, 3 can be cut, 1 will snap. Rows for OpenAI API, Pinecone and ElevenLabs marked cut with their open source replacements, gpt-4-turbo marked snaps with its retirement date and replacement, and faiss marked runs with its rank](https://github.com/stringcutter/unrent/raw/main/docs/terminal.svg)
-
-Real output. One row per string, with its strongest location and how many more there
-are:
-
-| | |
-|---|---|
-| `╎ cut` | A closed service with an open source replacement. The top of its ranking is on the row. |
-| `│ held` | A closed service with no open source replacement in the catalog yet. |
-| `┆ snapped` | A model id the code selects that its vendor has retired. Requests to it fail now. |
-| `┆ snaps` | The same, on the date shown. |
-| `│ runs` | Open source already in use, and where it ranks among its kind. |
-
-`--why` shows every line behind one row, and what replaces it:
-
-![unrent my-app --why gpt-4-turbo: main.py line 9 selects gpt-4-turbo, which retires on 2026-10-23; openai recommends gpt-5.6-sol, with the link to OpenAI's deprecations page](https://github.com/stringcutter/unrent/raw/main/docs/why.svg)
-
-In a pipe or a file the same scan is a Markdown report that pastes straight into an
-issue or PR.
-
-## Install
-
-```bash
-uv tool install unrent      # or: pipx install unrent
-unrent .
-```
-
-Or once, without installing:
+**See which AI services your code depends on, what open source can replace them, and
+which models are about to stop working.**
 
 ```bash
 uvx unrent .
 ```
 
-Python 3.11+. One dependency: PyYAML (the MCP server adds `mcp`). Large repos are read
-on every core. With [ripgrep](https://github.com/BurntSushi/ripgrep) on PATH it is about
-twice as fast again: 6 s for 5,500 files, 14 s for 14,000 (13 s and 26 s without, on 4
-cores). Same results either way.
+![unrent my-app: 3 strings attached, 3 can be cut, 1 will snap. Rows for OpenAI API, Pinecone and ElevenLabs marked cut with their open source replacements, gpt-4-turbo marked snaps with its retirement date and replacement, and faiss marked runs with its rank](https://github.com/stringcutter/unrent/raw/main/docs/terminal.svg)
+
+## What each row means
+
+| | |
+|---|---|
+| `╎ cut` | You use a closed AI service. The best open source replacement is on the row. |
+| `│ held` | You use a closed AI service with no open source replacement yet. |
+| `┆ snapped` | Your code asks for a model the vendor has shut down. Those calls fail today. |
+| `┆ snaps` | Your code asks for a model the vendor shuts down on the date shown. |
+| `│ runs` | Open source AI you already run, and how it ranks. |
+
+Every row points to a file and line. `--why` shows all of them, and what to use instead:
+
+![unrent my-app --why gpt-4-turbo: main.py line 9 selects gpt-4-turbo, which retires on 2026-10-23; openai recommends gpt-5.6-sol, with the link to OpenAI's deprecations page](https://github.com/stringcutter/unrent/raw/main/docs/why.svg)
+
+Runs on your machine. No account, no upload, no telemetry.
+
+## Install
+
+```bash
+uv tool install unrent      # or: pipx install unrent
+```
+
+Python 3.11+.
 
 ## Use
 
 ```bash
-unrent .                               # the terminal view; Markdown in a pipe or file
-unrent . --why openai                  # every location of one service, and what replaces it
-unrent . --why gpt-4-turbo             # every line that selects a retiring model
-unrent . --as-of 2026-12-01            # judge retirements as of another day
-unrent . -o report.md                  # the Markdown report
-unrent . --format json -o r.json       # everything, machine-readable
-unrent . --top 5                       # more alternatives per kind
-unrent . --skip-tests                  # ignore test, spec and fixture code
-unrent . --exclude "examples/"         # .gitignore syntax; or a .unrentignore file
-unrent catalog                         # what it knows
+unrent .                         # scan the current directory
+unrent . --why openai            # every line behind one row
+unrent . -o report.md            # a Markdown report for an issue or PR
+unrent . --format json           # for scripts
+unrent . --skip-tests            # ignore test code
+unrent . --exclude "examples/"   # .gitignore syntax, or a .unrentignore file
 ```
 
-`unrent .` is short for `unrent scan .`. Colour follows `NO_COLOR` and `FORCE_COLOR`.
+`unrent --help` lists the rest.
 
-On Windows PowerShell, write reports with `-o`, not `>`. The redirect re-encodes the
-file.
+## Use it from an AI agent
 
-## MCP
-
-unrent as tools for Claude Code, Cursor, Copilot, or any agent that speaks MCP. The agent
-gets the facts; you decide what to swap.
+As an MCP server (Claude Code, Cursor, Copilot, …):
 
 ```bash
 claude mcp add unrent -- uvx --from "unrent[mcp]" unrent mcp
 ```
 
-Other clients:
+Other clients: command `uvx`, args `["--from", "unrent[mcp]", "unrent", "mcp"]`.
 
-```json
-{
-  "mcpServers": {
-    "unrent": {
-      "command": "uvx",
-      "args": ["--from", "unrent[mcp]", "unrent", "mcp"]
-    }
-  }
-}
+As a skill, with a workflow for what unrent can't see on its own:
+
+```bash
+npx skills add stringcutter/unrent
 ```
 
-| Tool | |
-|---|---|
-| `scan` | Closed services, models that stop working, open source in use, alternatives. The report as JSON. |
-| `alternatives` | Best open source for a category or a closed service: `"pinecone"`, `"speech-to-text"`. |
-| `standing` | Where one project ranks, overall and among its kind: `"qdrant/qdrant"`. |
-| `catalog` | What unrent recognises, and the signatures it looks for. |
+## How it works
 
-Rankings come from this repo's `main`, refreshed weekly, not from the install. Cached
-for six hours. When the fetch fails it uses the shipped snapshot and says so.
-`UNRENT_OFFLINE=1` never fetches. Only rankings come in. Your code never goes out.
+<details>
+<summary><b>What it finds</b></summary>
 
-For agents that use skills, `npx skills add stringcutter/unrent` adds a workflow on top:
-check what unrent can't see, sweep for services outside the catalog, and write the report.
+- **357 closed AI services** in 21 categories: LLM APIs and gateways, embeddings, vector
+  databases, RAG, document parsing, observability, speech, image generation, search,
+  scraping, browser automation, sandboxes, agents and agent memory. 139 hosted model
+  providers come from [models.dev](https://models.dev), regenerated weekly.
+- **204 model retirements** from OpenAI, Anthropic and Google, with dates and the
+  vendor's replacement, checked weekly against their deprecation pages. A model counts
+  when the code picks it (a default, a config value, a call), not when it is only listed
+  in a menu or price table. Azure, Bedrock and Vertex have their own schedules and are
+  not covered.
+- **89 open source projects** you may already run: vector databases, inference servers,
+  gateways, RAG frameworks, document parsers, observability, evals, speech.
+- **Unknown candidates:** API hosts and keys that look like a hosted AI service the
+  catalog doesn't know yet. Listed for you to check, never counted.
 
-## What it detects
+It reads packages (Python, npm, Go, Cargo, Maven, Gradle, NuGet, RubyGems, Composer,
+pub, SwiftPM), imports, install commands, container images, and API hosts, model ids,
+env vars and SDK calls in code and config.
 
-**357 closed AI services** in 21 categories: LLM APIs, LLM gateways, embeddings, vector
-databases, RAG platforms, document parsing, guardrails, classification and scoring, LLM
-observability, model hosting, fine-tuning, speech-to-text, text-to-speech, voice agents,
-image generation, web search, web scraping, browser automation, code sandboxes, agent
-platforms, agent memory. 218 are written by hand; 139 hosted model providers come from
-[models.dev](https://models.dev) and are regenerated every week
-([`models-dev.yaml`](https://github.com/stringcutter/unrent/blob/main/catalog/services/models-dev.yaml)).
+</details>
 
-**Models that stop working.** 204 model retirements announced by OpenAI, Anthropic and
-Google for their own APIs, with the date and the vendor's replacement, checked every
-week against their deprecation pages
-([`retirements.yaml`](https://github.com/stringcutter/unrent/blob/main/catalog/retirements.yaml))
-and shipped with each release.
-A model id counts when a line selects it: a default, a config value, a model passed to
-a call. The same id in a model menu, a price table or a check on what the user picked
-is only counted. Azure OpenAI, Bedrock and Vertex keep their own schedules and are not
-covered. On the golden corpus: precision 0.939, recall 0.886.
+<details>
+<summary><b>What it ignores</b></summary>
 
-**Services it does not know yet.** Every scan also lists `unknown_candidates`: API hosts
-and keys that no catalog entry explains and that look like a hosted AI API (a `/v1/...`
-path, an `api.` or `.ai` host, a matching `*_API_KEY`). They are candidates to check, not
-findings, and never counted.
+- Local servers behind a compatible SDK: `OpenAI(base_url="http://localhost:11434/v1")`
+  is Ollama, not OpenAI.
+- Comments, docs, lockfiles, `node_modules` and anything `.gitignore` excludes.
+- Generic names: your `perplexity.py` isn't Perplexity.
+- Open-weight models: `gpt-oss`, `deepseek-v3.2` and Ollama tags aren't closed.
 
-**89 open source projects**: vector databases, inference servers, gateways, RAG
-frameworks and applications, document parsers, observability, evals, speech, scraping,
-agent memory.
+Secrets in the output are masked (`OPENAI_API_KEY=****`). Files too large to scan are
+listed, never skipped silently.
 
-Evidence it reads:
+</details>
 
-| | |
-|---|---|
-| Packages | Python (requirements, pyproject, setup.py/cfg, Pipfile, conda, extras like `qdrant-client[fastembed]`), npm and pnpm catalogs, Go, Cargo, Maven, Gradle, NuGet, RubyGems, Composer, pub, SwiftPM |
-| Imports | Python (AST, notebooks), JavaScript/TypeScript (`import`, `require`, `import()`, `npm:`, `jsr:`) |
-| Install commands | `pip install`, `uv add`, `npm i`, … in Dockerfiles, shell, CI, notebook cells |
-| Container images | `image:` in compose and Kubernetes, `${VAR:-default}`, Helm values, Dockerfile `FROM` |
-| Code and config | API hosts, model ids, env vars, SDK symbols, `CREATE EXTENSION`, Terraform |
+<details>
+<summary><b>How alternatives are ranked</b></summary>
 
-Every package name in the catalog exists in its registry. Checked weekly.
+- Projects by GitHub stars gained in the last 90 days, from unrent's own weekly snapshots
+  (total stars until four weeks of history exist; the report says which).
+- Models by Hugging Face trending: labs' own releases under an open licence.
+- Open source only: an OSI licence for code; Apache, MIT, BSD or CC-BY for weights.
+  Archived projects are dropped, and open core is marked.
 
-## What it ignores
+The CLI uses the rankings shipped with its release. The MCP server fetches the latest
+from this repo, cached for six hours (`UNRENT_OFFLINE=1` turns that off). Only rankings
+come in; your code never goes out.
 
-- **Local servers behind a compatible SDK.** `OpenAI(base_url="http://localhost:11434/v1")` is Ollama, not OpenAI.
-- **Lockfiles.** Your dependencies' dependencies aren't yours.
-- **Comments and docs.** Per-language comment syntax. `"/api/*"` in a string is not a comment.
-- **Ignored and vendored files.** `.gitignore` with or without git. Submodules scanned. `node_modules` not.
-- **Generic names.** `task="transcribe"` isn't Amazon. `import textract` isn't AWS. Your `perplexity.py` isn't Perplexity.
-- **Open-weight models.** `gpt-oss`, `deepseek-v3.2` and Ollama tags aren't closed.
+</details>
 
-Also:
+<details>
+<summary><b>How accurate it is</b></summary>
 
-- **Secrets are masked.** `OPENAI_API_KEY=****`.
-- **Test-only findings are marked.** `--skip-tests` drops them.
-- **Model names alone don't count.** A model id with no SDK, key, host or package behind it is listed apart, as *closed models named in code*.
-- **Vendor through vendor.** Azure via `openai`, Claude on Bedrock or Vertex via `anthropic`: the report names the one you actually call.
-- **Oversized files are listed, never skipped silently.**
+Every rule has a test that fails without it. A golden corpus of 54 real repos, labelled
+by hand, runs in CI: closed services precision 0.993, recall 0.957; models that stop
+working precision 0.939, recall 0.886.
 
-Every rule above has a test that fails without it.
+With [ripgrep](https://github.com/BurntSushi/ripgrep) installed, a 5,500-file repo scans
+in about 6 s.
 
-## Ranking
-
-Pools live in [`catalog/alternatives.yaml`](https://github.com/stringcutter/unrent/blob/main/catalog/alternatives.yaml). Re-ranked every Monday by a
-GitHub Action that merges itself.
-
-- **Projects:** GitHub stars gained in the last 90 days, from unrent's own weekly
-  snapshots. Until four weeks exist: total stars. The report says which.
-- **Models:** Hugging Face trending. Labs' own releases only, open licence, max two per lab.
-- **Open source only.** OSI licence for code. Apache, MIT, BSD or CC-BY for weights.
-  Restricted weights are out, whatever the code licence. Archived projects and a year
-  without a push are out. Open core is marked: LiteLLM's `enterprise/` or Langfuse's `ee/`
-  is not under the licence shown.
-- **No silent rot.** A renamed, archived or relicensed project blocks the auto-merge and
-  waits for a human. A pool that empties or halves is not published.
-
-The scanner reads the snapshot shipped with the release. New rankings come with new
-releases.
+</details>
 
 ## Contribute
 
-The catalog is YAML. New service: [`catalog/services/`](https://github.com/stringcutter/unrent/tree/main/catalog/services). New alternative: a pool in
-[`catalog/alternatives.yaml`](https://github.com/stringcutter/unrent/blob/main/catalog/alternatives.yaml). False positive or miss: open an issue with the
-line that fooled it. [CONTRIBUTING.md](https://github.com/stringcutter/unrent/blob/main/CONTRIBUTING.md).
+The catalog is YAML: services in [`catalog/services/`](https://github.com/stringcutter/unrent/tree/main/catalog/services),
+alternatives in [`catalog/alternatives.yaml`](https://github.com/stringcutter/unrent/blob/main/catalog/alternatives.yaml).
+Found a false positive or a miss? Open an issue with the line that fooled it.
+See [CONTRIBUTING.md](https://github.com/stringcutter/unrent/blob/main/CONTRIBUTING.md).
 
 ## Licence
 
-[Apache-2.0](https://github.com/stringcutter/unrent/blob/main/LICENSE). unrent is made by
+[Apache-2.0](https://github.com/stringcutter/unrent/blob/main/LICENSE). Made by
 [stringcutter](https://github.com/stringcutter).
