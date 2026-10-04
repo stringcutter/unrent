@@ -573,6 +573,33 @@ def normalise(name: str) -> str:
     return _NORMALISE.sub("-", name).lower()
 
 
+MULTI_PART_TLDS = {"co.uk", "com.cn", "com.au", "co.jp", "com.br", "co.kr", "com.tw", "com.hk"}
+
+
+def registered_domain(host: str) -> str:
+    parts = host.lower().strip(".").split(".")
+    if len(parts) >= 3 and ".".join(parts[-2:]) in MULTI_PART_TLDS:
+        return ".".join(parts[-3:])
+    return ".".join(parts[-2:])
+
+
+def _endpoint_head(needle: str) -> str:
+    """What may not come right before an endpoint needle. A hyphen may, when the needle
+    is a host below its registered domain: Google joins the region to the host with one
+    (`us-central1-aiplatform.googleapis.com`), and the result is still Google's. Before
+    `modal.run` a hyphen makes another domain (`my-modal.run`), and before a partial
+    host like `bedrock-runtime.` a file name (`amazon-bedrock-runtime.ts`)."""
+    host = needle.split("/", 1)[0].split(":", 1)[0].lower()
+    if (
+        host
+        and not host.endswith(".")
+        and not host.rsplit(".", 1)[-1].isdigit()
+        and host != registered_domain(host)
+    ):
+        return r"(?<![A-Za-z0-9])"
+    return r"(?<![A-Za-z0-9-])"
+
+
 def _needle_pattern(kind: str, needle: str) -> re.Pattern:
     """Boundary rules per kind.
 
@@ -580,8 +607,9 @@ def _needle_pattern(kind: str, needle: str) -> re.Pattern:
               `AzureOpenAI(`, and `searchclient` in a URL is not `SearchClient`.
     model     a prefix of a model id: `gpt-4` matches `gpt-4o-mini`, but not
               `chatgpt-4`, and not `bedrock/` inside a path like `./bedrock/x`.
-    endpoint  a host, matched case-insensitively; a subdomain may precede it, and a
-              call may not follow it: `modal.run()` is code, `x.modal.run/` a host.
+    endpoint  a host, matched case-insensitively; a subdomain may precede it (see
+              `_endpoint_head` for a hyphen), and a call may not follow it:
+              `modal.run()` is code, `x.modal.run/` a host.
     env       an exact variable name.
     image     a container image reference anywhere a string can hold one: Testcontainers
               `new QdrantContainer("qdrant/qdrant:v1")`, `docker run qdrant/qdrant`.
@@ -608,7 +636,7 @@ def _needle_pattern(kind: str, needle: str) -> re.Pattern:
         return re.compile(r"(?<![A-Za-z0-9_./@-])" + escaped)
     if kind == "endpoint":
         tail = r"(?![A-Za-z0-9(-])" if ends_word else ""
-        return re.compile(r"(?<![A-Za-z0-9-])" + escaped + tail, re.IGNORECASE)
+        return re.compile(_endpoint_head(needle) + escaped + tail, re.IGNORECASE)
     return re.compile(r"(?<![A-Za-z0-9_])" + escaped + r"(?![A-Za-z0-9_])")
 
 

@@ -238,6 +238,31 @@ def test_endpoints_in_any_language(tmp_path, catalog):
     assert "anthropic" in found(tmp_path, catalog)
 
 
+@pytest.mark.parametrize(
+    "line,service",
+    [
+        ('URL = "https://us-central1-aiplatform.googleapis.com/v1/projects/p"', "google-vertex"),
+        ('opts = {"api_endpoint": f"{location}-documentai.googleapis.com"}', "google-document-ai"),
+        ('opts = {"api_endpoint": "eu-discoveryengine.googleapis.com"}', "google-vertex-search"),
+    ],
+)
+def test_region_joined_to_a_host_by_a_hyphen(tmp_path, catalog, line, service):
+    write(tmp_path, {"client.py": line + "\n"})
+    assert service in found(tmp_path, catalog)
+
+
+@pytest.mark.parametrize(
+    "line,service",
+    [
+        ('URL = "https://my-modal.run/predict"', "modal"),  # another registered domain
+        ('import { client } from "./amazon-bedrock-runtime.ts";', "aws-bedrock"),  # a file
+    ],
+)
+def test_hyphen_before_a_registered_domain_or_partial_host(tmp_path, catalog, line, service):
+    write(tmp_path, {"client.ts": line + "\n"})
+    assert service not in found(tmp_path, catalog)
+
+
 def test_model_ids_but_not_open_weights(tmp_path, catalog):
     write(tmp_path, {"models.ts": (
         'const a = "openai/gpt-oss-120b";\n'
