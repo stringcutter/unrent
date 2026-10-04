@@ -5,6 +5,13 @@ All notable changes to this project are documented here. The format follows
 [Semantic Versioning](https://semver.org/). Weekly ranking refreshes are not listed;
 each release ships the rankings as of its date.
 
+## [0.2.1] - 2026-10-04
+
+### Changed
+- A shorter README, which is also the PyPI page: what unrent does in one sentence, what
+  each row means, install and the common commands, with the details folded away.
+- `unrent --help` describes unrent the same way, models that stop working included.
+
 ## [0.2.0] - 2026-10-04
 
 First public release.
@@ -122,4 +129,5 @@ First public release.
 - Open source signatures: `SEARX_URL` and `SearxSearch` (SearXNG), vLLM behind an
   OpenAI-compatible base URL, a self-hosted Firecrawl URL, LangChain's `FAISS`.
 
+[0.2.1]: https://github.com/stringcutter/unrent/releases/tag/v0.2.1
 [0.2.0]: https://github.com/stringcutter/unrent/releases/tag/v0.2.0
