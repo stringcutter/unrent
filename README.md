@@ -1,6 +1,17 @@
+<div align="center">
+
 # unrent
 
 *by [stringcutter](https://github.com/stringcutter)*
+
+[![PyPI](https://img.shields.io/pypi/v/unrent?style=flat-square)](https://pypi.org/project/unrent/)
+[![CI](https://img.shields.io/github/actions/workflow/status/stringcutter/unrent/ci.yml?branch=main&style=flat-square)](https://github.com/stringcutter/unrent/actions)
+[![Python](https://img.shields.io/pypi/pyversions/unrent?style=flat-square)](https://pypi.org/project/unrent/)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue?style=flat-square)](https://github.com/stringcutter/unrent/blob/main/LICENSE)
+
+[What each row means](#what-each-row-means) • [Install](#install) • [Use](#use) • [AI agents](#use-it-from-an-ai-agent) • [How it works](#how-it-works)
+
+</div>
 
 **See which AI services your code depends on, what open source can replace them, and
 which models are about to stop working.**
@@ -25,7 +36,8 @@ Every row points to a file and line. `--why` shows all of them, and what to use 
 
 ![unrent my-app --why gpt-4-turbo: main.py line 9 selects gpt-4-turbo, which retires on 2026-10-23; openai recommends gpt-5.6-sol, with the link to OpenAI's deprecations page](https://github.com/stringcutter/unrent/raw/main/docs/why.svg)
 
-Runs on your machine. No account, no upload, no telemetry.
+> [!NOTE]
+> unrent runs on your machine. No account, no upload, no telemetry.
 
 ## Install
 
@@ -129,15 +141,3 @@ With [ripgrep](https://github.com/BurntSushi/ripgrep) installed, a 5,500-file re
 in about 6 s.
 
 </details>
-
-## Contribute
-
-The catalog is YAML: services in [`catalog/services/`](https://github.com/stringcutter/unrent/tree/main/catalog/services),
-alternatives in [`catalog/alternatives.yaml`](https://github.com/stringcutter/unrent/blob/main/catalog/alternatives.yaml).
-Found a false positive or a miss? Open an issue with the line that fooled it.
-See [CONTRIBUTING.md](https://github.com/stringcutter/unrent/blob/main/CONTRIBUTING.md).
-
-## Licence
-
-[Apache-2.0](https://github.com/stringcutter/unrent/blob/main/LICENSE). Made by
-[stringcutter](https://github.com/stringcutter).
