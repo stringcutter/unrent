@@ -20,6 +20,7 @@ from . import fresh
 from .catalog import Catalog, CatalogError, Pool, Service, load_catalog
 from .cli import DEFAULT_CATALOG, _version
 from .detect import collect_facts, match
+from .discover import scan_unknown
 from .render import (
     RANKED_BY,
     Standing,
@@ -154,8 +155,10 @@ def scan(
     and the pools that replace it), `models_named` (closed model ids with no SDK, key,
     host or package behind them: not dependencies), `env_template_only` (keys only in
     an example env file: not dependencies), `open_source` (components already
-    in use and their rank in their pool), and `alternatives` (the top open source per
-    pool). Secrets in evidence are masked.
+    in use and their rank in their pool), `unknown_candidates` (API hosts and keys that
+    no catalog entry explains and that look like a hosted AI API: closed services
+    unrent may not know yet, to check one by one), and `alternatives` (the top open
+    source per pool). Secrets in evidence are masked.
 
     path: directory to scan; absolute, or relative to where the server runs.
     skip_tests: leave out test, spec and fixture code.
@@ -175,7 +178,8 @@ def scan(
     except OSError as exc:
         raise ToolError(f"could not scan {path}: {exc}") from exc
     findings = match(facts, catalog)
-    result = payload(findings, root, catalog, skipped)
+    unknown = scan_unknown(root, catalog, list(exclude or []), skip_tests=skip_tests)
+    result = payload(findings, root, catalog, skipped, unknown)
     for key in ("found", "models_named", "env_template_only", "open_source"):
         _capped(result[key], "evidence", evidence)
     running = [f for f in findings if f.service.open_source]

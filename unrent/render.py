@@ -226,7 +226,11 @@ def _running_json(f: Finding, root: Path, catalog: Catalog) -> dict:
 
 
 def payload(
-    findings: list[Finding], root: Path, catalog: Catalog, skipped: list[Path] = ()
+    findings: list[Finding],
+    root: Path,
+    catalog: Catalog,
+    skipped: list[Path] = (),
+    unknown: list[dict] | None = None,
 ) -> dict:
     split = _split(findings)
     return {
@@ -242,6 +246,9 @@ def payload(
         "env_template_only": [_entry(f, root) for f in split.templates],
         # Open source components already in use, and where they stand in their pool.
         "open_source": [_running_json(f, root, catalog) for f in split.running],
+        # API hosts and keys no catalog entry explains that look like a hosted AI API:
+        # candidates to check, not findings (unrent/discover.py).
+        "unknown_candidates": list(unknown or []),
         "alternatives": {
             pool_id: {
                 "name": catalog.pools[pool_id].name,
@@ -254,8 +261,16 @@ def payload(
     }
 
 
-def to_json(findings: list[Finding], root: Path, catalog: Catalog, skipped: list[Path] = ()) -> str:
-    return json.dumps(payload(findings, root, catalog, skipped), indent=2, ensure_ascii=False)
+def to_json(
+    findings: list[Finding],
+    root: Path,
+    catalog: Catalog,
+    skipped: list[Path] = (),
+    unknown: list[dict] | None = None,
+) -> str:
+    return json.dumps(
+        payload(findings, root, catalog, skipped, unknown), indent=2, ensure_ascii=False
+    )
 
 
 # ---------------------------------------------------------------- markdown
@@ -359,8 +374,41 @@ def _not_scanned(skipped: list[Path], root: Path) -> list[str]:
     ]
 
 
+def _unknown(unknown: list[dict]) -> list[str]:
+    if not unknown:
+        return []
+    out = [
+        "## Possibly closed AI services unrent does not know",
+        "",
+        "API hosts and keys that no catalog entry explains and that look like a hosted AI "
+        "API. Not counted as findings: check each one, and open an issue for the real ones.",
+        "",
+    ]
+    for c in unknown:
+        first = c["evidence"][0]
+        if c["kind"] == "provider catalog":
+            out.append(
+                f"- **`{first['file']}`**: a generated provider catalog naming {c['hosts']} "
+                f"hosts unrent does not know (e.g. {', '.join(c['examples'][:5])})"
+            )
+            continue
+        named = [*c["hosts"], *(f"`{s}`" for s in c["settings"])]
+        own = " — the project's own hosted service" if c.get("own_project") else ""
+        out.append(
+            f"- **{c['name']}** ({', '.join(named)}){own}: `{first['file']}:{first['line']}` — "
+            f"{_code(first['text'][:100])}"
+        )
+    out.append("")
+    return out
+
+
 def to_markdown(
-    findings: list[Finding], root: Path, catalog: Catalog, top: int = 3, skipped: list[Path] = ()
+    findings: list[Finding],
+    root: Path,
+    catalog: Catalog,
+    top: int = 3,
+    skipped: list[Path] = (),
+    unknown: list[dict] | None = None,
 ) -> str:
     split = _split(findings)
     out: list[str] = [f"# AI dependencies in `{root.name}`", ""]
@@ -418,6 +466,7 @@ def to_markdown(
 
     out += _models_named(split.named, root)
     out += _env_templates(split.templates, root)
+    out += _unknown(list(unknown or []))
 
     if closed:
         out += ["## Open source alternatives", ""]

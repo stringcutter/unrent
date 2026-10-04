@@ -36,6 +36,8 @@ Call `scan` with the project path (MCP), or run `unrent scan <path> --format jso
 - `models_named`: model ids with no SDK, key, host or package behind them.
 - `env_template_only`: keys that appear only in an example env file.
 - `open_source`: open source AI the code already runs, with its rank in its pool.
+- `unknown_candidates`: API hosts and keys that no catalog entry explains and that look
+  like a hosted AI API. Candidates, not findings: step 3 is where you decide.
 - `alternatives`: ranked open source per pool, for every pool the findings need.
 
 Don't re-grep for what `found` already lists, and don't re-open every cited line: in
@@ -56,8 +58,10 @@ Open the code for these, and nothing else from the scan:
 
 ## 3. Sweep for what the catalog cannot see
 
-This is where you add the most. Run the bundled sweep, giving it the scan JSON if you
-have it as a file:
+This is where you add the most. Start with `unknown_candidates`: unrent already grouped
+each host with its key and dropped what it knows, so open each one and decide. Then run
+the bundled sweep for what that heuristic leaves out (hosts that do not look like an API,
+settings with no AI words near them), giving it the scan JSON if you have it as a file:
 
 ```bash
 python <this skill>/scripts/sweep.py <path> [--known scan.json]

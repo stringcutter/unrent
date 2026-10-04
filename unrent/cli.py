@@ -12,6 +12,7 @@ import yaml
 
 from .catalog import CatalogError, load_catalog
 from .detect import collect_facts, match
+from .discover import scan_unknown
 from .render import to_json, to_markdown
 
 
@@ -125,10 +126,11 @@ def cmd_scan(args) -> int:
     skipped: list[Path] = []
     facts = collect_facts(root, catalog, exclude, skipped, skip_tests=args.skip_tests)
     findings = match(facts, catalog)
+    unknown = scan_unknown(root, catalog, exclude, skip_tests=args.skip_tests)
     if args.format == "json":
-        text = to_json(findings, root, catalog, skipped)
+        text = to_json(findings, root, catalog, skipped, unknown)
     else:
-        text = to_markdown(findings, root, catalog, top=args.top, skipped=skipped)
+        text = to_markdown(findings, root, catalog, top=args.top, skipped=skipped, unknown=unknown)
     if args.output:
         args.output.write_text(text + "\n", encoding="utf-8")
         print(f"wrote {args.output}", file=sys.stderr)
