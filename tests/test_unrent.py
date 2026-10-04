@@ -687,8 +687,7 @@ def test_notebook_citation_skips_markdown_with_the_same_text(tmp_path, catalog):
     assert line > 6
 
 
-def test_refresh_refuses_to_publish_a_collapse(search_mode):
-    refresh = _refresh_module()
+def test_refresh_refuses_to_publish_a_collapse(refresh):
     before = {"vector-db": {"ranked": [{}] * 8}, "rag": {"ranked": [{}] * 5}}
     assert refresh.shrunk_pools(before, {"vector-db": {"ranked": []}, "rag": {"ranked": [{}] * 5}})
     assert refresh.shrunk_pools(
@@ -699,11 +698,10 @@ def test_refresh_refuses_to_publish_a_collapse(search_mode):
     )
 
 
-def test_refresh_treats_rate_limits_as_transient(search_mode, monkeypatch):
+def test_refresh_treats_rate_limits_as_transient(refresh, monkeypatch):
     import io
     import urllib.error
 
-    refresh = _refresh_module()
     monkeypatch.setattr(refresh, "MAX_RATE_LIMIT_WAIT", 0)
 
     def rate_limited(*a, **k):
@@ -801,24 +799,22 @@ def test_cli_scan(tmp_path, capsys):
 # --- ranking ------------------------------------------------------------------
 
 
-def _refresh_module():
+@pytest.fixture(scope="module")
+def refresh():
+    """scripts/refresh.py, loaded once; a test that patches it does so with monkeypatch."""
     spec = importlib.util.spec_from_file_location("refresh", ROOT / "scripts" / "refresh.py")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
 
 
-def test_momentum_needs_four_weeks_and_scales(search_mode):
-    import datetime as dt
-
-    refresh = _refresh_module()
-    today = dt.date(2026, 9, 26)
+def test_momentum_needs_four_weeks_and_scales(refresh):
+    today = datetime.date(2026, 9, 26)
     assert refresh.momentum([["2026-09-20", 100], ["2026-09-26", 150]], today) is None
     assert refresh.momentum([["2026-08-27", 100], ["2026-09-26", 400]], today) == 900
 
 
-def test_newcomers_rank_after_projects_with_momentum(search_mode):
-    refresh = _refresh_module()
+def test_newcomers_rank_after_projects_with_momentum(refresh):
     ranked, by = refresh.rank_github([
         {"repo": "a/big", "stars": 90000, "stars_90d": 100},
         {"repo": "b/hot", "stars": 5000, "stars_90d": 3000},
@@ -828,8 +824,7 @@ def test_newcomers_rank_after_projects_with_momentum(search_mode):
     assert [p["repo"] for p in ranked] == ["b/hot", "a/big", "c/new"]
 
 
-def test_same_lab_fine_tunes_are_original(search_mode):
-    refresh = _refresh_module()
+def test_same_lab_fine_tunes_are_original(refresh):
     assert refresh._original("Qwen", {"base_model": "Qwen/Qwen3-8B-Base"})
     assert not refresh._original("Qwen", {"base_model": "meta-llama/Llama-3.1-8B"})
 
@@ -1102,8 +1097,6 @@ def test_models_show_their_size(tmp_path, catalog):
 
 
 def test_a_component_that_dropped_out_of_the_ranking_is_flagged(tmp_path, catalog, monkeypatch):
-    import dataclasses
-
     pool = catalog.pools["vector-db"]
     without = tuple(a for a in pool.alternatives if a.name != "facebookresearch/faiss")
     monkeypatch.setitem(catalog.pools, "vector-db", dataclasses.replace(pool, alternatives=without))
@@ -1302,10 +1295,8 @@ def test_ripgrep_reads_only_the_scanned_files(tmp_path, catalog, search_mode):
 
 
 def test_bad_rankings_snapshot_is_a_clear_error(tmp_path, capsys):
-    import shutil as sh
-
     cat = tmp_path / "cat"
-    sh.copytree(CATALOG_DIR, cat)
+    shutil.copytree(CATALOG_DIR, cat)
     (cat / "rankings.json").write_text("{not json", encoding="utf-8")
     assert main(["catalog", "--validate", "--catalog", str(cat)]) == 2
     assert "rankings.json" in capsys.readouterr().err
@@ -1517,12 +1508,8 @@ def test_sql_about_other_extensions_is_not_pgvector(tmp_path, catalog):
 
 
 def test_catalog_rejects_unquoted_commas_in_descriptions(tmp_path):
-    import shutil as sh
-
-    from unrent.catalog import CatalogError
-
     cat = tmp_path / "cat"
-    sh.copytree(CATALOG_DIR, cat)
+    shutil.copytree(CATALOG_DIR, cat)
     text = (cat / "alternatives.yaml").read_text(encoding="utf-8")
     text = text.replace(
         'what: "Run open models locally with one command, OpenAI-compatible API"',
@@ -1534,12 +1521,8 @@ def test_catalog_rejects_unquoted_commas_in_descriptions(tmp_path):
 
 
 def test_catalog_rejects_a_key_given_twice(tmp_path):
-    import shutil as sh
-
-    from unrent.catalog import CatalogError
-
     cat = tmp_path / "cat"
-    sh.copytree(CATALOG_DIR, cat)
+    shutil.copytree(CATALOG_DIR, cat)
     text = (cat / "services" / "llm.yaml").read_text(encoding="utf-8")
     text = text.replace(
         "    endpoint: [api.reka.ai]\n",

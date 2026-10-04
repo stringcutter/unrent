@@ -14,12 +14,9 @@ two sides:
                `uncertain` in corpus_models.yaml (MODEL_TRUTH_RULES.md), counting
                only the ids that file says were labelled. `--side all` adds it.
 
-Several corpus files can be given (`--corpus a.yaml --corpus b.yaml`); by default
-corpus.yaml plus corpus_oss.yaml next to this script when it exists. A file's
-`repos:` entries are added (an entry whose name is already known is merged into it
-key by key), and its `open_source:` mapping (repo name -> the open_source_* keys) is
-merged into the repo of that name, so open source truth for an existing repo can
-live in its own file.
+The repos come from corpus.yaml and corpus_oss.yaml. A file's `open_source:` mapping
+(repo name -> the open_source_* keys) is merged into the repo of that name, so open
+source truth for an existing repo can live in its own file.
 
 Scoring is at the service level, per repo:
   TP  expected and found          FP  found but not expected
@@ -31,13 +28,9 @@ Ids listed as `uncertain` in the corpus are reported but scored two ways:
 Usage:
   python run_eval.py                          # all repos
   python run_eval.py --only openai__openai-quickstart-python
-  python run_eval.py --unrent "uv run --quiet unrent" --unrent-cwd path/to/unrent
-  python run_eval.py --min-precision 0.9 --min-recall 0.9   # CI gate (lenient scores)
-  python run_eval.py --side oss --min-oss-precision 0.9 --min-oss-recall 0.8
-  python run_eval.py --side all --min-model-precision 0.9 --min-model-recall 0.85
+  python run_eval.py --side all --gate        # CI: lenient scores against FLOORS
 
-Needs git and PyYAML. When moved into unrent-dist (e.g. to eval/), the default runs
-unrent in-process from the checkout via `python -m`-style import, so no install is needed.
+Needs git and PyYAML. unrent runs from this checkout, so no install is needed.
 """
 
 from __future__ import annotations
@@ -45,7 +38,6 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import shlex
 import subprocess
 import sys
 from collections import Counter, defaultdict
@@ -54,18 +46,12 @@ from pathlib import Path
 import yaml
 
 HERE = Path(__file__).resolve().parent
-_INPROC = (
-    "import sys; sys.path.insert(0, sys.argv.pop(1)); "
-    "from unrent.cli import main; sys.exit(main(sys.argv[1:]))"
-)
 
-
-def find_unrent_root() -> Path | None:
-    """A unrent checkout next to or above this script, if any."""
-    for p in [HERE, *HERE.parents]:
-        if (p / "unrent" / "cli.py").is_file() and (p / "catalog").is_dir():
-            return p
-    return None
+# Lenient (precision, recall) per side for --gate. They sit just under the measured
+# scores on 2026-10-04: closed precision 0.993, recall 0.957; open source precision
+# 1.000, recall 0.902; models precision 0.939, recall 0.886. Raise them when the
+# scores rise; never lower them to pass.
+FLOORS = {"closed": (0.98, 0.94), "oss": (0.98, 0.88), "models": (0.93, 0.88)}
 
 
 def git(*args: str, cwd: Path | None = None) -> str:
@@ -98,22 +84,22 @@ def checkout(repo: dict, cache: Path) -> Path:
     return dest
 
 
-def run_unrent(src: Path, out: Path, unrent_cmd: list[str], cwd: Path | None) -> dict:
+def run_unrent(src: Path, out: Path) -> dict:
     out.parent.mkdir(parents=True, exist_ok=True)
-    cmd = [*unrent_cmd, "scan", str(src), "--format", "json", "-o", str(out)]
-    proc = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
+    cmd = [sys.executable, "-m", "unrent.cli", "scan", str(src), "--format", "json", "-o", str(out)]
+    # From the checkout's root, so `-m` imports this checkout's unrent.
+    proc = subprocess.run(cmd, cwd=HERE.parent, capture_output=True, text=True)
     if proc.returncode != 0 or not out.is_file():
         raise RuntimeError(f"unrent failed on {src}: {proc.stderr.strip()[-2000:]}")
     return json.loads(out.read_text(encoding="utf-8"))
 
 
-def score(repo: dict, report: dict) -> dict:
-    found = {f["id"]: f for f in report["found"]}
-    expected = set(repo.get("expected") or [])
-    uncertain = set(repo.get("uncertain") or []) - expected
+def tally(name: str, found: dict, expected: set, uncertain: set, tests_only: set | None) -> dict:
+    """One repo on one side: `found` maps id -> finding; tests_only None skips that check."""
+    uncertain = uncertain - expected
     got = set(found)
     return {
-        "name": repo["name"],
+        "name": name,
         "expected": expected,
         "uncertain": uncertain,
         "found": got,
@@ -122,13 +108,23 @@ def score(repo: dict, report: dict) -> dict:
         "fn": expected - got,
         "unc_hit": uncertain & got,
         "unc_miss": uncertain - got,
-        "tests_mismatch": sorted(
-            i
-            for i in expected & got
-            if (i in set(repo.get("tests_only") or [])) != bool(found[i].get("only_in_tests"))
+        "tests_mismatch": []
+        if tests_only is None
+        else sorted(
+            i for i in expected & got if (i in tests_only) != bool(found[i].get("only_in_tests"))
         ),
         "evidence": {i: found[i]["evidence"][:3] for i in got},
     }
+
+
+def score(repo: dict, report: dict) -> dict:
+    return tally(
+        repo["name"],
+        {f["id"]: f for f in report["found"]},
+        set(repo.get("expected") or []),
+        set(repo.get("uncertain") or []),
+        set(repo.get("tests_only") or []),
+    )
 
 
 OSS_KEYS = (
@@ -143,16 +139,13 @@ OSS_KEYS = (
 
 
 def load_corpus(paths: list[Path]) -> list[dict]:
-    """Repos from every corpus file, in order, merged by name."""
+    """Repos from every corpus file, in order, with the open_source: overlays merged in."""
     repos: dict[str, dict] = {}
     overlays: list[tuple[Path, dict]] = []
     for path in paths:
         data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
         for entry in data.get("repos") or []:
-            if entry["name"] in repos:
-                repos[entry["name"]].update(entry)
-            else:
-                repos[entry["name"]] = dict(entry)
+            repos[entry["name"]] = dict(entry)
         overlays.append((path, data.get("open_source") or {}))
     for path, overlay in overlays:
         for name, fields in overlay.items():
@@ -169,33 +162,13 @@ def score_oss(repo: dict, report: dict) -> dict | None:
     """The open source side, by GitHub repo id. None when the repo has no OSS truth."""
     if "open_source_expected" not in repo:
         return None
-    found = {o["repo"]: o for o in report.get("open_source") or []}
-    expected = set(repo.get("open_source_expected") or [])
-    uncertain = set(repo.get("open_source_uncertain") or []) - expected
-    tests_only = set(repo.get("open_source_tests_only") or [])
-    got = set(found)
-    return {
-        "name": repo["name"],
-        "expected": expected,
-        "uncertain": uncertain,
-        "found": got,
-        "tp": expected & got,
-        "fp": got - expected - uncertain,
-        "fn": expected - got,
-        "unc_hit": uncertain & got,
-        "unc_miss": uncertain - got,
-        "tests_mismatch": sorted(
-            i for i in expected & got if (i in tests_only) != bool(found[i].get("only_in_tests"))
-        ),
-        "evidence": {i: found[i]["evidence"][:3] for i in got},
-        "standing": {
-            i: [
-                {k: st.get(k) for k in ("pool", "rank", "of", "rank_among_same_kind", "same_kind")}
-                for st in found[i].get("standing") or []
-            ]
-            for i in got
-        },
-    }
+    return tally(
+        repo["name"],
+        {o["repo"]: o for o in report.get("open_source") or []},
+        set(repo.get("open_source_expected") or []),
+        set(repo.get("open_source_uncertain") or []),
+        set(repo.get("open_source_tests_only") or []),
+    )
 
 
 def load_model_truth(path: Path) -> tuple[set[str], dict[str, dict]]:
@@ -206,25 +179,18 @@ def load_model_truth(path: Path) -> tuple[set[str], dict[str, dict]]:
 
 def score_models(name: str, report: dict, labelled: set[str], truth: dict) -> dict:
     """The models side: retiring ids the code selects, by id."""
-    found = {m["id"]: m for m in report.get("models_retiring") or [] if m["id"] in labelled}
-    expected = set(truth.get("selects") or []) & labelled
-    uncertain = (set(truth.get("uncertain") or []) & labelled) - expected
-    got = set(found)
-    return {
-        "name": name,
-        "expected": expected,
-        "uncertain": uncertain,
-        "found": got,
-        "tp": expected & got,
-        "fp": got - expected - uncertain,
-        "fn": expected - got,
-        "unc_hit": uncertain & got,
-        "unc_miss": uncertain - got,
-        "tests_mismatch": [],
-        "evidence": {
-            i: [{**e, "kind": "model", "value": i} for e in found[i]["evidence"][:3]] for i in got
-        },
+    found = {
+        m["id"]: {"evidence": [{**e, "kind": "model", "value": m["id"]} for e in m["evidence"]]}
+        for m in report.get("models_retiring") or []
+        if m["id"] in labelled
     }
+    return tally(
+        name,
+        found,
+        set(truth.get("selects") or []) & labelled,
+        set(truth.get("uncertain") or []) & labelled,
+        None,
+    )
 
 
 def pr(tp: int, fp: int, fn: int) -> tuple[float, float]:
@@ -235,13 +201,6 @@ def pr(tp: int, fp: int, fn: int) -> tuple[float, float]:
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument(
-        "--corpus",
-        type=Path,
-        action="append",
-        default=None,
-        help="corpus file; repeatable (default: corpus.yaml, plus corpus_oss.yaml if present)",
-    )
     ap.add_argument(
         "--side",
         choices=("closed", "oss", "models", "both", "all"),
@@ -254,63 +213,24 @@ def main(argv: list[str] | None = None) -> int:
         default=Path(os.environ.get("UNRENT_EVAL_CACHE", HERE / ".cache")),
         help="where repos are cloned (env UNRENT_EVAL_CACHE)",
     )
-    ap.add_argument(
-        "--out", type=Path, default=None, help="where JSON reports go (default <cache>/_reports)"
-    )
-    ap.add_argument(
-        "--unrent",
-        default=None,
-        help='command that runs unrent, e.g. "uv run --quiet unrent" (default: in-process from checkout)',
-    )
-    ap.add_argument("--unrent-cwd", type=Path, default=None)
-    ap.add_argument(
-        "--unrent-root",
-        type=Path,
-        default=None,
-        help="unrent checkout to run in-process (default: the one containing this script)",
-    )
     ap.add_argument("--only", nargs="*", help="repo names to evaluate")
     ap.add_argument(
         "--reuse", action="store_true", help="reuse existing JSON reports instead of rescanning"
     )
-    ap.add_argument("--min-precision", type=float, default=None)
-    ap.add_argument("--min-recall", type=float, default=None)
-    ap.add_argument("--min-oss-precision", type=float, default=None)
-    ap.add_argument("--min-oss-recall", type=float, default=None)
-    ap.add_argument("--min-model-precision", type=float, default=None)
-    ap.add_argument("--min-model-recall", type=float, default=None)
     ap.add_argument(
-        "--models-truth",
-        type=Path,
-        default=HERE / "corpus_models.yaml",
-        help="truth for the models side (default: corpus_models.yaml)",
+        "--gate", action="store_true", help="fail when a scored side is under its FLOORS"
     )
     ap.add_argument("--quiet", action="store_true", help="only the summary")
-    ap.add_argument(
-        "--results-json", type=Path, default=None, help="also write per-repo scores as JSON here"
-    )
     args = ap.parse_args(argv)
 
-    corpus_files = args.corpus or [
-        p for p in (HERE / "corpus.yaml", HERE / "corpus_oss.yaml") if p.is_file()
-    ]
-    repos = load_corpus(corpus_files)
+    repos = load_corpus([HERE / "corpus.yaml", HERE / "corpus_oss.yaml"])
     if args.only:
         repos = [r for r in repos if r["name"] in set(args.only)]
-    out_dir = args.out or args.cache / "_reports"
-
-    root = args.unrent_root.resolve() if args.unrent_root else find_unrent_root()
-    if args.unrent:
-        unrent_cmd, unrent_cwd = shlex.split(args.unrent), args.unrent_cwd
-    elif root is not None:
-        unrent_cmd, unrent_cwd = [sys.executable, "-c", _INPROC, str(root)], root
-    else:
-        unrent_cmd, unrent_cwd = ["unrent"], args.unrent_cwd
+    out_dir = args.cache / "_reports"
 
     repo_by_name = {r["name"]: r for r in repos}
-    labelled, model_truth = (
-        load_model_truth(args.models_truth) if args.models_truth.is_file() else (set(), {})
-    )
+    models_truth = HERE / "corpus_models.yaml"
+    labelled, model_truth = load_model_truth(models_truth)
     results, oss_results, model_results = [], [], []
     for repo in repos:
         report_file = out_dir / f"{repo['name']}.json"
@@ -318,7 +238,7 @@ def main(argv: list[str] | None = None) -> int:
             report = json.loads(report_file.read_text(encoding="utf-8"))
         else:
             src = checkout(repo, args.cache)
-            report = run_unrent(src.resolve(), report_file.resolve(), unrent_cmd, unrent_cwd)
+            report = run_unrent(src.resolve(), report_file.resolve())
         results.append(score(repo, report) if "expected" in repo else None)
         oss_results.append(score_oss(repo, report))
         if repo["name"] in model_truth:
@@ -327,15 +247,12 @@ def main(argv: list[str] | None = None) -> int:
             )
 
     ok = True
-    dump: dict[str, list] = {}
     if args.side in ("closed", "both", "all"):
         closed = [s for s in results if s is not None]
         p, r = print_side(
             "closed services", "service", closed, repo_by_name, "evidence", args.quiet
         )
-        dump["closed"] = closed
-        ok &= gate("precision", p, args.min_precision)
-        ok &= gate("recall", r, args.min_recall)
+        ok &= not args.gate or gate("closed", p, r)
     if args.side in ("oss", "both", "all"):
         oss = [s for s in oss_results if s is not None]
         if oss:
@@ -347,44 +264,30 @@ def main(argv: list[str] | None = None) -> int:
                 "open_source_evidence",
                 args.quiet,
             )
-            ok &= gate("open source precision", p, args.min_oss_precision)
-            ok &= gate("open source recall", r, args.min_oss_recall)
+            ok &= not args.gate or gate("oss", p, r)
         else:
             print("\nno repo in the corpus has open source truth (open_source_expected)")
-            ok &= args.min_oss_precision is None and args.min_oss_recall is None
-        dump["open_source"] = oss
+            ok &= not args.gate
     if args.side in ("models", "all"):
         if model_results:
             p, r = print_side("models the code selects", "model", model_results, {}, "", args.quiet)
-            ok &= gate("model precision", p, args.min_model_precision)
-            ok &= gate("model recall", r, args.min_model_recall)
+            ok &= not args.gate or gate("models", p, r)
         else:
-            print(f"\nno model truth for these repos in {args.models_truth.name}")
-            ok &= args.min_model_precision is None and args.min_model_recall is None
-        dump["models"] = model_results
-
-    if args.results_json:
-        args.results_json.write_text(
-            json.dumps(
-                {
-                    side: [
-                        {k: sorted(v) if isinstance(v, set) else v for k, v in s.items()}
-                        for s in rows
-                    ]
-                    for side, rows in dump.items()
-                },
-                indent=1,
-            ),
-            encoding="utf-8",
-        )
+            print(f"\nno model truth for these repos in {models_truth.name}")
+            ok &= not args.gate
     return 0 if ok else 1
 
 
-def gate(label: str, value: float, minimum: float | None) -> bool:
-    if minimum is not None and value < minimum:
-        print(f"FAIL: {label} {value:.3f} < {minimum}")
-        return False
-    return True
+def gate(side: str, precision: float, recall: float) -> bool:
+    """The side's lenient scores against its FLOORS."""
+    ok = True
+    for label, value, minimum in zip(
+        ("precision", "recall"), (precision, recall), FLOORS[side], strict=True
+    ):
+        if value < minimum:
+            print(f"FAIL: {side} {label} {value:.3f} < {minimum}")
+            ok = False
+    return ok
 
 
 def print_side(

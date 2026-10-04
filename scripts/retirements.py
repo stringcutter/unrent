@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Check catalog/retirements.yaml against the vendors' own deprecation pages.
 
-    python scripts/retirements.py [--check | --write] [--notes] [--file PATH]
+    python scripts/retirements.py [--check | --write] [--notes]
 
 Each vendor publishes its model retirements as Markdown tables (the `.md` form of the
 docs page), one table per announcement, newest first: a shutdown date, the model ids
@@ -229,13 +229,12 @@ def main() -> int:
     mode = ap.add_mutually_exclusive_group()
     mode.add_argument("--check", action="store_true", help="report differences (default)")
     mode.add_argument("--write", action="store_true", help="rewrite the file from the pages")
-    ap.add_argument("--file", type=Path, default=FILE)
     ap.add_argument("--notes", action="store_true", help="also print skipped rows and conflicts")
     a = ap.parse_args()
     if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-    text = a.file.read_text(encoding="utf-8")
+    text = FILE.read_text(encoding="utf-8")
     top = text.splitlines()
     header = "\n".join(top[: next(n for n, ln in enumerate(top) if not ln.startswith("#"))])
     current = yaml.safe_load(text)["vendors"]
@@ -269,8 +268,8 @@ def main() -> int:
 
     if a.write:
         vendors = {name: {**v, "models": pages[name]} for name, v in current.items()}
-        a.file.write_text(render(header, vendors), encoding="utf-8")
-        print(f"Wrote {a.file}", file=sys.stderr)  # not into the pull request body
+        FILE.write_text(render(header, vendors), encoding="utf-8")
+        print(f"Wrote {FILE}", file=sys.stderr)  # not into the pull request body
         return 0
     return 1 if changed else 0
 

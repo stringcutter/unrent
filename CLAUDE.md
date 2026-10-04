@@ -44,9 +44,7 @@ uv run pytest -q                           # tests; with `rg` on PATH each detec
 uv run ruff check . && uv run ruff format --check .
 uv run unrent scan path/to/repo [--format json]
 uv run unrent catalog --validate           # after any catalog edit
-uv run python eval/run_eval.py --side all --min-precision 0.98 --min-recall 0.94 \
-  --min-oss-precision 0.98 --min-oss-recall 0.88 \
-  --min-model-precision 0.93 --min-model-recall 0.88  # first run clones 54 repos (UNRENT_EVAL_CACHE)
+uv run python eval/run_eval.py --side all --gate   # first run clones 54 repos (UNRENT_EVAL_CACHE)
 uv run python scripts/retirements.py       # retirements.yaml against the vendors' pages
 uv run python scripts/verify_packages.py   # every package signature exists in its registry
 uv run python scripts/new_services.py --models-dev                  # providers not in the catalog
@@ -82,9 +80,10 @@ uv run python scripts/refresh.py --check   # rankings, without writing
 ## Eval rules
 
 - Truth is labelled from the code, independently of unrent's output (`eval/TRUTH_RULES.md`).
-- Floors in `.github/workflows/eval.yml` sit just under the measured scores (2026-10-04:
-  closed precision 0.993, recall 0.957; open source 1.000 / 0.902; models 0.939 / 0.886).
-  Raise them when scores rise; **never lower them to pass**.
+- Floors live in `FLOORS` in `eval/run_eval.py` (`--gate` checks them; CI passes it) and
+  sit just under the measured scores (2026-10-04: closed precision 0.993, recall 0.957;
+  open source 1.000 / 0.902; models 0.939 / 0.886). Raise them when scores rise; **never
+  lower them to pass**.
 - The models side scores only the ids `corpus_models.yaml` lists under `labelled`. When
   `retirements.yaml` gains ids, grep the corpus for them, label any line that selects
   one (`MODEL_TRUTH_RULES.md`), and add them to `labelled`.

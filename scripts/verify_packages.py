@@ -1,6 +1,6 @@
 """Verify every package signature in unrent's catalog against its registry.
 
-Usage:  python scripts/verify_packages.py [CATALOG_DIR] [--out results.json] [--extra extra.yaml]
+Usage:  python scripts/verify_packages.py [--out results.json]
 
 Exits 1 when a signature names a package that does not exist: a typo there is a
 silent false negative, because nothing will ever match it. Only a 404/410 counts as
@@ -10,9 +10,6 @@ For every (service, kind, value) of a package kind, looks the value up in the
 registry and records: exists, latest version, last release date, deprecation /
 discontinued / abandoned / yanked flags, summary, author/owner and repository URL
 (so a human can spot packages that belong to another vendor or an OSS project).
-
-`--extra` checks a proposals file (same `detect:` shape, list of services) instead of
-/ in addition to the catalog, so proposed signatures can be verified the same way.
 
 Throttled: at most 4 concurrent requests, 0.15 s pause per request per worker.
 """
@@ -35,6 +32,7 @@ from pathlib import Path
 
 import yaml
 
+ROOT = Path(__file__).resolve().parent.parent
 UA = "unrent-catalog-check (+https://github.com/stringcutter/unrent)"
 PACKAGE_KINDS = (
     "requirement",
@@ -50,10 +48,16 @@ PACKAGE_KINDS = (
 )
 
 
-def get(url: str, accept: str = "application/json", tries: int = 3):
+def get(url: str, accept: str = "application/json", tries: int = 3, headers=None):
     for i in range(tries):
         req = urllib.request.Request(
-            url, headers={"User-Agent": UA, "Accept": accept, "Accept-Encoding": "gzip"}
+            url,
+            headers={
+                "User-Agent": UA,
+                "Accept": accept,
+                "Accept-Encoding": "gzip",
+                **(headers or {}),
+            },
         )
         try:
             with urllib.request.urlopen(req, timeout=30) as r:
@@ -74,10 +78,10 @@ def get(url: str, accept: str = "application/json", tries: int = 3):
     return 0, b""
 
 
-def jget(url: str):
+def jget(url: str, headers=None):
     """None only when the registry says the package is not there (404/410). Anything
     else that is not a JSON 200 raises, so the caller records 'could not check'."""
-    status, data = get(url)
+    status, data = get(url, headers=headers)
     if status in (404, 410):
         return None
     if status != 200:
@@ -290,20 +294,13 @@ def check_swift(spec):
     """A Swift package is its GitHub repository. Only a 404 means it is gone; a rate
     limit or a missing token is 'could not check', not 'does not exist'."""
     owner_repo = spec.split("github.com/", 1)[1]
-    headers = {"User-Agent": UA, "Accept": "application/vnd.github+json"}
+    headers = {"Accept": "application/vnd.github+json"}
     token = _github_token()
     if token:
         headers["Authorization"] = f"Bearer {token}"
-    req = urllib.request.Request(f"https://api.github.com/repos/{owner_repo}", headers=headers)
-    try:
-        with urllib.request.urlopen(req, timeout=30) as r:
-            d = json.load(r)
-    except urllib.error.HTTPError as e:
-        if e.code == 404:
-            return {"exists": False}
-        return {"exists": None, "error": f"GitHub returned {e.code}"}
-    except (urllib.error.URLError, TimeoutError) as e:
-        return {"exists": None, "error": str(e)}
+    d = jget(f"https://api.github.com/repos/{owner_repo}", headers=headers)
+    if d is None:
+        return {"exists": False}
     return {
         "exists": True,
         "canonical": d.get("full_name"),
@@ -314,6 +311,18 @@ def check_swift(spec):
         "renamed": d.get("full_name", "").lower() != owner_repo.lower(),
     }
 
+
+# Registry flags that a package is on its way out.
+FLAGS = (
+    "deprecated",
+    "discontinued",
+    "abandoned",
+    "archived",
+    "yanked",
+    "deprecated_hint",
+    "renamed",
+    "classifiers_inactive",
+)
 
 CHECKERS = {
     "requirement": check_pypi,
@@ -338,14 +347,6 @@ def load(paths):
                 {"id": repo, "detect": spec.get("detect")}
                 for repo, spec in data["projects"].items()
             ]
-        elif isinstance(data, dict):  # proposals.yaml: new_services + add_signatures
-            data = [
-                *(data.get("services") or data.get("new_services") or []),
-                *(
-                    {"id": a["service"] + " (+add)", "detect": a["detect"]}
-                    for a in data.get("add_signatures") or []
-                ),
-            ]
         for svc in data:
             for kind, values in (svc.get("detect") or {}).items():
                 if kind in PACKAGE_KINDS:
@@ -356,20 +357,11 @@ def load(paths):
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument(
-        "catalog",
-        nargs="?",
-        default=str(Path(__file__).resolve().parent.parent / "catalog" / "services"),
-    )
     ap.add_argument("--out", default=None, help="also write every result here as JSON")
-    ap.add_argument("--extra", nargs="*", default=[])
-    ap.add_argument("--no-catalog", action="store_true")
     a = ap.parse_args()
-    files = [] if a.no_catalog else sorted(Path(a.catalog).glob("*.yaml"))
-    alternatives = Path(a.catalog).parent / "alternatives.yaml"
-    if not a.no_catalog and alternatives.is_file():
-        files.append(alternatives)  # the open source projects' signatures
-    rows = load([*files, *a.extra])
+    catalog = ROOT / "catalog"
+    # the closed services, and the open source projects' signatures
+    rows = load([*sorted((catalog / "services").glob("*.yaml")), catalog / "alternatives.yaml"])
     unique = sorted({(k, v) for _, _, k, v in rows})
     print(f"{len(rows)} signatures, {len(unique)} unique", file=sys.stderr)
     results = {}
@@ -392,18 +384,7 @@ def main() -> int:
         print(f"\nCOULD NOT CHECK ({len(unchecked)}):")
         for r in unchecked:
             print(f"  {r['service']:28} {r['kind']:12} {r['value']}  {r.get('error', '')}")
-    flagged = [
-        r
-        for r in out
-        if r.get("deprecated")
-        or r.get("discontinued")
-        or r.get("abandoned")
-        or r.get("archived")
-        or r.get("yanked")
-        or r.get("deprecated_hint")
-        or r.get("renamed")
-        or r.get("classifiers_inactive")
-    ]
+    flagged = [r for r in out if any(r.get(k) for k in FLAGS)]
     print(f"\nNOT FOUND ({len(missing)}):")
     for r in missing:
         print(
@@ -411,23 +392,7 @@ def main() -> int:
         )
     print(f"\nFLAGGED ({len(flagged)}):")
     for r in flagged:
-        flags = {
-            k: r[k]
-            for k in (
-                "deprecated",
-                "discontinued",
-                "replaced_by",
-                "abandoned",
-                "archived",
-                "yanked",
-                "deprecated_hint",
-                "renamed",
-                "canonical",
-                "classifiers_inactive",
-                "summary",
-            )
-            if r.get(k)
-        }
+        flags = {k: r[k] for k in (*FLAGS, "replaced_by", "canonical", "summary") if r.get(k)}
         print(f"  {r['service']:28} {r['kind']:12} {r['value']}  {flags}")
     return 1 if missing else 0
 

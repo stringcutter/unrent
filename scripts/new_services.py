@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Closed AI services that are not in unrent's catalog yet, from two sources.
 
-    python scripts/new_services.py [--models-dev] [--reports DIR ...] [--drafts FILE]
+    python scripts/new_services.py [--models-dev [--write-catalog]] [--reports DIR ...]
 
 --models-dev   Compare the catalog with models.dev (https://models.dev/api.json), an open
                registry of hosted model providers with their API URL, key names and npm
@@ -11,9 +11,6 @@
                and rank the `unknown_candidates` of every scanned repo by how many repos
                name them. A host that shows up in several projects is worth a catalog
                entry, whichever registry it is in.
---drafts FILE  Also write catalog entries for the models.dev providers, in the
-               `new_services:` shape that scripts/verify_packages.py --extra checks.
-               Drafts, not entries: a person reviews the id, category and signatures.
 
 Prints a Markdown summary (for a job summary or an issue). Always exits 0 when the
 sources could be read: new services are news for a person, not a failure.
@@ -37,7 +34,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from unrent.catalog import load_catalog  # noqa: E402
-from unrent.discover import GENERIC_KEY, registered_domain  # noqa: E402
+from unrent.discover import GENERIC_KEY, _known, registered_domain  # noqa: E402
 
 MODELS_DEV = "https://models.dev/api.json"
 GENERATED = ROOT / "catalog" / "services" / "models-dev.yaml"
@@ -49,18 +46,6 @@ LOCAL = re.compile(r"localhost|127\.0\.0\.1|0\.0\.0\.0|\{|\$")
 LOCAL_RUNTIMES = {"qvac", "lmstudio", "ollama", "llama.cpp", "llamacpp", "jan", "localai"}
 
 
-def _known(catalog) -> tuple[set[str], set[str], set[str], set[str]]:
-    hosts, domains, env, npm = set(), set(), set(), set()
-    for s in catalog.detectable:
-        for needle in s.detect.get("endpoint", ()):
-            host = needle.lower().split("/")[0]
-            hosts.add(host)
-            domains.add(registered_domain(host))
-        env.update(s.detect.get("env", ()))
-        npm.update(s.detect.get("npm", ()))
-    return hosts, domains, env, npm
-
-
 def _host(url: str | None) -> str | None:
     m = re.match(r"https?://([^/:]+)", url or "")
     return m.group(1).lower() if m else None
@@ -70,7 +55,8 @@ def models_dev_missing(catalog) -> list[dict]:
     req = urllib.request.Request(MODELS_DEV, headers={"User-Agent": UA})
     with urllib.request.urlopen(req, timeout=60) as r:
         data = json.load(r)
-    hosts, domains, env, npm = _known(catalog)
+    hosts, domains, env, _ = _known(catalog)
+    npm = {p for s in catalog.detectable for p in s.detect.get("npm", ())}
     missing = []
     for pid, p in sorted(data.items()):
         api = p.get("api")
@@ -104,16 +90,14 @@ def models_dev_missing(catalog) -> list[dict]:
     return missing
 
 
-def _hand_catalog(path: Path):
+def _hand_catalog():
     """The catalog without the generated file: what people curated. Loading the
     generated file too would make its own entries look known (and a hand entry that
     replaces one would clash with it until the next refresh)."""
     with tempfile.TemporaryDirectory() as tmp:
         copy = Path(tmp) / "catalog"
-        shutil.copytree(path, copy, ignore=shutil.ignore_patterns(GENERATED.name, "*.json"))
-        for name in ("rankings.json",):
-            if (path / name).is_file():
-                shutil.copy(path / name, copy / name)
+        ignore = shutil.ignore_patterns(GENERATED.name, "star-history.json")
+        shutil.copytree(ROOT / "catalog", copy, ignore=ignore)
         return load_catalog(copy)
 
 
@@ -157,15 +141,14 @@ def _words(text: str) -> set[str]:
     }
 
 
-def catalog_entries(
-    missing: list[dict], taken: set[str], hand: list | None = None
-) -> tuple[list[dict], list[tuple[dict, str]]]:
+def catalog_entries(missing: list[dict], hand: list) -> tuple[list[dict], list[tuple[dict, str]]]:
     """One entry per vendor: providers on the same registered domain (Xiaomi and its
     token plans) or sharing a key are one service with several endpoints. A provider
     whose name matches a hand-written entry (watsonx, Kimi) is a new endpoint of a
     vendor the catalog knows: it is returned apart, for a person to add there."""
+    taken = {s.id for s in hand}
     vendors: dict[str, set[str]] = defaultdict(set)
-    hand_words = {s.id: _words(f"{s.id} {s.name}") for s in hand or []}
+    hand_words = {s.id: _words(f"{s.id} {s.name}") for s in hand}
     for sid, words in hand_words.items():
         for w in words:
             vendors[w].add(sid)
@@ -183,11 +166,10 @@ def catalog_entries(
         if known:
             overlaps.extend((m, known) for m in members)
             continue
-        members.sort(key=lambda m: (len(m["id"]), m["id"]))
         head = members[0]
         vendor = re.sub(r"[^a-z0-9]", "", f"{head['name']}{head['id']}".lower())
         if head["host"]:
-            vendor += _label_of(head["host"])
+            vendor += registered_domain(head["host"]).split(".")[0].replace("-", "")
         detect: dict[str, list[str]] = {}
         npm = sorted({m["npm"] for m in members if m["npm"]})
         endpoints = sorted({e for m in members if (e := _endpoint(m))})
@@ -220,27 +202,6 @@ def catalog_entries(
         entry["detect"] = detect
         entries.append(entry)
     return sorted(entries, key=lambda e: e["id"]), overlaps
-
-
-def _label_of(host: str) -> str:
-    return registered_domain(host).split(".")[0].replace("-", "")
-
-
-def draft(entry: dict) -> dict:
-    detect: dict[str, list[str]] = {}
-    if entry["npm"]:
-        detect["npm"] = [entry["npm"]]
-    if entry["host"]:
-        detect["endpoint"] = [entry["host"]]
-    if entry["env"]:
-        detect["env"] = entry["env"]
-    return {
-        "id": entry["id"],
-        "name": entry["name"],
-        "category": "LLM API",
-        "replace_with": ["open-llm", "llm-serving"],
-        "detect": detect,
-    }
 
 
 def corpus_candidates(dirs: list[Path]) -> list[dict]:
@@ -277,19 +238,17 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--models-dev", action="store_true")
     ap.add_argument("--reports", type=Path, nargs="*", default=[])
-    ap.add_argument("--drafts", type=Path)
     ap.add_argument(
         "--write-catalog",
         action="store_true",
         help=f"regenerate {GENERATED.relative_to(ROOT).as_posix()} from models.dev",
     )
-    ap.add_argument("--catalog", type=Path, default=ROOT / "catalog")
     a = ap.parse_args()
     if not a.models_dev and not a.reports:
         ap.error("give --models-dev and/or --reports")
     if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    catalog = _hand_catalog(a.catalog)
+    catalog = _hand_catalog()
     out = ["# AI services not in the catalog", ""]
 
     if a.models_dev:
@@ -312,7 +271,7 @@ def main() -> int:
             out.append("")
         if a.write_catalog:
             hand = list(catalog.services)  # the hand catalog: generated file left out
-            entries, overlaps = catalog_entries(missing, {s.id for s in hand}, hand)
+            entries, overlaps = catalog_entries(missing, hand)
             if overlaps:
                 out += [
                     "### New endpoints of vendors the catalog knows",
@@ -334,15 +293,6 @@ def main() -> int:
             )
             where = GENERATED.relative_to(ROOT).as_posix()
             out += [f"Wrote {len(entries)} entries to `{where}`.", ""]
-        if a.drafts:
-            body = {"new_services": [draft(m) for m in missing]}
-            a.drafts.write_text(
-                "# Drafts from models.dev: review id, category and signatures before\n"
-                "# moving an entry into catalog/services/. Check packages with\n"
-                f"#   python scripts/verify_packages.py --no-catalog --extra {a.drafts.name}\n"
-                + yaml.safe_dump(body, sort_keys=False, allow_unicode=True),
-                encoding="utf-8",
-            )
 
     if a.reports:
         found = corpus_candidates(a.reports)

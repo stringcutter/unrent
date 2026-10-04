@@ -183,8 +183,7 @@ def main() -> int:
                         configured.add(name)
 
     constants = [k for k in settings if k not in configured]
-    for k in constants:
-        del settings[k]
+    settings = {k: v for k, v in settings.items() if k in configured}
     test_only: list[str] = []
 
     def unexplained(items: dict[str, list[str]], key_of) -> list[tuple[str, list[str]]]:
