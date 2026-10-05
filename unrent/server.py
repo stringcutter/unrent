@@ -1,7 +1,8 @@
 """unrent as an MCP server: the scanner and the rankings, as tools for coding agents.
 
-Run with `unrent mcp` (stdio). Rankings come from the unrent repository, at most a
-week old (see fresh.py); the code being scanned never leaves the machine.
+Run with `unrent mcp` (stdio). Rankings and model retirements come from the unrent
+repository, at most a week old (see fresh.py); the code being scanned never leaves the
+machine.
 """
 
 from __future__ import annotations
@@ -79,7 +80,8 @@ def _shipped() -> dict:
 
 
 def _catalog() -> tuple[Catalog, fresh.Rankings]:
-    """The catalog with the newest rankings, reloaded when they may have changed."""
+    """The catalog with the newest rankings and retirements, reloaded when they may have
+    changed."""
     if _state and time.monotonic() < _state["until"]:
         return _state["catalog"], _state["rankings"]
     shipped = _shipped()
@@ -91,8 +93,12 @@ def _catalog() -> tuple[Catalog, fresh.Rankings]:
             raise ToolError(f"the unrent catalog did not load: {exc}") from exc
         rankings = fresh.Rankings(shipped, "shipped", f"the latest rankings did not load: {exc}")
         catalog = load_catalog(DEFAULT_CATALOG, shipped)
+    retirements = fresh.retirements(catalog)
+    catalog.retirements = retirements.data
     ttl = fresh.MAX_AGE if rankings.note is None else RETRY_AFTER
-    _state.update(catalog=catalog, rankings=rankings, until=time.monotonic() + ttl)
+    _state.update(
+        catalog=catalog, rankings=rankings, retirements=retirements, until=time.monotonic() + ttl
+    )
     return catalog, rankings
 
 
@@ -100,6 +106,14 @@ def _rankings_json(rankings: fresh.Rankings) -> dict:
     out = {"date": rankings.date, "source": rankings.source}
     if rankings.note:
         out["note"] = rankings.note
+    return out
+
+
+def _retirements_json() -> dict:
+    retirements = _state["retirements"]
+    out = {"source": retirements.source}
+    if retirements.note:
+        out["note"] = retirements.note
     return out
 
 
@@ -204,6 +218,7 @@ def scan(
         pool["ranked_by"] = _ranked_by(pool["ranked_by"])
         _capped([pool], "items", top)
     result["rankings"] = _rankings_json(rankings)
+    result["retirements"] = _retirements_json()
     del result["rankings_date"]
     return result
 

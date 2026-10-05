@@ -87,8 +87,10 @@ def checkout(repo: dict, cache: Path) -> Path:
 def run_unrent(src: Path, out: Path) -> dict:
     out.parent.mkdir(parents=True, exist_ok=True)
     cmd = [sys.executable, "-m", "unrent.cli", "scan", str(src), "--format", "json", "-o", str(out)]
-    # From the checkout's root, so `-m` imports this checkout's unrent.
-    proc = subprocess.run(cmd, cwd=HERE.parent, capture_output=True, text=True)
+    # From the checkout's root, so `-m` imports this checkout's unrent; offline, so the
+    # checkout's retirements.yaml is judged, not the one on main.
+    env = {**os.environ, "UNRENT_OFFLINE": "1"}
+    proc = subprocess.run(cmd, cwd=HERE.parent, env=env, capture_output=True, text=True)
     if proc.returncode != 0 or not out.is_file():
         raise RuntimeError(f"unrent failed on {src}: {proc.stderr.strip()[-2000:]}")
     return json.loads(out.read_text(encoding="utf-8"))

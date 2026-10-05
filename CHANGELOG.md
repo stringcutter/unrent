@@ -20,6 +20,10 @@ each release ships the rankings as of its date.
 
 ### Changed
 - The MCP server's instructions cover models that stop working, not only closed services.
+- Model retirements come from `catalog/retirements.yaml` on main, cached for six hours,
+  in `unrent scan`, the MCP server and `unrent hook`, so an old install still knows this
+  week's dates. The shipped copy is used offline (`UNRENT_OFFLINE=1`) or when the fetch
+  fails.
 
 ## [0.2.2] - 2026-10-04
 

@@ -2,7 +2,9 @@
 
 unrent scans a codebase for the **closed AI services** it depends on (with file:line
 evidence) and ranks the **open source** that replaces them, plus the open source AI it
-already runs. Deterministic, offline, standard library + PyYAML. The maintainer usually
+already runs. Standard library + PyYAML. The scanned code never leaves the machine; the
+public rankings and retirements are fetched from `main`, so output is deterministic only
+with `UNRENT_OFFLINE=1` (which the eval and the tests set). The maintainer usually
 writes in Danish; answer in the language of their latest message.
 
 ## Scope (decided by the maintainer; don't reopen it)
@@ -27,7 +29,7 @@ writes in Danish; answer in the language of their latest message.
 | `unrent/terminal.py` | The terminal view (`cut`/`held`/`snapped`/`snaps`/`runs` rows), `--why`, colour and the progress line; stdlib only |
 | `unrent/retired.py` | Snapped models: which model facts select a retiring id (`selects`), the replacement chain |
 | `unrent/server.py` | `unrent mcp`: tools `scan`, `alternatives`, `standing`, `catalog` |
-| `unrent/fresh.py` | Live rankings from `catalog/rankings.json` on `main`, cached 6 h, else the shipped snapshot |
+| `unrent/fresh.py` | Live rankings (MCP server) and retirements (scan, MCP, hook) from `catalog/` on `main`, cached 6 h, else the shipped copy; `UNRENT_OFFLINE=1` to test local catalog edits |
 | `catalog/services/*.yaml` | Closed services. `models-dev.yaml` is **generated**; the others are hand-written |
 | `catalog/alternatives.yaml` | Pools of open source alternatives and the open source projects recognised in code |
 | `catalog/rankings.json`, `star-history.json` | Written weekly by `scripts/refresh.py` |

@@ -17,6 +17,7 @@ from pathlib import Path
 
 import yaml
 
+from . import fresh
 from .catalog import CatalogError, load_catalog
 from .detect import LEFT_OUT, collect_facts, file_root, left_out, match
 from .discover import scan_unknown
@@ -67,7 +68,14 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--version", action="version", version=f"%(prog)s {_version()}")
     sub = p.add_subparsers(dest="command", metavar="{scan,catalog,mcp,hook}")
 
-    scan = sub.add_parser("scan", help="scan a directory or one file")
+    scan = sub.add_parser(
+        "scan",
+        help="scan a directory or one file",
+        description="Scan a directory or one file for closed AI services, the open source AI "
+        "it runs and model ids that are retiring. Model retirements are fetched from the "
+        "unrent repository (cached for six hours; UNRENT_OFFLINE=1 keeps the shipped ones). "
+        "The scanned code never leaves the machine.",
+    )
     scan.add_argument("path", nargs="?", default=".", help="directory or file to scan (default: .)")
     scan.add_argument(
         "--format",
@@ -132,7 +140,9 @@ def build_parser() -> argparse.ArgumentParser:
         description="A PostToolUse hook for Write, Edit and NotebookEdit: reads the hook's JSON "
         "on stdin and, when the text just written puts a retired or retiring model id on a "
         "line that selects it, prints the hook's JSON with the date and what to use "
-        "instead. Prints nothing otherwise, and never fails the edit. Offline.",
+        "instead. Prints nothing otherwise, and never fails the edit. Retirements are fetched "
+        "from the unrent repository at most every six hours (UNRENT_OFFLINE=1 keeps the "
+        "shipped ones); nothing about the code leaves the machine.",
     )
     hook.add_argument(
         "--as-of",
@@ -187,6 +197,7 @@ def cmd_scan(args) -> int:
     if fmt == "auto":
         fmt = "terminal" if not args.output and sys.stdout.isatty() else "markdown"
     catalog = load_catalog(args.catalog)
+    catalog.retirements = fresh.retirements(catalog).data
     skipped: list[Path] = []
     unknown: list[dict] = []
     progress = Progress(enabled=None if fmt == "terminal" or args.why else False)
@@ -279,13 +290,24 @@ def cmd_catalog(args) -> int:
     return 0
 
 
-def _retiring(catalog_dir: Path) -> re.Pattern:
-    """Any model id in retirements.yaml, as a whole id; read without the rest of the
-    catalog. `gpt-4` is not in `gpt-4o` nor `ada` in `metadata`."""
+HOOK_TIMEOUT = 2  # seconds the hook waits for the latest retirements, once per fresh.MAX_AGE
+
+
+def _retiring(catalog_dir: Path, latest: dict | None) -> re.Pattern:
+    """Any model id in the shipped retirements.yaml or the latest one, as a whole id;
+    read without the rest of the catalog. `gpt-4` is not in `gpt-4o` nor `ada` in
+    `metadata`."""
     text = (catalog_dir / "retirements.yaml").read_text("utf-8")
     raw = yaml.load(text, Loader=getattr(yaml, "CSafeLoader", yaml.SafeLoader))
-    ids = [re.escape(str(m)) for v in raw["vendors"].values() for m in v["models"]]
-    return re.compile(rf"(?<![\w.-])(?:{'|'.join(ids)})(?![\w.-])")
+    ids = {
+        re.escape(str(m))
+        for r in (raw, latest or {"vendors": {}})
+        for v in r["vendors"].values()
+        if isinstance(v, dict) and isinstance(v.get("models"), dict)
+        for m in v["models"]
+        if str(m)
+    }
+    return re.compile(rf"(?<![\w.-])(?:{'|'.join(sorted(ids))})(?![\w.-])")
 
 
 def hook_context(event: dict, catalog_dir: Path, as_of: datetime.date | None = None) -> str:
@@ -297,7 +319,8 @@ def hook_context(event: dict, catalog_dir: Path, as_of: datetime.date | None = N
     parts = (tool.get("content"), tool.get("new_string"), tool.get("new_source"))
     written = "\n".join(p for p in parts if isinstance(p, str))
     # Most edits name no retiring model: answer those before loading the catalog.
-    hits = set(_retiring(catalog_dir).findall(written))
+    latest = fresh.latest_retirements(HOOK_TIMEOUT)
+    hits = set(_retiring(catalog_dir, latest[0]).findall(written))
     if not hits:
         return ""
     cwd = Path(event.get("cwd") or ".").resolve()
@@ -306,6 +329,7 @@ def hook_context(event: dict, catalog_dir: Path, as_of: datetime.date | None = N
         return ""
     root = file_root(path, cwd)
     catalog = load_catalog(catalog_dir)
+    catalog.retirements = fresh.retirements(catalog, latest).data
     findings = match(collect_facts(root, catalog, only=path), catalog, path)
     out = []
     for s in snaps(findings, catalog, root):

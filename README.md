@@ -133,8 +133,9 @@ listed, never skipped silently.
   Archived projects are dropped, and open core is marked.
 
 The CLI uses the rankings shipped with its release. The MCP server fetches the latest
-from this repo, cached for six hours (`UNRENT_OFFLINE=1` turns that off). Only rankings
-come in; your code never goes out.
+from this repo, and the CLI, the MCP server and the hook fetch the latest model
+retirements, all cached for six hours (`UNRENT_OFFLINE=1` turns that off). Only these
+public lists come in; your code never goes out.
 
 </details>
 

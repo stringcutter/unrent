@@ -14,6 +14,7 @@ from __future__ import annotations
 import dataclasses
 import datetime
 import json
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -443,13 +444,28 @@ def _load_retirements(path: Path, service_ids: set[str]) -> dict[str, Retirement
     """retirements.yaml, which a catalog may leave out."""
     if not path.is_file():
         return {}
-    raw = _load_yaml(path) or {}
+    return parse_retirements(_load_yaml(path), path.name, service_ids)
+
+
+# What a downloaded copy may put in front of an agent (the hook's context): a link and
+# a model id, nothing that reads as text.
+_LINK = re.compile(r"https://\S{1,200}")
+_MODEL_ID = re.compile(r"[\w.:@/-]{1,100}")
+
+
+def parse_retirements(
+    raw, name: str, service_ids: set[str], known_only: bool = False
+) -> dict[str, Retirement]:
+    """A parsed retirements.yaml. `known_only` is for a copy fetched from main: it
+    drops, instead of failing on, the services this catalog lacks (and a vendor left
+    with none), a vendor whose `url` is not a plain https link and a model whose
+    replacement is not a plain model id."""
     vendors = raw.get("vendors") if isinstance(raw, dict) else None
     if not isinstance(vendors, dict):
-        raise CatalogError(f"{path.name}: expected a `vendors` mapping")
+        raise CatalogError(f"{name}: expected a `vendors` mapping")
     out: dict[str, Retirement] = {}
     for vendor, entry in vendors.items():
-        where = f"{path.name}: {vendor}"
+        where = f"{name}: {vendor}"
         if not isinstance(entry, dict) or not isinstance(entry.get("models"), dict):
             raise CatalogError(f"{where}: expected `url`, `services` and `models`")
         if not entry.get("url"):
@@ -457,6 +473,10 @@ def _load_retirements(path: Path, service_ids: set[str]) -> dict[str, Retirement
         services = _as_tuple(entry.get("services"))
         if not services:
             raise CatalogError(f"{where}: `services` is missing")
+        if known_only:
+            services = tuple(s for s in services if s in service_ids)
+            if not services or not _LINK.fullmatch(str(entry["url"])):
+                continue
         unknown = [s for s in services if s not in service_ids]
         if unknown:
             raise CatalogError(f"{where}: unknown services {unknown}")
@@ -468,6 +488,8 @@ def _load_retirements(path: Path, service_ids: set[str]) -> dict[str, Retirement
                 replacement is None or isinstance(replacement, str)
             ):
                 raise CatalogError(f"{where}: {model} needs a `retires` date and a `replacement`")
+            if known_only and replacement is not None and not _MODEL_ID.fullmatch(replacement):
+                continue
             if model in out:
                 raise CatalogError(f"{where}: {model} is also under {out[model].vendor}")
             url = entry["url"]
