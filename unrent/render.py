@@ -246,13 +246,16 @@ def payload(
     skipped: list[Path] = (),
     unknown: list[dict] | None = None,
     as_of: _dt.date | None = None,
+    scanned: str | None = None,
 ) -> dict:
-    """`as_of`: the day retirements are judged against; today when None."""
+    """`as_of`: the day retirements are judged against; today when None. `scanned`:
+    what was scanned when not the whole of root (one file)."""
     split = _split(findings)
     as_of = as_of or today()
     retiring = snaps(findings, catalog, root)
     return {
-        "scanned": root.name,  # the folder name; a full path would leak the user's home
+        # The folder name; a full path would leak the user's home.
+        "scanned": scanned or root.name,
         "scanned_at": _dt.datetime.now(_dt.UTC).isoformat(timespec="seconds"),
         "as_of": as_of.isoformat(),
         "catalog_services": len(catalog),
@@ -291,9 +294,12 @@ def to_json(
     skipped: list[Path] = (),
     unknown: list[dict] | None = None,
     as_of: _dt.date | None = None,
+    scanned: str | None = None,
 ) -> str:
     return json.dumps(
-        payload(findings, root, catalog, skipped, unknown, as_of), indent=2, ensure_ascii=False
+        payload(findings, root, catalog, skipped, unknown, as_of, scanned),
+        indent=2,
+        ensure_ascii=False,
     )
 
 
@@ -450,10 +456,11 @@ def to_markdown(
     skipped: list[Path] = (),
     unknown: list[dict] | None = None,
     as_of: _dt.date | None = None,
+    scanned: str | None = None,
 ) -> str:
     split = _split(findings)
     as_of = as_of or today()
-    out: list[str] = [f"# AI dependencies in `{root.name}`", ""]
+    out: list[str] = [f"# AI dependencies in `{scanned or root.name}`", ""]
     ranked = f" · alternatives ranked {catalog.rankings_date}" if catalog.rankings_date else ""
     out += [
         f"Scanned {today().isoformat()} · "

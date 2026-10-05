@@ -265,13 +265,16 @@ def test_scan_honours_skip_tests_and_exclude(monkeypatch, project):
     assert {"anthropic", "cohere"} <= ids(call("scan", path=str(project)))
     out = call("scan", path=str(project), skip_tests=True, exclude=["examples/"])
     assert ids(out) == {"openai", "pinecone"}
+    assert ids(call("scan", path=str(project / "examples" / "demo.py"))) == {"cohere"}
+    out = call("scan", path=str(project / "tests" / "test_x.py"), skip_tests=True)
+    assert "is left out" in out["error"]
 
 
 @pytestmark_mcp
 @pytest.mark.parametrize(
     "args, message",
     [
-        ({"path": "/definitely/not/here"}, "is not a directory"),
+        ({"path": "/definitely/not/here"}, "is not a file or directory"),
         ({"path": ".", "top": 0}, "top must be 1 or more"),
         ({"path": ".", "evidence": 0}, "evidence must be 1 or more"),
     ],

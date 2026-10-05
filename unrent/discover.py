@@ -224,9 +224,11 @@ def _observe(known: tuple, path: Path, rel: str) -> tuple[list, list, bool] | No
     return urls, settings, generated
 
 
-def scan_unknown(root: Path, catalog: Catalog, exclude=(), skip_tests: bool = False) -> list[dict]:
+def scan_unknown(
+    root: Path, catalog: Catalog, exclude=(), skip_tests: bool = False, only: Path | None = None
+) -> list[dict]:
     """Candidates for a project directory, with the same file selection as a scan."""
-    files = iter_files(root, list(exclude))
+    files = [p for p in iter_files(root, list(exclude), only=only) if only in (None, p)]
     own_repo = _own_repo(root)
     known_hosts, known_domains, known_settings, known_names = _known(catalog)
     known_short = {k for k in _service_words(catalog) if len(k) >= 3}  # AGENT_EXA_API_KEY

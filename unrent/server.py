@@ -20,7 +20,7 @@ from mcp.types import ToolAnnotations
 from . import fresh
 from .catalog import Catalog, CatalogError, Pool, Service, load_catalog
 from .cli import DEFAULT_CATALOG, _version
-from .detect import collect_facts, match
+from .detect import LEFT_OUT, collect_facts, file_root, left_out, match
 from .discover import scan_unknown
 from .render import (
     RANKED_BY,
@@ -39,11 +39,16 @@ INSTRUCTIONS = """\
 unrent finds the closed AI services a codebase depends on (LLM APIs, vector databases,
 embeddings, OCR, speech, observability, ...), with file and line for every finding, and
 ranks the open source that could replace them. It also ranks the open source AI
-components a codebase already runs against the rest of their field.
+components a codebase already runs against the rest of their field, and flags the model
+ids the code selects that their vendor has retired (`snapped`: requests fail now) or
+will retire on a date (`snaps`).
 
-Use `scan` on a project directory for the full picture. Use `alternatives` for the
-current best open source in a category or for a named closed service, `standing` for
-where one open source project ranks, and `catalog` to see what unrent recognises.
+Use `scan` on a project directory for the full picture, and also when someone asks
+whether the models a project uses are deprecated or shutting down: report
+`models_retiring` first, each with its date, the lines that select it and
+`use_instead`. Use `alternatives` for the current best open source in a category or for
+a named closed service, `standing` for where one open source project ranks, and
+`catalog` to see what unrent recognises.
 
 Know its limits:
 - It detects the services in its catalog and nothing else. An API host, base URL or
@@ -162,7 +167,7 @@ def scan(
     unrent may not know yet, to check one by one), and `alternatives` (the top open
     source per pool). Secrets in evidence are masked.
 
-    path: directory to scan; absolute, or relative to where the server runs.
+    path: directory to scan, or one file; absolute, or relative to where the server runs.
     skip_tests: leave out test, spec and fixture code.
     exclude: .gitignore-style patterns to skip, e.g. ["examples/", "*.ipynb"].
     top: alternatives and projects-ranked-above listed per pool.
@@ -171,17 +176,25 @@ def scan(
     _positive("top", top)
     _positive("evidence", evidence)
     root = Path(path).expanduser().resolve()
-    if not root.is_dir():
-        raise ToolError(f"{path} is not a directory")
+    only = scanned = None
+    if root.is_file():
+        only, root = root, file_root(root, Path.cwd())
+        scanned = only.relative_to(root).as_posix()
+        if left_out(root, only, list(exclude or []), skip_tests):
+            raise ToolError(f"{path} {LEFT_OUT}")
+    elif not root.is_dir():
+        raise ToolError(f"{path} is not a file or directory")
     catalog, rankings = _catalog()
     skipped: list[Path] = []
     try:
-        facts = collect_facts(root, catalog, list(exclude or []), skipped, skip_tests=skip_tests)
+        facts = collect_facts(
+            root, catalog, list(exclude or []), skipped, skip_tests=skip_tests, only=only
+        )
     except OSError as exc:
         raise ToolError(f"could not scan {path}: {exc}") from exc
-    findings = match(facts, catalog)
-    unknown = scan_unknown(root, catalog, list(exclude or []), skip_tests=skip_tests)
-    result = payload(findings, root, catalog, skipped, unknown)
+    findings = match(facts, catalog, only)
+    unknown = scan_unknown(root, catalog, list(exclude or []), skip_tests=skip_tests, only=only)
+    result = payload(findings, root, catalog, skipped, unknown, scanned=scanned)
     for key in ("found", "models_named", "models_retiring", "env_template_only", "open_source"):
         _capped(result[key], "evidence", evidence)
     running = [f for f in findings if f.service.open_source]

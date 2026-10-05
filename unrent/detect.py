@@ -346,12 +346,25 @@ def _walk(root: Path) -> list[Path]:
 
 
 def iter_files(
-    root: Path, exclude: Iterable[str] = (), skipped: list[Path] | None = None
+    root: Path,
+    exclude: Iterable[str] = (),
+    skipped: list[Path] | None = None,
+    only: Path | None = None,
 ) -> list[Path]:
     """Files to scan. Files over the size limit are left out and, when `skipped` is
-    given, recorded there so the report can say so."""
+    given, recorded there so the report can say so. `only`: one file under root to scan
+    (`unrent scan app.py`), with the package manifests beside it and in the directories
+    above it up to root, for the rules that look at the whole project."""
     rules = load_ignore(root, exclude)
-    files = _git_files(root)
+    if only:
+        # ponytail: manifests only, so project-wide local config (`.env` with
+        # OPENAI_BASE_URL=http://localhost:11434/v1) is not seen and the file's `openai`
+        # import counts where a directory scan drops it; model ids are unaffected. Read
+        # the env and config files above it too if that matters.
+        dirs = [d for d in (only.parent, *only.parent.parents) if d.is_relative_to(root)]
+        files = [only, *(p for d in dirs for p in d.iterdir() if p != only and _manifest_parser(p))]
+    else:
+        files = _git_files(root)
     if files is None:
         files = _walk(root)
     out = []
@@ -376,6 +389,18 @@ def iter_files(
             continue
         out.append(path)
     return sorted(out)
+
+
+def left_out(root: Path, only: Path, exclude: Iterable[str] = (), skip_tests: bool = False) -> bool:
+    """Does a scan of one file leave that file out: ignored, in a skipped directory, or
+    test code under skip_tests? One over the size limit is listed as not scanned."""
+    skipped: list[Path] = []
+    if only not in iter_files(root, exclude, skipped, only):
+        return only not in skipped
+    return skip_tests and is_test_path(only.relative_to(root).as_posix())
+
+
+LEFT_OUT = "is left out (.unrentignore, --exclude, test code or a skipped directory)"
 
 
 def _is_relevant(path: Path) -> bool:
@@ -1648,6 +1673,14 @@ def facts_for_file(
     return facts
 
 
+def file_root(path: Path, cwd: Path) -> Path:
+    """Where a scan of one file is rooted: its repository, else `cwd` when that holds
+    it, else its directory. Test code, .unrentignore and the manifests above it then
+    count as in a scan of the whole project."""
+    repo = next((d for d in path.parents if (d / ".git").exists()), None)
+    return repo or (cwd if path.is_relative_to(cwd) else path.parent)
+
+
 def _local_modules(root: Path, files: list[Path]) -> set[str]:
     """Top-level Python modules the project defines itself, at the root or under
     src/: `from perplexity import score` then means your perplexity.py."""
@@ -1681,11 +1714,14 @@ def collect_facts(
     skipped: list[Path] | None = None,
     skip_tests: bool = False,
     progress: Callable[[int, int], None] | None = None,
+    only: Path | None = None,
 ) -> list[Fact]:
     """Read every relevant file once and extract every fact the catalog could care about.
-    `progress(done, total)` is called as files are read, for a status line."""
+    `progress(done, total)` is called as files are read, for a status line. With
+    `only` (see iter_files), the manifests around the file give their dependencies and
+    nothing else."""
     needles = Needles(catalog)
-    files = iter_files(root, exclude, skipped)
+    files = iter_files(root, exclude, skipped, only)
     if progress:
         progress(0, len(files))
     found = ripgrep_hits(root, needles, files)
@@ -1707,6 +1743,8 @@ def collect_facts(
             continue
         for fact in next(per_file):
             if fact.kind == "python_import" and _is_local_import(fact, local, is_file):
+                continue
+            if only and files[done - 1] != only and not fact.manifest:
                 continue
             facts.append(dataclasses.replace(fact, in_test=in_test) if in_test else fact)
     own = _own_repo(root)
@@ -1871,7 +1909,9 @@ def _lookup_keys(kind: str, value: str) -> list[str]:
     return [sep.join(parts[:i]) for i in range(1, len(parts) + 1)]
 
 
-def match(facts: list[Fact], catalog: Catalog) -> list[Finding]:
+def match(facts: list[Fact], catalog: Catalog, only: Path | None = None) -> list[Finding]:
+    """Findings from facts. `only`: a one-file scan, whose findings keep that file's
+    evidence alone (its manifests have had their say in the overlap rules)."""
     index: dict[tuple[str, str], list[Service]] = {}
     for service in catalog.detectable:
         for kind, signatures in service.detect.items():
@@ -1906,6 +1946,9 @@ def match(facts: list[Fact], catalog: Catalog) -> list[Finding]:
     # called, so the gateway finding they build is a real dependency.
     findings = _mark_models_only(findings)
     findings = _ai_sdk_default_gateway(findings, facts, catalog)
+    if only:
+        kept = [(f, tuple(x for x in f.facts if x.file == only)) for f in findings]
+        findings = [dataclasses.replace(f, facts=facts) for f, facts in kept if facts]
     findings.sort(key=lambda f: (f.service.category, f.service.name))
     return findings
 

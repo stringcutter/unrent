@@ -288,9 +288,11 @@ def to_terminal(
     skipped: list[Path] = (),
     unknown: list[dict] | None = None,
     as_of=None,
+    scanned: str | None = None,
 ) -> str:
     """`command` is how the user ran the scan, for the hints at the end; `as_of` the day
-    retirements are judged against (today when None)."""
+    retirements are judged against (today when None); `scanned` what was scanned when
+    not the whole of root."""
     st = Style(colour)
     split = _split(findings)
     unknown = list(unknown or [])
@@ -304,7 +306,7 @@ def to_terminal(
     gone = sum(1 for r in snapping if r.state == "snapped")
     out = ["", _headline(len(closed), cut, gone, len(snapping) - gone, st)]
     ranked = f" · alternatives ranked {catalog.rankings_date}" if catalog.rankings_date else ""
-    out += [st.mute(f"{root.name}{ranked}"), ""]
+    out += [st.mute(f"{scanned or root.name}{ranked}"), ""]
     out += _blocks([closed, snapping, running], width, st)
     if all_rows:
         out.append("")

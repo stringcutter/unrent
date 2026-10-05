@@ -4,19 +4,24 @@ from __future__ import annotations
 
 import argparse
 import datetime
+import json
 import os
+import re
 import shlex
 import shutil
 import subprocess
 import sys
+import traceback
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 
+import yaml
+
 from .catalog import CatalogError, load_catalog
-from .detect import collect_facts, match
+from .detect import LEFT_OUT, collect_facts, file_root, left_out, match
 from .discover import scan_unknown
-from .render import to_json, to_markdown
-from .retired import snaps
+from .render import to_json, to_markdown, today
+from .retired import _rel, replacement, snaps, state
 from .terminal import Progress, to_terminal, wants_colour, why, why_model
 
 
@@ -60,10 +65,10 @@ def build_parser() -> argparse.ArgumentParser:
         "replace them, and which models are about to stop working.",
     )
     p.add_argument("--version", action="version", version=f"%(prog)s {_version()}")
-    sub = p.add_subparsers(dest="command", metavar="{scan,catalog,mcp}")
+    sub = p.add_subparsers(dest="command", metavar="{scan,catalog,mcp,hook}")
 
-    scan = sub.add_parser("scan", help="scan a directory")
-    scan.add_argument("path", nargs="?", default=".", help="directory to scan (default: .)")
+    scan = sub.add_parser("scan", help="scan a directory or one file")
+    scan.add_argument("path", nargs="?", default=".", help="directory or file to scan (default: .)")
     scan.add_argument(
         "--format",
         "-f",
@@ -120,6 +125,22 @@ def build_parser() -> argparse.ArgumentParser:
         "UNRENT_OFFLINE=1 keeps the shipped ones). The scanned code never leaves the "
         "machine.",
     )
+
+    hook = sub.add_parser(
+        "hook",
+        help="tell a coding agent when it writes a model id that is retiring",
+        description="A PostToolUse hook for Write, Edit and NotebookEdit: reads the hook's JSON "
+        "on stdin and, when the text just written puts a retired or retiring model id on a "
+        "line that selects it, prints the hook's JSON with the date and what to use "
+        "instead. Prints nothing otherwise, and never fails the edit. Offline.",
+    )
+    hook.add_argument(
+        "--as-of",
+        type=_date,
+        metavar="YYYY-MM-DD",
+        help="judge model retirements as of this day instead of today",
+    )
+    hook.add_argument("--catalog", type=Path, default=DEFAULT_CATALOG, help=argparse.SUPPRESS)
     return p
 
 
@@ -139,8 +160,12 @@ def _quote(arg: str) -> str:
 
 def cmd_scan(args) -> int:
     root = Path(args.path).resolve()
-    if not root.is_dir():
-        print(f"unrent: {root} is not a directory", file=sys.stderr)
+    only = scanned = None
+    if root.is_file():
+        only, root = root, file_root(root, Path.cwd())
+        scanned = only.relative_to(root).as_posix()
+    elif not root.is_dir():
+        print(f"unrent: {root} is not a file or directory", file=sys.stderr)
         return 2
     exclude = list(args.exclude)
     if args.output:
@@ -152,6 +177,9 @@ def cmd_scan(args) -> int:
         if target.is_relative_to(root):
             # Never scan the report we are about to write (or wrote last time).
             exclude.append("/" + target.relative_to(root).as_posix())
+    if only and left_out(root, only, exclude, args.skip_tests):
+        print(f"unrent: {args.path} {LEFT_OUT}", file=sys.stderr)
+        return 2
     fmt = args.format
     if args.why and fmt in ("markdown", "json"):
         print(f"unrent: --why prints text; drop --format {fmt}", file=sys.stderr)
@@ -164,12 +192,18 @@ def cmd_scan(args) -> int:
     progress = Progress(enabled=None if fmt == "terminal" or args.why else False)
     try:
         facts = collect_facts(
-            root, catalog, exclude, skipped, skip_tests=args.skip_tests, progress=progress.files
+            root,
+            catalog,
+            exclude,
+            skipped,
+            skip_tests=args.skip_tests,
+            progress=progress.files,
+            only=only,
         )
-        findings = match(facts, catalog)
+        findings = match(facts, catalog, only)
         if not args.why:
             progress.show("looking for AI APIs the catalog does not know")
-            unknown = scan_unknown(root, catalog, exclude, skip_tests=args.skip_tests)
+            unknown = scan_unknown(root, catalog, exclude, skip_tests=args.skip_tests, only=only)
     finally:
         progress.done()
     colour = wants_colour(sys.stdout) and not args.output
@@ -189,7 +223,7 @@ def cmd_scan(args) -> int:
             print(f"unrent: {args.why} is not among what was found ({ids})", file=sys.stderr)
             return 2
     elif fmt == "json":
-        text = to_json(findings, root, catalog, skipped, unknown, args.as_of)
+        text = to_json(findings, root, catalog, skipped, unknown, args.as_of, scanned)
     elif fmt == "terminal":
         text = to_terminal(
             findings,
@@ -201,6 +235,7 @@ def cmd_scan(args) -> int:
             skipped=skipped,
             unknown=unknown,
             as_of=args.as_of,
+            scanned=scanned,
         )
     else:
         text = to_markdown(
@@ -211,6 +246,7 @@ def cmd_scan(args) -> int:
             skipped=skipped,
             unknown=unknown,
             as_of=args.as_of,
+            scanned=scanned,
         )
     if args.output:
         args.output.write_text(text + "\n", encoding="utf-8")
@@ -243,6 +279,69 @@ def cmd_catalog(args) -> int:
     return 0
 
 
+def _retiring(catalog_dir: Path) -> re.Pattern:
+    """Any model id in retirements.yaml, as a whole id; read without the rest of the
+    catalog. `gpt-4` is not in `gpt-4o` nor `ada` in `metadata`."""
+    text = (catalog_dir / "retirements.yaml").read_text("utf-8")
+    raw = yaml.load(text, Loader=getattr(yaml, "CSafeLoader", yaml.SafeLoader))
+    ids = [re.escape(str(m)) for v in raw["vendors"].values() for m in v["models"]]
+    return re.compile(rf"(?<![\w.-])(?:{'|'.join(ids)})(?![\w.-])")
+
+
+def hook_context(event: dict, catalog_dir: Path, as_of: datetime.date | None = None) -> str:
+    """What to tell the agent about the file it just wrote: the retiring ids the file
+    selects (as `models_retiring` would list them) that the written text contains, so
+    an id already in the file is reported once, when it was written."""
+    tool = event["tool_input"]
+    # Write, Edit, NotebookEdit.
+    parts = (tool.get("content"), tool.get("new_string"), tool.get("new_source"))
+    written = "\n".join(p for p in parts if isinstance(p, str))
+    # Most edits name no retiring model: answer those before loading the catalog.
+    hits = set(_retiring(catalog_dir).findall(written))
+    if not hits:
+        return ""
+    cwd = Path(event.get("cwd") or ".").resolve()
+    path = (cwd / (tool.get("file_path") or tool["notebook_path"])).resolve()
+    if not path.is_file():
+        return ""
+    root = file_root(path, cwd)
+    catalog = load_catalog(catalog_dir)
+    findings = match(collect_facts(root, catalog, only=path), catalog, path)
+    out = []
+    for s in snaps(findings, catalog, root):
+        if not s.sites or s.id not in hits:
+            continue
+        r = s.retirement
+        where = ", ".join(f"{_rel(x.file, root)}:{x.line}" for x in s.sites)
+        verb = "selects" if len(s.sites) == 1 else "select"
+        if state(r, as_of or today()) == "snapped":
+            when = f"was retired on {r.retires.isoformat()}: requests fail now."
+        else:
+            when = f"retires on {r.retires.isoformat()}."
+        use = replacement(r, catalog)
+        out.append(
+            f"unrent: {where} {verb} {r.id}, which {when}"
+            + (f" Use {use} instead." if use else "")
+            + f" Source: {r.url}"
+        )
+    return "\n".join(out)
+
+
+def cmd_hook(args) -> int:
+    # A failing hook would put an error next to the agent's edit: bad input, a file
+    # that is gone or binary, a broken catalog all end in silence on stdout.
+    try:
+        event = json.loads(sys.stdin.buffer.read())
+        context = hook_context(event, args.catalog, args.as_of)
+    except Exception:
+        traceback.print_exc()
+        return 0
+    if context:
+        output = {"hookEventName": "PostToolUse", "additionalContext": context}
+        print(json.dumps({"hookSpecificOutput": output}))
+    return 0
+
+
 MCP_INSTALL = "uv tool install 'unrent[mcp]'"
 
 
@@ -266,7 +365,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     argv = sys.argv[1:] if argv is None else list(argv)
     # `unrent .` is `unrent scan .`: anything that is not a command or a top-level flag.
-    if argv and argv[0] not in ("scan", "catalog", "mcp", "-h", "--help", "--version"):
+    if argv and argv[0] not in ("scan", "catalog", "mcp", "hook", "-h", "--help", "--version"):
         argv.insert(0, "scan")
     args = parser.parse_args(argv)
     if args.command is None:
@@ -277,6 +376,8 @@ def main(argv: list[str] | None = None) -> int:
             return cmd_scan(args)
         if args.command == "mcp":
             return cmd_mcp(args)
+        if args.command == "hook":
+            return cmd_hook(args)
         return cmd_catalog(args)
     except CatalogError as exc:
         print(f"unrent: catalog error: {exc}", file=sys.stderr)

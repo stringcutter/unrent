@@ -5,6 +5,7 @@ from __future__ import annotations
 import dataclasses
 import datetime
 import importlib.util
+import io
 import json
 import os
 import shutil
@@ -2416,6 +2417,161 @@ def test_why_and_as_of_on_the_command_line(tmp_path, capsys):
     assert "snapped" in out and "app.py:2" in out and "recommends gpt-5.6-sol" in out
     with pytest.raises(SystemExit):
         main([str(app), "--as-of", "soon"])
+
+
+def _own_catalog(tmp_path: Path) -> Path:
+    """The shipped catalog with retirements of its own, which the vendors' pages
+    changing cannot break."""
+    shutil.copytree(CATALOG_DIR, tmp_path / "cat", dirs_exist_ok=True)
+    (tmp_path / "cat" / "retirements.yaml").write_text(
+        "vendors:\n  openai:\n    url: https://example.org/x\n    services: [openai]\n"
+        "    models:\n      gpt-4-0613: {retires: 2026-10-23, replacement: gpt-5.6-sol}\n"
+        "      gpt-4-0314: {retires: 2026-03-26, replacement: gpt-4-0613}\n"
+        "      gpt-4: {retires: 2026-10-23, replacement: gpt-5.6-sol}\n",
+        encoding="utf-8",
+    )
+    return tmp_path / "cat"
+
+
+# The Vercel AI SDK with no provider package sends `openai/...` to Vercel's gateway: a
+# rule that needs the project's package.json, which a scan of one file reads too.
+GATEWAY = {
+    "package.json": '{"dependencies": {"ai": "^5.0.0"}}',
+    "src/app.ts": 'import { generateText } from "ai";\n'
+    'const r = await generateText({ model: "openai/gpt-4-0613" });\n',
+}
+
+
+def test_scan_one_file(tmp_path, monkeypatch, capsys):
+    cat = ["--catalog", str(_own_catalog(tmp_path))]
+    app = write(tmp_path / "app", {**GATEWAY, "other.py": "import anthropic\n"})
+    monkeypatch.chdir(app)  # no repository: rooted where it is run
+    assert main(["scan", "src/app.ts", "-f", "json", *cat]) == 0
+    data = json.loads(capsys.readouterr().out)
+    assert data["scanned"] == "src/app.ts"
+    assert [f["id"] for f in data["found"]] == ["vercel-ai-gateway"]
+    assert {e["file"] for f in data["found"] for e in f["evidence"]} == {"src/app.ts"}
+    assert data["models_retiring"] == []
+    assert main(["scan", "src/app.ts", "-f", "markdown", *cat]) == 0
+    assert "# AI dependencies in `src/app.ts`" in capsys.readouterr().out
+    assert main(["scan", "nothing.py"]) == 2
+
+
+@pytest.mark.parametrize(
+    ("file", "args"),
+    [
+        ("node_modules/x/app.py", []),
+        ("vendor.py", []),  # in .unrentignore
+        ("app.py", ["--exclude", "app.py"]),
+        ("tests/helpers.py", ["--skip-tests"]),
+    ],
+)
+def test_scan_of_a_file_left_out_says_so(tmp_path, capsys, file, args):
+    app = write(
+        tmp_path, {".git/HEAD": "", ".unrentignore": "vendor.py\n", file: "import openai\n"}
+    )
+    assert main(["scan", str(app / file), *args]) == 2
+    assert "is left out (.unrentignore, --exclude" in capsys.readouterr().err
+
+
+def _hook(monkeypatch, capsys, tmp_path, event, *args: str) -> str:
+    data = event if isinstance(event, str) else json.dumps(event)
+    monkeypatch.setattr("sys.stdin", io.TextIOWrapper(io.BytesIO(data.encode())))
+    assert main(["hook", "--catalog", str(_own_catalog(tmp_path)), *args]) == 0
+    return capsys.readouterr().out
+
+
+APP = 'import openai\nMODEL = "gpt-4-0613"\n'
+
+
+@pytest.mark.parametrize("written", [{"content": APP}, {"new_string": APP}])
+@pytest.mark.parametrize(
+    ("as_of", "says"),
+    [
+        ("2026-10-04", "which retires on 2026-10-23. Use gpt-5.6-sol instead."),
+        ("2030-01-01", "which was retired on 2026-10-23: requests fail now. Use gpt-5.6-sol"),
+    ],
+)
+def test_hook_reports_a_retiring_model_just_written(
+    tmp_path, monkeypatch, capsys, written, as_of, says
+):
+    repo = write(tmp_path / "repo", {".git/HEAD": "", "src/app.py": APP})
+    event = {"tool_input": {"file_path": str(repo / "src" / "app.py"), **written}}
+    out = json.loads(_hook(monkeypatch, capsys, tmp_path, event, "--as-of", as_of))
+    context = out["hookSpecificOutput"].pop("additionalContext")
+    assert out == {"hookSpecificOutput": {"hookEventName": "PostToolUse"}}
+    assert context.startswith(f"unrent: src/app.py:2 selects gpt-4-0613, {says}")
+
+
+def test_hook_reads_notebook_edits(tmp_path, monkeypatch, capsys):
+    cell = {"cell_type": "code", "metadata": {}, "outputs": [], "source": APP}
+    notebook = {"cells": [cell], "metadata": {}, "nbformat": 4, "nbformat_minor": 5}
+    path = write(tmp_path / "nb", {"app.ipynb": json.dumps(notebook)}) / "app.ipynb"
+    event = {"tool_input": {"notebook_path": str(path), "new_source": APP}}
+    assert "selects gpt-4-0613, which" in _hook(monkeypatch, capsys, tmp_path, event)
+
+
+@pytest.mark.parametrize(
+    ("file", "expected"),
+    [("src/app.py", "src/app.py:2 selects gpt-4-0613"), ("tests/helpers.py", None)],
+)
+def test_hook_judges_from_the_repository_root(tmp_path, monkeypatch, capsys, file, expected):
+    # The repository, not the directory the agent runs in, decides the path and what is
+    # test code (left out, as in a scan).
+    repo = write(tmp_path / "repo", {".git/HEAD": "", file: APP})
+    event = {"cwd": str(tmp_path), "tool_input": {"file_path": str(repo / file), "content": APP}}
+    out = _hook(monkeypatch, capsys, tmp_path, event)
+    assert (expected in out) if expected else out == ""
+
+
+@pytest.mark.parametrize(
+    ("files", "file", "written"),
+    [
+        # Selected before this edit: told when it was written, not on every later edit.
+        ({"app.py": APP + 'MENU = ["gpt-4-0314"]\n'}, "app.py", 'MENU = ["gpt-4-0314"]\n'),
+        # Only listed, not selected.
+        ({"app.py": 'import openai\nMENU = ["gpt-4-0613", "gpt-4o"]\n'}, "app.py", "gpt-4-0613"),
+        # `gpt-4o` is not `gpt-4`.
+        (
+            {"app.py": 'import openai\nMODEL = "gpt-4"\nOTHER_MODEL = "gpt-4o"\n'},
+            "app.py",
+            'OTHER_MODEL = "gpt-4o"',
+        ),
+        # Test code, found from the agent's working directory when there is no repository.
+        ({"tests/helpers.py": APP}, "tests/helpers.py", APP),
+        # Routed to Vercel's gateway, as a scan of the whole project says.
+        (GATEWAY, "src/app.ts", GATEWAY["src/app.ts"]),
+    ],
+)
+def test_hook_is_silent_on_what_was_not_just_selected(
+    tmp_path, monkeypatch, capsys, files, file, written
+):
+    repo = write(tmp_path / "repo", files)
+    event = {"cwd": str(repo), "tool_input": {"file_path": str(repo / file), "new_string": written}}
+    assert _hook(monkeypatch, capsys, tmp_path, event) == ""
+
+
+@pytest.mark.parametrize(
+    "event",
+    [
+        "not json",
+        "",
+        "[]",
+        {"tool_input": {"content": APP}},
+        {"tool_input": {"file_path": "/nowhere/app.py", "content": APP}},
+        {"tool_input": {"file_path": ".", "content": APP}},
+        {"tool_input": {"file_path": "app.py", "content": 3}},
+    ],
+)
+def test_hook_never_fails_the_edit(tmp_path, monkeypatch, capsys, event):
+    assert _hook(monkeypatch, capsys, tmp_path, event) == ""
+
+
+def test_hook_is_silent_on_binary_files(tmp_path, monkeypatch, capsys):
+    path = tmp_path / "app.bin"
+    path.write_bytes(b"\0" + APP.encode())
+    event = {"tool_input": {"file_path": str(path), "content": APP}}
+    assert _hook(monkeypatch, capsys, tmp_path, event) == ""
 
 
 @pytest.mark.parametrize(
