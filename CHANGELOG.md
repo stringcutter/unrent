@@ -5,7 +5,7 @@ All notable changes to this project are documented here. The format follows
 [Semantic Versioning](https://semver.org/). Weekly ranking refreshes are not listed;
 each release ships the rankings as of its date.
 
-## Unreleased
+## [0.3.0] - 2026-10-05
 
 ### Added
 - A Claude Code plugin with the MCP server, the skill and a hook, from this repo's own
@@ -155,6 +155,7 @@ First public release.
 - Open source signatures: `SEARX_URL` and `SearxSearch` (SearXNG), vLLM behind an
   OpenAI-compatible base URL, a self-hosted Firecrawl URL, LangChain's `FAISS`.
 
+[0.3.0]: https://github.com/stringcutter/unrent/releases/tag/v0.3.0
 [0.2.2]: https://github.com/stringcutter/unrent/releases/tag/v0.2.2
 [0.2.1]: https://github.com/stringcutter/unrent/releases/tag/v0.2.1
 [0.2.0]: https://github.com/stringcutter/unrent/releases/tag/v0.2.0

@@ -1,6 +1,6 @@
 [project]
 name = "unrent"
-version = "0.2.2"
+version = "0.3.0"
 description = "See which AI services your code depends on, what open source can replace them, and which models are about to stop working."
 readme = "README.md"
 requires-python = ">=3.11"  # tomllib
