@@ -1,0 +1,14 @@
+{
+  "name": "stringcutter",
+  "description": "Plugins by stringcutter.",
+  "owner": {
+    "name": "stringcutter"
+  },
+  "plugins": [
+    {
+      "name": "unrent",
+      "source": "./",
+      "description": "See which AI services your code depends on, what open source can replace them, and which models are about to stop working."
+    }
+  ]
+}

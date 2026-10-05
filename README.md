@@ -53,6 +53,7 @@ Python 3.11+.
 
 ```bash
 unrent .                         # scan the current directory
+unrent src/llm.py                # one file
 unrent . --why openai            # every line behind one row
 unrent . -o report.md            # a Markdown report for an issue or PR
 unrent . --format json           # for scripts
@@ -64,15 +65,20 @@ unrent . --exclude "examples/"   # .gitignore syntax, or a .unrentignore file
 
 ## Use it from an AI agent
 
-As an MCP server (Claude Code, Cursor, Copilot, …):
+In Claude Code, as a plugin:
 
-```bash
-claude mcp add unrent -- uvx --from "unrent[mcp]" unrent mcp
+```
+/plugin marketplace add stringcutter/unrent
+/plugin install unrent@stringcutter
 ```
 
-Other clients: command `uvx`, args `["--from", "unrent[mcp]", "unrent", "mcp"]`.
+You get the MCP tools, the skill, and a hook that tells the agent when it writes a model
+id that is retired or about to be.
 
-As a skill, with a workflow for what unrent can't see on its own:
+Other MCP clients (Cursor, Copilot, …): command `uvx`, args
+`["--from", "unrent[mcp]", "unrent", "mcp"]`.
+
+Only the skill, with a workflow for what unrent can't see on its own:
 
 ```bash
 npx skills add stringcutter/unrent

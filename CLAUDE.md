@@ -34,7 +34,8 @@ writes in Danish; answer in the language of their latest message.
 | `catalog/retirements.yaml` | Model retirements from the vendors' pages, rewritten weekly by `scripts/retirements.py` (pull request left open for review) |
 | `eval/` | Golden corpus (54 repos, pinned commits) with hand-labelled truth, `TRUTH_RULES.md`, `OSS_TRUTH_RULES.md`, `MODEL_TRUTH_RULES.md` (`corpus_models.yaml`), `run_eval.py` |
 | `scripts/` | `refresh.py` (rankings), `verify_packages.py`, `new_services.py` (models.dev + corpus candidates), `mcp_smoke.py` |
-| `skills/unrent/` | Agent skill (SKILL.md, `sweep.py`, `repo_facts.py`), installable with `npx skills add stringcutter/unrent` |
+| `skills/unrent/` | Agent skill (SKILL.md, `sweep.py`, `repo_facts.py`), in the plugin or alone with `npx skills add stringcutter/unrent` |
+| `.claude-plugin/` | Claude Code plugin (`plugin.json`: MCP server, `unrent hook` on PostToolUse; the repo root is the plugin root) and its marketplace `stringcutter`. Both commands pin `unrent>=X`: bump them and `version` with the package version on release |
 
 ## Commands
 
@@ -50,6 +51,7 @@ uv run python scripts/verify_packages.py   # every package signature exists in i
 uv run python scripts/new_services.py --models-dev                  # providers not in the catalog
 uv run python scripts/new_services.py --models-dev --write-catalog  # regenerate models-dev.yaml
 uv run python scripts/refresh.py --check   # rankings, without writing
+claude plugin validate .                   # plugin + marketplace (CLAUDE.md-at-root warning is expected)
 ```
 
 ## Catalog rules
@@ -117,7 +119,8 @@ uv run python scripts/refresh.py --check   # rankings, without writing
 - `publish.yml`: PyPI on a GitHub release (trusted publishing).
 - The bots push to `main` weekly: pull before you start.
 - The repo is public and unrent is on PyPI. Renaming the repo or moving
-  `catalog/rankings.json` breaks live rankings for every installed MCP server.
+  `catalog/rankings.json` breaks live rankings for every installed MCP server; renaming
+  it also breaks the plugin marketplace (`stringcutter/unrent`).
 
 ## Conventions
 

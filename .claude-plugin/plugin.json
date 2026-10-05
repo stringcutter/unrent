@@ -1,0 +1,32 @@
+{
+  "name": "unrent",
+  "version": "0.3.0",
+  "description": "See which AI services your code depends on, what open source can replace them, and which models are about to stop working.",
+  "author": {
+    "name": "stringcutter"
+  },
+  "homepage": "https://github.com/stringcutter/unrent",
+  "repository": "https://github.com/stringcutter/unrent",
+  "license": "Apache-2.0",
+  "keywords": ["ai", "llm", "vendor-lock-in", "open-source", "model-deprecation", "mcp"],
+  "mcpServers": {
+    "unrent": {
+      "command": "uvx",
+      "args": ["--from", "unrent[mcp]>=0.3.0", "unrent", "mcp"]
+    }
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uvx --from \"unrent>=0.3.0\" unrent hook",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
+  }
+}

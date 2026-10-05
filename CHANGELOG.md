@@ -5,6 +5,22 @@ All notable changes to this project are documented here. The format follows
 [Semantic Versioning](https://semver.org/). Weekly ranking refreshes are not listed;
 each release ships the rankings as of its date.
 
+## Unreleased
+
+### Added
+- A Claude Code plugin with the MCP server, the skill and a hook, from this repo's own
+  marketplace: `/plugin marketplace add stringcutter/unrent`, then
+  `/plugin install unrent@stringcutter` (`.claude-plugin/`).
+- `unrent hook`: reads a Claude Code `PostToolUse` event on stdin and, when the agent has
+  just written a model id the code selects that its vendor has retired or will retire,
+  tells the agent the date and the replacement. Silent otherwise. The plugin runs it after
+  every `Write`, `Edit` and `NotebookEdit`.
+- `unrent scan <file>` (and the MCP `scan` tool) scans a single file, from the root of its
+  repository, with the package manifests around it read for the rules that need them.
+
+### Changed
+- The MCP server's instructions cover models that stop working, not only closed services.
+
 ## [0.2.2] - 2026-10-04
 
 ### Changed
