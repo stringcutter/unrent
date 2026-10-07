@@ -8,6 +8,14 @@ each release ships the rankings as of its date.
 ## Unreleased
 
 ### Added
+- `unrent scan --fail-on snapped,snaps,closed` (and `--within DAYS` for `snaps`): exit 1
+  when the code selects a retired or retiring model, or depends on a closed AI service,
+  with one line on stderr saying why. The report is written as usual.
+- `--format sarif`: SARIF 2.1.0 for code scanning, a result per line that selects a
+  retiring model (`unrent/snapped` error, `unrent/snaps` warning) and per cited line of a
+  closed service (`unrent/closed-service` note).
+- A GitHub Action (`action.yml`): scans, uploads the SARIF so pull requests show the
+  lines, and fails the build on `fail-on`.
 - GetXAPI and Xquik, hosted X/Twitter search APIs sold for agents, as web search services.
 - `self_host`: a closed service that runs on an open source project (Qdrant Cloud,
   Zilliz Cloud, Weaviate Cloud, Chroma Cloud, Firecrawl, fastCRW, Mem0, Letta, Helicone,

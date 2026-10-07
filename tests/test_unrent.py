@@ -2623,6 +2623,71 @@ def test_scan_of_a_file_left_out_says_so(tmp_path, capsys, file, args):
     assert "is left out (.unrentignore, --exclude" in capsys.readouterr().err
 
 
+# gpt-4-0314 retired 2026-03-26, gpt-4-0613 retires 2026-10-23 (_own_catalog).
+SNAPPING = {"app.py": 'import openai\nMODEL = "gpt-4-0613"\nFALLBACK_MODEL = "gpt-4-0314"\n'}
+
+
+@pytest.mark.parametrize(
+    ("flags", "code", "why"),
+    [
+        ([], 0, ""),
+        (["--fail-on", "snapped"], 1, ": gpt-4-0314 was retired on 2026-03-26\n"),
+        (["--fail-on", "snaps"], 1, "2026-03-26; gpt-4-0613 retires on 2026-10-23\n"),
+        (["--fail-on", "snaps", "--within", "15"], 1, ": gpt-4-0314 was retired on 2026-03-26\n"),
+        (["--fail-on", "snaps", "--within", "16"], 1, "; gpt-4-0613 retires on 2026-10-23\n"),
+        (["--fail-on", "closed"], 1, ": depends on OpenAI API\n"),
+        (["--fail-on", "snapped,closed"], 1, "2026-03-26; depends on OpenAI API\n"),
+        (["--fail-on", "snapped", "--fail-on", "closed"], 1, "--fail-on snapped,closed: "),
+        (["--within", "16"], 2, "--within needs --fail-on snaps"),
+    ],
+)
+def test_fail_on(tmp_path, capsys, flags, code, why):
+    cat = ["--catalog", str(_own_catalog(tmp_path))]
+    app = write(tmp_path / "app", SNAPPING)
+    assert main(["scan", str(app), "-f", "json", "--as-of", "2026-10-07", *flags, *cat]) == code
+    out, err = capsys.readouterr()
+    assert why in err
+    if code != 2:  # the report as usual
+        assert json.loads(out)["found"][0]["id"] == "openai"
+
+
+def test_fail_on_passes_when_nothing_is_due(tmp_path, capsys):
+    cat = ["--catalog", str(_own_catalog(tmp_path))]
+    app = write(tmp_path / "app", {"app.py": 'import anthropic\nMODEL = "claude-sonnet-4-6"\n'})
+    assert main(["scan", str(app), "--fail-on", "snapped,snaps", *cat]) == 0
+    assert capsys.readouterr().err == ""
+    with pytest.raises(SystemExit):
+        main(["scan", str(app), "--fail-on", "closd"])
+
+
+def test_sarif(tmp_path, monkeypatch, capsys):
+    cat = ["--catalog", str(_own_catalog(tmp_path))]
+    write(tmp_path / "repo" / "svc", SNAPPING)
+    monkeypatch.chdir(tmp_path / "repo")  # paths from where it runs: the repository root
+    assert main(["scan", "svc", "-f", "sarif", "--as-of", "2026-10-07", *cat]) == 0
+    sarif = json.loads(capsys.readouterr().out)
+    assert sarif["version"] == "2.1.0"
+    run = sarif["runs"][0]
+    assert run["tool"]["driver"]["name"] == "unrent"
+    rules = {r["id"] for r in run["tool"]["driver"]["rules"]}
+    where = [r["locations"][0]["physicalLocation"] for r in run["results"]]
+    got = [
+        (r["ruleId"], r["level"], w["artifactLocation"]["uri"], w["region"]["startLine"])
+        for r, w in zip(run["results"], where, strict=True)
+    ]
+    assert {g[0] for g in got} <= rules
+    assert got[:2] == [
+        ("unrent/snapped", "error", "svc/app.py", 3),
+        ("unrent/snaps", "warning", "svc/app.py", 2),
+    ]
+    assert ("unrent/closed-service", "note", "svc/app.py", 1) in got
+    assert {w["artifactLocation"]["uriBaseId"] for w in where} == {"%SRCROOT%"}
+    texts = [r["message"]["text"] for r in run["results"]]
+    assert "retired on 2026-03-26: requests fail now. Use gpt-5.6-sol instead." in texts[0]
+    assert "gpt-4-0613 retires on 2026-10-23. Use gpt-5.6-sol instead." in texts[1]
+    assert texts[-1].startswith("OpenAI API is a closed AI service. Open source:")
+
+
 def _hook(monkeypatch, capsys, tmp_path, event, *args: str) -> str:
     data = event if isinstance(event, str) else json.dumps(event)
     monkeypatch.setattr("sys.stdin", io.TextIOWrapper(io.BytesIO(data.encode())))

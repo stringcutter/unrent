@@ -37,7 +37,8 @@ writes in Danish; answer in the language of their latest message.
 | `eval/` | Golden corpus (54 repos, pinned commits) with hand-labelled truth, `TRUTH_RULES.md`, `OSS_TRUTH_RULES.md`, `MODEL_TRUTH_RULES.md` (`corpus_models.yaml`), `run_eval.py` |
 | `scripts/` | `refresh.py` (rankings), `verify_packages.py`, `new_services.py` (models.dev + corpus candidates), `mcp_smoke.py` |
 | `skills/unrent/` | Agent skill (SKILL.md, `sweep.py`, `repo_facts.py`), in the plugin or alone with `npx skills add stringcutter/unrent` |
-| `.claude-plugin/` | Claude Code plugin (`plugin.json`: MCP server, `unrent hook` on PostToolUse; the repo root is the plugin root) and its marketplace `stringcutter`. Both commands pin `unrent>=X`: bump them and `version` with the package version on release |
+| `.claude-plugin/` | Claude Code plugin (`plugin.json`: MCP server, `unrent hook` on PostToolUse; the repo root is the plugin root) and its marketplace `stringcutter`. Both commands pin `unrent>=X`, as does `action.yml`: bump all three and `version` with the package version on release |
+| `action.yml` | GitHub Action (composite): `unrent scan --format sarif` with `fail-on`/`within`, uploads the SARIF to code scanning |
 
 ## Commands
 

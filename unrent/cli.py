@@ -21,7 +21,7 @@ from . import fresh
 from .catalog import CatalogError, load_catalog
 from .detect import LEFT_OUT, collect_facts, file_root, left_out, match
 from .discover import scan_unknown
-from .render import to_json, to_markdown, today
+from .render import _split, to_json, to_markdown, to_sarif, today
 from .retired import _rel, replacement, snaps, state
 from .terminal import Progress, to_terminal, wants_colour, why, why_model
 
@@ -59,6 +59,17 @@ def _positive(value: str) -> int:
     return n
 
 
+FAIL_ON = ("snapped", "snaps", "closed")
+FAILED = 1  # --fail-on found what it was asked to; 2 is a usage or catalog error
+
+
+def _fail_on(value: str) -> list[str]:
+    picked = [v.strip() for v in value.split(",") if v.strip()]
+    if not picked or any(v not in FAIL_ON for v in picked):
+        raise argparse.ArgumentTypeError(f"expected one or more of {', '.join(FAIL_ON)}")
+    return picked
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="unrent",
@@ -74,16 +85,18 @@ def build_parser() -> argparse.ArgumentParser:
         description="Scan a directory or one file for closed AI services, the open source AI "
         "it runs and model ids that are retiring. Model retirements are fetched from the "
         "unrent repository (cached for six hours; UNRENT_OFFLINE=1 keeps the shipped ones). "
-        "The scanned code never leaves the machine.",
+        "The scanned code never leaves the machine. Exits 1 when --fail-on finds what it "
+        "names, 2 on a usage or catalog error.",
     )
     scan.add_argument("path", nargs="?", default=".", help="directory or file to scan (default: .)")
     scan.add_argument(
         "--format",
         "-f",
-        choices=("auto", "terminal", "markdown", "json"),
+        choices=("auto", "terminal", "markdown", "json", "sarif"),
         default="auto",
         help="auto (default): the terminal view on a terminal, the Markdown report in a "
-        "pipe or file; json has every finding and alternative",
+        "pipe or file; json has every finding and alternative; sarif is for code scanning "
+        "(GitHub annotates the lines)",
     )
     scan.add_argument(
         "--why",
@@ -96,6 +109,22 @@ def build_parser() -> argparse.ArgumentParser:
         type=_date,
         metavar="YYYY-MM-DD",
         help="judge model retirements as of this day instead of today",
+    )
+    scan.add_argument(
+        "--fail-on",
+        type=_fail_on,
+        action="extend",
+        default=[],
+        metavar="WHAT",
+        help="exit 1 when the code selects a model that is retired (snapped) or has a "
+        "retirement date (snaps, retired ones included), or depends on any closed AI "
+        "service (closed); a comma list or repeated. The report is written as usual",
+    )
+    scan.add_argument(
+        "--within",
+        type=_positive,
+        metavar="DAYS",
+        help="with --fail-on snaps: only retirements due within DAYS of today (or --as-of)",
     )
     scan.add_argument("--output", "-o", type=Path, help="write to a file instead of stdout")
     scan.add_argument(
@@ -191,7 +220,10 @@ def cmd_scan(args) -> int:
         print(f"unrent: {args.path} {LEFT_OUT}", file=sys.stderr)
         return 2
     fmt = args.format
-    if args.why and fmt in ("markdown", "json"):
+    if args.within and "snaps" not in args.fail_on:
+        print("unrent: --within needs --fail-on snaps", file=sys.stderr)
+        return 2
+    if args.why and fmt in ("markdown", "json", "sarif"):
         print(f"unrent: --why prints text; drop --format {fmt}", file=sys.stderr)
         return 2
     if fmt == "auto":
@@ -233,6 +265,10 @@ def cmd_scan(args) -> int:
             ids = ", ".join([f.service.id for f in findings] + [s.id for s in picked]) or "none"
             print(f"unrent: {args.why} is not among what was found ({ids})", file=sys.stderr)
             return 2
+    elif fmt == "sarif":
+        # Paths from where unrent runs, the repository root in CI, when the scan is in it.
+        base = Path.cwd() if root.is_relative_to(Path.cwd()) else root
+        text = to_sarif(findings, root, catalog, _version(), base, args.as_of)
     elif fmt == "json":
         text = to_json(findings, root, catalog, skipped, unknown, args.as_of, scanned)
     elif fmt == "terminal":
@@ -264,7 +300,30 @@ def cmd_scan(args) -> int:
         print(f"wrote {args.output}", file=sys.stderr)
     else:
         print(text)
+    failed = _failures(args, findings, catalog, root)
+    if failed:
+        print(f"unrent: --fail-on {','.join(args.fail_on)}: {'; '.join(failed)}", file=sys.stderr)
+        return FAILED
     return 0
+
+
+def _failures(args, findings, catalog, root: Path) -> list[str]:
+    """What the scan found that --fail-on names, one phrase each."""
+    out = []
+    as_of = args.as_of or today()
+    due = as_of + datetime.timedelta(days=args.within or 0)
+    if {"snapped", "snaps"} & set(args.fail_on):
+        for s in snaps(findings, catalog, root):
+            r = s.retirement
+            if not s.sites:
+                continue
+            if state(r, as_of) == "snapped":
+                out.append(f"{r.id} was retired on {r.retires.isoformat()}")
+            elif "snaps" in args.fail_on and (not args.within or r.retires <= due):
+                out.append(f"{r.id} retires on {r.retires.isoformat()}")
+    if "closed" in args.fail_on:
+        out += [f"depends on {f.service.name}" for f in _split(findings).closed]
+    return out
 
 
 def cmd_catalog(args) -> int:
