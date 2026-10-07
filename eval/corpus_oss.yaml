@@ -2688,3 +2688,887 @@ repos:
   - 'llm-d router / Gateway API Inference Extension (InferencePool EPP): src/gateway_inference_extension/install.sh:33-34
     helm upgrade -i vllm-llama3-1b-instruct oci://ghcr.io/llm-d/charts/llm-d-router-gateway'
   - 'agentgateway (AI gateway): src/gateway_inference_extension/install.sh:26 agentgateway oci://cr.agentgateway.dev/charts/agentgateway'
+# --- moved from the holdout 2026-10-07, after detection was fixed against them
+- name: Aider-AI__aider
+  url: https://github.com/Aider-AI/aider
+  commit: 5dc9490bb35f9729ef2c95d00a19ccd30c26339c
+  languages:
+  - python
+  summary: AI pair-programming CLI that edits code in a git repo; all LLM calls go through litellm, with model aliases,
+    per-model settings and provider key handling for many vendors
+  expected:
+  - openai
+  - anthropic
+  - openai-speech-to-text
+  - openai-text-to-speech
+  - openrouter
+  - deepseek-api
+  - google-gemini
+  - google-vertex
+  - aws-bedrock
+  - azure-openai
+  - xai
+  - groq
+  - fireworks
+  - cohere
+  - github-copilot
+  tests_only: []
+  uncertain:
+  - together
+  evidence:
+    openai: aider/args.py:69 "--openai-api-key"; aider/onboarding.py:66 ("OPENAI_API_KEY", "gpt-4o") default model
+      selection
+    anthropic: 'aider/main.py:612-613 os.environ["ANTHROPIC_API_KEY"] = args.anthropic_api_key; aider/models.py:101
+      "sonnet": "claude-sonnet-4-6"'
+    openai-speech-to-text: aider/voice.py:169-170 litellm.transcription(model="whisper-1", ...); aider/commands.py:1256-1257
+      /voice requires OPENAI_API_KEY
+    openai-text-to-speech: scripts/recording_audio.py:104 url = "https://api.openai.com/v1/audio/speech"
+    openrouter: aider/openrouter.py:30 MODELS_URL = "https://openrouter.ai/api/v1/models"; aider/onboarding.py:303
+      auth_url_base = "https://openrouter.ai/auth" (OAuth key flow), aider/onboarding.py:58-60 default openrouter/
+      models
+    deepseek-api: 'aider/models.py:112 "deepseek": "deepseek/deepseek-chat"; aider/onboarding.py:65 ("DEEPSEEK_API_KEY",
+      "deepseek")'
+    google-gemini: 'aider/models.py:119 "gemini": "gemini/gemini-3-pro-preview"; aider/onboarding.py:67 ("GEMINI_API_KEY",
+      "gemini/gemini-2.5-pro-exp-03-25")'
+    google-vertex: aider/onboarding.py:68 ("VERTEXAI_PROJECT", "vertex_ai/gemini-2.5-pro-exp-03-25"); aider/models.py:1218-1222
+      vertex_ai/ models require google-cloud-aiplatform
+    aws-bedrock: aider/models.py:1212-1214 bedrock/ models require boto3; aider/models.py:757-758 AWS_PROFILE handling
+      for bedrock/ and us.anthropic. models; aider/resources/model-settings.yml:276 bedrock_converse/anthropic.claude-3-7-sonnet-20250219-v1:0
+    azure-openai: 'aider/resources/model-settings.yml:679 - name: azure/o1-mini (38 azure/ entries); aider/args.py:81-90
+      --openai-api-type/--openai-api-version/--openai-api-deployment-id'
+    xai: 'aider/models.py:121 "grok3": "xai/grok-3-beta"; aider/resources/model-settings.yml:1033 - name: xai/grok-4'
+    groq: 'aider/models.py:729 groq="GROQ_API_KEY"; aider/resources/model-settings.yml:512 - name: groq/llama3-70b-8192'
+    fireworks: 'aider/models.py:730 fireworks_ai="FIREWORKS_API_KEY"; aider/resources/model-settings.yml:810 - name:
+      fireworks_ai/accounts/fireworks/models/deepseek-r1'
+    cohere: 'aider/models.py:773-774 provider == "cohere_chat" -> validate_variables(["COHERE_API_KEY"]); aider/resources/model-settings.yml:934
+      - name: cohere_chat/command-a-03-2025'
+    github-copilot: aider/models.py:954-965 GITHUB_COPILOT_TOKEN exchanged at https://api.github.com/copilot_internal/v2/token;
+      aider/models.py:1027-1034 Copilot extra_headers on litellm.completion
+  uncertain_reasons:
+    together: 'added 2026-10-07 when the repo moved from the holdout: aider/resources/model-metadata.json lists
+      together_ai/ models that LiteLLM routes to Together, but no aider code selects one'
+  open_source_expected:
+  - BerriAI/litellm
+  - ollama/ollama
+  - run-llama/llama_index
+  - huggingface/sentence-transformers
+  open_source_tests_only: []
+  open_source_uncertain: []
+  open_source_evidence:
+    BerriAI/litellm: aider/llm.py:37 importlib.import_module("litellm"); aider/models.py:1036 res = litellm.completion(**kwargs);
+      requirements/requirements.in:18 litellm
+    ollama/ollama: 'aider/models.py:931-932 is_ollama(): name.startswith("ollama/") or "ollama_chat/"; aider/models.py:1012-1014
+      sets num_ctx for Ollama models'
+    run-llama/llama_index: aider/help.py:85 from llama_index.core import (...); requirements/requirements-help.in:1
+      llama-index-embeddings-huggingface
+    huggingface/sentence-transformers: aider/help.py:136-139 from llama_index.embeddings.huggingface import HuggingFaceEmbedding;
+      HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5") (local sentence-transformers embeddings for /help)
+  open_source_uncertain_reasons: {}
+  open_source_coverage_gaps:
+  - 'PyTorch (local embedding runtime for /help): requirements/requirements-help.in:8 torch>=2.3.0'
+  notes: 'Every chat call goes through litellm (aider/models.py:1036), so vendors are labelled from what aider''s
+    own code/config selects or configures: MODEL_ALIASES (aider/models.py:99-123), provider key maps (aider/models.py:723-731,
+    773-778), onboarding default-model selection by env key (aider/onboarding.py:63-68), provider-specific code
+    paths (bedrock boto3 check, vertex aiplatform check, OpenRouter OAuth + model DB, GitHub Copilot token exchange,
+    Ollama num_ctx) and the shipped per-model settings aider/resources/model-settings.yml (prefixes: openrouter
+    85, openai 50, azure 38, vertex_ai 25, gemini 22, bedrock 11, anthropic 9, bedrock_converse 8, xai 5, fireworks_ai
+    4, deepseek 3, groq 2, cohere_chat 1) and aider/resources/model-metadata.json. Vendors reached ONLY through
+    OpenRouter model ids (qwen, meta-llama, mistral via openrouter/...) are not labelled. Rejected doc/test-fixture-only
+    mentions: Mistral, Together, Replicate, Perplexity, LM Studio (aider/website/docs/llms/lm-studio.md, other.md;
+    tests/fixtures/chat-history.md:45703-45722, 66078-66088); aider/website/assets/sample.env (docs site). huggingface-hub[inference]
+    in requirements/common-constraints.txt:193 is a transitive pin of llama-index-embeddings-huggingface; the HF
+    embedding model runs locally, so no huggingface-inference. google-cloud-bigquery (requirements/requirements-dev.in)
+    is used by scripts/homepage.py for PyPI download stats, not AI. posthog/mixpanel are analytics. Playwright/pandoc
+    scraping (aider/scrape.py) is local, not a hosted scrape API. benchmark/docker.sh:10 passes OPENAI_API_KEY into
+    the benchmark container (benchmark uses aider''s Model). Ollama: tests/basic/test_models.py:427-465 also exercise
+    ollama/llama3; docs aider/website/docs/llms/ollama.md.'
+- name: alibaba__spring-ai-alibaba
+  url: https://github.com/alibaba/spring-ai-alibaba
+  commit: 17e26ff6fe951d605771c1845229ca3edb043634
+  languages:
+  - java
+  - typescript
+  summary: Spring AI Alibaba, a Java agent/graph framework on Spring AI with DashScope integration, plus an admin/studio
+    platform (Java backend + React frontend) and examples
+  expected:
+  - alibaba-model-studio
+  - openai
+  - deepseek-api
+  - jina-api
+  tests_only: []
+  uncertain:
+  - zhipu-zai
+  - openai-embeddings
+  - modelscope
+  evidence:
+    alibaba-model-studio: 'spring-ai-alibaba-admin/spring-ai-alibaba-admin-server-start/src/main/java/com/alibaba/cloud/ai/studio/admin/service/client/DashScopeChatClientFactory.java:45
+      DashScopeApi api = DashScopeApi.builder(); examples/*/pom.xml spring-ai-alibaba-starter-dashscope with spring.ai.dashscope.api-key:
+      ${AI_DASHSCOPE_API_KEY}'
+    openai: 'spring-ai-alibaba-admin/spring-ai-alibaba-admin-server-start/src/main/java/com/alibaba/cloud/ai/studio/admin/service/client/OpenAiChatClientFactory.java:47
+      OpenAiApi.builder().apiKey(...).baseUrl(...); ModelConfigBridgeServiceImpl.java:390 return "https://api.openai.com";
+      model-config-openai.yaml:6 baseUrl: https://api.openai.com/v1'
+    deepseek-api: 'spring-ai-alibaba-admin/spring-ai-alibaba-admin-server-start/src/main/java/com/alibaba/cloud/ai/studio/admin/service/client/DeepSeekChatClientFactory.java:46
+      DeepSeekApi api = DeepSeekApi.builder(); model-config-deepseek.yaml modelName: deepseek-chat apiKey: ${DEEPSEEK_API_KEY}'
+    jina-api: 'examples/deepresearch/src/main/resources/application.yml:16 url: "https://mcp.jina.ai"; examples/deepresearch/src/main/java/com/alibaba/cloud/ai/examples/deepresearch/Application.java:43
+      "Bearer " + System.getenv("JINA_API_KEY")'
+  uncertain_reasons:
+    zhipu-zai: spring-ai-zhipuai is an optional dep (spring-ai-alibaba-graph-core/pom.xml:122) used only to (de)serialize
+      ZhiPuAiAssistantMessage state (SpringAIJacksonStateSerializer.java:74); the repo never calls the ZhiPu API
+    openai-embeddings: admin ModelFactory.java:109 builds OpenAiEmbeddingModel against whatever provider is configured
+      (OpenAI is a selectable provider), but the default is Tongyi text-embedding-v1 via DashScope and no OpenAI
+      embedding model id appears
+    modelscope: 'examples/documentation/src/main/resources/application.yml:46,51 MCP connections from env MODEL_SCOPE_AMAP_BASE_URL
+      / MODEL_SCOPE_12306_BASE_URL (comment: mcp.api-inference.modelscope.net); these are Amap/12306 MCP servers
+      hosted on ModelScope, not model inference'
+  open_source_expected:
+  - langfuse/langfuse
+  open_source_tests_only: []
+  open_source_uncertain:
+  - ollama/ollama
+  - pgvector/pgvector
+  open_source_evidence:
+    langfuse/langfuse: 'examples/documentation/src/main/resources/application-langfuse.yml:31 endpoint: ${LANGFUSE_OTLP_TRACES_ENDPOINT:https://cloud.langfuse.com/api/public/otel/v1/traces};
+      LangfuseObservabilityExample.java:64 langfuse.trace.name'
+  open_source_uncertain_reasons:
+    ollama/ollama: spring-ai-ollama declared in spring-ai-alibaba-admin/spring-ai-alibaba-admin-server-start/pom.xml:226
+      but never imported or configured anywhere (declared but unused)
+    pgvector/pgvector: 'test-only: spring-ai-alibaba-graph-core/src/test/java/com/alibaba/cloud/ai/graph/checkpoint/savers/PostgresSaverTest.java:84
+      runs the pgvector/pgvector:pg16 image, but only as plain Postgres for the checkpoint saver; no vector column
+      or extension is used'
+  open_source_coverage_gaps:
+  - 'Spring AI: spring-ai-alibaba-graph-core/pom.xml spring-ai-client-chat / spring-ai-rag; whole framework is built
+    on org.springframework.ai'
+  - 'Elasticsearch (vector store): spring-ai-alibaba-admin/spring-ai-alibaba-admin-server-core/src/main/java/com/alibaba/cloud/ai/studio/core/rag/vectorstore/elasticsearch/ElasticSearchVectorStoreService.java:50
+    import org.springframework.ai.vectorstore.elasticsearch.ElasticsearchVectorStore; spring-ai-alibaba-admin/deploy/docker-compose/docker-compose-service.yaml:50
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.1.2'
+  - 'Apache Tika: spring-ai-alibaba-admin/spring-ai-alibaba-admin-server-core/pom.xml:165 spring-ai-tika-document-reader'
+  - 'AgentScope (Java): spring-boot-starters/spring-ai-alibaba-starter-agentscope/pom.xml:61 agentscope-core; spring-ai-alibaba-sandbox
+    uses agentscope-runtime-sandbox-core'
+  - 'LangGraph JS SDK: spring-ai-alibaba-studio/agent-chat-ui/src/providers/client.ts:1 import { Client } from "@langchain/langgraph-sdk"
+    (pointed at the local Spring backend)'
+  notes: 'Admin platform is provider-configurable (OpenAI protocol), preset provider Tongyi = dashscope.aliyuncs.com/compatible-mode
+    (agentscope-schema.sql:404); templates/default-application.yml:24 uses spring.ai.openai with base-url dashscope.aliyuncs.com
+    -> DashScope, not openai. FP bait: spring-ai-alibaba-admin-server-start/src/main/resources/initializr.yml:1598-1909
+    is Spring Initializr metadata listing starters a generated project may add (anthropic, azure-openai, bedrock,
+    mistral, vertex-ai-gemini, stability-ai, pinecone, mongodb-atlas, chroma, milvus, qdrant, weaviate, pgvector,
+    typesense, ollama...) - not used by this repo. frontend/packages/main/src/pages/Setting/utils/index.ts:23-28
+    help text links OpenAI/OpenRouter/SiliconFlow (docs only). OpenAI/DeepSeek also in agent-framework tests (ModelfallbackTest.java:58,
+    ReactAgentDeepSeekTest.java:92), studio test resources also use mcp.jina.ai. Alibaba Cloud ARMS observability
+    (spring-ai-alibaba-autoconfigure-arms-observation, application.yml spring.ai.alibaba.arms.enabled) is closed
+    but not in the catalog. Sandbox (agentscope runtime) and DockerCodeExecutor run locally in Docker. Langfuse
+    endpoint defaults to Langfuse Cloud but is env-overridable and README documents self-hosted, so counted as langfuse/langfuse.
+    examples/documentation also declares spring-ai-starter-model-openai/deepseek but RemoteMcpToolsApplication excludes
+    their autoconfig.'
+- name: chatwoot__chatwoot
+  url: https://github.com/chatwoot/chatwoot
+  commit: f5bbc0484453a68ed68207182a429214204cc993
+  languages:
+  - ruby
+  - javascript
+  - vue
+  summary: Open source customer support / omnichannel inbox (Rails + Vue) with the Captain AI agent
+  expected:
+  - openai
+  - openai-embeddings
+  - openai-speech-to-text
+  - openai-moderation
+  - openrouter
+  - firecrawl-cloud
+  tests_only: []
+  uncertain:
+  - anthropic
+  - google-gemini
+  evidence:
+    openai: lib/llm/config.rb:36 config.openai_api_key = system_api_key; enterprise/app/services/llm/legacy_base_open_ai_service.rb:16
+      @client = OpenAI::Client.new( (uri_base default https://api.openai.com/)
+    openai-embeddings: 'lib/llm_constants.rb:5 DEFAULT_EMBEDDING_MODEL = ''text-embedding-3-small''; enterprise/app/services/captain/llm/embedding_service.rb:20
+      RubyLLM.embed(content, model: model).vectors'
+    openai-speech-to-text: 'enterprise/app/services/llm/speech_to_text_service.rb:43 response = @client.audio.transcribe(;
+      config/llm.yml:57 whisper-1: provider: openai'
+    openai-moderation: enterprise/app/services/internal/account_analysis/content_evaluator_service.rb:12 RubyLLM.moderate(content.to_s[0...10_000])
+      (RubyLLM default moderation model is OpenAI omni-moderation, only OpenAI key configured)
+    openrouter: app/services/captain/jev_client.rb:4 ENDPOINT = 'https://openrouter.ai/api'; app/services/captain/jev_client.rb:28
+      GlobalConfigService.load('CAPTAIN_OPENROUTER_API_KEY', nil)
+    firecrawl-cloud: 'enterprise/app/services/captain/tools/firecrawl_service.rb:2 BASE_URL = ''https://api.firecrawl.dev/v2'';
+      enterprise/app/services/firecrawl/configuration.rb:16 ::Firecrawl::Client.new(api_key: key)'
+  uncertain_reasons:
+    anthropic: 'config/llm.yml:38 claude-haiku-4.5 / claude-sonnet-4.5 with provider anthropic but coming_soon:
+      true (unselectable, ModelDropdown.vue:125 pointer-events-none); RubyLLM is configured with an OpenAI key only,
+      no Anthropic key anywhere'
+    google-gemini: 'config/llm.yml:48 gemini-3-flash / gemini-3-pro with provider gemini but coming_soon: true;
+      no Gemini key configured for RubyLLM'
+  open_source_expected:
+  - pgvector/pgvector
+  - langfuse/langfuse
+  open_source_tests_only: []
+  open_source_uncertain:
+  - firecrawl/firecrawl
+  open_source_evidence:
+    pgvector/pgvector: 'db/migrate/20250104200055_create_captain_tables.rb:28 enable_extension ''vector''; docker-compose.production.yaml:38
+      image: pgvector/pgvector:pg16'
+    langfuse/langfuse: 'lib/opentelemetry_config.rb:44 endpoint = InstallationConfig.find_by(name: ''LANGFUSE_BASE_URL'')&.value;
+      config/installation_config.yml:659 LANGFUSE_BASE_URL (configurable, default https://us.cloud.langfuse.com)'
+  open_source_uncertain_reasons:
+    firecrawl/firecrawl: 'hosted cloud only: enterprise/app/services/captain/tools/firecrawl_service.rb:2 BASE_URL
+      = ''https://api.firecrawl.dev/v2''; firecrawl-sdk client built with api_key only (enterprise/app/services/firecrawl/configuration.rb:16),
+      no self-hosted URL option'
+  open_source_coverage_gaps:
+  - 'RubyLLM (ruby_llm): Gemfile:204 gem ''ruby_llm''; lib/llm/config.rb:35 RubyLLM.configure do |config|'
+  - 'ai-agents (Chatwoot Agents SDK): Gemfile:202 gem ''ai-agents''; config/initializers/ai_agents.rb:10 Agents.configure
+    do |config|'
+  notes: 'All LLM traffic goes through RubyLLM / ai-agents / ruby-openai with CAPTAIN_OPEN_AI_API_KEY and an optional
+    CAPTAIN_OPEN_AI_ENDPOINT (default api.openai.com, lib/llm_constants.rb:8). config/llm_models.json is a RubyLLM
+    model registry (models.dev data) listing anthropic/azure/bedrock/deepseek/gemini/mistral/openrouter/perplexity/vertexai/xai
+    models: data only, not providers the app configures. lib/llm_constants.rb:9 PROVIDER_PREFIXES (mistral, deepseek)
+    is only used to label spans (lib/integrations/llm_instrumentation_helpers.rb:13). pdf_processing_service.rb:25
+    uploads PDFs via OpenAI files API (purpose assistants) for chat input, no vector stores, so not openai-file-search.
+    Closed services outside the catalog: Google Dialogflow (lib/integrations/dialogflow/processor_service.rb:130)
+    and Google Cloud Translate (lib/integrations/google_translate/detect_language_service.rb:37). Rejected: app/views/public/api/v1/portals/documentation_layout/articles/_actions.html.erb:6
+    claude.ai/new link (a link, not an API call); .devcontainer/Dockerfile.base:81 installs @anthropic-ai/claude-code
+    (dev tool); config/installation_config.yml:644 mentions langsmith in a description only; app/javascript/dashboard/routes/dashboard/settings/captain/components/ModelDropdown.vue:24
+    mistral icon.'
+- name: getzep__graphiti
+  url: https://github.com/getzep/graphiti
+  commit: 86f1c941bea7bf53fa45fe4e08c03244b4990eee
+  languages:
+  - python
+  summary: Graphiti, a temporal knowledge-graph library for agent memory (graphiti-core) plus a FastAPI graph service
+    and an MCP server, with pluggable LLM, embedder, reranker and graph-database backends
+  expected:
+  - openai
+  - openai-embeddings
+  - azure-openai
+  - anthropic
+  - google-gemini
+  - google-embeddings
+  - groq
+  - voyage
+  tests_only: []
+  uncertain:
+  - langsmith
+  evidence:
+    openai: graphiti_core/llm_client/openai_client.py:61 self.client = AsyncOpenAI(api_key=config.api_key, base_url=config.base_url);
+      graphiti_core/llm_client/openai_base_client.py:34 DEFAULT_MODEL = 'gpt-5.5'
+    openai-embeddings: graphiti_core/embedder/openai.py:24 DEFAULT_EMBEDDING_MODEL = 'text-embedding-3-small'; :52
+      AsyncOpenAI(api_key=config.api_key, base_url=config.base_url)
+    azure-openai: graphiti_core/llm_client/azure_openai_client.py:21 from openai import AsyncAzureOpenAI, AsyncOpenAI;
+      mcp_server/src/services/factories.py:180 case 'azure_openai'
+    anthropic: graphiti_core/llm_client/anthropic_client.py:144 self.client = AsyncAnthropic(...); examples/wizard_of_oz/runner.py:61
+      AnthropicClient(LLMConfig(api_key=os.environ.get('ANTHROPIC_API_KEY')))
+    google-gemini: graphiti_core/llm_client/gemini_client.py:121 self.client = genai.Client(api_key=config.api_key);
+      :47 DEFAULT_MODEL = 'gemini-3-flash-preview'
+    google-embeddings: graphiti_core/embedder/gemini.py:75 genai.Client(api_key=config.api_key) with embed_content;
+      examples/gliner2/gliner2_neo4j.py:143 embedding_model='gemini-embedding-001'
+    groq: graphiti_core/llm_client/groq_client.py:56 self.client = AsyncGroq(api_key=config.api_key); mcp_server/src/services/factories.py:277
+      case 'groq'
+    voyage: graphiti_core/embedder/voyage.py:52 voyageai.AsyncClient(api_key=config.api_key); mcp_server/src/services/factories.py:389
+      case 'voyage'
+  uncertain_reasons:
+    langsmith: 'declared but unused: langsmith only in pyproject.toml:56 dev extra; examples/langgraph-agent/agent.ipynb
+      cell 4 sets LANGCHAIN_TRACING_V2=''false'' and LangSmith is described as optional in markdown'
+  open_source_expected:
+  - huggingface/sentence-transformers
+  open_source_tests_only: []
+  open_source_uncertain:
+  - opensearch-project/OpenSearch
+  - ollama/ollama
+  open_source_evidence:
+    huggingface/sentence-transformers: graphiti_core/cross_encoder/bge_reranker_client.py:24 from sentence_transformers
+      import CrossEncoder; :36 CrossEncoder('BAAI/bge-reranker-v2-m3'); pyproject.toml:39 sentence-transformers
+      extra
+  open_source_uncertain_reasons:
+    opensearch-project/OpenSearch: 'hosted cloud only: graphiti_core/driver/neptune_driver.py:25,173-177 opensearchpy
+      OpenSearch client signed with Urllib3AWSV4SignerAuth(..., ''aoss'') against Amazon OpenSearch Serverless (AOSS_HOST);
+      no self-hosted OpenSearch config'
+    ollama/ollama: 'only the generic OpenAI-compatible path: mcp_server/src/services/factories.py:99,161,165 name
+      Ollama in comments for any non-OpenAI base_url; mcp_server/tests/test_factories.py:49,78-88 use http://localhost:11434/v1
+      as a test URL; README.md:540-560 Ollama example is docs'
+  open_source_coverage_gaps:
+  - 'Neo4j (graph + vector store): docker-compose.yml:30 image: neo4j:5.26.2; graphiti_core/driver/neo4j_driver.py'
+  - 'FalkorDB (graph + vector store): docker-compose.yml:51 image: falkordb/falkordb:latest; graphiti_core/driver/falkordb_driver.py:163
+    FalkorDB(host=host, port=port, ...)'
+  - 'Kuzu (embedded graph DB): graphiti_core/driver/kuzu_driver.py:21 import kuzu'
+  - 'GLiNER2 (local entity extraction model): graphiti_core/llm_client/gliner2_client.py:34 from gliner2 import
+    GLiNER2; :103 GLiNER2.from_pretrained(model_id)'
+  - 'LangGraph / LangChain: examples/langgraph-agent/agent.ipynb (cell 14) from langgraph.graph import END, START,
+    StateGraph; from langchain_openai import ChatOpenAI'
+  notes: 'SELF: getzep/graphiti is this repo (server/pyproject.toml graphiti-core>=0.28.2, mcp_server/pyproject.toml
+    graphiti-core[falkordb]) - not listed as a used component. Gemini clients use genai.Client(api_key=...) only,
+    no vertexai=True, so no google-vertex (the vertex-ai URL at graphiti_core/embedder/gemini.py:81 is a comment).
+    Azure OpenAI embeddings (graphiti_core/embedder/azure_openai.py:36) are covered by openai-embeddings via the
+    direct OpenAI embedder anyway. Amazon Neptune (graphiti_core/driver/neptune_driver.py:23-24 boto3 + langchain_aws
+    NeptuneGraph) and Amazon OpenSearch Serverless are AWS-hosted stores not in the closed catalog. GLiNER2 API
+    mode (graphiti_core/llm_client/gliner2_client.py:94-98 GLiNER2.from_api(api_base_url=config.base_url)) is an
+    uncatalogued hosted API only when a base_url is set. OpenAIGenericClient (graphiti_core/llm_client/openai_generic_client.py)
+    is a generic OpenAI-compatible client; vLLM/llama.cpp/Ollama/DeepSeek/Together are named only in its docstrings
+    (:48,79,117,130) and README.md:273,539 -> rejected. langchain-openai/ChatOpenAI in the LangGraph notebook is
+    already covered by openai. .github/intake/decide.py:7 states no LLM is involved. PostHog telemetry (graphiti_core/telemetry/telemetry.py:18)
+    is analytics, not AI. Cohere/Mistral/Pinecone etc.: no hits.'
+- name: ggml-org__whisper.cpp
+  url: https://github.com/ggml-org/whisper.cpp
+  commit: d1be6fde11ac6e0407606b4e42fe72d34add8037
+  languages:
+  - c
+  - cpp
+  - python
+  - javascript
+  - go
+  - java
+  - ruby
+  - swift
+  - kotlin
+  summary: whisper.cpp, a C/C++ port of OpenAI's Whisper (and Parakeet) speech recognition on ggml, with CLI/server/stream
+    examples, language bindings and model conversion scripts
+  expected:
+  - elevenlabs
+  tests_only: []
+  uncertain: []
+  evidence:
+    elevenlabs: examples/talk-llama/eleven-labs.py:50 from elevenlabs import voices, generate, play, save; :73 audio
+      = generate(text=..., voice=voice); examples/talk-llama/speak:20-28 runs it (ELEVEN_API_KEY)
+  uncertain_reasons: {}
+  open_source_expected:
+  - ggml-org/llama.cpp
+  - openai/whisper
+  - OHF-Voice/piper1-gpl
+  open_source_tests_only: []
+  open_source_uncertain: []
+  open_source_evidence:
+    ggml-org/llama.cpp: 'examples/talk-llama/CMakeLists.txt:19-31 FetchContent_Declare(llama GIT_REPOSITORY https://github.com/ggml-org/llama.cpp.git)
+      + target_link_libraries(... llama); examples/talk-llama/talk-llama.cpp:8 #include "llama.h"'
+    openai/whisper: models/convert-whisper-to-coreml.py:11-12 from whisper.model import Whisper ...; from whisper
+      import load_model; models/requirements-coreml.txt:3 openai-whisper
+    OHF-Voice/piper1-gpl: examples/talk-llama/speak:11-12 elif installed piper ...; piper --model ~/en_US-lessac-medium.onnx
+      --output-raw | aplay (optional local TTS backend)
+  open_source_uncertain_reasons: {}
+  open_source_coverage_gaps:
+  - 'Hugging Face Transformers: models/convert-h5-to-ggml.py:28 from transformers import WhisperForConditionalGeneration'
+  - 'OpenVINO: src/CMakeLists.txt:48 find_package(OpenVINO REQUIRED COMPONENTS Runtime); models/convert-whisper-to-openvino.py:5
+    from openvino.frontend import FrontEndManager'
+  - 'Core ML Tools / ane_transformers: models/convert-whisper-to-coreml.py:4 import coremltools as ct; :10 from
+    ane_transformers.reference.layer_norm import LayerNormANE'
+  notes: 'SELF: ggml-org/whisper.cpp is this repo - not listed. ggml/ is the in-tree ggml library (shared with llama.cpp),
+    not llama.cpp itself; llama.cpp counts only via the talk-llama example that fetches and links it. Hugging Face
+    hub usage is model download/upload (models/download-ggml-model.sh:103, bindings/ruby/lib/whisper/model/uri.rb:204,
+    scripts/upload-parakeet.py:3 huggingface_hub HfApi) - hosting, not huggingface-inference. OpenAI mentions are
+    all references to the open Whisper model/repo in comments and docs (include/whisper.h:377-557, src/whisper.cpp:444...,
+    README.md:15, models/README.md:3, Makefile:18 cdn.openai.com sample wav, bindings/javascript/package-tmpl.json:14
+    "openai" keyword) -> no closed openai. tests/*/normalizers are copied from openai/whisper (vendored text normalizers);
+    tests/*/requirements.txt only jiwer/regex. NeMo: models/convert-parakeet-to-ggml.py reads .nemo tar archives
+    with torch/yaml, does not import nemo -> NVIDIA-NeMo/Speech rejected. examples/server is whisper.cpp''s own
+    HTTP server. speak.ps1 uses Windows System.Speech (local). Silero VAD weights are downloaded models, not a catalog
+    project.'
+- name: k8sgpt-ai__k8sgpt
+  url: https://github.com/k8sgpt-ai/k8sgpt
+  commit: 613a74bcf21fda780b85dbc7c9260af2d05ec049
+  languages:
+  - go
+  summary: Kubernetes diagnostics CLI that explains cluster problems with a selectable AI backend
+  expected:
+  - openai
+  - anthropic
+  - azure-openai
+  - cohere
+  - aws-bedrock
+  - aws-sagemaker
+  - google-gemini
+  - google-vertex
+  - huggingface-inference
+  - oci-generative-ai
+  - ibm-watsonx
+  - groq
+  tests_only: []
+  uncertain: []
+  evidence:
+    openai: pkg/ai/openai.go:48 defaultConfig := openai.DefaultConfig(token); cmd/auth/add.go:32 defaultBackend
+      = "openai"
+    anthropic: pkg/ai/anthropic.go:83 c.client = anthropic.NewClient(opts...); cmd/auth/add.go:34 anthropicDefaultModel
+      = "claude-3-5-sonnet-latest"
+    azure-openai: pkg/ai/azureopenai.go:44 defaultConfig := openai.DefaultAzureConfig(token, baseURL)
+    cohere: pkg/ai/cohere.go:48 client := cohere.NewClient(opts...)
+    aws-bedrock: pkg/ai/amazonbedrock.go:452 a.client = bedrockruntime.NewFromConfig(cfg); pkg/ai/bedrockmantle.go:41
+      https://bedrock-mantle.%s.api.aws/v1
+    aws-sagemaker: pkg/ai/amazonsagemaker.go:73 c.client = sagemakerruntime.New(sess)
+    google-gemini: pkg/ai/googlegenai.go:48 client, err := genai.NewClient(ctx, authOption) (github.com/google/generative-ai-go)
+    google-vertex: pkg/ai/googlevertexai.go:118 client, err := genai.NewClient(ctx, projectId, region) (cloud.google.com/go/vertexai)
+    huggingface-inference: pkg/ai/huggingface.go:26 client := huggingface.NewInferenceClient(token)
+    oci-generative-ai: pkg/ai/ocigenai.go:61 generativeaiinference.NewGenerativeAiInferenceClientWithConfigurationProvider(provider)
+    ibm-watsonx: pkg/ai/watsonxai.go:54 client, err := wx.NewClient( (github.com/IBM/watsonx-go)
+    groq: pkg/ai/groq.go:28 const groqAPIBaseURL = "https://api.groq.com/openai/v1"
+  uncertain_reasons: {}
+  open_source_expected:
+  - ollama/ollama
+  - mudler/LocalAI
+  - BerriAI/litellm
+  open_source_tests_only: []
+  open_source_uncertain: []
+  open_source_evidence:
+    ollama/ollama: pkg/ai/ollama.go:37 defaultBaseURL = "http://localhost:11434"; pkg/ai/ollama.go:67 c.client =
+      ollama.NewClient(baseClientURL, httpClient)
+    mudler/LocalAI: pkg/ai/localai.go:3 const localAIClientName = "localai" (backend listed in pkg/ai/iai.go Backends)
+    BerriAI/litellm: pkg/ai/litellm.go:31 const liteLLMBaseURL = "http://localhost:4000/v1" (litellm backend)
+  open_source_uncertain_reasons: {}
+  open_source_coverage_gaps: []
+  notes: 'Provider registry in pkg/ai/iai.go (Backends list). bedrockmantle is the Bedrock OpenAI-compatible endpoint
+    (bedrock-mantle.<region>.api.aws), counted as aws-bedrock; the go-openai import in groq.go/litellm.go/bedrockmantle.go/localai
+    is not openai. litellm and localai backends default to local servers (localhost:4000, user baseurl). customrest
+    defaults to localhost:11434 (ollama const). Interplex (pkg/cache, cmd/cache/add.go:47) is a remote cache backend,
+    not an AI service. Doc-only: SUPPORTED_MODELS.md:95 DeepSeek, SUPPORTED_MODELS.md:98 Mistral AI (Bedrock model
+    families, not direct APIs); charts/k8sgpt/values.yaml:9 comment "openai | llama". cmd/generate/generate.go:48
+    opens platform.openai.com/api-keys.'
+- name: mckaywrigley__chatbot-ui
+  url: https://github.com/mckaywrigley/chatbot-ui
+  commit: 81328b61d2a4ab597a7a057be70e785cf756d9f8
+  languages:
+  - typescript
+  summary: Next.js + Supabase multi-provider chat UI (OpenAI, Azure, Anthropic, Gemini, Mistral, Groq, Perplexity,
+    OpenRouter, Ollama, custom OpenAI-compatible) with file retrieval
+  expected:
+  - openai
+  - openai-embeddings
+  - openai-assistants
+  - azure-openai
+  - anthropic
+  - google-gemini
+  - groq
+  - mistral
+  - openrouter
+  - perplexity
+  tests_only: []
+  uncertain: []
+  evidence:
+    openai: 'app/api/chat/openai/route.ts:22 const openai = new OpenAI({ apiKey: profile.openai_api_key || ""; app/api/command/route.ts:24
+      model: "gpt-4-1106-preview"'
+    openai-embeddings: 'app/api/retrieval/process/route.ts:118 await openai.embeddings.create({ model: "text-embedding-3-small"
+      (also app/api/retrieval/retrieve/route.ts:52)'
+    openai-assistants: app/api/assistants/openai/route.ts:18 const myAssistants = await openai.beta.assistants.list({
+    azure-openai: 'app/api/chat/azure/route.ts:47 const azureOpenai = new OpenAI({ ... baseURL: `${ENDPOINT}/openai/deployments/${DEPLOYMENT_ID}`'
+    anthropic: app/api/chat/anthropic/route.ts:5 import Anthropic from "@anthropic-ai/sdk"; :58 const anthropic
+      = new Anthropic({
+    google-gemini: app/api/chat/google/route.ts:3 import { GoogleGenerativeAI } from "@google/generative-ai"; :19
+      new GoogleGenerativeAI(profile.google_gemini_api_key
+    groq: 'app/api/chat/groq/route.ts:23 baseURL: "https://api.groq.com/openai/v1"'
+    mistral: 'app/api/chat/mistral/route.ts:24 baseURL: "https://api.mistral.ai/v1"'
+    openrouter: 'app/api/chat/openrouter/route.ts:24 baseURL: "https://openrouter.ai/api/v1"; lib/models/fetch-models.ts:84
+      fetch("https://openrouter.ai/api/v1/models")'
+    perplexity: 'app/api/chat/perplexity/route.ts:23 baseURL: "https://api.perplexity.ai/"'
+  uncertain_reasons: {}
+  open_source_expected:
+  - ollama/ollama
+  - pgvector/pgvector
+  open_source_tests_only: []
+  open_source_uncertain: []
+  open_source_evidence:
+    ollama/ollama: components/chat/chat-helpers/index.ts:163 process.env.NEXT_PUBLIC_OLLAMA_URL + "/api/chat"; lib/models/fetch-models.ts:58
+      process.env.NEXT_PUBLIC_OLLAMA_URL + "/api/tags" (.env.local.example:9 NEXT_PUBLIC_OLLAMA_URL=http://localhost:11434)
+    pgvector/pgvector: supabase/migrations/20240108234540_setup.sql:5 create extension vector with schema extensions;
+      supabase/migrations/20240108234545_add_file_items.sql:21 openai_embedding vector(1536)
+  open_source_uncertain_reasons: {}
+  open_source_coverage_gaps:
+  - 'Transformers.js (@xenova/transformers) local embeddings: lib/generate-local-embedding.ts:1 import { pipeline
+    } from "@xenova/transformers"'
+  - 'LangChain.js (text splitters / document loaders): lib/retrieval/processing/csv.ts:3 import { CSVLoader } from
+    "langchain/document_loaders/fs/csv"'
+  notes: 'Groq, Mistral, Perplexity and OpenRouter are all reached through the openai SDK with the vendor base URL
+    (attribute to the vendor; openai is separately expected via app/api/chat/openai/route.ts and app/api/chat/tools/route.ts:22).
+    Azure embeddings also exist (app/api/retrieval/process/route.ts:104-106 baseURL .../openai/deployments/${profile.azure_openai_embeddings_id}),
+    but openai-embeddings is already expected through the direct OpenAI branch. @azure/openai and @mistralai/mistralai
+    are declared in package.json but never imported (their services are expected anyway via the openai SDK). openai-assistants:
+    the /api/assistants/openai route really calls openai.beta.assistants.list, though no UI code fetches that route
+    (openaiAssistants state is never filled). app/api/chat/custom/route.ts:35-37 is a generic user-configured OpenAI-compatible
+    base_url (no vendor). Local embeddings use Xenova/all-MiniLM-L6-v2 via transformers.js (not a catalog project).
+    Doc/link-only mentions: README.md:163-165 Ollama install; lib/models/llm/*-llm-list.ts platform links (e.g.
+    lib/models/llm/anthropic-llm-list.ts:4 docs.anthropic.com) are model-list metadata; components/setup/api-step.tsx:110
+    placeholder https://your-endpoint.openai.azure.com. gpt-tokenizer is a local tokenizer, not an API.'
+- name: microsoft__autogen
+  url: https://github.com/microsoft/autogen
+  commit: 027ecf0a379bcc1d09956d46d12d44a3ad9cee14
+  languages:
+  - python
+  - csharp
+  - typescript
+  summary: Multi-agent AI framework (Python autogen-core/agentchat/ext, AutoGen Studio UI, agbench) plus the .NET
+    AutoGen libraries and samples
+  expected:
+  - openai
+  - azure-openai
+  - anthropic
+  - aws-bedrock
+  - google-gemini
+  - google-vertex
+  - llama
+  - github-models
+  - azure-ai-foundry
+  - mistral
+  - openai-assistants
+  - openai-file-search
+  - openai-embeddings
+  - openai-images
+  - azure-ai-search
+  - bing-search
+  - google-programmable-search
+  - mem0-platform
+  - huggingface-inference
+  tests_only:
+  - huggingface-inference
+  uncertain:
+  - openai-computer-use
+  - tavily
+  evidence:
+    openai: python/packages/autogen-ext/src/autogen_ext/models/openai/_openai_client.py:134 return AsyncOpenAI(**openai_config);
+      python/packages/autogen-studio/autogenstudio/gallery/builder.py:174 OpenAIChatCompletionClient(model="gpt-4o-mini")
+    azure-openai: python/packages/autogen-ext/src/autogen_ext/models/openai/_openai_client.py:128 return AsyncAzureOpenAI(**azure_config);
+      dotnet/src/Microsoft.AutoGen/Extensions/SemanticKernel/SemanticKernelHostingExtensions.cs:75 AddAzureOpenAIChatCompletion(...)
+    anthropic: python/packages/autogen-ext/src/autogen_ext/models/anthropic/_anthropic_client.py:104 return AsyncAnthropic(**client_config);
+      dotnet/src/AutoGen.Anthropic/Utils/AnthropicConstants.cs:8 Endpoint = "https://api.anthropic.com/v1/messages"
+    aws-bedrock: python/packages/autogen-ext/src/autogen_ext/models/anthropic/_anthropic_client.py:1372 client =
+      AsyncAnthropicBedrock(
+    google-gemini: python/packages/autogen-ext/src/autogen_ext/models/openai/_openai_client.py:1470 copied_args["base_url"]
+      = _model_info.GEMINI_OPENAI_BASE_URL (generativelanguage.googleapis.com, GEMINI_API_KEY); dotnet/src/AutoGen.Gemini/GoogleGeminiClient.cs:17
+      endpoint = "https://generativelanguage.googleapis.com/v1beta"
+    google-vertex: dotnet/src/AutoGen.Gemini/VertexGeminiClient.cs:23 Endpoint = $"{location}-aiplatform.googleapis.com";
+      dotnet/samples/AgentChat/AutoGen.Gemini.Sample/Chat_With_Vertex_Gemini.cs:16 GCP_VERTEX_PROJECT_ID
+    llama: python/packages/autogen-ext/src/autogen_ext/models/openai/_openai_client.py:1480 copied_args["base_url"]
+      = _model_info.LLAMA_API_BASE_URL (https://api.llama.com/compat/v1/, LLAMA_API_KEY :1482)
+    github-models: python/packages/autogen-ext/src/autogen_ext/models/azure/config/__init__.py:12 GITHUB_MODELS_ENDPOINT
+      = "https://models.github.ai/inference"; python/packages/autogen-ext/src/autogen_ext/models/azure/_azure_ai_client.py:74
+      return endpoint == GITHUB_MODELS_ENDPOINT
+    azure-ai-foundry: python/packages/autogen-ext/src/autogen_ext/models/azure/_azure_ai_client.py:25 from azure.ai.inference.aio
+      import ChatCompletionsClient; python/packages/autogen-ext/src/autogen_ext/agents/azure/_azure_ai_agent.py:66
+      from azure.ai.projects.aio import AIProjectClient
+    mistral: 'dotnet/src/AutoGen.Mistral/MistralClient.cs:19 baseUrl = "https://api.mistral.ai/v1"; dotnet/samples/AgentChat/AutoGen.Basic.Sample/CodeSnippet/MistralAICodeSnippet.cs:30
+      new MistralClient(apiKey: apiKey)'
+    openai-assistants: python/packages/autogen-ext/src/autogen_ext/agents/openai/_openai_assistant_agent.py:316
+      self._assistant = await self._client.beta.assistants.create(
+    openai-file-search: python/packages/autogen-ext/src/autogen_ext/agents/openai/_openai_assistant_agent.py:640
+      asyncio.ensure_future(self._client.vector_stores.create())
+    openai-embeddings: python/packages/autogen-ext/src/autogen_ext/memory/chromadb/_chromadb.py:222 embedding_functions.OpenAIEmbeddingFunction(api_key=config.api_key,
+      model_name=config.model_name); python/packages/autogen-ext/src/autogen_ext/tools/azure/_ai_search.py:206 await
+      openai_client.embeddings.create(model=embedding_model, input=query)
+    openai-images: python/packages/autogen-studio/autogenstudio/gallery/tools/generate_image.py:31 client.images.generate(model="dall-e-3",
+      ...); dotnet/samples/AgentChat/AutoGen.Basic.Sample/Example05_Dalle_And_GPT4V.cs:37 openAIClient.GetImageClient("dall-e-3").GenerateImageAsync(prompt,
+      option)
+    azure-ai-search: python/packages/autogen-ext/src/autogen_ext/tools/azure/_ai_search.py:26 from azure.search.documents.aio
+      import SearchClient
+    bing-search: python/packages/autogen-studio/autogenstudio/gallery/tools/bing_search.py:117 "https://api.bing.microsoft.com/v7.0/search";
+      dotnet/samples/AgentChat/AutoGen.Basic.Sample/Example11_Sequential_GroupChat_Example.cs:27 var bingSearch
+      = new BingConnector(bingApiKey);
+    google-programmable-search: python/packages/autogen-studio/autogenstudio/gallery/tools/google_search.py:103
+      client.get("https://www.googleapis.com/customsearch/v1", ...) with GOOGLE_CSE_ID (:43)
+    mem0-platform: python/packages/autogen-ext/src/autogen_ext/memory/mem0/_mem0.py:187 self._client = MemoryClient(api_key=self._api_key)
+      (is_cloud defaults to True, :28)
+    huggingface-inference: python/packages/autogen-ext/tests/models/test_openai_model_client.py:2121 base_url="https://api-inference.huggingface.co/v1/"
+  uncertain_reasons:
+    openai-computer-use: OpenAIAgent accepts a computer_use_preview tool config and forwards it to the Responses
+      API (python/packages/autogen-ext/src/autogen_ext/agents/openai/_openai_agent.py:69, :456), but nothing handles
+      computer_call outputs; config passthrough only
+    tavily: tavily-python in autogen-core dev dependency group (python/packages/autogen-core/pyproject.toml:50),
+      never imported anywhere (not even docs)
+  open_source_expected:
+  - ollama/ollama
+  - ggml-org/llama.cpp
+  - chroma-core/chroma
+  - mem0ai/mem0
+  - microsoft/graphrag
+  - lancedb/lancedb
+  - microsoft/markitdown
+  - openai/whisper
+  - qdrant/qdrant
+  - huggingface/sentence-transformers
+  - BerriAI/litellm
+  open_source_tests_only: []
+  open_source_uncertain:
+  - run-llama/llama_index
+  open_source_evidence:
+    ollama/ollama: python/packages/autogen-ext/src/autogen_ext/models/ollama/_ollama_client.py:47 from ollama import
+      AsyncClient, ChatResponse, Message; dotnet/src/Microsoft.AutoGen/Extensions/MEAI/ServiceCollectionChatCompletionExtensions.cs:43
+      uri ??= new Uri("http://localhost:11434");
+    ggml-org/llama.cpp: python/packages/autogen-ext/src/autogen_ext/models/llama_cpp/_llama_cpp_completion_client.py:24
+      from llama_cpp import (; :258 self.llm = Llama(**kwargs)
+    chroma-core/chroma: python/packages/autogen-ext/src/autogen_ext/memory/chromadb/_chromadb.py:247 self._client
+      = PersistentClient(; python/packages/autogen-ext/src/autogen_ext/experimental/task_centric_memory/_string_similarity_map.py:5
+      import chromadb
+    mem0ai/mem0: python/packages/autogen-ext/src/autogen_ext/memory/mem0/_mem0.py:12 from mem0 import Memory as
+      Memory0; :191 self._client = Memory0.from_config(config_dict=config_dict)
+    microsoft/graphrag: python/packages/autogen-ext/src/autogen_ext/tools/graphrag/_local_search.py:11 from graphrag.config.load_config
+      import load_config
+    lancedb/lancedb: 'python/packages/autogen-ext/src/autogen_ext/tools/graphrag/_local_search.py:21 from graphrag.vector_stores.lancedb
+      import LanceDBVectorStore; python/samples/agentchat_graphrag/settings.yaml:75 type: lancedb'
+    microsoft/markitdown: python/packages/autogen-ext/src/autogen_ext/agents/file_surfer/_markdown_file_browser.py:10
+      from markitdown import FileConversionException, MarkItDown, UnsupportedFormatException
+    openai/whisper: python/packages/autogen-ext/src/autogen_ext/agents/video_surfer/tools.py:7 import whisper; :51
+      model = whisper.load_model("base")
+    qdrant/qdrant: dotnet/src/Microsoft.AutoGen/Extensions/SemanticKernel/SemanticKernelHostingExtensions.cs:61
+      .WithQdrantMemoryStore(qdrantHttpClient, qdrantConfig.VectorSize, qdrantConfig.Endpoint); dotnet/samples/dev-team/DevTeam.AppHost/Program.cs:8
+      var qdrant = builder.AddQdrant("qdrant");
+    huggingface/sentence-transformers: python/packages/autogen-ext/src/autogen_ext/memory/chromadb/_chromadb.py:213
+      return embedding_functions.SentenceTransformerEmbeddingFunction(model_name=config.model_name); python/packages/autogen-ext/src/autogen_ext/memory/redis/_redis_memory.py:41
+      model_name ... default="sentence-transformers/all-mpnet-base-v2"
+    BerriAI/litellm: dotnet/samples/AgentChat/AutoGen.OpenAI.Sample/Tool_Call_With_Ollama_And_LiteLLM.cs:49 Endpoint
+      = new Uri("http://localhost:4000") (LiteLLM proxy started with litellm --model ollama_chat/dolphincoder --port
+      4000, :33)
+  open_source_uncertain_reasons:
+    run-llama/llama_index: llama-index in autogen-core dev dependency group (python/packages/autogen-core/pyproject.toml:42);
+      only imported in the docs notebook python/docs/src/user-guide/core-user-guide/cookbook/llamaindex-agent.ipynb,
+      never in package/sample code
+  open_source_coverage_gaps:
+  - 'Semantic Kernel: python/packages/autogen-ext/src/autogen_ext/models/semantic_kernel/_sk_chat_completion_adapter.py:20
+    from semantic_kernel.connectors.ai.chat_completion_client_base import ChatCompletionClientBase; dotnet/src/AutoGen.SemanticKernel'
+  - 'LangChain: python/packages/autogen-ext/src/autogen_ext/tools/langchain/_langchain_adapter.py:12 from langchain_core.tools
+    import BaseTool as LangChainTool'
+  - 'Redis / RedisVL vector memory: python/packages/autogen-ext/src/autogen_ext/memory/redis/_redis_memory.py:14
+    from redisvl.extensions.message_history import MessageHistory, SemanticMessageHistory'
+  - 'LM Studio: dotnet/src/AutoGen.LMStudio/LMStudioAgent.cs:22 public class LMStudioAgent : IAgent; python/packages/autogen-studio/autogenstudio/gallery/builder.py:179
+    base_url="http://localhost:1234/v1"'
+  - 'Microsoft Magika: python/packages/autogen-ext/pyproject.toml:36 "magika>=0.6.1rc2" (file-surfer/web-surfer
+    extras)'
+  notes: 'Scope excluded python/docs/ (Sphinx docs site with notebooks: llama_index, langgraph, etc.), dotnet/website/,
+    docs/, *.md. AnthropicChatCompletionClient also reachable via OpenAI-compatible base url api.anthropic.com/v1
+    (_model_info.py:497). Gemini also via google-genai extra (autogen-ext/pyproject.toml:103) which is never imported;
+    the gemini path is the OpenAI-compatible endpoint plus the .NET AutoGen.Gemini client. Rejected: deepseek (.github/workflows/pytest-mem0.yml:84
+    commented DEEPSEEK_API_KEY, ollama model tables only), groq (_openai_client.py:1262 docstring), together/openrouter/vLLM/AWS
+    Bedrock/HuggingFace in .github/ISSUE_TEMPLATE/1-bug_report.yml:140-155 dropdown, autogen-studio builder.py:176
+    variable mistral_vllm_model actually points at localhost:1234 (LM Studio port), not vLLM. MultimodalWebSurfer
+    browses https://www.bing.com/search via Playwright (_multimodal_web_surfer.py:681): a browser page, not the
+    Bing Search API. Azure Container Apps dynamic sessions code executor (code_executors/azure/_azure_container_code_executor.py,
+    POOL_ENDPOINT) has no catalog id. semantic-kernel[google,mistralai,anthropic,aws,hugging_face] extras in autogen-ext/pyproject.toml
+    are packaging only; the SK adapter is provider-agnostic (GoogleAIChatCompletion only in its docstring). agbench
+    Dockerfile installs SpeechRecognition for markitdown audio (not labelled). OpenAIAgent image_generation tool
+    (_openai_agent.py:443) also supports openai-images. Azure AI Agent bing_grounding/azure_ai_search tool definitions
+    in agents/azure/_types.py.'
+- name: nextcloud__integration_openai
+  url: https://github.com/nextcloud/integration_openai
+  commit: 07fdfd4c694c87e2e195b674323a562927ae0476
+  languages:
+  - php
+  - javascript
+  summary: Nextcloud app providing text, image, speech-to-text and text-to-speech task processing via the OpenAI
+    API or any OpenAI-compatible service (LocalAI, OpenRouter, Mistral, Eden AI, IONOS ...)
+  expected:
+  - openai
+  - openai-speech-to-text
+  - openai-text-to-speech
+  - openai-images
+  - openrouter
+  - mistral
+  - edenai
+  tests_only: []
+  uncertain:
+  - groq
+  evidence:
+    openai: 'lib/AppInfo/Application.php:23 public const OPENAI_API_BASE_URL = ''https://api.openai.com/v1''; lib/Service/ServiceConfig.php:265
+      return $this->url === '''' ? Application::OPENAI_API_BASE_URL : $this->url'
+    openai-speech-to-text: 'lib/Service/OpenAiAPIService.php:874 $endpoint = $translate ? ''audio/translations''
+      : ''audio/transcriptions''; lib/AppInfo/Application.php:30 DEFAULT_TRANSCRIPTION_MODEL_ID = ''whisper-1'''
+    openai-text-to-speech: lib/Service/OpenAiAPIService.php:1274 $this->request($userId, $service, 'audio/speech',
+      $params, 'POST'); lib/AppInfo/Application.php:31 DEFAULT_SPEECH_MODEL_ID = 'tts-1-hd'
+    openai-images: lib/Service/OpenAiAPIService.php:967 $this->request($userId, $service, 'images/generations',
+      $params, 'POST'); lib/AppInfo/Application.php:29 DEFAULT_IMAGE_MODEL_ID = 'gpt-image-1-mini' (images/edits
+      at :1106)
+    openrouter: lib/Service/ServiceConfig.php:273 return str_starts_with(strtolower($this->url), 'https://openrouter.ai');
+      lib/Service/OpenAiAPIService.php:1041 if ($service->isUsingOpenRouter()) { requestOpenRouterImageEdit
+    mistral: lib/Service/ServiceConfig.php:277 return str_starts_with(strtolower($this->url), 'https://api.mistral.ai');
+      lib/Service/OpenAiFileService.php:297 if ($service->isUsingMistral()) {
+    edenai: lib/Service/ServiceConfig.php:290 return str_starts_with($url, 'https://api.edenai.run') || ... 'https://api.eu.edenai.run';
+      lib/Service/OpenAiAPIService.php:131 if ($service->isUsingEdenAi()) { getEdenAiAudioModels
+  uncertain_reasons:
+    groq: only a link in the admin settings help text (src/components/AdminSettings.vue:25 href="https://console.groq.com"
+      Groqcloud); no Groq-specific code, would be a user-entered OpenAI-compatible URL
+  open_source_expected:
+  - mudler/LocalAI
+  open_source_tests_only: []
+  open_source_uncertain:
+  - ollama/ollama
+  open_source_evidence:
+    mudler/LocalAI: 'lib/Service/OpenAiAPIService.php:986 public function isLocalAIService(ServiceConfig $service):
+      bool { ... :994 $wellKnownUrl = substr($url, 0, -2) . ''.well-known/localai.json''; :1046 requestLocalAiImageEdit'
+  open_source_uncertain_reasons:
+    ollama/ollama: named only in admin help text and app description (src/components/AdminSettings.vue:27 <a href="https://ollama.com/">Ollama</a>,
+      appinfo/info.xml:30); no Ollama-specific code, reached only as a generic OpenAI-compatible URL
+  open_source_coverage_gaps: []
+  notes: 'All HTTP goes through one generic request() to a configured service URL; empty URL means api.openai.com
+    (default). Provider-specific branches exist for OpenRouter, Mistral, Eden AI and IONOS (lib/Service/ServiceConfig.php:281
+    https://openai.inference.de-txl.ionos.com; OpenAiAPIService.php:1043 requestIonosImageEdit, :719/:745 IONOS
+    quirks) - IONOS AI Model Hub has no catalog id (closed service not covered). Plusserver is named only in UI/description
+    text (AdminSettings.vue:29, info.xml:32). AudioToAudioChatProvider uses chat completions with audio (gpt-4o-audio-preview
+    comment at :184), not the Realtime API, so no openai-realtime. No embeddings, moderation, assistants or fine-tuning
+    endpoints. Tests: tests/unit/Service/MultiServiceTest.php:334 OpenRouter base URL, :514 Eden AI URL; tests/unit/Providers/OpenAiProviderTest.php:1137
+    mistral-small-2603 (services already expected from lib/). False-positive bait: appinfo/info.xml:30-32 (LocalAI,
+    Ollama, IONOS, Plusserver, MistralAI prose); src/components/AdminSettings.vue:23-29 provider links; src/components/ServiceForm.vue:35
+    placeholder http://localhost:8080/v1 (generic); comment URLs to platform.openai.com (lib/Service/ChunkService.php:27,
+    OpenAiAPIService.php:739). LICENSES/LicenseRef-OpenAITrademarks.txt is a licence file.'
+- name: openai__codex
+  url: https://github.com/openai/codex
+  commit: 406b0c44460cf71e90c21c7abe6e581add3a6421
+  languages:
+  - rust
+  - typescript
+  - python
+  summary: OpenAI Codex CLI, a local coding agent (Rust core, TS/Python SDKs) talking to the OpenAI Responses API,
+    with Amazon Bedrock and local Ollama/LM Studio providers
+  expected:
+  - openai
+  - openai-realtime
+  - openai-images
+  - aws-bedrock
+  tests_only: []
+  uncertain:
+  - azure-openai
+  - openai-speech-to-text
+  evidence:
+    openai: codex-rs/model-provider-info/src/lib.rs:440 "https://api.openai.com/v1" (default base_url of the built-in
+      openai provider); codex-rs/codex-api/src/endpoint/responses.rs:67 api.path = "/responses"
+    openai-realtime: codex-rs/codex-api/src/endpoint/realtime_call.rs:63 "realtime/calls"; codex-rs/codex-api/src/endpoint/realtime_websocket/methods.rs:1278
+      url.set_path("/v1/realtime")
+    openai-images: codex-rs/codex-api/src/endpoint/images.rs:68 "images/generations"; codex-rs/skills/src/assets/samples/imagegen/scripts/image_gen.py:778
+      result = client.images.generate(**payload)
+    aws-bedrock: codex-rs/model-provider-info/src/lib.rs:96 AMAZON_BEDROCK_DEFAULT_BASE_URL = "https://bedrock-mantle.us-east-1.api.aws/openai/v1";
+      codex-rs/aws-auth/src/lib.rs:352 "https://bedrock-runtime.us-east-1.amazonaws.com/v1/responses"
+  uncertain_reasons:
+    azure-openai: no built-in Azure provider; only a user-defined model_providers entry is recognised as Azure (codex-api/src/provider.rs:4
+      is_azure_responses_provider, markers openai.azure. etc.) and gets remote compaction (model-provider/src/capabilities.rs:34).
+      Config with AZURE_OPENAI_API_KEY appears only in model-provider-info/src/model_provider_info_tests.rs:111
+      and responses-api-proxy/README.md:85
+    openai-speech-to-text: 'transcription only inside Realtime sessions: codex-api/src/endpoint/realtime_websocket/methods_v2.rs:37
+      REALTIME_V2_INPUT_TRANSCRIPTION_MODEL = "gpt-4o-mini-transcribe"; no /audio/transcriptions call'
+  open_source_expected:
+  - ollama/ollama
+  open_source_tests_only: []
+  open_source_uncertain: []
+  open_source_evidence:
+    ollama/ollama: 'codex-rs/model-provider-info/src/lib.rs:654 pub const DEFAULT_OLLAMA_PORT: u16 = 11434; codex-rs/ollama/src/client.rs:189
+      let url = format!("{}/api/pull", ...)'
+  open_source_uncertain_reasons: {}
+  open_source_coverage_gaps:
+  - 'LM Studio (closed, local): codex-rs/model-provider-info/src/lib.rs:656 pub const LMSTUDIO_OSS_PROVIDER_ID:
+    &str = "lmstudio"; codex-rs/lmstudio/src/client.rs'
+  notes: 'Default backend with ChatGPT login is chatgpt.com/backend-api/codex (model-provider-info/src/lib.rs:80),
+    OpenAI-owned, counted as openai. Bedrock models are openai.gpt-* served by AWS (aws-bedrock, not openai). GitHub
+    workflows use openai/codex-action with CODEX_OPENAI_API_KEY (.github/workflows/issue-labeler.yml:22). Rejected:
+    api.githubcopilot.com/mcp/ (codex-mcp/src/connection_manager/startup.rs:96) is the GitHub MCP server, not the
+    Copilot API; ANTHROPIC_API_KEY and an OpenRouter key only as redaction test data (network-proxy/src/credential_broker_tests.rs:153,161);
+    "claude" hits are external-agent-migration reading Claude Code config/plugins (external-agent-migration/src/source_cla.rs:22),
+    not the Anthropic API; x-litellm-api-key only in rmcp-client/src/http_headers_tests.rs:316; "mistral" only as
+    an Ollama model name in ollama/src/client.rs:314 test; "Datadog trace" println in app-server-test-client/src/lib.rs:2427;
+    computer_use/browser_use config is Codex''s own local computer-use plugin, not OpenAI computer_use_preview;
+    codex_file_search is local fuzzy file search, not OpenAI file_search; files.rs uploads blobs to OpenAI file
+    storage (part of openai). Sentry, Statsig and OpenTelemetry are non-AI telemetry. Realtime voice output audio
+    counted under openai-realtime, not openai-text-to-speech.'
+- name: vercel__chatbot
+  url: https://github.com/vercel/chatbot
+  commit: c2f8235e1f3ea903ad8b7f61447c4f74164b5c58
+  languages:
+  - typescript
+  summary: Vercel's Next.js AI SDK chatbot template; all models go through the Vercel AI Gateway
+  expected:
+  - vercel-ai-gateway
+  tests_only: []
+  uncertain: []
+  evidence:
+    vercel-ai-gateway: lib/ai/providers.ts:25 return gateway.languageModel(modelId); lib/ai/models.ts:126 fetch("https://ai-gateway.vercel.sh/v1/models"
+  uncertain_reasons: {}
+  open_source_expected: []
+  open_source_tests_only: []
+  open_source_uncertain: []
+  open_source_evidence: {}
+  open_source_uncertain_reasons: {}
+  open_source_coverage_gaps: []
+  notes: 'Only the Vercel AI Gateway is called (gateway from "ai"; .env.example AI_GATEWAY_API_KEY). Model ids are
+    gateway ids (lib/ai/models.ts:1 DEFAULT_CHAT_MODEL = "moonshotai/kimi-k2.5", :30 "deepseek/deepseek-v3.2", :44
+    "openai/gpt-oss-20b", :60 "xai/grok-4.1-fast-non-reasoning") and gatewayOrder lists gateway routing providers
+    (lib/ai/models.ts:5 ["fireworks", "bedrock"], :29 ["bedrock", "deepinfra"], :43 ["groq", "bedrock"], :59 ["xai"]);
+    per rule 6 these count as the gateway, not moonshot/deepseek-api/openai/xai/fireworks/aws-bedrock/deepinfra/groq.
+    app/(chat)/api/chat/route.ts:302 providerOptions openai: { reasoningEffort } is a pass-through option through
+    the gateway, not a direct OpenAI call. False-positive bait: README.md:27 and :47 (OpenAI, Anthropic, Cohere
+    prose); components/ai-elements/model-selector.tsx:132-164 provider-logo union type ("openai", "anthropic", "google-vertex-anthropic",
+    "groq", "mistral", "nebius", "github-copilot"); components/chat/multimodal-input.tsx:861,876 provider display
+    labels; components/chat/icons.tsx:164,207 logos. Tests use mock models (lib/ai/models.mock.ts). Storage is Postgres
+    (no vector), Redis (resumable streams/rate limit), Vercel Blob; @vercel/otel is generic telemetry. get-weather
+    tool calls open-meteo (not AI). Pyodide loaded from jsdelivr for code artifacts.'
+- name: zed-industries__zed
+  url: https://github.com/zed-industries/zed
+  commit: da0a7a78cf296a6d8a75894f46b71a8e7f19cb2f
+  languages:
+  - rust
+  - python
+  summary: High-performance code editor with an AI agent panel, many selectable LLM providers and edit prediction
+  expected:
+  - anthropic
+  - openai
+  - google-gemini
+  - aws-bedrock
+  - deepseek-api
+  - mistral
+  - xai
+  - openrouter
+  - vercel-ai-gateway
+  - github-copilot
+  - opencode
+  - inception
+  - baseten
+  - modal
+  tests_only: []
+  uncertain:
+  - ollama-cloud
+  evidence:
+    anthropic: 'crates/anthropic/src/anthropic.rs:21 pub const ANTHROPIC_API_URL: &str = "https://api.anthropic.com";
+      crates/language_models/src/provider/anthropic.rs:45 ANTHROPIC_API_KEY'
+    openai: 'crates/open_ai/src/open_ai.rs:27 pub const OPEN_AI_API_URL: &str = "https://api.openai.com/v1"; crates/openai_subscribed/src/openai_subscribed.rs:35
+      CODEX_BASE_URL = "https://chatgpt.com/backend-api/codex"'
+    google-gemini: crates/language_model_core/src/provider.rs:12 GOOGLE_AI_API_URL = "https://generativelanguage.googleapis.com";
+      crates/language_models/src/provider/google.rs:61 GEMINI_API_KEY
+    aws-bedrock: crates/bedrock/Cargo.toml:21 aws-sdk-bedrockruntime.workspace = true; crates/language_models/src/provider/bedrock.rs:80
+      LanguageModelProviderId::new("amazon-bedrock")
+    deepseek-api: 'crates/deepseek/src/deepseek.rs:14 pub const DEEPSEEK_API_URL: &str = "https://api.deepseek.com/v1"'
+    mistral: crates/mistral/src/mistral.rs:12 MISTRAL_API_URL = "https://api.mistral.ai/v1"; crates/codestral/src/codestral.rs:24
+      CODESTRAL_API_URL = "https://codestral.mistral.ai"
+    xai: 'crates/x_ai/src/x_ai.rs:5 pub const XAI_API_URL: &str = "https://api.x.ai/v1"; crates/language_models/src/provider/x_ai.rs:26
+      XAI_API_KEY'
+    openrouter: crates/open_router/src/open_router.rs:22 OPEN_ROUTER_API_URL = "https://openrouter.ai/api/v1"; crates/language_models/src/provider/open_router.rs:29
+      OPENROUTER_API_KEY
+    vercel-ai-gateway: 'crates/language_models/src/provider/vercel_ai_gateway.rs:29 const API_URL: &str = "https://ai-gateway.vercel.sh/v1";
+      :30 VERCEL_AI_GATEWAY_API_KEY'
+    github-copilot: crates/copilot_chat/src/copilot_chat.rs:25 DEFAULT_COPILOT_API_ENDPOINT = "https://api.githubcopilot.com";
+      crates/copilot_chat/src/copilot_chat.rs:55 format!("{}/chat/completions", api_endpoint)
+    opencode: 'crates/opencode/src/opencode.rs:14 pub const OPENCODE_API_URL: &str = "https://opencode.ai/zen";
+      crates/language_models/src/provider/opencode.rs:77 OPENCODE_API_KEY'
+    inception: crates/edit_prediction/src/mercury.rs:23 MERCURY_API_URL = "https://api.inceptionlabs.ai/v1/edit/completions"
+    baseten: crates/edit_prediction_cli/src/predict.rs:641 "https://model-{model_id}.api.baseten.co/environments/{environment}/sync/v1/completions";
+      crates/eval_cli/zed_eval/config.py:18 BASETEN_API_URL = "https://inference.baseten.co/v1"
+    modal: crates/eval_cli/zed_eval/modal_app.py:16 import modal; crates/eval_cli/zed_eval/modal_app.py:50 app =
+      modal.App(APP_NAME)
+  uncertain_reasons:
+    ollama-cloud: crates/language_models/src/provider/ollama.rs:42 reads OLLAMA_API_KEY for authenticated Ollama
+      servers, but the default URL is localhost:11434 and no ollama.com API endpoint appears in code (docs/src/ai/use-a-local-model.md:135
+      mentions Ollama Turbo via a user-set URL)
+  open_source_expected:
+  - ollama/ollama
+  - ggml-org/llama.cpp
+  open_source_tests_only: []
+  open_source_uncertain: []
+  open_source_evidence:
+    ollama/ollama: 'crates/ollama/src/ollama.rs:12 pub const OLLAMA_API_URL: &str = "http://localhost:11434"; crates/language_models/src/provider/ollama.rs:39
+      LanguageModelProviderId::new("ollama")'
+    ggml-org/llama.cpp: 'crates/llama_cpp/src/llama_cpp.rs:15 pub const LLAMA_CPP_API_URL: &str = "http://localhost:8080";
+      crates/language_models/src/provider/llama_cpp.rs:38 LanguageModelProviderId::new("llama.cpp")'
+  open_source_uncertain_reasons: {}
+  open_source_coverage_gaps:
+  - 'LM Studio: crates/lmstudio/src/lmstudio.rs:14 pub const LMSTUDIO_API_URL: &str = "http://localhost:1234/api/v0"'
+  notes: 'Provider crates under crates/ (anthropic, open_ai, openai_subscribed = ChatGPT subscription via chatgpt.com/backend-api/codex,
+    google_ai, bedrock, deepseek, mistral/codestral, x_ai + x_ai_subscribed SuperGrok OAuth, open_router, opencode
+    Zen, copilot_chat, vercel AI gateway in language_models) all wired in crates/language_models/src/provider/.
+    openai_compatible / anthropic_compatible providers are generic user-URL options (not vLLM etc.). Zed cloud (crates/cloud_llm_client,
+    language_models/src/provider/cloud.rs, web_search_providers/src/cloud.rs) is Zed''s own hosted backend. Edit
+    prediction: Zeta (Zed cloud), Mercury (Inception), Codestral (Mistral), Copilot, Ollama, OpenAI-compatible;
+    Sweep is only a prompt format (edit_prediction/src/sweep_prompt.rs). Dev tooling counted as code: crates/eval_cli
+    (Python, Modal + judge upstreams api.anthropic.com / Baseten / api.openai.com, config.py:85-123), crates/edit_prediction_cli
+    (anthropic_client.rs / openai_client.rs batch clients, Baseten predict), script/github-check-new-issue-for-duplicates.py:181
+    POSTs to api.anthropic.com/v1/messages (.github/workflows/comment_on_potential_duplicate_issues.yml:63 ANTHROPIC_API_KEY).
+    Not catalogued: Factory AI Droid CLI in .github/workflows/docs_suggestions.yml:75/86 (FACTORY_API_KEY); Snowflake
+    SQL in crates/edit_prediction_cli/src/pull_examples.rs:202 is a data warehouse, not Cortex. Rejected: crates/agent_servers/src/acp.rs:965
+    "Login with your Google or Vertex AI account" (Gemini CLI auth text, not Zed calling Vertex); crates/agent/src/tools/evals/fixtures/zode/prompt.md:288
+    Anthropic Vertex docs inside an eval fixture; crates/bedrock/src/models.rs model ids (Anthropic/Mistral/DeepSeek
+    families) are Bedrock, not direct APIs; crates/language_models/src/provider/llama_cpp.rs:36 huggingface.co/models
+    link (browse GGUF, no inference API); .github/ISSUE_TEMPLATE/10_bug_report.yml:102 provider names in a template;
+    crates/livekit_client is LiveKit calls for collaboration, not livekit/agents; crates/llama_cpp/src/llama_cpp.rs:849
+    unsloth/... is a GGUF model name, not the unsloth library.'

@@ -90,13 +90,15 @@ claude plugin validate .                   # plugin + marketplace (CLAUDE.md-at-
 
 - Truth is labelled from the code, independently of unrent's output (`eval/TRUTH_RULES.md`).
 - Floors live in `FLOORS` in `eval/run_eval.py` (`--gate` checks them; CI passes it) and
-  sit just under the measured scores (2026-10-07: closed precision 0.993, recall 0.957;
-  open source 1.000 / 0.902; models 0.943 / 0.892). Raise them when scores rise; **never
+  sit just under the measured scores (2026-10-07, 66 repos: closed precision 0.989,
+  recall 0.965; open source 1.000 / 0.941; models 0.943 / 0.892). Raise them when scores rise; **never
   lower them to pass**.
-- `eval/holdout.yaml` (12 repos, `--holdout`) is never tuned against: measure on it,
-  don't fix to it. A fix made because of a miss there moves that repo into the corpus,
-  and a freshly labelled repo replaces it. First measurement (2026-10-07): closed
-  0.948 / 0.901, open source 1.000 / 0.677.
+- `eval/holdout.yaml` (`--holdout`) is never tuned against: measure on it, don't fix to
+  it. A fix made because of a miss there moves that repo into the corpus
+  (`corpus_oss.yaml`), and a freshly labelled repo replaces it. The first set (12 repos,
+  0.948 / 0.901 closed, 1.000 / 0.677 open source) moved in on 2026-10-07. The second
+  (11 provider-heavy apps) measured closed 0.591 / 0.909, open source 0.955 / 0.737:
+  most false positives are model and provider registries in data files.
 - The models side scores only the ids `corpus_models.yaml` lists under `labelled`. When
   `retirements.yaml` gains ids, grep the corpus for them, label any line that selects
   one (`MODEL_TRUTH_RULES.md`), and add them to `labelled`. A platform's id counts only
