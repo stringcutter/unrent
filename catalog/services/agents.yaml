@@ -35,6 +35,7 @@
   category: Web search
   replace_with: [web-search]
   detect:
+    npm: ["@langchain/community/tools/serper"]
     symbol: [GoogleSerperAPIWrapper, SerperDevTool]
     endpoint: [google.serper.dev]
     env: [SERPER_API_KEY]
@@ -45,7 +46,8 @@
   replace_with: [web-search]
   detect:
     requirement: [google-search-results, serpapi]
-    npm: [serpapi]
+    npm: [serpapi, "@langchain/community/tools/serpapi",
+          "@langchain/community/document_loaders/web/serpapi"]
     python_import: [serpapi]
     symbol: [SerpAPIWrapper]
     endpoint: [serpapi.com]
@@ -433,6 +435,7 @@
   replace_with: [web-search]
   detect:
     maven: ["dev.langchain4j:langchain4j-web-search-engine-google-custom"]
+    npm: ["@langchain/community/tools/google_custom_search"]
     symbol: [GoogleSearchAPIWrapper]
     endpoint: [customsearch.googleapis.com, www.googleapis.com/customsearch]
     env: [GOOGLE_CSE_ID]

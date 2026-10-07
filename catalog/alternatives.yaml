@@ -370,8 +370,8 @@ projects:
     kind: [embedded, server]
     detect:
       requirement: [chromadb, chromadb-client, langchain-chroma, llama-index-vector-stores-chroma]
-      python_import: [chromadb]
-      npm: [chromadb]
+      python_import: [chromadb, langchain_chroma]
+      npm: [chromadb, "@langchain/community/vectorstores/chroma"]
       image: [chromadb/chroma, ghcr.io/chroma-core/chroma]
       maven: ["dev.langchain4j:langchain4j-chroma",
               "org.springframework.ai:spring-ai-starter-vector-store-chroma",
@@ -487,9 +487,9 @@ projects:
       requirement: [vllm]
       python_import: [vllm]
       image: [vllm/vllm-openai, lmcache/vllm-openai]
-      # Reached over its OpenAI-compatible API: LangChain's VLLMOpenAI, or a base URL
-      # setting named for it.
-      symbol: [VLLMOpenAI]
+      # Reached over its OpenAI-compatible API: LangChain's VLLMOpenAI, a base URL
+      # setting named for it, or a provider named for it.
+      symbol: [VLLMOpenAI, '"vllm"', "'vllm'", '"VLLM"']
       env: [VLLM_OPENAI_API_BASE, VLLM_API_BASE, VLLM_BASE_URL]
   sgl-project/sglang:
     kind: [server]
@@ -508,7 +508,7 @@ projects:
       nuget: [LLamaSharp]
       # A provider named for it, and its source fetched to build (CMake FetchContent,
       # a submodule, `git clone`).
-      symbol: ['"llama.cpp"', "'llama.cpp'"]
+      symbol: ['"llama.cpp"', "'llama.cpp'", '"llamacpp"', "'llamacpp'"]
       endpoint: [github.com/ggml-org/llama.cpp.git, github.com/ggerganov/llama.cpp.git]
   ollama/ollama:
     kind: [server]
@@ -527,7 +527,8 @@ projects:
               "org.springframework.ai:spring-ai-ollama", "dev.langchain4j:langchain4j-ollama",
               "io.github.ollama4j:ollama4j"]
       nuget: [OllamaSharp, Microsoft.Extensions.AI.Ollama,
-              Microsoft.SemanticKernel.Connectors.Ollama]
+              Microsoft.SemanticKernel.Connectors.Ollama,
+              CommunityToolkit.Aspire.Hosting.Ollama, CommunityToolkit.Aspire.OllamaSharp]
   InternLM/lmdeploy:
     kind: [server]
     detect:
@@ -565,6 +566,7 @@ projects:
     kind: [proxy]
     detect:
       image: [maximhq/bifrost]
+      symbol: ['"bifrost"', "'bifrost'"]  # a provider named for it
   songquanpeng/one-api:
     kind: [proxy]
     detect:
@@ -588,7 +590,8 @@ projects:
     detect:
       requirement: [sentence-transformers, llama-index-embeddings-huggingface]
       python_import: [sentence_transformers]
-      symbol: [HuggingFaceEmbeddings, HuggingFaceBgeEmbeddings, SentenceTransformerEmbeddings]
+      symbol: [HuggingFaceEmbeddings, HuggingFaceBgeEmbeddings, SentenceTransformerEmbeddings,
+               SentenceTransformerEmbeddingFunction]
   qdrant/fastembed:
     kind: [library]
     detect:
@@ -692,6 +695,7 @@ projects:
       requirement: [opik]
       python_import: [opik]
       npm: [opik]
+      endpoint: [comet.com/opik]  # Opik on Comet's cloud: its API
   mlflow/mlflow:
     kind: [server]
     detect:
@@ -798,7 +802,8 @@ projects:
   searxng/searxng:
     kind: [server]
     detect:
-      symbol: [SearxSearchWrapper, SearxSearch]
+      # LangChain's wrappers, or a provider named for it.
+      symbol: [SearxSearchWrapper, SearxSearch, '"searxng"', "'searxng'", '"SearXNG"', "'SearXNG'"]
       image: [searxng/searxng]
       env: [SEARXNG_URL, SEARX_URL, SEARX_HOST, SEARXNG_API_URL, SEARXNG_QUERY_URL, SEARXNG_INSTANCE_URL,
             SEARXNG_BASE_URL, AGENT_SEARXNG_API_URL]

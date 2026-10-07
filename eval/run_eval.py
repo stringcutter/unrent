@@ -51,10 +51,10 @@ import yaml
 HERE = Path(__file__).resolve().parent
 
 # Lenient (precision, recall) per side for --gate. They sit just under the measured
-# scores on 2026-10-07 (66 repos): closed precision 0.989, recall 0.965; open source
-# precision 1.000, recall 0.941; models precision 0.943, recall 0.892.
+# scores on 2026-10-07 (77 repos): closed precision 0.987, recall 0.970; open source
+# precision 0.990, recall 0.938; models precision 0.943, recall 0.892.
 # Raise them when the scores rise; never lower them to pass.
-FLOORS = {"closed": (0.98, 0.95), "oss": (0.98, 0.93), "models": (0.94, 0.88)}
+FLOORS = {"closed": (0.98, 0.96), "oss": (0.98, 0.93), "models": (0.94, 0.88)}
 
 
 def git(*args: str, cwd: Path | None = None) -> str:

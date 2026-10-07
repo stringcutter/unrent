@@ -396,13 +396,24 @@ def iter_files(
     return sorted(out)
 
 
+# A documentation site's data directory, and the config file beside it.
+_SITE_DATA = {
+    "_data": ("_config.yml",),  # Jekyll
+    "static": ("docusaurus.config.js", "docusaurus.config.ts", "docusaurus.config.mjs"),
+}
+
+
 def _site_data(root: Path, rel: str) -> bool:
-    """A Jekyll site's `_data` files (next to its `_config.yml`): what the site's pages
-    show, such as a leaderboard of models, not what the code calls."""
+    """A Jekyll site's `_data` files, a Docusaurus site's `static` ones: what the site's
+    pages show, such as a leaderboard of models or a list of MCP servers, not what the
+    code calls."""
     parts = rel.split("/")[:-1]
-    if "_data" not in parts:
-        return False
-    return root.joinpath(*parts[: parts.index("_data")], "_config.yml").is_file()
+    for name, configs in _SITE_DATA.items():
+        if name in parts:
+            site = root.joinpath(*parts[: parts.index(name)])
+            if any((site / config).is_file() for config in configs):
+                return True
+    return False
 
 
 def left_out(root: Path, only: Path, exclude: Iterable[str] = (), skip_tests: bool = False) -> bool:
@@ -724,13 +735,16 @@ _NEWLINE = re.compile(r"\n")
 _MODEL_TOKEN = re.compile(r"[A-Za-z0-9_./:@-]+")
 _FILE_EXTENSION = re.compile(r"\.[A-Za-z]{2,5}$")
 _OLLAMA_TAG = re.compile(r":(?!\d+$)[A-Za-z0-9._-]+$")  # `command-r:35b`, not bedrock's `-v1:0`
-# Lines that name a model without calling it: tokenizers and local runtimes.
+# Lines that name a model without calling it: tokenizers, local runtimes, and the
+# example in an empty form field.
 _MODEL_NOT_A_CALL = re.compile(
-    r"encoding_for_model|tiktoken|ollama|cl100k|o200k|p50k|tokeniz", re.IGNORECASE
+    r"encoding_for_model|tiktoken|ollama|cl100k|o200k|p50k|tokeniz|placeholder", re.IGNORECASE
 )
 _ENCODING_CONSTANT = re.compile(r"encoding[A-Z_]")  # Go/Java: encodingCL100KBase
 
 Needle = tuple[str, str, str, re.Pattern]  # kind, needle, probe, pattern
+# A declaration of a type: what follows is a name the project defines.
+_DEFINES = re.compile(r"\b(?:class|interface|struct|enum|trait|type)\s+$")
 
 
 def _offsets(text: str) -> list[int]:
@@ -833,6 +847,8 @@ class Needles:
                 else:
                     m = pattern.search(view)
                 if m:
+                    if kind == "symbol" and _DEFINES.search(view, 0, m.start()):
+                        kind = "defines"  # the project's own class of that name
                     facts.append(Fact(kind, needle, path, n, _snippet(lines[n - 1], m.start())))
         return facts
 
@@ -968,12 +984,15 @@ def js_package(specifier: str) -> str | None:
 
 
 def _js_imports(path: Path, code: str, lines: list[str]) -> list[Fact]:
+    """The package with the path imported from it: LangChain's integrations are subpaths
+    of one package (`@langchain/community/chat_models/togetherai`). Matched by prefix."""
     facts = []
     for m in _JS_IMPORT.finditer(code):
         name = js_package(m.group(1))
         if name:
+            sub = [s for s in m.group(1).split(name, 1)[-1].split("/")[1:] if s]
             n = code.count("\n", 0, m.start()) + 1
-            facts.append(Fact("npm", name, path, n, _snippet(lines[n - 1])))
+            facts.append(Fact("npm", "/".join([name, *sub]), path, n, _snippet(lines[n - 1])))
     return facts
 
 
@@ -1661,6 +1680,9 @@ def _is_unrent_report(text: str) -> bool:
     return head.lstrip().startswith("{") and '"scanned_at"' in head and '"catalog_services"' in head
 
 
+# A Rust file's own unit tests: the `#[cfg(test)] mod tests` block at its end.
+_RUST_TESTS = re.compile(r"^#\[cfg\(test\)\]\s*\n\s*mod\s", re.MULTILINE)
+
 _API_SPEC = re.compile(r"""\A\s*(?:#[^\n]*\n\s*)*(?:\{\s*)?["']?(?:openapi|swagger)["']?\s*:""")
 
 
@@ -1713,6 +1735,11 @@ def facts_for_file(
         facts += _install_commands(path, lines, code)
     facts += _local_base_urls(path, lines, code)
     facts += needles.search(path, lines, code, hit_lines)
+    if suffix == ".rs" and (m := _RUST_TESTS.search(text)):
+        # ponytail: the test module is taken to run to the end of the file, as it does
+        # by convention; find its closing brace if code ever follows it.
+        start = text.count("\n", 0, m.start()) + 1
+        facts = [dataclasses.replace(f, in_test=True) if f.line >= start else f for f in facts]
     return facts
 
 
@@ -1922,7 +1949,7 @@ def _ripgrep_batch(cmd: list[str], root: Path, hits: dict[str, list[int]]) -> bo
 # Matching
 # --------------------------------------------------------------------------
 
-PREFIX_SEPARATORS = {"python_import": ".", "go": "/"}
+PREFIX_SEPARATORS = {"python_import": ".", "go": "/", "npm": "/"}
 CASE_SENSITIVE = {"symbol", "model", "env"}
 
 
@@ -1935,8 +1962,9 @@ def _canonical(kind: str, value: str) -> str:
 def _lookup_keys(kind: str, value: str) -> list[str]:
     """The signature values an observed value can match.
 
-    Imports and Go modules match by prefix at a separator: `azure.search.documents.x`
-    matches `azure.search.documents`, `github.com/a/b/v3` matches `github.com/a/b`.
+    Imports, npm packages and Go modules match by prefix at a separator:
+    `azure.search.documents.x` matches `azure.search.documents`, `openai/resources`
+    matches `openai`, `github.com/a/b/v3` matches `github.com/a/b`.
     An image also matches without its registry host: `docker.langfuse.com/langfuse/
     langfuse` is `langfuse/langfuse`. Everything else matches exactly.
     """
@@ -1961,8 +1989,13 @@ def match(facts: list[Fact], catalog: Catalog, only: Path | None = None) -> list
             for signature in signatures:
                 index.setdefault((kind, _canonical(kind, signature)), []).append(service)
 
+    # A symbol the project defines itself is its own, wherever it is used: firecrawl's
+    # SearchIndexClient class is not Azure's.
+    defined = {f.value for f in facts if f.kind == "defines" and f.value.isidentifier()}
     hits_by_service: dict[str, dict[tuple, Fact]] = {}
     for fact in facts:
+        if fact.kind == "symbol" and fact.value in defined:
+            continue
         for key in _lookup_keys(fact.kind, fact.value):
             for service in index.get((fact.kind, key), ()):
                 hits_by_service.setdefault(service.id, {})[_key(fact)] = fact
@@ -1970,6 +2003,10 @@ def match(facts: list[Fact], catalog: Catalog, only: Path | None = None) -> list
     local = [f for f in facts if f.kind == "local_base_url"]
     local_modes = [f for f in facts if f.kind == "local_mode"]
     own = {f.value for f in facts if f.kind == "own_repo"}
+    # A capability of an OpenAI-compatible API (Assistants) is called through the same
+    # client: in a file that aims that client at a server you run, the server serves it.
+    compatible = {s.id for s in catalog.detectable if s.local_compatible}
+    local_code = [f for f in local if f.file.suffix.lower() in CODE_SUFFIXES]
     findings: list[Finding] = []
     for service in catalog.detectable:
         hits = hits_by_service.get(service.id)
@@ -1978,6 +2015,8 @@ def match(facts: list[Fact], catalog: Catalog, only: Path | None = None) -> list
         kept = tuple(sorted(hits.values(), key=lambda f: (str(f.file), f.line, f.kind, f.value)))
         if service.local_compatible:
             kept = _without_local_clients(kept, local)
+        elif compatible & set(service.part_of):
+            kept = _without_local_clients(kept, local_code)
         if service.local_mode:
             kept = _without_local_clients(kept, local_modes)
         if kept:
@@ -2074,11 +2113,20 @@ def _registries(findings: list[Finding]) -> set[Path]:
                 services.setdefault(fact.file, set()).add(finding.service.id)
                 if fact.kind != "model":
                     not_models.setdefault(fact.file, set()).add(finding.service.id)
+    named = {file: ids - not_models.get(file, set()) for file, ids in services.items()}
+    # A model list split into one data file per provider (onyx's price_table/*.json)
+    # counts as one list: the data files of a directory that name models and nothing else.
+    data = {file for file in services if file.suffix.lower() in DATA_SUFFIXES}
+    per_dir: dict[Path, set[str]] = {}
+    for file in data:
+        if named[file] == services[file]:
+            per_dir.setdefault(file.parent, set()).update(named[file])
     return {
         file
         for file, ids in services.items()
-        if len(ids - not_models.get(file, set())) >= MODEL_LIST_AT
-        or (len(ids) >= PROVIDER_CATALOG_AT and file.suffix.lower() in DATA_SUFFIXES)
+        if len(named[file]) >= MODEL_LIST_AT
+        or (file in data and len(ids) >= PROVIDER_CATALOG_AT)
+        or (file in data and named[file] == ids and len(per_dir[file.parent]) >= MODEL_LIST_AT)
     }
 
 
@@ -2104,8 +2152,10 @@ def _mark_models_only(findings: list[Finding]) -> list[Finding]:
     for finding in findings:
         only_models = all(named(fact) for fact in finding.facts)
         # A model id in a test is a fixture, not a call, even when the vendor is real.
-        backed = any(base in real for base in finding.service.part_of) and not finding.test_only
-        if only_models and not (backed and any(f.file not in registry for f in finding.facts)):
+        backed = any(base in real for base in finding.service.part_of)
+        if only_models and not (
+            backed and any(f.file not in registry and not f.in_test for f in finding.facts)
+        ):
             finding = dataclasses.replace(finding, models_only=True)
         out.append(finding)
     return out

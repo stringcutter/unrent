@@ -84,6 +84,29 @@ each release ships the rankings as of its date.
   models.dev). What it names is listed under `models_named`. A LiteLLM route or a
   capability's model id there no longer counts as a call. A call elsewhere in the code
   still does.
+- Gaps found by the 11 provider-heavy repos that joined the corpus, fixed as classes:
+  - A model list split into one data file per provider (onyx's `price_table/*.json`) is
+    one registry. A capability's model id in a test no longer backs it either.
+  - JavaScript imports keep their subpath, so LangChain's community integrations count
+    (`@langchain/community/chat_models/togetherai`, `.../tools/serper`, `.../tools/serpapi`,
+    `.../tools/google_custom_search`, `.../vectorstores/chroma`).
+  - A name the project declares as its own class, interface, struct or type is not the
+    vendor's symbol (firecrawl's own `SearchIndexClient`). Qdrant Cloud's
+    `cloud_inference` counts where it is set, not where a type declares it.
+  - An OpenAI capability (Assistants) called in a file that aims the client at a local
+    server is the local server's; Ollama Cloud's `OLLAMA_API_KEY` beside a local Ollama
+    URL is the local key.
+  - A model id in a form field's placeholder is an example. Rust's `#[cfg(test)]`
+    modules are test code; a Docusaurus site's `static` files are not code.
+  - New signatures: the capability endpoints `api.openai.com/v1/moderations`,
+    `/v1/audio/transcriptions`, `/v1/audio/speech`; LangChain4j and Spring AI's
+    `OpenAiModerationModel`, `OpenAiAudioTranscriptionModel`, `MistralAiEmbeddingModel`;
+    LangChain's `OpenAIModerationChain`; .NET Aspire's `Aspire.Azure.AI.OpenAI`;
+    `@langchain/baidu-qianfan`; BFL's `api.us1.bfl.ai`; the provider constants of
+    charmbracelet's catwalk (`catwalk.InferenceProviderDeepSeek` and the like).
+  - Open source: a provider named `"vllm"`, `"searxng"`, `"bifrost"` or `"llamacpp"`;
+    `langchain_chroma`; Chroma's `SentenceTransformerEmbeddingFunction`; the .NET Aspire
+    Ollama packages; Opik on Comet's cloud.
 
 ## [0.3.0] - 2026-10-05
 

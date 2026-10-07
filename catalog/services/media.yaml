@@ -9,7 +9,9 @@
   weak: [audio.transcriptions.create, audio.translations.create]
   replace_with: [speech-to-text]
   detect:
-    symbol: ["audio.transcriptions.create", "audio.translations.create", "openai.transcription("]
+    symbol: ["audio.transcriptions.create", "audio.translations.create", "openai.transcription(",
+             OpenAiAudioTranscriptionModel]
+    endpoint: [api.openai.com/v1/audio/transcriptions, api.openai.com/v1/audio/translations]
     model: [whisper-1, gpt-4o-transcribe, gpt-4o-mini-transcribe, gpt-transcribe,
             gpt-live-transcribe]
 
@@ -126,6 +128,7 @@
   replace_with: [text-to-speech]
   detect:
     symbol: ["audio.speech.create", "openai.speech("]
+    endpoint: [api.openai.com/v1/audio/speech]
     model: [tts-1, gpt-4o-mini-tts]
     npm: ["@mastra/voice-openai"]
 
@@ -285,7 +288,7 @@
   replace_with: [image-generation]
   detect:
     npm: ["@ai-sdk/black-forest-labs"]
-    endpoint: [api.bfl.ai, api.bfl.ml]
+    endpoint: [api.bfl.ai, api.us1.bfl.ai, api.bfl.ml]
     env: [BFL_API_KEY]
     model: [flux-pro, flux-kontext-pro, flux-kontext-max]
 

@@ -34,7 +34,7 @@ writes in Danish; answer in the language of their latest message.
 | `catalog/alternatives.yaml` | Pools of open source alternatives and the open source projects recognised in code |
 | `catalog/rankings.json`, `star-history.json` | Written weekly by `scripts/refresh.py` |
 | `catalog/retirements.yaml` | Model retirements from the vendors' pages (`vendors`) and from Azure, Bedrock and Vertex (`platforms`: a key of its own, since releases up to 0.3.0 fail on an id listed twice), rewritten weekly by `scripts/retirements.py` (pull request left open for review). An id resolves to the vendor of the finding's service |
-| `eval/` | Golden corpus (54 repos, pinned commits) with hand-labelled truth, `TRUTH_RULES.md`, `OSS_TRUTH_RULES.md`, `MODEL_TRUTH_RULES.md` (`corpus_models.yaml`), `run_eval.py` |
+| `eval/` | Golden corpus (77 repos, pinned commits) with hand-labelled truth, `TRUTH_RULES.md`, `OSS_TRUTH_RULES.md`, `MODEL_TRUTH_RULES.md` (`corpus_models.yaml`), `run_eval.py` |
 | `scripts/` | `refresh.py` (rankings), `verify_packages.py`, `new_services.py` (models.dev + corpus candidates), `mcp_smoke.py` |
 | `skills/unrent/` | Agent skill (SKILL.md, `sweep.py`, `repo_facts.py`), in the plugin or alone with `npx skills add stringcutter/unrent` |
 | `.claude-plugin/` | Claude Code plugin (`plugin.json`: MCP server, `unrent hook` on PostToolUse; the repo root is the plugin root) and its marketplace `stringcutter`. Both commands pin `unrent>=X`, as does `action.yml`: bump all three and `version` with the package version on release |
@@ -48,7 +48,7 @@ uv run pytest -q                           # tests; with `rg` on PATH each detec
 uv run ruff check . && uv run ruff format --check .
 uv run unrent scan path/to/repo [--format json]
 uv run unrent catalog --validate           # after any catalog edit
-uv run python eval/run_eval.py --side all --gate   # first run clones 54 repos (UNRENT_EVAL_CACHE)
+uv run python eval/run_eval.py --side all --gate   # first run clones 77 repos (UNRENT_EVAL_CACHE)
 uv run python scripts/retirements.py       # retirements.yaml against the vendors' pages
 uv run python scripts/verify_packages.py   # every package signature exists in its registry
 uv run python scripts/new_services.py --models-dev                  # providers not in the catalog
@@ -90,9 +90,9 @@ claude plugin validate .                   # plugin + marketplace (CLAUDE.md-at-
 
 - Truth is labelled from the code, independently of unrent's output (`eval/TRUTH_RULES.md`).
 - Floors live in `FLOORS` in `eval/run_eval.py` (`--gate` checks them; CI passes it) and
-  sit just under the measured scores (2026-10-07, 66 repos: closed precision 0.989,
-  recall 0.965; open source 1.000 / 0.941; models 0.943 / 0.892). Raise them when scores rise; **never
-  lower them to pass**.
+  sit just under the measured scores (2026-10-07, 77 repos: closed precision 0.987,
+  recall 0.970; open source 0.990 / 0.938; models 0.943 / 0.892). Raise them when scores
+  rise; **never lower them to pass**.
 - `eval/holdout.yaml` (`--holdout`) is never tuned against: measure on it, don't fix to
   it. A fix made because of a miss there moves that repo into the corpus
   (`corpus_oss.yaml`), and a freshly labelled repo replaces it. The first set (12 repos,
@@ -110,7 +110,11 @@ claude plugin validate .                   # plugin + marketplace (CLAUDE.md-at-
   (`- id  # added YYYY-MM-DD with the new catalog ids; line checked by hand: file:line ...`).
   If not, fix the signature and add a regression test.
 - Known open FPs: `openai` in bedrock-access-gateway, `google-imagen` in anything-llm
-  (Gemini image model ids in a chat model list), `together` in langchaingo. Models side:
+  (Gemini image model ids in a chat model list), `together` in langchaingo, `typesafe` in
+  chatwoot (Jev through OpenRouter), `google-gemini` in onyx (google-genai used only for
+  Vertex), key names in tests that don't call the service (codex, crewAI, onyx) and in
+  goose's MCP extension config tests. Open source: `mudler/LocalAI` in continue and
+  simonw/llm. Models side:
   dify's `RestrictModel(model=...)` allow-list (3), a tokenizer default in kotaemon, and
   kernel-memory's settings files, whose OpenAI section names gpt-4o-mini next to an Azure
   section (no OpenAI host or client in the file to tell them apart).

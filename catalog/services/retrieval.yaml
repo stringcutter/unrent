@@ -97,7 +97,7 @@
   part_of: mistral
   replace_with: [embedding-model, ocr]
   detect:
-    symbol: [MistralAIEmbeddings]
+    symbol: [MistralAIEmbeddings, MistralAiEmbeddingModel]
     model: [mistral-embed, codestral-embed, mistral-ocr-]
     requirement: [llama-index-embeddings-mistralai]
     python_import: [llama_index.embeddings.mistralai]
@@ -230,8 +230,8 @@
   replace_with: [vector-db]
   self_host: qdrant/qdrant
   detect:
-    # cloud_inference is a Qdrant Cloud-only client option.
-    symbol: [cloud_inference]
+    # cloud_inference is a Qdrant Cloud-only client option: set, not declared.
+    symbol: [cloud_inference=, '"cloud_inference":']
     endpoint: [cloud.qdrant.io]
 
 - id: azure-ai-search

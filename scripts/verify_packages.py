@@ -121,7 +121,9 @@ def check_pypi(name):
 
 
 def check_npm(name):
-    enc = name.replace("/", "%2f")
+    # A subpath (`@langchain/community/tools/serper`) is checked as its package.
+    parts = name.split("/")
+    enc = "%2f".join(parts[:2] if name.startswith("@") else parts[:1])
     d = jget(f"https://registry.npmjs.org/{enc}")
     if not d or "dist-tags" not in d:
         return {"exists": False}

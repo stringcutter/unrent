@@ -639,6 +639,25 @@ def test_jekyll_site_data_is_not_code(tmp_path, catalog):
     assert [c.file.relative_to(tmp_path).as_posix() for c in cited] == ["app/_data/providers.yml"]
 
 
+def test_docusaurus_static_data_is_not_code(tmp_path, catalog):
+    # goose's documentation/static/servers.json: the MCP servers its site lists
+    write(tmp_path, {
+        "documentation/docusaurus.config.ts": "export default {};\n",
+        "documentation/static/servers.json": '[{"environmentVariables": [{"name": "EXA_API_KEY"}]}]\n',
+        "web/static/config.json": '{"key": "BROWSERBASE_API_KEY"}\n',
+    })  # fmt: skip
+    assert set(found(tmp_path, catalog)) == {"browserbase"}
+
+
+def test_rust_cfg_test_module_is_test_code(tmp_path, catalog):
+    write(tmp_path, {"src/extensions.rs": (
+        'const KEY: &str = "ANTHROPIC_API_KEY";\n\n'
+        '#[cfg(test)]\nmod tests {\n    const KEY: &str = "BRAVE_API_KEY";\n}\n'
+    )})  # fmt: skip
+    findings = {f.service.id: f for f in match(collect_facts(tmp_path, catalog), catalog)}
+    assert not findings["anthropic"].test_only and findings["brave-search"].test_only
+
+
 @pytest.mark.parametrize(
     ("files", "service"),
     [
@@ -665,6 +684,43 @@ def test_jekyll_site_data_is_not_code(tmp_path, catalog):
         (
             {"chains.py": "from langchain_aws import ChatBedrock\nllm = ChatBedrock(model_id=m)\n"},
             "aws-bedrock",
+        ),
+        # The 2026-10-07 rotation. crush names providers with catwalk's constants.
+        ({"agent.go": "case string(catwalk.InferenceProviderBaseten):\n"}, "baseten"),
+        ({"agent.go": "case string(catwalk.InferenceProviderDeepSeek):\n"}, "deepseek-api"),
+        ({"agent.go": "case catwalk.InferenceProviderMiniMaxChina:\n"}, "minimax"),
+        ({"config.go": "case catwalk.TypeVercel:\n"}, "vercel-ai-gateway"),
+        (
+            {"WebApp.csproj": '<PackageReference Include="Aspire.Azure.AI.OpenAI" />\n'},
+            "azure-openai",
+        ),
+        (
+            {"tts.js": "const url = schema?.url || 'https://api.openai.com/v1/audio/speech';\n"},
+            "openai-text-to-speech",
+        ),
+        (
+            {
+                "stt.js": "const url = schema?.url || 'https://api.openai.com/v1/audio/transcriptions';\n"
+            },
+            "openai-speech-to-text",
+        ),
+        ({"Mod.java": "var m = OpenAiModerationModel.builder().build();\n"}, "openai-moderation"),
+        (
+            {"Rag.java": "var m = MistralAiEmbeddingModel.builder().build();\n"},
+            "mistral-embeddings",
+        ),
+        (
+            {
+                "Together.ts": "import { ChatTogetherAI } from '@langchain/community/chat_models/togetherai'\n"
+            },
+            "together",
+        ),
+        ({"Serper.ts": "import { Serper } from '@langchain/community/tools/serper'\n"}, "serper"),
+        (
+            {
+                "Flux.js": "const base = process.env.FLUX_API_BASE_URL || 'https://api.us1.bfl.ai';\n"
+            },
+            "bfl-api",
         ),
     ],
     ids=lambda v: v if isinstance(v, str) else next(iter(v)),
@@ -980,6 +1036,57 @@ def test_a_price_table_names_without_depending(tmp_path, catalog):
         "llm.ts": 'import OpenAI from "openai";\nconst client = new OpenAI();\n',
     })  # fmt: skip
     assert deps(tmp_path, catalog) == {"openai"}  # not its moderation, speech or Whisper
+
+
+def test_a_price_table_split_per_provider_is_one_registry(tmp_path, catalog):
+    # onyx's price_table/*.json, one file per provider; a test naming the model too
+    tables = {"openai": "text-embedding-3-small", "anthropic": "claude-3-5-sonnet",
+              "mistral": "mistral-large", "cohere": "command-r", "xai": "grok-2",
+              "gemini": "gemini-1.5-pro"}  # fmt: skip
+    write(tmp_path, {
+        **{f"price_table/{p}.json": f'{{"{m}": {{"input": 1}}}}\n' for p, m in tables.items()},
+        "tests/test_prices.py": 'assert price("text-embedding-3-small")\n',
+        "llm.py": "from openai import OpenAI\nclient = OpenAI()\n",
+    })  # fmt: skip
+    assert deps(tmp_path, catalog) == {"openai"}
+
+
+def test_a_placeholder_model_id_is_an_example(tmp_path, catalog):
+    write(tmp_path, {"ChatOpenAICustom.ts": (
+        "import OpenAI from 'openai'\n"
+        "const field = { name: 'modelName', placeholder: 'ft:gpt-3.5-turbo:my-org:custom_suffix:id' }\n"
+    )})  # fmt: skip
+    assert deps(tmp_path, catalog) == {"openai"}
+
+
+def test_a_class_the_project_defines_is_its_own(tmp_path, catalog):
+    # firecrawl's own SearchIndexClient, not Azure AI Search's
+    write(tmp_path, {
+        "lib/search-index-client.ts": "export class SearchIndexClient {\n}\n",
+        "search.ts": "import { SearchIndexClient } from './lib/search-index-client'\n",
+        "py/types.py": "class Params(TypedDict):\n    cloud_inference: bool\n",
+    })  # fmt: skip
+    assert found(tmp_path, catalog) == {}
+
+
+def test_capabilities_through_a_local_server_are_not_the_vendor(tmp_path, catalog):
+    write(tmp_path, {
+        "examples/assistants.py": (
+            "from openai import OpenAI\n"
+            'client = OpenAI(base_url="http://localhost:8080/openai-assistants")\n'
+            "client.beta.assistants.create(name='x')\n"
+        ),
+        "crew/providers.py": (
+            'OLLAMA = dict(base_url="http://localhost:11434/v1", api_key_env="OLLAMA_API_KEY")\n'
+        ),
+    })  # fmt: skip
+    assert deps(tmp_path, catalog) == set()
+    # A local server in configuration covers the client code, not its Assistants calls.
+    write(tmp_path, {
+        ".env": "OPENAI_BASE_URL=http://localhost:11434/v1\n",
+        "app/assistant.py": "from openai import OpenAI\nOpenAI().beta.assistants.create(name='x')\n",
+    })  # fmt: skip
+    assert deps(tmp_path, catalog) == {"openai-assistants"}
 
 
 def test_a_router_calling_several_providers_counts(tmp_path, catalog):
@@ -1825,6 +1932,41 @@ def test_a_project_is_not_a_component_of_itself(tmp_path, catalog):
                 "${LANGFUSE_OTLP:https://cloud.langfuse.com/api/public/otel/v1/traces}\n"
             },
             "langfuse/langfuse",
+        ),
+        # The 2026-10-07 rotation: providers named for the project, integration imports.
+        ({"enums.py": 'SEARXNG = "searxng"\n'}, "searxng/searxng"),
+        ({"Searxng.ts": "this.label = 'SearXNG'\n"}, "searxng/searxng"),
+        ({"Vllm.ts": 'static providerName = "vllm";\n'}, "vllm-project/vllm"),
+        (
+            {"chat_model.py": '_FACTORY_NAME = ["VLLM", "OpenAI-API-Compatible"]\n'},
+            "vllm-project/vllm",
+        ),
+        ({"constants.py": 'BIFROST_PROVIDER_NAME = "bifrost"\n'}, "maximhq/bifrost"),
+        (
+            {"llamacpp.go": 'RegisterEnricher("llamacpp", &llamacppEnricher{})\n'},
+            "ggml-org/llama.cpp",
+        ),
+        ({"rag.py": "from langchain_chroma import Chroma\n"}, "chroma-core/chroma"),
+        (
+            {"store.ts": "import { Chroma } from '@langchain/community/vectorstores/chroma'\n"},
+            "chroma-core/chroma",
+        ),
+        (
+            {
+                "st.py": "from chromadb.utils import embedding_functions\n"
+                "ef = embedding_functions.SentenceTransformerEmbeddingFunction()\n"
+            },
+            "huggingface/sentence-transformers",
+        ),
+        (
+            {
+                "AppHost.csproj": '<PackageReference Include="CommunityToolkit.Aspire.Hosting.Ollama" />\n'
+            },
+            "ollama/ollama",
+        ),
+        (
+            {"handler.ts": "baseUrl: endpoint ?? 'https://www.comet.com/opik/api'\n"},
+            "comet-ml/opik",
         ),
     ],
     ids=lambda v: v if isinstance(v, str) else next(iter(v)),

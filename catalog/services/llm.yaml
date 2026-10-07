@@ -62,7 +62,7 @@
     maven: ["com.azure:azure-ai-openai", "dev.langchain4j:langchain4j-azure-open-ai",
             "org.springframework.ai:spring-ai-azure-openai",
             "org.springframework.ai:spring-ai-starter-model-azure-openai"]
-    nuget: [Azure.AI.OpenAI, Microsoft.SemanticKernel.Connectors.AzureOpenAI]
+    nuget: [Azure.AI.OpenAI, Microsoft.SemanticKernel.Connectors.AzureOpenAI, Aspire.Azure.AI.OpenAI]
     requirement: [llama-index-llms-azure-openai, llama-index-embeddings-azure-openai]
     npm: ["@ai-sdk/azure", "@azure/openai"]
     python_import: [llama_index.llms.azure_openai, llama_index.embeddings.azure_openai]
@@ -327,7 +327,7 @@
     requirement: [langchain-deepseek, llama-index-llms-deepseek]
     npm: ["@ai-sdk/deepseek", "@langchain/deepseek"]
     python_import: [langchain_deepseek, llama_index.llms.deepseek]
-    symbol: [ChatDeepSeek, createDeepSeek]
+    symbol: [ChatDeepSeek, createDeepSeek, catwalk.InferenceProviderDeepSeek]
     # API aliases only. DeepSeek's weights are MIT-licensed, so `deepseek/deepseek-v3.2`
     # through a gateway is an open model, and the gateway is the closed dependency.
     model: ["deepseek-chat", "deepseek-reasoner"]
@@ -359,7 +359,9 @@
   detect:
     requirement: [together, langchain-together, llama-index-llms-together,
                   llama-index-embeddings-together]
-    npm: [together-ai, "@ai-sdk/togetherai", "@langchain/together-ai"]
+    npm: [together-ai, "@ai-sdk/togetherai", "@langchain/together-ai",
+          "@langchain/community/chat_models/togetherai", "@langchain/community/llms/togetherai",
+          "@langchain/community/embeddings/togetherai"]
     python_import: [together, langchain_together, llama_index.llms.together,
                     llama_index.embeddings.together]
     symbol: [ChatTogether, createTogetherAI, "Together("]
@@ -379,7 +381,7 @@
     npm: ["@ai-sdk/fireworks", "@langchain/fireworks"]
     python_import: [fireworks, langchain_fireworks, llama_index.llms.fireworks,
                     llama_index.embeddings.fireworks]
-    symbol: [ChatFireworks, createFireworks]
+    symbol: [ChatFireworks, createFireworks, catwalk.InferenceProviderFireworks]
     model: ["accounts/fireworks/models/", "fireworks_ai/"]
     endpoint: [api.fireworks.ai]
     env: [FIREWORKS_API_KEY, FIREWORKS_ACCOUNT_ID]
@@ -524,7 +526,8 @@
   part_of: openai
   replace_with: [guardrails]
   detect:
-    symbol: ["moderations.create"]
+    symbol: ["moderations.create", OpenAIModerationChain, OpenAiModerationModel]
+    endpoint: [api.openai.com/v1/moderations]
     model: [omni-moderation-, text-moderation-]
 
 # ---------------------------------------------------------------- gateways
@@ -536,7 +539,7 @@
   replace_with: [llm-gateway]
   detect:
     npm: ["@ai-sdk/gateway"]
-    symbol: [createGateway]
+    symbol: [createGateway, catwalk.TypeVercel]
     endpoint: [ai-gateway.vercel.sh]
     env: [AI_GATEWAY_API_KEY, AI_GATEWAY_BASE_URL]
     requirement: [llama-index-llms-vercel-ai-gateway]
@@ -590,13 +593,14 @@
   detect:
     requirement: [dashscope, llama-index-llms-dashscope, llama-index-embeddings-dashscope,
                   llama-index-postprocessor-dashscope-rerank]
-    npm: ["@ai-sdk/alibaba"]
+    npm: ["@ai-sdk/alibaba", "@langchain/community/chat_models/alibaba_tongyi"]
     maven: ["com.alibaba:dashscope-sdk-java",
             "com.alibaba.cloud.ai:spring-ai-alibaba-starter-dashscope",
             "dev.langchain4j:langchain4j-community-dashscope"]
     python_import: [dashscope, llama_index.llms.dashscope, llama_index.embeddings.dashscope,
                     llama_index.postprocessor.dashscope_rerank]
-    symbol: [ChatTongyi, DashScopeEmbeddings, createAlibaba]
+    symbol: [ChatTongyi, DashScopeEmbeddings, createAlibaba,
+             catwalk.InferenceProviderAlibabaSingapore, catwalk.InferenceProviderAlibabaUS]
     model: [qwen-max, qwen-plus, qwen-turbo, qwen-flash, qwen3-max, dashscope/, "alibaba:"]
     endpoint: [dashscope.aliyuncs.com, dashscope-intl.aliyuncs.com]
     env: [DASHSCOPE_API_KEY, ALIBABA_API_KEY]
@@ -627,7 +631,7 @@
             "org.springframework.ai:spring-ai-zhipuai",
             "org.springframework.ai:spring-ai-starter-model-zhipuai"]
     python_import: [zai, zhipuai, llama_index.llms.zhipuai]
-    symbol: [ZhipuAiClient, ZaiClient, ChatZhipuAI, createZai]
+    symbol: [ZhipuAiClient, ZaiClient, ChatZhipuAI, createZai, catwalk.InferenceProviderZAI]
     model: [zai/, "zai:"]
     endpoint: [api.z.ai, open.bigmodel.cn]
     env: [ZAI_API_KEY, ZHIPUAI_API_KEY]
@@ -643,7 +647,8 @@
     maven: ["org.springframework.ai:spring-ai-minimax",
             "org.springframework.ai:spring-ai-starter-model-minimax"]
     python_import: [llama_index.llms.minimax]
-    symbol: [createMiniMax]
+    symbol: [createMiniMax, catwalk.InferenceProviderMiniMax,
+             catwalk.InferenceProviderMiniMaxChina]
     model: [minimax/, speech-02-, speech-2.6-]
     endpoint: [api.minimax.io, api.minimaxi.com]
     env: [MINIMAX_API_KEY]
@@ -684,7 +689,7 @@
     requirement: [baseten, langchain-baseten, llama-index-llms-baseten]
     npm: ["@ai-sdk/baseten"]
     python_import: [baseten, langchain_baseten, llama_index.llms.baseten]
-    symbol: [ChatBaseten, BasetenEmbeddings, createBaseten]
+    symbol: [ChatBaseten, BasetenEmbeddings, createBaseten, catwalk.InferenceProviderBaseten]
     model: [baseten/]
     endpoint: [inference.baseten.co, api.baseten.co]
     env: [BASETEN_API_KEY]
@@ -883,6 +888,7 @@
   replace_with: [open-llm, llm-serving]
   detect:
     requirement: [qianfan, llama-index-llms-qianfan]
+    npm: ["@langchain/baidu-qianfan"]
     python_import: [qianfan]
     symbol: [QianfanChatEndpoint, QianfanLLMEndpoint, QianfanEmbeddingsEndpoint]
     endpoint: [qianfan.baidubce.com, aip.baidubce.com]
@@ -1157,6 +1163,7 @@
 - id: ollama-cloud
   name: Ollama Cloud
   category: LLM API
+  local_compatible: true
   replace_with: [open-llm, llm-serving]
   self_host: ollama/ollama
   detect:
