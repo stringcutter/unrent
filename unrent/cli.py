@@ -221,7 +221,7 @@ def cmd_scan(args) -> int:
         return 2
     fmt = args.format
     if args.within and "snaps" not in args.fail_on:
-        print("unrent: --within needs --fail-on snaps", file=sys.stderr)
+        print("unrent: --within needs --fail-on snaps", file=sys.stderr)  # exit 2: usage
         return 2
     if args.why and fmt in ("markdown", "json", "sarif"):
         print(f"unrent: --why prints text; drop --format {fmt}", file=sys.stderr)
@@ -266,9 +266,9 @@ def cmd_scan(args) -> int:
             print(f"unrent: {args.why} is not among what was found ({ids})", file=sys.stderr)
             return 2
     elif fmt == "sarif":
-        # Paths from where unrent runs, the repository root in CI, when the scan is in it.
-        base = Path.cwd() if root.is_relative_to(Path.cwd()) else root
-        text = to_sarif(findings, root, catalog, _version(), base, args.as_of)
+        # Paths from the repository root, which is what GitHub maps them to.
+        base = next((d for d in (root, *root.parents) if (d / ".git").exists()), root)
+        text = to_sarif(findings, root, catalog, _version(), base, args.as_of or today())
     elif fmt == "json":
         text = to_json(findings, root, catalog, skipped, unknown, args.as_of, scanned)
     elif fmt == "terminal":
@@ -466,6 +466,9 @@ def main(argv: list[str] | None = None) -> int:
         print(f"unrent: catalog error: {exc}", file=sys.stderr)
     except OSError as exc:
         print(f"unrent: {exc}", file=sys.stderr)
+    except Exception:
+        # Exit 1 means --fail-on found what it names; a crash must not look like that.
+        traceback.print_exc()
     return 2
 
 

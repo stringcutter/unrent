@@ -95,11 +95,14 @@ permissions:
   security-events: write   # for the annotations
 steps:
   - uses: actions/checkout@v5
-  - uses: stringcutter/unrent@main
+  - uses: stringcutter/unrent@v0.4.0
     with:
       fail-on: snapped,snaps   # snapped, snaps, closed
       within: 30               # snaps only within 30 days
 ```
+
+On pull requests from forks, and in private repositories without code scanning, add
+`upload-sarif: false`: the build still fails on what you name.
 
 Anywhere else:
 

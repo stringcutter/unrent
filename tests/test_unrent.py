@@ -2662,9 +2662,10 @@ def test_fail_on_passes_when_nothing_is_due(tmp_path, capsys):
 
 def test_sarif(tmp_path, monkeypatch, capsys):
     cat = ["--catalog", str(_own_catalog(tmp_path))]
-    write(tmp_path / "repo" / "svc", SNAPPING)
-    monkeypatch.chdir(tmp_path / "repo")  # paths from where it runs: the repository root
-    assert main(["scan", "svc", "-f", "sarif", "--as-of", "2026-10-07", *cat]) == 0
+    write(tmp_path / "repo" / "a b#c", SNAPPING)
+    (tmp_path / "repo" / ".git").mkdir()
+    monkeypatch.chdir(tmp_path)  # paths from the repository root, wherever unrent runs
+    assert main(["scan", "repo/a b#c", "-f", "sarif", "--as-of", "2026-10-07", *cat]) == 0
     sarif = json.loads(capsys.readouterr().out)
     assert sarif["version"] == "2.1.0"
     run = sarif["runs"][0]
@@ -2677,10 +2678,10 @@ def test_sarif(tmp_path, monkeypatch, capsys):
     ]
     assert {g[0] for g in got} <= rules
     assert got[:2] == [
-        ("unrent/snapped", "error", "svc/app.py", 3),
-        ("unrent/snaps", "warning", "svc/app.py", 2),
+        ("unrent/snapped", "error", "a%20b%23c/app.py", 3),
+        ("unrent/snaps", "warning", "a%20b%23c/app.py", 2),
     ]
-    assert ("unrent/closed-service", "note", "svc/app.py", 1) in got
+    assert ("unrent/closed-service", "note", "a%20b%23c/app.py", 1) in got
     assert {w["artifactLocation"]["uriBaseId"] for w in where} == {"%SRCROOT%"}
     texts = [r["message"]["text"] for r in run["results"]]
     assert "retired on 2026-03-26: requests fail now. Use gpt-5.6-sol instead." in texts[0]
@@ -2906,3 +2907,14 @@ def test_statement_walk_visits_what_ast_walk_visits():
     full = [n for n in ast.walk(tree) if isinstance(n, kinds)]
     assert [n for n in _statements(tree) if isinstance(n, kinds)] == full
     assert len([n for n in full if isinstance(n, ast.Import)]) == 13
+
+
+def test_a_crash_exits_2_not_the_fail_on_code(tmp_path, monkeypatch, capsys):
+    import unrent.cli as cli
+
+    def boom(args):
+        raise RuntimeError("boom")
+
+    monkeypatch.setattr(cli, "cmd_scan", boom)
+    assert main(["scan", str(tmp_path)]) == 2
+    assert "RuntimeError: boom" in capsys.readouterr().err

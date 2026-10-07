@@ -7,13 +7,13 @@ inputs:
     description: Directory or file to scan.
     default: .
   fail-on:
-    description: "Fail on any of: snapped (a selected model is retired), snaps (a selected model has a retirement date), closed (any closed AI service). A comma list; empty never fails."
+    description: "Fail on any of: snapped (a selected model is retired), snaps (a selected model has a retirement date), closed (any closed AI service). A comma list; empty: the scan never fails the step (code scanning's own check may still flag new snapped lines, which are errors)."
     default: ""
   within:
     description: With fail-on snaps, only retirements due within this many days.
     default: ""
   upload-sarif:
-    description: Upload unrent.sarif to GitHub code scanning (needs `security-events write`).
+    description: Upload unrent.sarif to GitHub code scanning (needs `security-events write`; set false on fork pull requests and on private repos without code scanning).
     default: "true"
 
 runs:
@@ -29,7 +29,7 @@ runs:
         args=(--format sarif --output unrent.sarif)
         if [ -n "$FAIL_ON" ]; then args+=(--fail-on "$FAIL_ON"); fi
         if [ -n "$WITHIN" ]; then args+=(--within "$WITHIN"); fi
-        uvx --from "unrent>=0.3.0" unrent scan "$SCAN_PATH" "${args[@]}"
+        uvx --from "unrent>=0.4.0" unrent scan "$SCAN_PATH" "${args[@]}"
     # Also when fail-on failed the scan: the annotations show why.
     - if: ${{ !cancelled() && inputs.upload-sarif == 'true' && hashFiles('unrent.sarif') != '' }}
       uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2

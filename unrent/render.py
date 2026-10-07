@@ -6,6 +6,7 @@ from __future__ import annotations
 import datetime as _dt
 import json
 import re
+import urllib.parse
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -336,14 +337,12 @@ def to_sarif(
     root: Path,
     catalog: Catalog,
     version: str,
-    base: Path | None = None,
-    as_of: _dt.date | None = None,
+    base: Path,
+    as_of: _dt.date,
 ) -> str:
     """SARIF 2.1.0 for code scanning: a result per line that selects a retiring model,
-    and per cited line of a closed service. Paths are relative to `base` (the root when
-    None), which GitHub reads as the repository root."""
-    as_of = as_of or today()
-    base = base or root
+    and per cited line of a closed service. Paths are relative to `base`, which GitHub
+    reads as the repository root."""
     results = []
 
     def result(rule: str, level: str, message: str, fact) -> dict:
@@ -355,7 +354,7 @@ def to_sarif(
                 {
                     "physicalLocation": {
                         "artifactLocation": {
-                            "uri": _rel(fact.file, base),
+                            "uri": urllib.parse.quote(_rel(fact.file, base)),
                             "uriBaseId": "%SRCROOT%",
                         },
                         "region": {"startLine": fact.line},
