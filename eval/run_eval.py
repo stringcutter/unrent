@@ -14,7 +14,9 @@ three sides:
                `uncertain` in corpus_models.yaml (MODEL_TRUTH_RULES.md), counting
                only the ids that file says were labelled.
 
-The repos come from corpus.yaml and corpus_oss.yaml. A file's `open_source:` mapping
+The repos come from corpus.yaml and corpus_oss.yaml, or with --holdout from
+holdout.yaml: repos labelled the same way that unrent is never tuned against, so their
+scores say how it does on code nobody fitted it to. No floors apply to them. A file's `open_source:` mapping
 (repo name -> the open_source_* keys) is merged into the repo of that name, so open
 source truth for an existing repo can live in its own file.
 
@@ -29,6 +31,7 @@ Usage:
   python run_eval.py                          # all repos
   python run_eval.py --only openai__openai-quickstart-python
   python run_eval.py --gate                   # CI: lenient scores against FLOORS
+  python run_eval.py --holdout                # the held-out repos
 
 Needs git and PyYAML. unrent runs from this checkout, so no install is needed.
 """
@@ -223,9 +226,13 @@ def main(argv: list[str] | None = None) -> int:
         "--gate", action="store_true", help="fail when a scored side is under its FLOORS"
     )
     ap.add_argument("--quiet", action="store_true", help="only the summary")
+    ap.add_argument("--holdout", action="store_true", help="score holdout.yaml instead (no floors)")
     args = ap.parse_args(argv)
+    if args.holdout and args.gate:
+        ap.error("the holdout has no floors; --gate checks the corpus")
 
-    repos = load_corpus([HERE / "corpus.yaml", HERE / "corpus_oss.yaml"])
+    files = ["holdout.yaml"] if args.holdout else ["corpus.yaml", "corpus_oss.yaml"]
+    repos = load_corpus([HERE / f for f in files])
     if args.only:
         repos = [r for r in repos if r["name"] in set(args.only)]
     out_dir = args.cache / "_reports"
