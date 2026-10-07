@@ -58,9 +58,9 @@ Know its limits:
 - It detects the services in its catalog and nothing else. An API host, base URL or
   *_API_KEY in the code that no finding explains may be a closed service it does not
   know.
-- `models_named` entries rest on model names alone (a token-limit table, a model menu),
-  `env_template_only` entries on a key in an example env file: check the code before
-  calling them dependencies.
+- `models_named` entries rest on model names alone (a token-limit table, a model menu)
+  or on a registry (a price table, a provider catalog), `env_template_only` entries on a
+  key in an example env file: check the code before calling them dependencies.
 - Each pool says how it is ranked (`ranked_by`): GitHub pools by stars gained over 90
   days once enough weekly history exists, by total stars until then; Hugging Face pools
   by trending, whatever the model's size. Stars, licences and activity are checked

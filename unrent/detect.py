@@ -2052,17 +2052,48 @@ LITELLM_ROUTES = {
 }  # fmt: skip
 LITELLM = "BerriAI/litellm"
 
+# Registries: files that list what a project could call, not what it calls. A model list
+# or price table names this many closed services by model id alone (a source URL or an
+# `@cf/` key beside them doesn't change that); a provider catalog in a data file
+# (models.dev and the like) names this many with their hosts and keys. A router that
+# calls six providers gives each a client, a host or a key, and a config that sets up a
+# dozen (mods' config_template.yml) stays under the catalog's count.
+MODEL_LIST_AT = 6
+PROVIDER_CATALOG_AT = 15
+DATA_SUFFIXES = {".json", ".yaml", ".yml", ".toml"}
+
+
+def _registries(findings: list[Finding]) -> set[Path]:
+    services: dict[Path, set[str]] = {}
+    not_models: dict[Path, set[str]] = {}
+    for finding in findings:
+        if finding.service.open_source:
+            continue
+        for fact in finding.facts:
+            if not fact.manifest:
+                services.setdefault(fact.file, set()).add(finding.service.id)
+                if fact.kind != "model":
+                    not_models.setdefault(fact.file, set()).add(finding.service.id)
+    return {
+        file
+        for file, ids in services.items()
+        if len(ids - not_models.get(file, set())) >= MODEL_LIST_AT
+        or (len(ids) >= PROVIDER_CATALOG_AT and file.suffix.lower() in DATA_SUFFIXES)
+    }
+
 
 def _mark_models_only(findings: list[Finding]) -> list[Finding]:
-    """Flag findings whose only evidence is model names. A capability (OpenAI
-    Embeddings) is exempt when the service it is part of has real evidence:
-    `text-embedding-3-small` next to `from openai import OpenAI` is a real call.
-    So is a model id on a LiteLLM provider route in a project that runs LiteLLM."""
+    """Flag findings whose only evidence is model names, or anything in a registry
+    (`_registries`). A capability (OpenAI Embeddings) is exempt when the service it is
+    part of has real evidence: `text-embedding-3-small` next to `from openai import
+    OpenAI` is a real call. So is a model id on a LiteLLM provider route in a project
+    that runs LiteLLM. Neither holds in a registry, which lists without calling."""
     litellm = any(f.service.repo == LITELLM for f in findings)
+    registry = _registries(findings)
 
     def named(fact: Fact) -> bool:
         routed = litellm and "/" in fact.value and fact.value.split("/")[0] in LITELLM_ROUTES
-        return fact.kind == "model" and not routed
+        return fact.file in registry or (fact.kind == "model" and not routed)
 
     real = {
         f.service.id
@@ -2074,7 +2105,7 @@ def _mark_models_only(findings: list[Finding]) -> list[Finding]:
         only_models = all(named(fact) for fact in finding.facts)
         # A model id in a test is a fixture, not a call, even when the vendor is real.
         backed = any(base in real for base in finding.service.part_of) and not finding.test_only
-        if only_models and not backed:
+        if only_models and not (backed and any(f.file not in registry for f in finding.facts)):
             finding = dataclasses.replace(finding, models_only=True)
         out.append(finding)
     return out

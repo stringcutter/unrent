@@ -78,6 +78,12 @@ each release ships the rankings as of its date.
     `"llama.cpp"`, `"litellm"` or LocalAI (`"localai"`, `.well-known/localai.json`);
     LiteLLM's `ollama/` and `ollama_chat/` routes; LanceDB through GraphRAG, LlamaIndex
     and LangChain; Langfuse Cloud's host.
+- A registry names services without depending on them: a file that names six or more
+  closed services by model id alone (a model list, a price table copied from LiteLLM),
+  or a JSON, YAML or TOML file that names fifteen or more (a provider catalog built from
+  models.dev). What it names is listed under `models_named`. A LiteLLM route or a
+  capability's model id there no longer counts as a call. A call elsewhere in the code
+  still does.
 
 ## [0.3.0] - 2026-10-05
 

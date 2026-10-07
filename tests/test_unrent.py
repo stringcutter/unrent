@@ -951,6 +951,50 @@ def test_capability_model_ids_in_tests_are_fixtures(tmp_path, catalog):
     assert "openai" in hits and "openai-realtime" not in hits
 
 
+PROVIDER_KEYS = [
+    "OPENAI_API_KEY", "ANTHROPIC_API_KEY", "GROQ_API_KEY", "MISTRAL_API_KEY", "COHERE_API_KEY",
+    "DEEPSEEK_API_KEY", "XAI_API_KEY", "PERPLEXITY_API_KEY", "TOGETHER_API_KEY",
+    "FIREWORKS_API_KEY", "OPENROUTER_API_KEY", "CEREBRAS_API_KEY", "DEEPINFRA_API_KEY",
+    "SAMBANOVA_API_KEY", "NOVITA_API_KEY", "MOONSHOT_API_KEY", "AI21_API_KEY", "NEBIUS_API_KEY",
+]  # fmt: skip
+
+
+def test_a_provider_catalog_names_without_depending(tmp_path, catalog):
+    # goose's provider_metadata.json: a host and a key for every provider models.dev knows
+    entries = [{"id": k.split("_")[0].lower(), "env": [k]} for k in PROVIDER_KEYS]
+    write(tmp_path, {
+        "data/providers.json": json.dumps(entries, indent=2),
+        "app.py": "from groq import Groq\nclient = Groq()\n",
+    })  # fmt: skip
+    assert len(found(tmp_path, catalog).keys() - {"groq"}) >= 15
+    assert deps(tmp_path, catalog) == {"groq"}  # a call elsewhere still counts
+
+
+def test_a_price_table_names_without_depending(tmp_path, catalog):
+    # firecrawl's model-prices.ts, copied from LiteLLM: model ids, a few `@cf/` keys
+    models = ["gpt-4o", "text-moderation-latest", "tts-1", "whisper-1", "claude-3-5-sonnet",
+              "mistral-large", "gemini-1.5-pro", "command-r", "grok-2", "@cf/meta/llama-3-8b"]  # fmt: skip
+    rows = "".join(f'  "{m}": {{ input_cost_per_token: 1e-6 }},\n' for m in models)
+    write(tmp_path, {
+        "usage/model-prices.ts": f"export const modelPrices = {{\n{rows}}};\n",
+        "llm.ts": 'import OpenAI from "openai";\nconst client = new OpenAI();\n',
+    })  # fmt: skip
+    assert deps(tmp_path, catalog) == {"openai"}  # not its moderation, speech or Whisper
+
+
+def test_a_router_calling_several_providers_counts(tmp_path, catalog):
+    write(tmp_path, {"router.py": (
+        "from openai import OpenAI\nfrom anthropic import Anthropic\nimport replicate\n"
+        "from mistralai import Mistral\nimport cohere\nfrom google import genai\n"
+        'CLIENTS = {"gpt-4o": OpenAI(), "claude-3-5-sonnet": Anthropic(), "llama-3": replicate,\n'
+        '    "mistral-large": Mistral(), "command-r": cohere.Client(),\n'
+        '    "gemini-1.5-pro": genai.Client()}\n'
+    )})  # fmt: skip
+    assert {"openai", "anthropic", "replicate", "mistral", "cohere", "google-gemini"} <= deps(
+        tmp_path, catalog
+    )
+
+
 def test_tokenizer_tables_are_not_calls(tmp_path, catalog):
     write(
         tmp_path,

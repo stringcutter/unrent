@@ -36,7 +36,8 @@ Call `scan` with the project path (MCP), or run `unrent scan <path> --format jso
 `PYTHONIOENCODING=utf-8` before printing it from Python.
 
 - `found`: closed services the code depends on, strongest evidence first.
-- `models_named`: model ids with no SDK, key, host or package behind them.
+- `models_named`: model ids with no SDK, key, host or package behind them, or services
+  only a registry names (a price table, a provider catalog).
 - `models_retiring`: model ids the code selects that the vendor has retired (`snapped`,
   requests fail now) or will retire on `retires` (`snaps`), with `use_instead` and the
   lines that select them. Report these first: they break without anyone touching the code.
