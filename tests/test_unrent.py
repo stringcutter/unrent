@@ -472,6 +472,25 @@ def test_real_openai_next_to_a_local_server_is_still_openai(tmp_path, catalog):
     assert "openai" in found(tmp_path, catalog)
 
 
+def test_vendor_host_next_to_a_local_server_is_still_the_vendor(tmp_path, catalog):
+    write(tmp_path, {"clients.py": (
+        'hf = OpenAI(base_url="https://api-inference.huggingface.co/v1/")\n'
+        'local = OpenAI(base_url="http://localhost:11434/v1")\n'
+    )})  # fmt: skip
+    assert "huggingface-inference" in deps(tmp_path, catalog)
+
+
+def test_litellm_provider_routes_are_calls(tmp_path, catalog):
+    files = {
+        "settings.yml": "- name: bedrock_converse/anthropic.claude-3-7-sonnet-20250219-v1:0\n"
+        "- name: azure/o1-mini\n- name: xai/grok-4\n- name: openai/qwen-max\n",
+    }
+    write(tmp_path, files)
+    assert deps(tmp_path, catalog) == set()  # a model menu, nothing calls it
+    write(tmp_path, {"llm.py": "import litellm\n"})
+    assert deps(tmp_path, catalog) == {"aws-bedrock", "azure-openai", "xai"}
+
+
 def test_big_notebooks_long_lines_and_big_yaml_are_read(tmp_path, catalog):
     image = "A" * 3_000_000
     nb = {"cells": [
@@ -598,6 +617,70 @@ def test_findings_only_in_tests_are_marked_and_skippable(tmp_path, catalog):
     assert findings["cohere"].test_only and findings["openai"].test_only
     assert "only in tests" in to_markdown(list(findings.values()), tmp_path, catalog)
     assert set(found(tmp_path, catalog, skip_tests=True)) == {"anthropic"}
+
+
+def test_rust_test_modules_are_tests(tmp_path, catalog):
+    write(tmp_path, {
+        "src/broker_tests.rs": 'env.insert("ANTHROPIC_API_KEY".to_string());\n',
+        "src/proxy/tests.rs": 'env.insert("MISTRAL_API_KEY".to_string());\n',
+    })  # fmt: skip
+    findings = match(collect_facts(tmp_path, catalog), catalog)
+    assert {f.service.id for f in findings} == {"anthropic", "mistral"}
+    assert all(f.test_only for f in findings)
+
+
+def test_jekyll_site_data_is_not_code(tmp_path, catalog):
+    write(tmp_path, {
+        "website/_config.yml": "title: x\n",
+        "website/_data/leaderboard.yml": "- command: OPENAI_API_BASE=https://dashscope-intl.aliyuncs.com/compatible-mode/v1\n",
+        "app/_data/providers.yml": "base: https://dashscope-intl.aliyuncs.com/compatible-mode/v1\n",
+    })  # fmt: skip
+    cited = found(tmp_path, catalog)["alibaba-model-studio"]
+    assert [c.file.relative_to(tmp_path).as_posix() for c in cited] == ["app/_data/providers.yml"]
+
+
+@pytest.mark.parametrize(
+    ("files", "service"),
+    [
+        (
+            {
+                "client.py": "from anthropic import AsyncAnthropicBedrock\nc = AsyncAnthropicBedrock()\n"
+            },
+            "aws-bedrock",
+        ),
+        ({"copilot.rs": 'const API: &str = "https://api.githubcopilot.com";\n'}, "github-copilot"),
+        (
+            {"models.py": 'url = "https://api.github.com/copilot_internal/v2/token"\n'},
+            "github-copilot",
+        ),
+        (
+            {"sagemaker.go": 'import "github.com/aws/aws-sdk-go/service/sagemakerruntime"\n'},
+            "aws-sagemaker",
+        ),
+        (
+            {"go.mod": "module x\nrequire github.com/hupe1980/go-huggingface v0.0.15\n"},
+            "huggingface-inference",
+        ),
+        ({"go.mod": "module x\nrequire github.com/IBM/watsonx-go v1.0.1\n"}, "ibm-watsonx"),
+        (
+            {"chains.py": "from langchain_aws import ChatBedrock\nllm = ChatBedrock(model_id=m)\n"},
+            "aws-bedrock",
+        ),
+    ],
+    ids=lambda v: v if isinstance(v, str) else next(iter(v)),
+)
+def test_holdout_sdks_and_hosts(tmp_path, catalog, files, service):
+    write(tmp_path, files)
+    assert service in deps(tmp_path, catalog)
+
+
+def test_github_mcp_server_and_neptune_are_not_ai_apis(tmp_path, catalog):
+    write(tmp_path, {
+        "mcp.json": '{"url": "https://api.githubcopilot.com/mcp/"}\n',
+        "pyproject.toml": '[project]\ndependencies = ["langchain-aws>=0.2"]\n',
+        "neptune.py": "from langchain_aws.graphs import NeptuneGraph\n",
+    })  # fmt: skip
+    assert deps(tmp_path, catalog) == set()
 
 
 def test_ignore_files_use_gitignore_semantics(tmp_path, catalog):
@@ -1674,12 +1757,45 @@ def test_a_project_is_not_a_component_of_itself(tmp_path, catalog):
             {"store.py": "from langchain_community.vectorstores import FAISS\n"},
             "facebookresearch/faiss",
         ),
+        # The 2026-10-07 holdout: providers named in code, LiteLLM routes, CMake.
+        ({"models.py": 'local = name.startswith("ollama_chat/")\n'}, "ollama/ollama"),
+        ({"models.py": 'local = name.startswith("ollama/")\n'}, "ollama/ollama"),
+        (
+            {
+                "CMakeLists.txt": "FetchContent_Declare(\n  llama\n"
+                "  GIT_REPOSITORY https://github.com/ggml-org/llama.cpp.git\n)\n"
+            },
+            "ggml-org/llama.cpp",
+        ),
+        ({"llama_cpp.rs": 'const PROVIDER_ID: &str = "llama.cpp";\n'}, "ggml-org/llama.cpp"),
+        ({"localai.go": 'const localAIClientName = "localai"\n'}, "mudler/LocalAI"),
+        ({"Api.php": "$url = $base . '.well-known/localai.json';\n"}, "mudler/LocalAI"),
+        ({"litellm.go": 'const liteLLMClientName = "litellm"\n'}, "BerriAI/litellm"),
+        (
+            {"search.py": "from graphrag.vector_stores.lancedb import LanceDBVectorStore\n"},
+            "lancedb/lancedb",
+        ),
+        (
+            {
+                "application.yml": "otlp:\n  endpoint: "
+                "${LANGFUSE_OTLP:https://cloud.langfuse.com/api/public/otel/v1/traces}\n"
+            },
+            "langfuse/langfuse",
+        ),
     ],
     ids=lambda v: v if isinstance(v, str) else next(iter(v)),
 )
 def test_open_source_recall(tmp_path, catalog, files, repo):
     write(tmp_path, files)
     assert repo in running(tmp_path, catalog)
+
+
+def test_provider_names_in_stories_and_dependabot_are_not_used(tmp_path, catalog):
+    write(tmp_path, {
+        "combobox.stories.tsx": "const options = [{ value: 'localai', label: 'LocalAI' }];\n",
+        ".github/dependabot.yml": "groups:\n  llm:\n    patterns:\n      - 'litellm'\n",
+    })  # fmt: skip
+    assert running(tmp_path, catalog) == {}
 
 
 def test_image_needles_do_not_match_repo_urls(tmp_path, catalog):

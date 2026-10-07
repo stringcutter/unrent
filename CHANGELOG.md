@@ -58,6 +58,26 @@ each release ships the rankings as of its date.
   as code: a model id or API host in a sentence there is not a finding. Code stored in
   JSON strings (n8n, Langflow) still is.
 - A model id in prose like "`gpt-4o` or `gpt-4`" counts as named, not selected.
+- Gaps found by a held-out corpus of 12 repos, fixed as classes:
+  - In a project that runs LiteLLM, a model id on one of its provider routes
+    (`bedrock/`, `bedrock_converse/`, `azure/`, `xai/`, `vertex_ai/`, ...) is how the
+    code calls that vendor, not a name in a menu. Not `openai/`, which LiteLLM also sends
+    to any compatible server.
+  - A vendor's API host in a file that also names a local server still counts: a test
+    file pointing the OpenAI SDK at `api-inference.huggingface.co` and at Ollama is both.
+  - New signatures: `AsyncAnthropicBedrock`; the Copilot API's base URL
+    (`"https://api.githubcopilot.com"`, not `/mcp`) and its token exchange
+    (`api.github.com/copilot_internal`); aws-sdk-go v1's SageMaker Runtime and Bedrock
+    Runtime imports; the Go clients `github.com/IBM/watsonx-go` and
+    `github.com/hupe1980/go-huggingface`.
+  - `langchain-aws` alone is no longer Bedrock (it is also Neptune, MemoryDB, Kendra);
+    its Bedrock classes are.
+  - Rust test modules (`*_tests.rs`, `tests.rs`) are test code; a Jekyll site's `_data`
+    files, Storybook stories and `dependabot.yml` are not code.
+  - Open source: CMake files are read (`FetchContent` of llama.cpp); a provider named
+    `"llama.cpp"`, `"litellm"` or LocalAI (`"localai"`, `.well-known/localai.json`);
+    LiteLLM's `ollama/` and `ollama_chat/` routes; LanceDB through GraphRAG, LlamaIndex
+    and LangChain; Langfuse Cloud's host.
 
 ## [0.3.0] - 2026-10-05
 

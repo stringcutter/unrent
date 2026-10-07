@@ -381,7 +381,8 @@ projects:
     kind: [embedded]
     detect:
       requirement: [lancedb, llama-index-vector-stores-lancedb]
-      python_import: [lancedb]
+      python_import: [lancedb, graphrag.vector_stores.lancedb, llama_index.vector_stores.lancedb,
+                      langchain_community.vectorstores.lancedb]
       npm: ["@lancedb/lancedb", vectordb]
   pgvector/pgvector:
     kind: [Postgres extension]
@@ -505,6 +506,10 @@ projects:
       image: [ghcr.io/ggml-org/llama.cpp, ghcr.io/ggerganov/llama.cpp]
       maven: ["de.kherud:llama"]
       nuget: [LLamaSharp]
+      # A provider named for it, and its source fetched to build (CMake FetchContent,
+      # a submodule, `git clone`).
+      symbol: ['"llama.cpp"', "'llama.cpp'"]
+      endpoint: [github.com/ggml-org/llama.cpp.git, github.com/ggerganov/llama.cpp.git]
   ollama/ollama:
     kind: [server]
     detect:
@@ -516,6 +521,8 @@ projects:
       image: [ollama/ollama]
       endpoint: ["localhost:11434", "127.0.0.1:11434"]
       env: [OLLAMA_HOST, OLLAMA_BASE_URL]
+      # LiteLLM's routes to a local Ollama: `ollama/llama3`, `ollama_chat/llama3`.
+      symbol: ['"ollama/', "'ollama/", ollama_chat/]
       maven: ["org.springframework.ai:spring-ai-starter-model-ollama",
               "org.springframework.ai:spring-ai-ollama", "dev.langchain4j:langchain4j-ollama",
               "io.github.ollama4j:ollama4j"]
@@ -537,6 +544,9 @@ projects:
     detect:
       image: [localai/localai, quay.io/go-skynet/local-ai]
       env: [LOCAL_AI_BASE_PATH, LOCALAI_BASE_URL]
+      # Its name as a provider or backend (`"localai"`, `TTSProviders.LOCALAI`), or its
+      # `.well-known/localai.json`.
+      symbol: [localai, LocalAI, LOCALAI]
   BerriAI/litellm:
     kind: [library, proxy]
     detect:
@@ -545,6 +555,7 @@ projects:
       image: [ghcr.io/berriai/litellm, ghcr.io/berriai/litellm-database,
               ghcr.io/berriai/litellm-non_root]
       env: [LITE_LLM_BASE_PATH, LITELLM_BASE_URL, LITELLM_PROXY_URL, LITELLM_MASTER_KEY]
+      symbol: ['"litellm"', "'litellm'"]  # a provider or backend named for it
   Portkey-AI/gateway:
     kind: [proxy]
     detect:
@@ -674,6 +685,7 @@ projects:
       npm: [langfuse, langfuse-langchain, "@langfuse/tracing", "@langfuse/otel"]
       image: [langfuse/langfuse, langfuse/langfuse-worker]
       env: [LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY]
+      endpoint: [cloud.langfuse.com]  # Langfuse Cloud: its API and OTLP endpoint
   comet-ml/opik:
     kind: [server]
     detect:

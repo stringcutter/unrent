@@ -78,11 +78,11 @@ CODE_SUFFIXES = {
 CONFIG_SUFFIXES = {
     ".json", ".jsonc", ".json5", ".yaml", ".yml", ".toml", ".ini", ".cfg", ".conf",
     ".properties", ".xml", ".gradle", ".env", ".csproj", ".fsproj", ".vbproj", ".props",
-    ".tpl", ".tmpl", ".j2", ".jinja", ".jinja2",
+    ".tpl", ".tmpl", ".j2", ".jinja", ".jinja2", ".cmake",
 }  # fmt: skip
 CONFIG_PREFIXES = (
     ".env", "dockerfile", "containerfile", "docker-compose", "compose.", "makefile",
-    "procfile", "jenkinsfile", ".envrc", ".dev.vars", "gemfile",
+    "procfile", "jenkinsfile", ".envrc", ".dev.vars", "gemfile", "cmakelists.txt",
 )  # fmt: skip
 JS_SUFFIXES = {
     ".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".mts", ".cts", ".vue", ".svelte", ".astro",
@@ -106,12 +106,15 @@ LOCKFILES = {
     "package.resolved",
 }  # fmt: skip
 GENERATED = re.compile(r"\.(min|bundle|chunk)\.(js|mjs|cjs|css)$|\.map$", re.IGNORECASE)
+# Files that name packages and providers without using them: Storybook stories render
+# components with made-up props, and Dependabot's config lists packages to update.
+NOT_USED = re.compile(r"\.stories\.[a-z]+$|^dependabot\.ya?ml$", re.IGNORECASE)
 # Not `spec`/`specs`: outside Ruby those hold API and connector specifications, which are
 # production code. Ruby specs are caught by their `_spec.rb` file names instead.
 TEST_DIRS = {"test", "tests", "__tests__", "e2e", "__mocks__", "mocks", "fixtures", "testdata",
              "test_data", "cypress", "playwright"}  # fmt: skip
 TEST_FILE = re.compile(
-    r"(^test_.*\.py$|_test\.(py|go)$|_spec\.rb$|\.(test|spec|e2e)\.[a-z]+$"
+    r"(^test_.*\.py$|_test\.(py|go)$|_tests?\.rs$|^tests\.rs$|_spec\.rb$|\.(test|spec|e2e)\.[a-z]+$"
     r"|^(pytest\.ini|conftest\.py|tox\.ini|\.env\.test.*)$)",
     re.IGNORECASE,
 )
@@ -374,6 +377,8 @@ def iter_files(
             continue
         if is_ignored(rel, rules):
             continue
+        if _site_data(root, rel):
+            continue
         try:
             # Symlinks are skipped here as in the walk: they loop, point outside the
             # tree, and ripgrep does not follow them either.
@@ -389,6 +394,15 @@ def iter_files(
             continue
         out.append(path)
     return sorted(out)
+
+
+def _site_data(root: Path, rel: str) -> bool:
+    """A Jekyll site's `_data` files (next to its `_config.yml`): what the site's pages
+    show, such as a leaderboard of models, not what the code calls."""
+    parts = rel.split("/")[:-1]
+    if "_data" not in parts:
+        return False
+    return root.joinpath(*parts[: parts.index("_data")], "_config.yml").is_file()
 
 
 def left_out(root: Path, only: Path, exclude: Iterable[str] = (), skip_tests: bool = False) -> bool:
@@ -1534,7 +1548,7 @@ def _manifest_parser(path: Path):
 def _is_text_source(path: Path) -> bool:
     name = path.name.lower()
     suffix = path.suffix.lower()
-    if name in LOCKFILES or GENERATED.search(name):
+    if name in LOCKFILES or GENERATED.search(name) or NOT_USED.search(name):
         return False
     return (
         suffix in CODE_SUFFIXES
@@ -2028,18 +2042,36 @@ def _ai_sdk_default_gateway(
     ]
 
 
+# LiteLLM's provider routes: in a project that runs LiteLLM, `bedrock/<model>` is how
+# it calls Bedrock. Not `openai/`, which LiteLLM also sends to any compatible server.
+LITELLM_ROUTES = {
+    "ai21", "anthropic", "azure", "azure_ai", "baseten", "bedrock", "bedrock_converse",
+    "cerebras", "dashscope", "databricks", "deepinfra", "fireworks_ai", "gemini", "minimax",
+    "mistral", "moonshot", "nebius", "nvidia_nim", "oci", "openrouter", "perplexity",
+    "sambanova", "snowflake", "together_ai", "vertex_ai", "volcengine", "watsonx", "xai",
+}  # fmt: skip
+LITELLM = "BerriAI/litellm"
+
+
 def _mark_models_only(findings: list[Finding]) -> list[Finding]:
     """Flag findings whose only evidence is model names. A capability (OpenAI
     Embeddings) is exempt when the service it is part of has real evidence:
-    `text-embedding-3-small` next to `from openai import OpenAI` is a real call."""
+    `text-embedding-3-small` next to `from openai import OpenAI` is a real call.
+    So is a model id on a LiteLLM provider route in a project that runs LiteLLM."""
+    litellm = any(f.service.repo == LITELLM for f in findings)
+
+    def named(fact: Fact) -> bool:
+        routed = litellm and "/" in fact.value and fact.value.split("/")[0] in LITELLM_ROUTES
+        return fact.kind == "model" and not routed
+
     real = {
         f.service.id
         for f in findings
-        if any(fact.kind != "model" for fact in f.facts) and not f.template_only
+        if not all(named(fact) for fact in f.facts) and not f.template_only
     }
     out = []
     for finding in findings:
-        only_models = all(fact.kind == "model" for fact in finding.facts)
+        only_models = all(named(fact) for fact in finding.facts)
         # A model id in a test is a fixture, not a call, even when the vendor is real.
         backed = any(base in real for base in finding.service.part_of) and not finding.test_only
         if only_models and not backed:
@@ -2082,10 +2114,11 @@ def _only_weak(finding: Finding) -> bool:
 def _without_local_clients(facts: tuple[Fact, ...], local: list[Fact]) -> tuple[Fact, ...]:
     """Drop evidence of an OpenAI-compatible SDK aimed at a server you run.
 
-    A local base URL in a code file covers that file. One in configuration (.env,
-    compose, YAML) covers the project's client code, but not model ids or the
-    vendor's API host, which still name the vendor. If only the package declaration
-    is left, the package is explained by the local use and nothing remains.
+    A local base URL in a code file covers that file, except the vendor's API host: a
+    file that names both may call either. One in configuration (.env, compose, YAML)
+    covers the project's client code, but not model ids or the vendor's API host,
+    which still name the vendor. If only the package declaration is left, the package
+    is explained by the local use and nothing remains.
     """
     if not local:
         return facts
@@ -2094,7 +2127,7 @@ def _without_local_clients(facts: tuple[Fact, ...], local: list[Fact]) -> tuple[
     kept = tuple(
         f
         for f in facts
-        if f.file not in files
+        if (f.file not in files or f.kind == "endpoint")
         and not (project_wide and not f.manifest and f.kind not in ("model", "endpoint"))
     )
     if len(kept) < len(facts) and all(f.manifest for f in kept):

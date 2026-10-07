@@ -54,7 +54,7 @@ HERE = Path(__file__).resolve().parent
 # scores on 2026-10-07: closed precision 0.993, recall 0.957; open source precision
 # 1.000, recall 0.902; models precision 0.943, recall 0.892 (with the platform ids).
 # Raise them when the scores rise; never lower them to pass.
-FLOORS = {"closed": (0.98, 0.94), "oss": (0.98, 0.88), "models": (0.94, 0.88)}
+FLOORS = {"closed": (0.98, 0.94), "oss": (0.98, 0.92), "models": (0.94, 0.88)}
 
 
 def git(*args: str, cwd: Path | None = None) -> str:

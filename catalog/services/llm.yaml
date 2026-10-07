@@ -209,6 +209,9 @@
   excludes: [anthropic]
   # `anthropic.claude-code` is the VS Code extension id, not a Bedrock model.
   open_models: [claude-code]
+  # langchain-aws is also Neptune, MemoryDB and Kendra (`langchain_aws.graphs`): the
+  # Bedrock classes from it are the evidence.
+  weak: [[langchain-aws, langchain_aws]]
   replace_with: [open-llm, llm-serving, llm-gateway]
   detect:
     go: [github.com/aws/aws-sdk-go-v2/service/bedrockruntime,
@@ -232,7 +235,10 @@
                     anthropic.lib.bedrock, agent_framework.amazon, agent_framework_bedrock]
     symbol: ['"bedrock-runtime"', "'bedrock-runtime'", '"bedrock-agent-runtime"',
              "'bedrock-agent-runtime'", BedrockRuntimeClient, ChatBedrock, ChatBedrockConverse,
-             AnthropicBedrock, createAmazonBedrock, ApplyGuardrailCommand]
+             AnthropicBedrock, AsyncAnthropicBedrock, createAmazonBedrock, ApplyGuardrailCommand,
+             BedrockLLM, BedrockEmbeddings,
+             # aws-sdk-go v1 is one module; the service is in the import path.
+             '"github.com/aws/aws-sdk-go/service/bedrockruntime"']
     model: ["anthropic.claude-", "us.anthropic.claude-", "eu.anthropic.claude-", "amazon.titan-",
             "amazon.nova-", "us.amazon.nova-", "meta.llama3", "cohere.command", "mistral.mistral-",
             "bedrock/", "bedrock:", global.anthropic.claude-, apac.anthropic.claude-,
@@ -241,7 +247,7 @@
             global.xai.grok-, ai21.jamba-, writer.palmyra-, twelvelabs., stability.sd3,
             stability.stable-image-, amazon.rerank-, cohere.rerank-, moonshotai.kimi-,
             minimax.minimax-, qwen.qwen3, deepseek.v3, deepseek.r1, us.meta.llama, bedrock_mantle/,
-            "bedrock-mantle:"]
+            "bedrock-mantle:", bedrock_converse/]
     endpoint: [bedrock-runtime., bedrock-agent-runtime., bedrock-mantle.]
     env: [AWS_BEDROCK_MODEL_ID, BEDROCK_MODEL_ID, BEDROCK_REGION, AWS_BEARER_TOKEN_BEDROCK,
           AWS_BEDROCK_BASE_URL, ANTHROPIC_BEDROCK_BASE_URL]
@@ -436,6 +442,7 @@
     endpoint: [ml.cloud.ibm.com, wxai.ibm.com]
     env: [WATSONX_AI_APIKEY, WATSONX_APIKEY, WATSONX_API_KEY, WATSONX_PROJECT_ID, WATSONX_URL]
     maven: ["dev.langchain4j:langchain4j-watsonx"]
+    go: [github.com/IBM/watsonx-go]
     model: [watsonx/]
 
 - id: nvidia-nim-api
@@ -471,6 +478,8 @@
     env: [HUGGINGFACEHUB_API_TOKEN, HUGGINGFACE_API_KEY]
     maven: ["dev.langchain4j:langchain4j-hugging-face"]
     nuget: [Microsoft.SemanticKernel.Connectors.HuggingFace]
+    # A community Go client for the Inference API (NewInferenceClient).
+    go: [github.com/hupe1980/go-huggingface]
     python_import: [llama_index.llms.huggingface_api, llama_index.embeddings.huggingface_api]
   local_compatible: true
 
@@ -862,7 +871,8 @@
     maven: ["software.amazon.awssdk:sagemakerruntime"]
     nuget: [AWSSDK.SageMakerRuntime]
     symbol: ['"sagemaker-runtime"', "'sagemaker-runtime'", SagemakerEndpoint, SageMakerRuntimeClient,
-             SagemakerEndpointEmbeddings, AsyncSageMakerRuntimeHTTP2Client]
+             SagemakerEndpointEmbeddings, AsyncSageMakerRuntimeHTTP2Client,
+             '"github.com/aws/aws-sdk-go/service/sagemakerruntime"']
     endpoint: [runtime.sagemaker.]
     terraform_resource: [aws_sagemaker_endpoint, aws_sagemaker_model]
 
@@ -1137,8 +1147,10 @@
     nuget: [GitHub.Copilot.SDK]
     env: [COPILOT_GITHUB_TOKEN]
     # Not the bare api.githubcopilot.com: api.githubcopilot.com/mcp is GitHub's MCP
-    # server, which many agent configs name.
-    endpoint: [api.githubcopilot.com/chat, api.githubcopilot.com/models,
+    # server, which many agent configs name. The host as a whole string is a base URL;
+    # copilot_internal/v2/token trades a GitHub token for an API key.
+    endpoint: ['api.githubcopilot.com"', "api.githubcopilot.com'", api.github.com/copilot_internal,
+               api.githubcopilot.com/chat, api.githubcopilot.com/models,
                api.individual.githubcopilot.com, api.business.githubcopilot.com,
                api.enterprise.githubcopilot.com, copilot-proxy.githubusercontent.com]
 
