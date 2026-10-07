@@ -97,8 +97,10 @@ claude plugin validate .                   # plugin + marketplace (CLAUDE.md-at-
   it. A fix made because of a miss there moves that repo into the corpus
   (`corpus_oss.yaml`), and a freshly labelled repo replaces it. The first set (12 repos,
   0.948 / 0.901 closed, 1.000 / 0.677 open source) moved in on 2026-10-07. The second
-  (11 provider-heavy apps) measured closed 0.591 / 0.909, open source 0.955 / 0.737:
-  most false positives are model and provider registries in data files.
+  (11 provider-heavy apps) measured closed 0.591 / 0.909, open source 0.955 / 0.737,
+  mostly model and provider registries in data files; it moved in after the registry
+  rule. The third (12 repos, held out since 2026-10-07): closed 0.943 / 0.939, open
+  source 0.981 / 0.750.
 - The models side scores only the ids `corpus_models.yaml` lists under `labelled`. When
   `retirements.yaml` gains ids, grep the corpus for them, label any line that selects
   one (`MODEL_TRUTH_RULES.md`), and add them to `labelled`. A platform's id counts only
