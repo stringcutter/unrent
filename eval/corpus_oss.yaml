@@ -891,6 +891,7 @@ repos:
   - sofya  # added 2026-10-04 with the new catalog ids; line checked by hand: agent/tools/sofya.py:26 SOFYA_SEARCH_URL = https://sofya.co/v1/search
   - tenki  # added 2026-10-04 with the new catalog ids; line checked by hand: agent/sandbox/providers/tenki.py:515 import tenki_sandbox; internal/agent/sandbox/tenki.go:144 TENKI_API_KEY
   - xiaomi  # added 2026-10-04 with the new catalog ids; line checked by hand: rag/llm/chat_model.py:1420 base_url = https://api.xiaomimimo.com/v1
+  - xquik  # added 2026-10-07 with the new catalog ids; line checked by hand: common/data_source/xquik_connector.py:16 XQUIK_SEARCH_URL = https://xquik.com/api/v1/x/tweets/search (sent with the source's xquik_api_key); internal/syncer/connector/xquik.go:27
   tests_only:
   - google-programmable-search
   uncertain:

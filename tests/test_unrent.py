@@ -1387,6 +1387,52 @@ def test_urls_in_json_strings_are_not_comments(tmp_path, catalog):
     assert "anthropic" in deps(tmp_path, catalog)
 
 
+def test_prose_in_json_strings_is_not_code(tmp_path, catalog):
+    # A saved LLM answer quotes vendors and code; the config next to it calls one.
+    write(tmp_path, {
+        "results/run.json": '{"answer": "The docs show the agent with a model from another vendor: '
+        '`create_agent(model=\\"anthropic:claude-sonnet-4-6\\")`, at https://api.anthropic.com/v1."}\n',
+        "config.json": '{"endpoint": "https://api.openai.com/v1", "cmd": "pip install x"}\n',
+    })  # fmt: skip
+    assert set(deps(tmp_path, catalog)) == {"openai"}
+
+
+# An n8n Code node and a Langflow custom component: code that runs, stored as a string.
+N8N_CODE = """// Summarise the incoming text with the chat model
+const res = await this.helpers.httpRequest({
+  method: 'POST',
+  url: 'https://api.openai.com/v1/chat/completions',
+  headers: { Authorization: `Bearer ${$env.OPENAI_API_KEY}` },
+  body: { model: 'gpt-4o-mini', messages: [{ role: 'user', content: $json.text }] },
+  json: true,
+});
+return [{ json: { summary: res.choices[0].message.content } }];"""
+LANGFLOW_CODE = """from anthropic import Anthropic
+import os
+
+class Summarizer(Component):
+    display_name = "Summarizer"
+
+    def build(self, text: str) -> str:
+        client = Anthropic(api_key=os.environ['ANTHROPIC_API_KEY'])
+        reply = client.messages.create(model="claude-sonnet-4-5", max_tokens=512,
+                                       messages=[{"role": "user", "content": text}])
+        return reply.content[0].text"""
+
+
+@pytest.mark.parametrize(
+    ("flow", "service"),
+    [
+        ({"nodes": [{"type": "n8n-nodes-base.code", "parameters": {"jsCode": N8N_CODE}}]}, "openai"),
+        ({"data": {"nodes": [{"data": {"node": {"template": {"code": {"value": LANGFLOW_CODE}}}}}]}},
+         "anthropic"),
+    ],
+)  # fmt: skip
+def test_code_in_json_strings_is_code(tmp_path, catalog, flow, service):
+    write(tmp_path, {"flows/flow.json": json.dumps(flow, indent=2)})
+    assert service in deps(tmp_path, catalog)
+
+
 def test_redaction_keeps_code_and_variable_names():
     assert redact('api_key = api_key or os.getenv("X")') == 'api_key = api_key or os.getenv("X")'
     assert redact('EnvKey = "FIRECRAWL_API_KEY"') == 'EnvKey = "FIRECRAWL_API_KEY"'
@@ -2346,6 +2392,21 @@ def test_a_line_that_only_names_a_retiring_model(tmp_path, catalog, line):
     write(tmp_path, {"app.py": f"import openai\n{line}\n"})
     found = _snaps(tmp_path, _retiring(catalog, gpt_4_0613=(D(2026, 10, 23), None)))
     assert [(s.id, s.sites, len(s.named)) for s in found] == [("gpt-4-0613", [], 1)]
+
+
+def test_model_ids_in_prose_are_named_not_selected(tmp_path, catalog):
+    # A judge's verdict saved as JSON, a description in YAML: they talk about models.
+    write(tmp_path, {
+        "app.py": "import openai\n",
+        "results/run.json": '{"evidence": "Mentions `gpt-4o` in the example references, '
+        'but gives no prices for `gpt-4o` or `gpt-4-0613`."}\n',
+        "models.yaml": "description: Works with `gpt-4o` or `gpt-4-0613`.\n",
+        "config.json": '{"model": "gpt-4-0613"}\n',
+    })  # fmt: skip
+    found = _snaps(tmp_path, _retiring(catalog, gpt_4_0613=(D(2026, 10, 23), None)))
+    assert [(s.id, [x.file.name for x in s.sites], len(s.named)) for s in found] == [
+        ("gpt-4-0613", ["config.json"], 1)
+    ]
 
 
 def test_partner_spellings_and_sample_data_are_not_snapped(tmp_path, catalog):

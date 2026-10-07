@@ -566,10 +566,34 @@ def _xml_view(text: str) -> str:
     return _XML_COMMENT.sub(lambda m: _NOT_NEWLINE.sub(" ", m.group(0)), text)
 
 
+# A JSON string of prose: an LLM answer or a judge's verdict saved as data, a
+# translation, a description. Model ids, hosts and code quoted in it are what the text
+# talks about, not what the project calls. Prose has six plain words, and they are most
+# of its words; a command line or a URL has fewer, and code (an n8n Code node, a
+# Langflow component) is mostly not plain words.
+_JSON_STRING = re.compile(r'"(?:\\.|[^"\\\n])*"')
+_PLAIN_WORD = re.compile(r"[\\\"'`*(\[\u201c\u2018]*[^\W\d_]{2,}[\\\"'`*)\]\u201d\u2019,.;:!?]*")
+
+
+def _is_prose(s: str) -> bool:
+    words = s.split()
+    plain = sum(1 for w in words if _PLAIN_WORD.fullmatch(w))
+    return plain >= 6 and plain >= 0.6 * len(words)
+
+
+def _json_view(text: str) -> str:
+    return _JSON_STRING.sub(
+        lambda m: _NOT_NEWLINE.sub(" ", m.group(0)) if _is_prose(m.group(0)) else m.group(0),
+        text,
+    )
+
+
 def code_view(path: Path, text: str) -> str:
     suffix = path.suffix.lower()
     if suffix in (".py", ".pyi"):
         return _python_view(text)
+    if suffix == ".json":
+        return _json_view(_c_like(text))
     if suffix in C_FAMILY:
         return _c_like(text, hash_comments=suffix in C_AND_HASH)
     if suffix in HTML:

@@ -644,3 +644,24 @@
     python_import: [tenki_sandbox]
     env: [TENKI_API_KEY]
 
+# ---------------------------------------------------------------- added 2026-10-07
+
+- id: getxapi
+  name: GetXAPI (X/Twitter search)
+  category: Web search
+  replace_with: [web-search, web-scraping]
+  detect:
+    npm: ["@getxapi/mcp"]
+    endpoint: [api.getxapi.com]
+    # GETXAPI_KEY in the vendor's MCP server, GETXAPI_API_KEY in gpt-researcher's retriever.
+    env: [GETXAPI_KEY, GETXAPI_API_KEY]
+
+- id: xquik
+  name: Xquik (X/Twitter search)
+  category: Web search
+  replace_with: [web-search, web-scraping]
+  detect:
+    npm: ["@xquik/tweetclaw"]
+    # With a path: xquik.com is also the sign-up page; `//` leaves out docs.xquik.com.
+    endpoint: [//xquik.com/api/v1]
+    env: [XQUIK_API_KEY]

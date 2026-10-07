@@ -86,6 +86,21 @@ def test_test_only_hosts_and_code_constants_are_left_out(tmp_path, catalog):
     assert names(tmp_path, catalog) == {}
 
 
+def test_hosts_in_json_prose_are_not_candidates(tmp_path, catalog):
+    # An LLM answer saved as data cites its sources; the project calls none of them.
+    write(
+        tmp_path,
+        {
+            "results/run.json": (
+                '{"model": "x", "answer": "The date of birth comes from the official '
+                'biographical directory: https://api.bioguide.ai/v1/search/L000312."}\n'
+            ),
+            "app.json": '{"search": "https://api.newvendor.ai/v1/search", "model": "nv-1"}\n',
+        },
+    )
+    assert set(names(tmp_path, catalog)) == {"newvendor.ai"}
+
+
 def test_generated_provider_catalog_is_one_candidate(tmp_path, catalog):
     rows = "\n".join(
         f'  {{ id: "p{i}", baseUrl: "https://api.vendor{i}.ai/v1", models: [] }},'

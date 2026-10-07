@@ -5,6 +5,17 @@ All notable changes to this project are documented here. The format follows
 [Semantic Versioning](https://semver.org/). Weekly ranking refreshes are not listed;
 each release ships the rankings as of its date.
 
+## Unreleased
+
+### Added
+- GetXAPI and Xquik, hosted X/Twitter search APIs sold for agents, as web search services.
+
+### Fixed
+- Prose in JSON files (LLM answers saved as results, translation files) is no longer read
+  as code: a model id or API host in a sentence there is not a finding. Code stored in
+  JSON strings (n8n, Langflow) still is.
+- A model id in prose like "`gpt-4o` or `gpt-4`" counts as named, not selected.
+
 ## [0.3.0] - 2026-10-05
 
 ### Added

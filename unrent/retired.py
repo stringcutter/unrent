@@ -35,7 +35,8 @@ _SELECTS = re.compile(
         \s*(?::=|(?<![=!<>])=(?!=)|:)\s*
       | (?:\.|\bwith|\bset)model(?:name|id)?\(\s*    # WithModel("x"), .modelName("x")
       | ["'`](?:model|engine)[\w-]*["'`]\s*,\s*(?:["'`]\w["'`]\s*,\s*)?  # flag("model", "m", "x"
-      | (?:\|\||\?\?|\bor\b|\belse\b)\s*           # M || "x", M or "x", M if M else "x"
+      | (?:\|\||\?\?)\s*                            # M || "x", M ?? "x"
+      | \b(?:or|else)\s*(?=["'])                    # M or "x"; not prose: `x` or `y`
       | (?:getenv|get|getProperty|GetEnvironmentVariable)\(\s*["'`][^"'`]*["'`]\s*,\s*
     )["'`]?$
     """
