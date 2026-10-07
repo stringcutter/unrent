@@ -92,6 +92,10 @@ claude plugin validate .                   # plugin + marketplace (CLAUDE.md-at-
   sit just under the measured scores (2026-10-04: closed precision 0.993, recall 0.957;
   open source 1.000 / 0.902; models 0.939 / 0.886). Raise them when scores rise; **never
   lower them to pass**.
+- `eval/holdout.yaml` (12 repos, `--holdout`) is never tuned against: measure on it,
+  don't fix to it. A fix made because of a miss there moves that repo into the corpus,
+  and a freshly labelled repo replaces it. First measurement (2026-10-07): closed
+  0.948 / 0.901, open source 1.000 / 0.677.
 - The models side scores only the ids `corpus_models.yaml` lists under `labelled`. When
   `retirements.yaml` gains ids, grep the corpus for them, label any line that selects
   one (`MODEL_TRUTH_RULES.md`), and add them to `labelled`.
