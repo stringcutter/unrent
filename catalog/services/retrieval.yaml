@@ -209,6 +209,7 @@
   name: Zilliz Cloud (hosted Milvus)
   category: Vector database
   replace_with: [vector-db]
+  self_host: milvus-io/milvus
   detect:
     endpoint: [zillizcloud.com, api.cloud.zilliz.com]
     env: [ZILLIZ_CLOUD_URI, ZILLIZ_CLOUD_API_KEY, ZILLIZ_API_KEY]
@@ -217,6 +218,7 @@
   name: Weaviate Cloud
   category: Vector database
   replace_with: [vector-db]
+  self_host: weaviate/weaviate
   detect:
     symbol: [connect_to_weaviate_cloud, connect_to_wcs, connectToWeaviateCloud]
     endpoint: [weaviate.cloud, weaviate.network]
@@ -226,6 +228,7 @@
   name: Qdrant Cloud
   category: Vector database
   replace_with: [vector-db]
+  self_host: qdrant/qdrant
   detect:
     # cloud_inference is a Qdrant Cloud-only client option.
     symbol: [cloud_inference]
@@ -306,6 +309,7 @@
   name: Unstructured API
   category: Document parsing
   replace_with: [document-parsing]
+  self_host: Unstructured-IO/unstructured
   detect:
     requirement: [unstructured-client]
     npm: [unstructured-client]
@@ -541,6 +545,7 @@
   # own Chroma server), so they only count next to CloudClient.
   weak: [[CloudClient, AdminCloudClient], [CHROMA_API_KEY, CHROMA_TENANT, CHROMA_DATABASE]]
   replace_with: [vector-db]
+  self_host: chroma-core/chroma
   detect:
     python_import: [chromadb.CloudClient]
     symbol: ["chromadb.CloudClient", CloudClient, AdminCloudClient]

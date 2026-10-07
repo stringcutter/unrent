@@ -95,7 +95,16 @@ pools:
       - {repo: lancedb/lancedb, what: Serverless multimodal vector database on the Lance format}
       - {repo: pgvector/pgvector, what: Vector similarity search inside Postgres, licence: PostgreSQL}
       - {repo: vespa-engine/vespa, what: Search and vector engine for big data serving}
+
+  # Libraries that index vectors inside the application. Not databases, so not
+  # alternatives to a hosted vector database; listed so faiss ranks among its peers.
+  - id: vector-index
+    name: Vector search library
+    source: github
+    projects:
       - {repo: facebookresearch/faiss, what: Library for efficient similarity search}
+      - {repo: nmslib/hnswlib, what: Header-only HNSW library for approximate nearest neighbours}
+      - {repo: unum-cloud/USearch, what: "Vector search and clustering library for many languages"}
 
   - id: search-engine
     name: Search engine
@@ -105,8 +114,17 @@ pools:
       - {repo: meilisearch/meilisearch, what: "Search engine with hybrid (keyword + vector) search", licence: MIT, open_core: "Enterprise Edition features are BUSL-1.1"}
       - {repo: typesense/typesense, what: "Typo-tolerant search engine with vector search"}
       - {repo: paradedb/paradedb, what: Elasticsearch-quality search inside Postgres}
-      - {repo: quickwit-oss/tantivy, what: Full-text search engine library in Rust}
       - {repo: infiniflow/infinity, what: AI-native database for hybrid search}
+
+  # Search libraries embedded in the application, peers of tantivy rather than of a
+  # hosted search service.
+  - id: search-library
+    name: Search library
+    source: github
+    projects:
+      - {repo: quickwit-oss/tantivy, what: Full-text search engine library in Rust}
+      - {repo: blevesearch/bleve, what: "Text, numeric, geo and vector indexing library for Go"}
+      - {repo: apache/lucene, what: Search library behind Elasticsearch and OpenSearch}
 
   - id: rag-application
     name: RAG application
@@ -263,6 +281,7 @@ pools:
       - {repo: jina-ai/reader, what: Converts any URL to LLM-friendly input}
       - {repo: ScrapeGraphAI/Scrapegraph-ai, what: Scraping pipelines driven by LLMs}
       - {repo: mishushakov/llm-scraper, what: Structured data from any web page with LLMs}
+      - {repo: fastcrw/crw, what: "Firecrawl-compatible scrape, crawl and search API in one binary"}
 
   - id: browser-automation
     name: Browser automation for agents

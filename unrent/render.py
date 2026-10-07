@@ -22,6 +22,9 @@ RANKED_BY = {
 EVIDENCE_SHOWN = 5
 _BACKTICKS = re.compile(r"`+")
 AHEAD_SHOWN = 3
+# Alternatives named per pool in a summary row: a ranking by popularity is no verdict
+# on which fits, so the summary never crowns one.
+PICKS = 3
 
 
 def _compact(n: int | None) -> str:
@@ -61,7 +64,8 @@ def _licence(alt: Alternative) -> str:
 
 
 def _describe(alt: Alternative, pool: Pool) -> str:
-    bits = _stats(alt, pool) + ([_licence(alt)] if alt.licence else [])
+    kind = [_kinds(alt.kind)] if alt.kind else []
+    bits = kind + _stats(alt, pool) + ([_licence(alt)] if alt.licence else [])
     meta = f" ({', '.join(bits)})" if bits else ""
     return f"[{alt.name}]({alt.url}) — {alt.what}{meta}"
 
@@ -126,13 +130,16 @@ def _evidence(f: Finding, root: Path) -> list[dict]:
     ]
 
 
-def _entry(f: Finding, root: Path) -> dict:
+def _entry(f: Finding, root: Path, catalog: Catalog | None = None) -> dict:
+    own = catalog.self_hosted(f.service) if catalog else None
     return {
         "id": f.service.id,
         "name": f.service.name,
         "category": f.service.category,
         "only_in_tests": f.test_only,
         "replace_with": list(f.service.replace_with),
+        # The open source project this hosted service runs on: the smallest switch.
+        **({"self_host": own.name} if own else {}),
         "evidence": _evidence(f, root),
     }
 
@@ -261,7 +268,7 @@ def payload(
         "catalog_services": len(catalog),
         "rankings_date": catalog.rankings_date,
         "not_scanned": [_rel(p, root) for p in skipped],
-        "found": [_entry(f, root) for f in split.closed],
+        "found": [_entry(f, root, catalog) for f in split.closed],
         # Model ids the code selects that are retired, or have a retirement date.
         "models_retiring": [_snap_json(s, root, catalog, as_of) for s in retiring if s.sites],
         # Retiring ids only named: in menus, tables, checks or sample data.
@@ -488,10 +495,14 @@ def to_markdown(
         out += ["| Closed service | Category | Replace with |", "|---|---|---|"]
         for f in closed:
             picks = []
+            own = catalog.self_hosted(f.service)
+            if own:
+                picks.append(f"Self-hosted: [{own.name}]({own.url})")
             for pool in catalog.alternatives_for(f.service):
                 if pool.alternatives:
-                    best = pool.alternatives[0]
-                    picks.append(f"{pool.name}: [{best.name}]({best.url})")
+                    rest = [a for a in pool.alternatives if a is not own][:PICKS]
+                    tops = ", ".join(f"[{a.name}]({a.url})" for a in rest)
+                    picks.append(f"{pool.name}: {tops}")
             name = f"{f.service.name} *(only in tests)*" if f.test_only else f.service.name
             out.append(f"| {name} | {f.service.category} | {'<br>'.join(picks) or '—'} |")
         if any(f.test_only for f in closed):

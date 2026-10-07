@@ -474,8 +474,8 @@ def test_standing_accepts_names_repos_and_urls(monkeypatch, repo):
     out = call("standing", repo=repo, top=1)
     assert out["repo"] == "facebookresearch/faiss"
     assert "library" in out["kind"]
-    vector = next(s for s in out["standing"] if s["pool"] == "vector-db")
-    assert vector["pool_name"] == "Vector database"
+    (vector,) = out["standing"]  # among vector search libraries, not databases
+    assert vector["pool"] == "vector-index" and vector["pool_name"] == "Vector search library"
     assert vector["rank"] >= 1 and len(vector["ahead"]) <= 1
 
 

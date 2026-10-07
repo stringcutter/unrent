@@ -47,8 +47,11 @@ will retire on a date (`snaps`).
 Use `scan` on a project directory for the full picture, and also when someone asks
 whether the models a project uses are deprecated or shutting down: report
 `models_retiring` first, each with its date, the lines that select it and
-`use_instead`. Use `alternatives` for the current best open source in a category or for
-a named closed service, `standing` for where one open source project ranks, and
+`use_instead`. A closed service with `self_host` runs on that open source project:
+running it yourself is the smallest switch, so name it first and say what the hosted
+service adds on top. Use
+`alternatives` for the current best open source in a category or for a named closed
+service, `standing` for where one open source project ranks, and
 `catalog` to see what unrent recognises.
 
 Know its limits:
@@ -61,7 +64,9 @@ Know its limits:
 - Each pool says how it is ranked (`ranked_by`): GitHub pools by stars gained over 90
   days once enough weekly history exists, by total stars until then; Hugging Face pools
   by trending, whatever the model's size. Stars, licences and activity are checked
-  against GitHub at each weekly refresh.
+  against GitHub at each weekly refresh. A rank is popularity, not fit: choose among
+  the top few by what the code needs (each item's `kind`, where given, says whether
+  it is a server, a library or an extension).
 - `open_core` marks projects where part of the repo is under a licence that is not open.
 
 unrent lists and ranks; whether a switch makes sense is for you and the user to judge."""
@@ -265,9 +270,15 @@ def alternatives(query: str, top: int = 5) -> dict[str, Any]:
         raise ToolError(f"nothing matches {query!r}. Pools: {names}")
     return {
         "query": query,
-        "services": [{"id": s.id, "name": s.name, "open_source": s.open_source} for s in services][
-            :MATCHES_SHOWN
-        ],
+        "services": [
+            {
+                "id": s.id,
+                "name": s.name,
+                "open_source": s.open_source,
+                **({"self_host": own.name} if (own := catalog.self_hosted(s)) else {}),
+            }
+            for s in services
+        ][:MATCHES_SHOWN],
         "pools": [_pool_json(p, top) for p in pools],
         "rankings": _rankings_json(rankings),
     }

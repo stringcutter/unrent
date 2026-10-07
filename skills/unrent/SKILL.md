@@ -45,6 +45,8 @@ Call `scan` with the project path (MCP), or run `unrent scan <path> --format jso
 - `unknown_candidates`: API hosts and keys that no catalog entry explains and that look
   like a hosted AI API. Candidates, not findings: step 3 is where you decide.
 - `alternatives`: ranked open source per pool, for every pool the findings need.
+- `self_host` on a `found` entry: the open source project that hosted service runs on
+  (Qdrant Cloud runs `qdrant/qdrant`). Running it yourself is the smallest switch.
 
 Don't re-grep for what `found` already lists, and don't re-open every cited line: in
 testing, unrent's line numbers were exact across more than a thousand citations.
@@ -104,6 +106,13 @@ Start from `alternatives` (or call `alternatives` with a category or service nam
 numbers in it were checked against GitHub and Hugging Face at the last weekly refresh,
 so you don't need to re-measure them. Add the judgement unrent leaves out:
 
+- **Self-host first.** When a finding has `self_host`, that project is the recommendation
+  unless the code needs something only the hosted service adds (some hosts keep parts
+  closed: Firecrawl's Fire-engine, Portkey's control plane, Mem0's platform API); the
+  pool is the fallback.
+- **Rank is popularity, not fit.** Pick from the top few by what the code needs: its
+  `kind` where given (a server, a library, a Postgres extension), the features it uses (filters,
+  hybrid search, multi-tenancy) and what it already runs. Say why the pick fits.
 - **Read `ranked_by`.** `stars` means biggest, not fastest rising: say so rather than
   calling it a trend. Don't compute star growth yourself; there is no reliable public
   source for it today, and figures from different methods disagree by 10x or more. If

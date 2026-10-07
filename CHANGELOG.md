@@ -9,6 +9,20 @@ each release ships the rankings as of its date.
 
 ### Added
 - GetXAPI and Xquik, hosted X/Twitter search APIs sold for agents, as web search services.
+- `self_host`: a closed service that runs on an open source project (Qdrant Cloud,
+  Zilliz Cloud, Weaviate Cloud, Chroma Cloud, Firecrawl, fastCRW, Mem0, Letta, Helicone,
+  Portkey, Steel, E2B, Ollama Cloud, the Unstructured API) names that project first:
+  running it yourself is the smallest switch. In the terminal row, the Markdown table,
+  `--why`, JSON and MCP.
+- Two pools for libraries: vector search libraries (faiss, hnswlib, USearch) and search
+  libraries (tantivy, bleve, Lucene).
+
+### Changed
+- A pool lists only what can replace the services it serves: faiss is no longer offered
+  as a vector database, nor tantivy as a search engine. Each runs ranked among its peers.
+- Summary rows name the top three of a pool instead of one: a ranking by stars is
+  popularity, not a verdict on which fits. Every alternative line shows its kind
+  (server, library, Postgres extension).
 
 ### Fixed
 - Prose in JSON files (LLM answers saved as results, translation files) is no longer read

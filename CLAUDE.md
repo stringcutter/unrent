@@ -67,6 +67,10 @@ claude plugin validate .                   # plugin + marketplace (CLAUDE.md-at-
   TypeSafe SDK is `typesafe-sdk`). Don't invent env var names.
 - Hosted APIs serving open-weight models (Together, Fireworks, Groq, the Nomic API) are
   **closed** services. Don't flag code that selects local inference (`local_mode`).
+- A closed service that runs on an open source project (Qdrant Cloud, Firecrawl, Mem0)
+  gets `self_host: owner/repo`; the repo must be in one of its `replace_with` pools.
+- A pool holds only substitutes for the services that name it: a library goes in a
+  library pool, not among databases or servers.
 - OpenAI-compatible providers get `excludes: [openai]`, so the `openai` import in a file
   that names the provider's host is attributed to the provider.
 - Endpoint needles: give a path when the bare host is also the vendor's website or docs

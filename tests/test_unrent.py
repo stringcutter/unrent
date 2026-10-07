@@ -1083,6 +1083,92 @@ def test_ahead_list_keeps_rank_order_and_counts_the_rest(tmp_path, catalog):
     assert len(data["open_source"][0]["standing"][0]["ahead"]) == (s.rank - 1 if s.rank else s.of)
 
 
+def test_hosted_open_source_points_at_the_same_project(tmp_path, catalog):
+    write(
+        tmp_path,
+        {
+            "a.py": 'from qdrant_client import QdrantClient\nQdrantClient(url="https://x.cloud.qdrant.io")\n'
+        },
+    )
+    findings = match(collect_facts(tmp_path, catalog), catalog)
+    entry = next(
+        e for e in payload(findings, tmp_path, catalog)["found"] if e["id"] == "qdrant-cloud"
+    )
+    assert entry["self_host"] == "qdrant/qdrant"
+    md = to_markdown(findings, tmp_path, catalog)
+    assert "Self-hosted: [qdrant/qdrant]" in md
+    table_row = next(ln for ln in md.splitlines() if ln.startswith("| Qdrant Cloud"))
+    assert table_row.count("[qdrant/qdrant]") == 1  # not again among the pool's picks
+    row = next(ln for ln in terminal(tmp_path, catalog).splitlines() if "Qdrant Cloud" in ln)
+    assert row.endswith("self-host qdrant/qdrant")
+    assert "Its open source core, self-hosted" in why(
+        next(f for f in findings if f.service.id == "qdrant-cloud"), tmp_path, catalog
+    )
+
+
+def test_self_host_dropped_from_its_ranking_falls_back_to_the_pool(tmp_path, catalog):
+    # An archived or inactive project leaves the ranking; nothing should still point at it.
+    pools = dict(catalog.pools)
+    vdb = pools["vector-db"]
+    pools["vector-db"] = dataclasses.replace(
+        vdb, alternatives=tuple(a for a in vdb.alternatives if a.name != "qdrant/qdrant")
+    )
+    dropped = dataclasses.replace(catalog, pools=pools)
+    write(
+        tmp_path, {"a.py": 'QdrantClient(url="https://x.cloud.qdrant.io")\nimport qdrant_client\n'}
+    )
+    findings = match(collect_facts(tmp_path, dropped), dropped)
+    qc = next(f for f in findings if f.service.id == "qdrant-cloud")
+    assert dropped.self_hosted(qc.service) is None
+    entry = next(
+        e for e in payload(findings, tmp_path, dropped)["found"] if e["id"] == "qdrant-cloud"
+    )
+    assert "self_host" not in entry
+    row = next(ln for ln in terminal(tmp_path, dropped).splitlines() if "Qdrant Cloud" in ln)
+    assert "self-host" not in row and "milvus" in row
+
+
+def test_summary_names_several_alternatives_not_one(tmp_path, catalog):
+    # A ranking by stars is popularity, not fit: the summary row never crowns one.
+    write(tmp_path, {"requirements.txt": "pinecone\n"})
+    row = next(ln for ln in terminal(tmp_path, catalog).splitlines() if "Pinecone" in ln)
+    tops = [a.name.split("/")[1] for a in catalog.pools["vector-db"].alternatives[:3]]
+    assert row.endswith(", ".join(tops))
+
+
+def test_pools_hold_only_substitutes(catalog):
+    # faiss and tantivy are libraries: peers of other libraries, not of hosted databases.
+    for pool, library in (
+        ("vector-db", "facebookresearch/faiss"),
+        ("search-engine", "quickwit-oss/tantivy"),
+    ):
+        assert library not in {a.name for a in catalog.pools[pool].alternatives}
+    assert catalog.pools["vector-index"].alternatives[0].kind
+
+
+def test_self_host_must_be_in_a_pool_it_replaces_with(tmp_path):
+    cat = tmp_path / "cat"
+    shutil.copytree(CATALOG_DIR, cat)
+    path = cat / "services" / "retrieval.yaml"
+    text = path.read_text(encoding="utf-8").replace(
+        "self_host: qdrant/qdrant", "self_host: ollama/ollama"
+    )
+    path.write_text(text, encoding="utf-8")
+    with pytest.raises(CatalogError, match="self_host 'ollama/ollama' is in none"):
+        load_catalog(cat)
+
+
+def test_a_repo_moved_out_of_a_pool_leaves_its_old_ranking(tmp_path):
+    cat = tmp_path / "cat"
+    shutil.copytree(CATALOG_DIR, cat)
+    rankings = json.loads((cat / "rankings.json").read_text(encoding="utf-8"))
+    stale = {"repo": "facebookresearch/faiss", "url": "u", "stars": 1}
+    rankings["pools"]["vector-db"]["ranked"].insert(0, stale)
+    (cat / "rankings.json").write_text(json.dumps(rankings), encoding="utf-8")
+    names = {a.name for a in load_catalog(cat).pools["vector-db"].alternatives}
+    assert "facebookresearch/faiss" not in names
+
+
 def test_every_kind_is_from_the_vocabulary(catalog):
     from unrent.catalog import KINDS
 
@@ -1098,9 +1184,11 @@ def test_models_show_their_size(tmp_path, catalog):
 
 
 def test_a_component_that_dropped_out_of_the_ranking_is_flagged(tmp_path, catalog, monkeypatch):
-    pool = catalog.pools["vector-db"]
+    pool = catalog.pools["vector-index"]
     without = tuple(a for a in pool.alternatives if a.name != "facebookresearch/faiss")
-    monkeypatch.setitem(catalog.pools, "vector-db", dataclasses.replace(pool, alternatives=without))
+    monkeypatch.setitem(
+        catalog.pools, "vector-index", dataclasses.replace(pool, alternatives=without)
+    )
     write(tmp_path, {"app.py": "import faiss\n"})
     (s,) = standings(running(tmp_path, catalog)["facebookresearch/faiss"], catalog)
     assert s.rank is None

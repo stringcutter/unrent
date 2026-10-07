@@ -104,6 +104,7 @@ class Pool:
     # "momentum", "stars" or "trending"; None when no rankings snapshot covers the pool
     # and the alternatives are in catalog order.
     ranked_by: str | None
+    repos: tuple[str, ...] = ()  # the GitHub repos alternatives.yaml lists, ranked or not
 
 
 @dataclass(frozen=True)
@@ -133,6 +134,9 @@ class Service:
     # A capability of a broader service (OpenAI Embeddings is part of the OpenAI API).
     # Its model ids count as real evidence when the broader service is itself in use.
     part_of: tuple[str, ...] = ()
+    # The open source project this service is a hosted copy of (Qdrant Cloud runs
+    # qdrant/qdrant): running it yourself is the smallest switch.
+    self_host: str | None = None
     # An open source project from alternatives.yaml, recognised so a scan can say
     # where the component a codebase already runs stands in its pool.
     open_source: bool = False
@@ -172,6 +176,12 @@ class Catalog:
 
     def alternatives_for(self, service: Service) -> list[Pool]:
         return [self.pools[p] for p in service.replace_with]
+
+    def self_hosted(self, service: Service) -> Alternative | None:
+        """The project behind a hosted service, as ranked in its pool; None when it has
+        none or dropped out of the ranking (archived, inactive)."""
+        pools = self.alternatives_for(service)
+        return next((a for p in pools for a in p.alternatives if a.name == service.self_host), None)
 
     @property
     def categories(self) -> list[str]:
@@ -282,7 +292,13 @@ def _load_pools(path: Path, rankings: dict) -> dict[str, Pool]:
 
         snapshot = (rankings.get("pools") or {}).get(pool_id)
         if snapshot:
-            alts = tuple(_from_snapshot(e, item["source"]) for e in snapshot["ranked"])
+            # A repo moved to another pool leaves this one now, not at the next refresh.
+            listed = set(repos) if item["source"] == "github" else None
+            alts = tuple(
+                _from_snapshot(e, item["source"])
+                for e in snapshot["ranked"]
+                if listed is None or e["repo"] in listed
+            )
             ranked_by = snapshot.get("ranked_by", "stars")
         else:
             alts = tuple(
@@ -305,6 +321,7 @@ def _load_pools(path: Path, rankings: dict) -> dict[str, Pool]:
             source=item["source"],
             alternatives=alts,
             ranked_by=ranked_by,
+            repos=tuple(repos) if item["source"] == "github" else (),
         )
     return pools
 
@@ -353,6 +370,14 @@ def _parse_service(raw: dict, where: Path, pools: dict[str, Pool]) -> Service:
                 f"{where.name}: service '{service_id}' names pool '{pool_id}', "
                 f"which is not in alternatives.yaml"
             )
+    self_host = raw.get("self_host")
+    if self_host is not None and not any(
+        self_host in pools[pool_id].repos for pool_id in replace_with
+    ):
+        raise CatalogError(
+            f"{where.name}: service '{service_id}' self_host '{self_host}' is in none of "
+            "its replace_with pools"
+        )
     signatures = {v for values in detect.values() for v in values}
     # `weak: [a, b]` is two groups of one; `weak: [[a, b], c]` makes a and b one group.
     weak_groups = tuple(
@@ -378,6 +403,7 @@ def _parse_service(raw: dict, where: Path, pools: dict[str, Pool]) -> Service:
         local_compatible=bool(raw.get("local_compatible", False)),
         local_mode=bool(raw.get("local_mode", False)),
         part_of=_as_tuple(raw.get("part_of")),
+        self_host=self_host,
     )
 
 

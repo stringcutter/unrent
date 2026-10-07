@@ -551,6 +551,7 @@
   name: Portkey (hosted)
   category: LLM gateway
   replace_with: [llm-gateway]
+  self_host: Portkey-AI/gateway
   detect:
     requirement: [portkey-ai, llama-index-llms-portkey]
     npm: [portkey-ai]
@@ -1143,6 +1144,7 @@
   name: Ollama Cloud
   category: LLM API
   replace_with: [open-llm, llm-serving]
+  self_host: ollama/ollama
   detect:
     # The hosted API at ollama.com itself. `//` keeps out api.ollama.com and other
     # look-alikes in URL-handling tests; a local Ollama is localhost:11434.

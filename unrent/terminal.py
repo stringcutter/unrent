@@ -13,7 +13,7 @@ from typing import TextIO
 
 from .catalog import Catalog
 from .detect import Fact, Finding
-from .render import RANKED_BY, Split, _describe, _split, standings, today
+from .render import PICKS, RANKED_BY, Split, _describe, _split, standings, today
 from .retired import Snap, _rel, replacement, snaps, state
 
 GAP = "  "
@@ -100,15 +100,20 @@ def _loc(fact: Fact, root: Path) -> str:
 
 
 def _best(f: Finding, catalog: Catalog) -> str:
-    """The top of each pool that replaces it: projects first, then open weights."""
+    """The project a hosted service runs, else the top few of each pool that replaces
+    it (projects first, then open weights): a popularity ranking crowns no winner."""
+    own = catalog.self_hosted(f.service)
+    if own:
+        return f"self-host {own.name}"
     pools = sorted(catalog.alternatives_for(f.service), key=lambda p: p.source != "github")
     tops = []
     for pool in pools:
-        if pool.alternatives:
-            name = pool.alternatives[0].name
-            top = name if pool.source == "github" else name.rsplit("/", 1)[-1]
-            if top not in tops:
-                tops.append(top)
+        if pool.source == "github":
+            top = ", ".join(a.name.split("/")[-1] for a in pool.alternatives[:PICKS])
+        else:
+            top = pool.alternatives[0].name.rsplit("/", 1)[-1] if pool.alternatives else ""
+        if top and top not in tops:
+            tops.append(top)
     return " + ".join(tops[:2])
 
 
@@ -360,6 +365,11 @@ def why(
             for a in s.ahead[:top]:
                 out.append(st.mute(f"    above it: {a.name}"))
     else:
+        own = catalog.self_hosted(f.service)
+        if own:
+            core = st.bold("Its open source core, self-hosted")
+            out.append(f"  {core}  {own.name}  {st.mute(own.url)}")
+            out.append("")
         for pool in catalog.alternatives_for(f.service):
             out.append(f"  {st.bold(pool.name)}  {st.mute(RANKED_BY.get(pool.ranked_by, ''))}")
             for i, alt in enumerate(pool.alternatives[:top], start=1):
