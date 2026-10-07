@@ -2533,7 +2533,7 @@ def _platforms(catalog):
     }, "platforms": {
         "azure": vendor(["azure-openai"], o3_mini=(D(2026, 11, 19), "gpt-5.6-terra"), text_embedding_3_small=(D(2028, 2, 9), None)),
         "bedrock": vendor(["aws-bedrock"], **{"anthropic.claude-3-haiku-20240307-v1:0": (D(2026, 9, 10), None)}),
-        "vertex": vendor(["google-vertex"], claude_3_5_sonnet_v2=(D(2026, 2, 19), None), **{veo: (D(2026, 6, 30), None)}),
+        "vertex": vendor(["google-vertex"], claude_3_5_sonnet_v2=(D(2026, 2, 19), None), **{veo: (D(2026, 6, 30), None), "gemini-2.0-flash": (D(2026, 6, 1), None)}),
     }}  # fmt: skip
     ids = {s.id for s in catalog.services}
     return dataclasses.replace(catalog, retirements=parse_retirements(raw, "t", ids))
@@ -2549,15 +2549,23 @@ def test_platform_spellings_retire_on_the_platforms_dates(tmp_path, catalog):
         "vertex.py": 'from anthropic import AnthropicVertex\nc = AnthropicVertex(region="us-east5")\n'
         'c.messages.create(model="claude-3-5-sonnet-v2@20241022")\n',
         "video.py": 'import vertexai\nvertexai.init(project=P)\nmodel = "veo-3.0-generate-001"\n',
+        "flash.py": 'from google import genai\nc = genai.Client(vertexai=True)\nmodel = "gemini-2.0-flash"\n',
         "imagine.py": 'from google import genai\nc = genai.Client()\nmodel = "veo-3.0-generate-001"\n',
         # Bicep that deploys an Azure OpenAI model; OpenAI's embeddings on Azure.
         "main.bicep": "var chat = {\n  format: 'OpenAI'\n  modelName: 'o3-mini'\n}\n",
         "embed.py": 'from openai import AzureOpenAI\nc = AzureOpenAI(azure_endpoint=E)\n'
         'c.embeddings.create(model="text-embedding-3-small")\n',
-        # Calls OpenAI's API too, or picks among providers: the id could be either's.
+        # Reaches OpenAI's API too (its host, its client): OpenAI's date, the one known.
         "both.py": 'from openai import AzureOpenAI\nURL = "https://api.openai.com/v1"\n'
         'MODEL = "o3-mini"\nEMBEDDING_MODEL = "text-embedding-3-small"\n',
+        "switch.py": 'from openai import AzureOpenAI, OpenAI\n'
+        'client = AzureOpenAI(azure_endpoint=E) if azure else OpenAI()\nMODEL = "o3-mini"\n',
+        # Picks among providers: whose id it is, the file does not say.
         "dispatch.py": 'from openai import AzureOpenAI\nKEY = os.environ["GROQ_API_KEY"]\nMODEL = "o3-mini"\n',
+        # Bedrock ARNs: a foundation model, an inference profile.
+        "arn.py": 'import boto3\nc = boto3.client("bedrock-runtime")\n'
+        'MODEL_ARN = "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-haiku-20240307-v1:0"\n'
+        'MODEL_ID = "arn:aws:bedrock:us-east-1:123456789012:inference-profile/us.anthropic.claude-3-haiku-20240307-v1:0"\n',
     })  # fmt: skip
     found = _snaps(tmp_path, _platforms(catalog))
     assert sorted(
@@ -2567,10 +2575,11 @@ def test_platform_spellings_retire_on_the_platforms_dates(tmp_path, catalog):
         # A deployment named after the model is the user's choice, not the model's id.
         ("azure", "o3-mini", D(2026, 11, 19), ["azure.py:3", "main.bicep:3"]),
         ("azure", "text-embedding-3-small", D(2028, 2, 9), ["embed.py:3"]),
-        ("bedrock", "anthropic.claude-3-haiku-20240307-v1:0", D(2026, 9, 10), ["bedrock.py:3"]),
+        ("bedrock", "anthropic.claude-3-haiku-20240307-v1:0", D(2026, 9, 10), ["arn.py:3", "arn.py:4", "bedrock.py:3"]),
         ("google", "veo-3.0-generate-001", D(2025, 11, 12), ["imagine.py:3"]),
-        ("openai", "o3-mini", D(2026, 10, 23), ["app.py:2"]),
+        ("openai", "o3-mini", D(2026, 10, 23), ["app.py:2", "both.py:3", "switch.py:3"]),
         ("vertex", "claude-3-5-sonnet-v2", D(2026, 2, 19), ["vertex.py:3"]),
+        ("vertex", "gemini-2.0-flash", D(2026, 6, 1), ["flash.py:3"]),
         ("vertex", "veo-3.0-generate-001", D(2026, 6, 30), ["video.py:3"]),
     ]  # fmt: skip
 
@@ -2793,6 +2802,14 @@ def test_hook_reports_a_retiring_model_just_written(
     context = out["hookSpecificOutput"].pop("additionalContext")
     assert out == {"hookSpecificOutput": {"hookEventName": "PostToolUse"}}
     assert context.startswith(f"unrent: src/app.py:2 selects gpt-4-0613, {says}")
+
+
+def test_hook_prefilter_takes_a_region_not_any_attribute(tmp_path):
+    from unrent.cli import _retiring
+
+    pattern = _retiring(_own_catalog(tmp_path), None)
+    text = 'self.gpt-4 = x\nM = "us.anthropic.claude-3-haiku-20240307-v1:0"\n'
+    assert pattern.findall(text) == ["anthropic.claude-3-haiku-20240307-v1:0"]
 
 
 def test_hook_reports_a_bedrock_model_behind_a_region(tmp_path, monkeypatch, capsys):

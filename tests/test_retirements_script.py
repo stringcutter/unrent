@@ -152,6 +152,14 @@ will be
 """
 
 
+def test_a_dated_block_without_one_model_id_is_noted(retirements):
+    page = "## Two models\n\nThey **shut down on May 1, 2026**.\n\n| Model ID | `a` ||\n| Model ID | `b` ||\n"
+    assert retirements.parse(page) == (
+        {},
+        ["skipped '## Two models': dates for 2 model ids, not one"],
+    )
+
+
 def test_parse_reads_the_platform_pages(retirements):
     models, _ = retirements.parse(PLATFORMS)
     d = datetime.date

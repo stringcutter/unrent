@@ -683,8 +683,12 @@ def _needle_pattern(kind: str, needle: str) -> re.Pattern:
         head = r"(?<![A-Za-z0-9_$])" if needle[:1].isalnum() or needle[:1] in "_$" else ""
         return re.compile(head + escaped + (r"(?![A-Za-z0-9_])" if ends_word else ""))
     if kind == "model":
-        # The Gemini API's resource names: `models/text-embedding-004`.
-        return re.compile(r"(?:(?<=(?<![\w./-])models/)|(?<![A-Za-z0-9_./@-]))" + escaped)
+        # The Gemini API's resource names (`models/text-embedding-004`), Bedrock's ARNs
+        # (`...:foundation-model/anthropic.claude-...`, `...:inference-profile/us...`).
+        return re.compile(
+            r"(?:(?<=(?<![\w./-])models/)|(?<=:foundation-model/)|(?<=:inference-profile/)"
+            r"|(?<![A-Za-z0-9_./@-]))" + escaped
+        )
     if kind == "endpoint":
         tail = r"(?![A-Za-z0-9(-])" if ends_word else ""
         return re.compile(_endpoint_head(needle) + escaped + tail, re.IGNORECASE)
@@ -2098,6 +2102,15 @@ def _without_local_clients(facts: tuple[Fact, ...], local: list[Fact]) -> tuple[
     return kept
 
 
+def _configured(symbol: Fact, own: list[Fact]) -> bool:
+    """Does the call `symbol` opens take the specific service's evidence as an argument?"""
+    m = _needle_pattern("symbol", symbol.value).search(symbol.evidence)
+    if not symbol.value.endswith("(") or not m:
+        return False
+    args = symbol.evidence[m.end() :].partition(")")[0]
+    return any(o.file == symbol.file and o.line == symbol.line and o.value in args for o in own)
+
+
 def _resolve_overlaps(findings: list[Finding]) -> list[Finding]:
     """A specific service claims the general service's evidence where it is used.
 
@@ -2110,7 +2123,9 @@ def _resolve_overlaps(findings: list[Finding]) -> list[Finding]:
     not reported: naming a vendor that is not there is the one failure this tool
     cannot afford. The model ids go with the specific service, which retires them on
     its own schedule (gpt-4o on Azure), where it is the only one that claims them and
-    has more than weak evidence, and the file does not also call the general vendor.
+    has more than weak evidence. In a file that may also call the general vendor
+    (its host or client) they stay with the general vendor: which line goes where,
+    the file does not say, and the vendor's own date is the one known to apply.
     """
     by_id = {f.service.id: f for f in findings}
     claimed: dict[str, set[tuple]] = {}
@@ -2126,17 +2141,25 @@ def _resolve_overlaps(findings: list[Finding]) -> list[Finding]:
             if not own:
                 continue
             files = {f.file for f in own}
-            taken = [f for f in general.facts if f.file in files and f.kind != "endpoint"]
-            claimed.setdefault(general_id, set()).update(_key(f) for f in taken)
+            # A file with the general vendor's own host or client may call either. Not
+            # a client the specific one configures: genai.Client(vertexai=True).
+            both = {
+                g.file
+                for g in general.facts
+                if g.kind == "endpoint" or (g.kind == "symbol" and not _configured(g, own))
+            }
+            here = [f for f in general.facts if f.file in files]
+            claimed.setdefault(general_id, set()).update(
+                _key(f)
+                for f in here
+                if f.kind != "endpoint" and not (f.kind == "model" and f.file in both)
+            )
             for file in files:
                 claimers.setdefault((general_id, file), set()).add(finding.service.id)
-            # A file with the general vendor's own API host calls both: its model ids
-            # could be either's.
-            both = {f.file for f in general.facts if f.kind == "endpoint"}
             if not _only_weak(Finding(service=finding.service, facts=tuple(own))):
                 models += [
                     (finding.service.id, general_id, f)
-                    for f in taken
+                    for f in here
                     if f.kind == "model" and f.file not in both
                 ]
     moved: dict[str, list[Fact]] = {}

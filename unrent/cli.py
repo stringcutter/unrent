@@ -22,7 +22,7 @@ from .catalog import CatalogError, load_catalog
 from .detect import LEFT_OUT, collect_facts, file_root, left_out, match
 from .discover import scan_unknown
 from .render import _split, to_json, to_markdown, to_sarif, today
-from .retired import _rel, replacement, snaps, state
+from .retired import REGIONS, _rel, replacement, snaps, state
 from .terminal import Progress, to_terminal, wants_colour, why, why_model
 
 
@@ -366,7 +366,7 @@ def _retiring(catalog_dir: Path, latest: dict | None) -> re.Pattern:
         for m in v["models"]
         if str(m)
     }
-    return re.compile(rf"(?<![\w.-])(?:[a-z-]+\.)?({'|'.join(sorted(ids))})(?![\w.-])")
+    return re.compile(rf"(?<![\w.-])(?:(?:{REGIONS})\.)?({'|'.join(sorted(ids))})(?![\w.-])")
 
 
 def hook_context(event: dict, catalog_dir: Path, as_of: datetime.date | None = None) -> str:

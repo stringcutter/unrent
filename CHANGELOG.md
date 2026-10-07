@@ -41,9 +41,12 @@ each release ships the rankings as of its date.
 
 ### Changed
 - A specific service keeps the model ids it claims from the general one: `o3-mini` in a
-  file that calls Azure OpenAI is Azure evidence. They used to be dropped. Not in a file
-  that also calls the general vendor's own host, or that several platforms claim (a
-  switch over providers): there the id could be either's.
+  file that calls Azure OpenAI is Azure evidence. They used to be dropped. A file that
+  also reaches the general vendor (its host, or its client: `AzureOpenAI(...) if x else
+  OpenAI()`) keeps them with that vendor and its date, where they used to be dropped
+  too; one that several platforms claim (a switch over providers) still drops them.
+  Bedrock ARNs (`...:foundation-model/<id>`, `...:inference-profile/us.<id>`) are model
+  ids.
 - A pool lists only what can replace the services it serves: faiss is no longer offered
   as a vector database, nor tantivy as a search engine. Each runs ranked among its peers.
 - Summary rows name the top three of a pool instead of one: a ranking by stars is

@@ -21,8 +21,8 @@ partner models, in prose.
 --notes   Also print the rows that were skipped and the ids listed twice with
           different dates (the most recent announcement wins).
 
-Exits 2 when a page cannot be fetched or yields no rows: a parser that finds nothing
-has broken, it has not found "no changes".
+Exits 2 when a page cannot be fetched, yields no rows or drops more than 30% of the
+vendor's ids: a parser that finds nothing has broken, it has not found "no changes".
 """
 
 from __future__ import annotations
@@ -57,6 +57,7 @@ SOURCES = {
 }
 # Bedrock's `anthropic.claude-3-haiku-20240307-v1:0`, Vertex's `multimodalembedding@001`.
 MODEL_ID = re.compile(r"^[a-z0-9][a-z0-9._:@-]*$", re.I)
+GONE = 0.3  # the share of a vendor's ids that may leave its page in one run
 CODE = re.compile(r"`([^`]+)`")
 LINK = re.compile(r"\[([^\]]*)\]\([^)]*\)")
 DATED_HEADING = re.compile(r"^#{2,4}\s+(\d{4}-\d{2}-\d{2})")
@@ -84,11 +85,12 @@ def _cells(line: str) -> list[str]:
     return [p.replace("\\|", "|").strip() for p in parts]
 
 
-def listed(text: str) -> str:
+def listed(text: str) -> tuple[str, list[str]]:
     """Dates a page gives outside a table, as one more table: Bedrock's models past
     their end of life (`**Model ID:** x`, then an `**EOL date:**` per group of Regions)
-    and Google Cloud's partner models (`shut down on <date>` above `| Model ID | `x` |`)."""
-    rows = []
+    and Google Cloud's partner models (`shut down on <date>` above `| Model ID | `x` |`).
+    And notes on blocks with dates whose model is not one id."""
+    rows, notes = [], []
     for block in re.split(r"\n(?=- \*\*|## )", text):
         ids = re.findall(r"\*\*Model ID:\*\*\s*(\S+)|^\| Model ID \| `([^`]+)`", block, re.M)
         dates = re.findall(
@@ -96,13 +98,17 @@ def listed(text: str) -> str:
         )
         if len(ids) == 1:
             rows += [f"| {''.join(ids[0])} | {''.join(d).strip()} |" for d in dates]
-    return "\n\n| Model ID | Shutdown date |\n|---|---|\n" + "\n".join(rows) if rows else ""
+        elif dates:
+            head = block.strip().splitlines()[0][:60]
+            notes.append(f"skipped {head!r}: dates for {len(ids)} model ids, not one")
+    table = "\n\n| Model ID | Shutdown date |\n|---|---|\n" + "\n".join(rows) if rows else ""
+    return table, notes
 
 
 def tables(text: str):
     """(announcement date or None, header cells, rows) for every Markdown table, with
     the date of the nearest heading above that starts with one."""
-    lines = (text + listed(text)).splitlines()
+    lines = text.splitlines()
     announced = None
     i = 0
     while i < len(lines):
@@ -172,8 +178,8 @@ def parse(text: str) -> tuple[dict[str, dict], list[str]]:
     on while one of its rows gives no exact date."""
     found: dict[str, dict] = {}
     undated: dict[str, tuple] = {}
-    notes: list[str] = []
-    for order, (announced, header, rows) in enumerate(tables(text)):
+    extra, notes = listed(text)
+    for order, (announced, header, rows) in enumerate(tables(text + extra)):
         when = _column(header, "shutdown date", "retirement date", "eol date")
         if when is None or "tentative retirement date" in header or "training" in header[when]:
             # "Date | Update" tables, Anthropic's model status overview, Azure's
@@ -304,6 +310,14 @@ def main() -> int:
             return 2
         if not models:
             print(f"{name}: no retirement rows found in {SOURCES[name]}", file=sys.stderr)
+            return 2
+        old = current[name].get("models") or {}
+        gone = old.keys() - models.keys()
+        if len(gone) > GONE * len(old):
+            # A page that changed its layout drops ids in bulk; a vendor rarely does.
+            print(
+                f"{name}: {len(gone)} of {len(old)} ids gone from {SOURCES[name]}", file=sys.stderr
+            )
             return 2
         pages[name] = models
         if a.notes:

@@ -91,7 +91,7 @@ claude plugin validate .                   # plugin + marketplace (CLAUDE.md-at-
 - Truth is labelled from the code, independently of unrent's output (`eval/TRUTH_RULES.md`).
 - Floors live in `FLOORS` in `eval/run_eval.py` (`--gate` checks them; CI passes it) and
   sit just under the measured scores (2026-10-07: closed precision 0.993, recall 0.957;
-  open source 1.000 / 0.902; models 0.933 / 0.892). Raise them when scores rise; **never
+  open source 1.000 / 0.902; models 0.943 / 0.892). Raise them when scores rise; **never
   lower them to pass**.
 - `eval/holdout.yaml` (12 repos, `--holdout`) is never tuned against: measure on it,
   don't fix to it. A fix made because of a miss there moves that repo into the corpus,
@@ -108,8 +108,8 @@ claude plugin validate .                   # plugin + marketplace (CLAUDE.md-at-
 - Known open FPs: `openai` in bedrock-access-gateway, `google-imagen` in anything-llm
   (Gemini image model ids in a chat model list), `together` in langchaingo. Models side:
   dify's `RestrictModel(model=...)` allow-list (3), a tokenizer default in kotaemon, and
-  two files that call both a vendor and its platform: ragflow's `cv_model.py` (Gemini and
-  Vertex) and kernel-memory's settings files (OpenAI and Azure sections).
+  kernel-memory's settings files, whose OpenAI section names gpt-4o-mini next to an Azure
+  section (no OpenAI host or client in the file to tell them apart).
 
 ## Rankings and data sources
 

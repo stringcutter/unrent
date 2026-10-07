@@ -22,7 +22,8 @@ _TOKEN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._:@/-]*")
 # openai/, models/, google-gla:; not Bedrock's version (`-v1:0`).
 _PREFIX = re.compile(r"^(?:[\w.-]+(?:/|:(?!\d)))+")
 # A Bedrock cross-Region inference profile names the model after its geography.
-_REGION = re.compile(r"^(?:us|us-gov|eu|apac|au|jp|ca|global)\.")
+REGIONS = "us|us-gov|eu|apac|au|jp|ca|global"
+_REGION = re.compile(rf"^(?:{REGIONS})\.")
 
 # What stands right before an id that the line selects. Matched against the text up
 # to the id's opening quote, so `model == "gpt-4"` and `models = ["gpt-4"` don't count.
@@ -129,8 +130,9 @@ def _lookup(catalog: Catalog, model: str | None, service: str) -> Retirement | N
 
 def _retirement(catalog: Catalog, model: str, services: list[str]) -> Retirement | None:
     """The retirement of `model` by the vendor of the first of `services` that has one:
-    as written, without a Bedrock Region (`us.`), without a Vertex version (`@2024...`;
-    Google lists partner models by name)."""
+    as written, without a Bedrock Region (`us.`) or ARN, without a Vertex version
+    (`@2024...`; Google lists partner models by name)."""
+    model = model.rsplit("/", 1)[-1]  # arn:aws:bedrock:...:foundation-model/<id>
     for service in services:
         for m in dict.fromkeys((model, _REGION.sub("", model), model.split("@")[0])):
             if r := _lookup(catalog, m, service):
@@ -151,18 +153,14 @@ def snaps(findings: list[Finding], catalog: Catalog, root: Path) -> list[Snap]:
     named (menus, tables, checks, sample data).
 
     The finding's service picks the vendor: gpt-4o through Azure OpenAI retires on
-    Azure's date. A capability (Imagen, OpenAI's embeddings) takes the platform with
-    evidence in the same file that it is part of (Vertex) or that stands in for what it
-    is part of (Azure OpenAI for OpenAI) unless the file also has OpenAI's own host,
-    else its own."""
+    Azure's date. A capability (Imagen, OpenAI's embeddings) takes each service with
+    evidence in the same file that it is part of (Vertex, OpenAI), else each one there
+    that stands in for what it is part of (Azure OpenAI for OpenAI), else its own."""
     in_file: dict[Path, set[str]] = {}
-    hosts: set[tuple[str, Path]] = set()
     excludes = {f.service.id: set(f.service.excludes) for f in findings}
     for f in findings:
         for fact in f.facts:
             in_file.setdefault(fact.file, set()).add(f.service.id)
-            if fact.kind == "endpoint":
-                hosts.add((f.service.id, fact.file))
     found: dict[tuple[str, str], Snap] = {}
     for f in findings:
         for fact in f.facts:
@@ -170,25 +168,18 @@ def snaps(findings: list[Finding], catalog: Catalog, root: Path) -> list[Snap]:
                 continue
             call = not _NOT_A_CALL.search(_rel(fact.file, root))
             bases = set(f.service.part_of)
-            stand_in = not any((b, fact.file) in hosts for b in bases)
-            services = [
-                *sorted(
-                    s
-                    for s in in_file[fact.file]
-                    if s in bases or (stand_in and bases & excludes[s])
-                ),
-                f.service.id,
-            ]
+            here = sorted(in_file[fact.file])
+            routes = [s for s in here if s in bases] or [s for s in here if bases & excludes[s]]
             for model, start, end in _ids(fact):
-                r = _retirement(catalog, model, services)
-                if r is None:
-                    continue
-                snap = found.setdefault((r.vendor, r.id), Snap(r, f))
-                where = (str(fact.file), fact.line)
-                if not (call and selects(fact.evidence, start, end)):
-                    snap.named.add(where)
-                elif all((str(x.file), x.line) != where for x in snap.sites):
-                    snap.sites.append(fact)
+                rs = {r.vendor: r for s in routes if (r := _retirement(catalog, model, [s]))}
+                own = _retirement(catalog, model, [f.service.id])
+                for r in rs.values() or ([own] if own else []):
+                    snap = found.setdefault((r.vendor, r.id), Snap(r, f))
+                    where = (str(fact.file), fact.line)
+                    if not (call and selects(fact.evidence, start, end)):
+                        snap.named.add(where)
+                    elif all((str(x.file), x.line) != where for x in snap.sites):
+                        snap.sites.append(fact)
     for snap in found.values():
         snap.sites.sort(key=lambda x: (str(x.file), x.line))
         snap.named -= {(str(x.file), x.line) for x in snap.sites}
