@@ -296,18 +296,18 @@ HOOK_TIMEOUT = 2  # seconds the hook waits for the latest retirements, once per 
 def _retiring(catalog_dir: Path, latest: dict | None) -> re.Pattern:
     """Any model id in the shipped retirements.yaml or the latest one, as a whole id;
     read without the rest of the catalog. `gpt-4` is not in `gpt-4o` nor `ada` in
-    `metadata`."""
+    `metadata`; a Bedrock Region may precede one (`us.anthropic...`)."""
     text = (catalog_dir / "retirements.yaml").read_text("utf-8")
     raw = yaml.load(text, Loader=getattr(yaml, "CSafeLoader", yaml.SafeLoader))
     ids = {
         re.escape(str(m))
         for r in (raw, latest or {"vendors": {}})
-        for v in r["vendors"].values()
+        for v in (*r["vendors"].values(), *(r.get("platforms") or {}).values())
         if isinstance(v, dict) and isinstance(v.get("models"), dict)
         for m in v["models"]
         if str(m)
     }
-    return re.compile(rf"(?<![\w.-])(?:{'|'.join(sorted(ids))})(?![\w.-])")
+    return re.compile(rf"(?<![\w.-])(?:[a-z-]+\.)?({'|'.join(sorted(ids))})(?![\w.-])")
 
 
 def hook_context(event: dict, catalog_dir: Path, as_of: datetime.date | None = None) -> str:

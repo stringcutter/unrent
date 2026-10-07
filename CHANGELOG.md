@@ -16,8 +16,26 @@ each release ships the rankings as of its date.
   `--why`, JSON and MCP.
 - Two pools for libraries: vector search libraries (faiss, hnswlib, USearch) and search
   libraries (tantivy, bleve, Lucene).
+- Model retirements on the cloud platforms, from each one's own lifecycle page and
+  checked weekly: Azure OpenAI and Foundry (127 ids), Amazon Bedrock (12), Vertex AI (30,
+  and 8 partner models). A model id retires on the schedule of the service the code
+  calls it through: o3-mini through Azure on Azure's date, through OpenAI's API on
+  OpenAI's. Bedrock ids count with a Region prefix (`us.anthropic.claude-...`), Vertex
+  partner models with their version (`claude-3-5-sonnet-v2@20241022`). A value given to
+  an Azure deployment name is not taken for the model. They sit under `platforms` in
+  retirements.yaml, which 0.3.0 does not read, so its copy from `main` keeps loading.
+
+- Bicep files are scanned, and `format: 'OpenAI'` in Bicep or ARM is Azure OpenAI: the
+  model an azd template deploys is the model the app runs. Gemini API resource names
+  (`models/text-embedding-004`) are model ids; Firebase AI on its Vertex backend is
+  Vertex AI. A model is also picked by `param modelName string = 'x'`, `az ...
+  --model-name x` and `generativeModel("x")`.
 
 ### Changed
+- A specific service keeps the model ids it claims from the general one: `o3-mini` in a
+  file that calls Azure OpenAI is Azure evidence. They used to be dropped. Not in a file
+  that also calls the general vendor's own host, or that several platforms claim (a
+  switch over providers): there the id could be either's.
 - A pool lists only what can replace the services it serves: faiss is no longer offered
   as a vector database, nor tantivy as a search engine. Each runs ranked among its peers.
 - Summary rows name the top three of a pool instead of one: a ranking by stars is

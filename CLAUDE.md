@@ -33,7 +33,7 @@ writes in Danish; answer in the language of their latest message.
 | `catalog/services/*.yaml` | Closed services. `models-dev.yaml` is **generated**; the others are hand-written |
 | `catalog/alternatives.yaml` | Pools of open source alternatives and the open source projects recognised in code |
 | `catalog/rankings.json`, `star-history.json` | Written weekly by `scripts/refresh.py` |
-| `catalog/retirements.yaml` | Model retirements from the vendors' pages, rewritten weekly by `scripts/retirements.py` (pull request left open for review) |
+| `catalog/retirements.yaml` | Model retirements from the vendors' pages (`vendors`) and from Azure, Bedrock and Vertex (`platforms`: a key of its own, since releases up to 0.3.0 fail on an id listed twice), rewritten weekly by `scripts/retirements.py` (pull request left open for review). An id resolves to the vendor of the finding's service |
 | `eval/` | Golden corpus (54 repos, pinned commits) with hand-labelled truth, `TRUTH_RULES.md`, `OSS_TRUTH_RULES.md`, `MODEL_TRUTH_RULES.md` (`corpus_models.yaml`), `run_eval.py` |
 | `scripts/` | `refresh.py` (rankings), `verify_packages.py`, `new_services.py` (models.dev + corpus candidates), `mcp_smoke.py` |
 | `skills/unrent/` | Agent skill (SKILL.md, `sweep.py`, `repo_facts.py`), in the plugin or alone with `npx skills add stringcutter/unrent` |
@@ -89,8 +89,8 @@ claude plugin validate .                   # plugin + marketplace (CLAUDE.md-at-
 
 - Truth is labelled from the code, independently of unrent's output (`eval/TRUTH_RULES.md`).
 - Floors live in `FLOORS` in `eval/run_eval.py` (`--gate` checks them; CI passes it) and
-  sit just under the measured scores (2026-10-04: closed precision 0.993, recall 0.957;
-  open source 1.000 / 0.902; models 0.939 / 0.886). Raise them when scores rise; **never
+  sit just under the measured scores (2026-10-07: closed precision 0.993, recall 0.957;
+  open source 1.000 / 0.902; models 0.933 / 0.892). Raise them when scores rise; **never
   lower them to pass**.
 - `eval/holdout.yaml` (12 repos, `--holdout`) is never tuned against: measure on it,
   don't fix to it. A fix made because of a miss there moves that repo into the corpus,
@@ -98,14 +98,17 @@ claude plugin validate .                   # plugin + marketplace (CLAUDE.md-at-
   0.948 / 0.901, open source 1.000 / 0.677.
 - The models side scores only the ids `corpus_models.yaml` lists under `labelled`. When
   `retirements.yaml` gains ids, grep the corpus for them, label any line that selects
-  one (`MODEL_TRUTH_RULES.md`), and add them to `labelled`.
+  one (`MODEL_TRUTH_RULES.md`), and add them to `labelled`. A platform's id counts only
+  where the code reaches that platform (rules 11-12).
 - A new false positive after a catalog change: open the cited line first. If the code
   really uses the service, add it to the truth with the line, in the existing format
   (`- id  # added YYYY-MM-DD with the new catalog ids; line checked by hand: file:line ...`).
   If not, fix the signature and add a regression test.
 - Known open FPs: `openai` in bedrock-access-gateway, `google-imagen` in anything-llm
   (Gemini image model ids in a chat model list), `together` in langchaingo. Models side:
-  dify's `RestrictModel(model=...)` allow-list (3) and a tokenizer default in kotaemon.
+  dify's `RestrictModel(model=...)` allow-list (3), a tokenizer default in kotaemon, and
+  two files that call both a vendor and its platform: ragflow's `cv_model.py` (Gemini and
+  Vertex) and kernel-memory's settings files (OpenAI and Azure sections).
 
 ## Rankings and data sources
 

@@ -3,15 +3,15 @@ name: unrent
 description: >-
   Find the closed AI services a codebase depends on (OpenAI, Anthropic, Gemini, Bedrock,
   Pinecone, Tavily, LangSmith, ElevenLabs, ...) with file:line evidence, the model ids it
-  selects that OpenAI, Anthropic or Google have retired or will retire on an announced
-  date, and the current best open source replacements, using the unrent MCP server
-  (tools scan, alternatives, standing, catalog) or the unrent CLI. Use this whenever
-  someone wants to audit an AI stack for vendor lock-in, list which AI APIs or hosted
-  models a repo calls, check whether the models a repo uses are deprecated or shutting
-  down, replace a closed AI service with open source or self-hosted software, fork a
-  provider's template and swap out its AI components, or asks which open source LLM,
-  embedding model, vector database, search API or observability tool is best right now,
-  even if they never say "unrent" or "lock-in".
+  selects that OpenAI, Anthropic, Google, Azure, Bedrock or Vertex have retired or will
+  retire on an announced date, and the current best open source replacements, using the
+  unrent MCP server (tools scan, alternatives, standing, catalog) or the unrent CLI. Use
+  this whenever someone wants to audit an AI stack for vendor lock-in, list which AI APIs
+  or hosted models a repo calls, check whether the models a repo uses are deprecated or
+  shutting down, replace a closed AI service with open source or self-hosted software,
+  fork a provider's template and swap out its AI components, or asks which open source
+  LLM, embedding model, vector database, search API or observability tool is best right
+  now, even if they never say "unrent" or "lock-in".
 ---
 
 # unrent: closed AI dependencies, retiring models and their open source replacements

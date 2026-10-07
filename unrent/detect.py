@@ -72,8 +72,8 @@ CODE_SUFFIXES = {
     ".py", ".pyi", ".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".mts", ".cts", ".vue",
     ".svelte", ".astro", ".go", ".rs", ".java", ".kt", ".kts", ".scala", ".groovy", ".cs",
     ".fs", ".vb", ".rb", ".php", ".swift", ".dart", ".ex", ".exs", ".r", ".jl", ".lua",
-    ".sh", ".bash", ".zsh", ".ps1", ".tf", ".tfvars", ".hcl", ".c", ".h", ".cc", ".cpp",
-    ".cxx", ".hpp", ".m", ".mm", ".sql", ".html", ".htm",
+    ".sh", ".bash", ".zsh", ".ps1", ".tf", ".tfvars", ".hcl", ".bicep", ".c", ".h", ".cc",
+    ".cpp", ".cxx", ".hpp", ".m", ".mm", ".sql", ".html", ".htm",
 }  # fmt: skip
 CONFIG_SUFFIXES = {
     ".json", ".jsonc", ".json5", ".yaml", ".yml", ".toml", ".ini", ".cfg", ".conf",
@@ -90,7 +90,7 @@ JS_SUFFIXES = {
 C_FAMILY = JS_SUFFIXES | {
     ".go", ".rs", ".java", ".kt", ".kts", ".scala", ".groovy", ".gradle", ".cs", ".fs",
     ".swift", ".dart", ".c", ".h", ".cc", ".cpp", ".cxx", ".hpp", ".m", ".mm", ".php",
-    ".json", ".jsonc", ".json5", ".tf", ".tfvars", ".hcl",
+    ".json", ".jsonc", ".json5", ".tf", ".tfvars", ".hcl", ".bicep",
 }  # fmt: skip
 # `#` also opens a comment in these C-family files.
 C_AND_HASH = {".php", ".tf", ".tfvars", ".hcl"}
@@ -683,7 +683,8 @@ def _needle_pattern(kind: str, needle: str) -> re.Pattern:
         head = r"(?<![A-Za-z0-9_$])" if needle[:1].isalnum() or needle[:1] in "_$" else ""
         return re.compile(head + escaped + (r"(?![A-Za-z0-9_])" if ends_word else ""))
     if kind == "model":
-        return re.compile(r"(?<![A-Za-z0-9_./@-])" + escaped)
+        # The Gemini API's resource names: `models/text-embedding-004`.
+        return re.compile(r"(?:(?<=(?<![\w./-])models/)|(?<![A-Za-z0-9_./@-]))" + escaped)
     if kind == "endpoint":
         tail = r"(?![A-Za-z0-9(-])" if ends_word else ""
         return re.compile(_endpoint_head(needle) + escaped + tail, re.IGNORECASE)
@@ -2107,10 +2108,14 @@ def _resolve_overlaps(findings: list[Finding]) -> list[Finding]:
     vendor's own API host. If all the general service has left is the package
     declaration, the specific service explains that too, and the general one is
     not reported: naming a vendor that is not there is the one failure this tool
-    cannot afford.
+    cannot afford. The model ids go with the specific service, which retires them on
+    its own schedule (gpt-4o on Azure), where it is the only one that claims them and
+    has more than weak evidence, and the file does not also call the general vendor.
     """
     by_id = {f.service.id: f for f in findings}
     claimed: dict[str, set[tuple]] = {}
+    claimers: dict[tuple[str, Path], set[str]] = {}
+    models: list[tuple[str, str, Fact]] = []  # specific, general, model fact
     for finding in findings:
         for general_id in finding.service.excludes:
             general = by_id.get(general_id)
@@ -2121,12 +2126,29 @@ def _resolve_overlaps(findings: list[Finding]) -> list[Finding]:
             if not own:
                 continue
             files = {f.file for f in own}
-            claimed.setdefault(general_id, set()).update(
-                _key(f) for f in general.facts if f.file in files and f.kind != "endpoint"
-            )
+            taken = [f for f in general.facts if f.file in files and f.kind != "endpoint"]
+            claimed.setdefault(general_id, set()).update(_key(f) for f in taken)
+            for file in files:
+                claimers.setdefault((general_id, file), set()).add(finding.service.id)
+            # A file with the general vendor's own API host calls both: its model ids
+            # could be either's.
+            both = {f.file for f in general.facts if f.kind == "endpoint"}
+            if not _only_weak(Finding(service=finding.service, facts=tuple(own))):
+                models += [
+                    (finding.service.id, general_id, f)
+                    for f in taken
+                    if f.kind == "model" and f.file not in both
+                ]
+    moved: dict[str, list[Fact]] = {}
+    for specific, general_id, f in models:
+        if len(claimers[(general_id, f.file)]) == 1:  # a dispatch over providers: unknown
+            moved.setdefault(specific, []).append(f)
 
     surviving: list[Finding] = []
     for finding in findings:
+        if moved.get(finding.service.id):
+            facts = {_key(f): f for f in (*finding.facts, *moved[finding.service.id])}
+            finding = Finding(finding.service, tuple(sorted(facts.values(), key=_key)))
         taken = claimed.get(finding.service.id)
         if not taken:
             surviving.append(finding)

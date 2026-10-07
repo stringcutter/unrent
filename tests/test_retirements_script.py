@@ -104,3 +104,79 @@ def test_render_round_trips(retirements):
     text = retirements.render("# Header comment.\n", vendors)
     assert text.startswith("# Header comment.\nvendors:\n")
     assert yaml.safe_load(text) == {"vendors": vendors}
+
+
+# The platforms: Azure lists a model once per version (and tuned models apart), Bedrock
+# names provider and model before the id and lists the models past their end of life as
+# bullets, Vertex links its ids and gives partner models' dates in prose.
+PLATFORMS = """\
+### Azure OpenAI
+
+| Model | Version | Lifecycle | Retirement date | Replacement |
+|-------|---------|-----------|-----------------|-------------|
+| gpt-4o | 2024-05-13 | Deprecated | 2026-12-09 | gpt-5.6-sol |
+| gpt-4o | 2024-08-06 | Deprecated | 2027-04-14 | gpt-5.1 |
+| gpt-realtime-2 | 2026-05-06 | Preview | — | gpt-realtime-2.1 |
+| gpt-realtime-2 | 2026-07-01 | Preview | 2026-11-01 | — |
+| Cohere-rerank-v3.5 | 1 | Retired | 2026-05-14 | Cohere-rerank-v4.0-pro, Cohere-rerank-v4.0-fast |
+
+| Model | Version | Training retirement date | Deployment retirement date |
+|-------|---------|--------------------------|----------------------------|
+| gpt-4o | 2024-08-06 | 2027-04-01 | 2027-10-01 |
+
+| Model provider | Model name | Model ID | Regions | Legacy date | EOL date | Public extended access start date |
+| --- | --- | --- | --- | --- | --- | --- |
+| Anthropic | Claude Sonnet 4 | anthropic.claude-sonnet-4-20250514-v1:0 | us-east-1 | April 14, 2026 | October 14, 2026 | July 14, 2026 |
+
+- **Anthropic**
+  - **Model name:** Claude 3 Haiku
+  - **Model ID:** anthropic.claude-3-haiku-20240307-v1:0
+  - **Regions:** us-east-1 / **Legacy date:** March 10, 2026 / **EOL date:** September 10, 2026
+  - **Regions:** us-gov-east-1 / **Legacy date:** March 10, 2026 / **EOL date:** October 1, 2026
+
+### Retired models
+
+| Model ID | Release date | Retirement date | Recommended upgrade |
+|---|---|---|---|
+| [`gemini-2.5-pro`](https://example.org/2-5-pro) | June 17, 2025 | October 20, 2026 | [`gemini-3.8-flash`](https://example.org/3-8) or [`gemini-3.5-flash`](https://example.org/3-5) |
+| `textembedding-gecko@003\\*` | December 12, 2023 | May 24, 2025 | `gemini-embedding-001` |
+
+## Claude 3.5 Sonnet v2 on Google Cloud
+
+Claude 3.5 Sonnet v2 on Google Cloud is **deprecated as of August 20, 2025** and
+will be
+**shut down on February 19, 2026**.
+
+| Model ID | `claude-3-5-sonnet-v2` ||
+| Launch stage | GA ||
+"""
+
+
+def test_parse_reads_the_platform_pages(retirements):
+    models, _ = retirements.parse(PLATFORMS)
+    d = datetime.date
+    assert models == {
+        # A name works until its last version retires, and on while one has no date.
+        "gpt-4o": {"retires": d(2027, 4, 14), "replacement": "gpt-5.1"},
+        "Cohere-rerank-v3.5": {"retires": d(2026, 5, 14), "replacement": "Cohere-rerank-v4.0-pro"},
+        "anthropic.claude-sonnet-4-20250514-v1:0": {"retires": d(2026, 10, 14), "replacement": None},
+        # Out of service in the last of its Regions.
+        "anthropic.claude-3-haiku-20240307-v1:0": {"retires": d(2026, 10, 1), "replacement": None},
+        "gemini-2.5-pro": {"retires": d(2026, 10, 20), "replacement": "gemini-3.8-flash"},
+        "textembedding-gecko@003": {"retires": d(2025, 5, 24), "replacement": "gemini-embedding-001"},
+        "claude-3-5-sonnet-v2": {"retires": d(2026, 2, 19), "replacement": None},
+    }  # fmt: skip
+    # Under a key of their own, which releases up to 0.3.0 do not read.
+    vendors = {
+        "bedrock": {"url": "https://example.org", "services": ["aws-bedrock"], "models": models},
+        "openai": {
+            "url": "https://example.org",
+            "services": ["openai"],
+            "models": {"o1": models["gpt-4o"]},
+        },
+    }
+    text = retirements.render("# Header comment.\n", vendors, {"bedrock"})
+    assert yaml.safe_load(text) == {
+        "vendors": {"openai": vendors["openai"]},
+        "platforms": {"bedrock": vendors["bedrock"]},
+    }

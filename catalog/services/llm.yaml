@@ -66,7 +66,9 @@
     requirement: [llama-index-llms-azure-openai, llama-index-embeddings-azure-openai]
     npm: ["@ai-sdk/azure", "@azure/openai"]
     python_import: [llama_index.llms.azure_openai, llama_index.embeddings.azure_openai]
-    symbol: [AzureOpenAI, AsyncAzureOpenAI, AzureChatOpenAI, azure_endpoint, createAzure]
+    # The model of an Azure OpenAI deployment in Bicep and ARM templates.
+    symbol: [AzureOpenAI, AsyncAzureOpenAI, AzureChatOpenAI, azure_endpoint, createAzure,
+             "format: 'OpenAI'", '"format": "OpenAI"']
     model: ["azure/gpt-", "azure/o3", "azure/o4", azure/eu/, azure/us/, azure/global/,
             azure/global-standard/, azure/o1, azure/codex-, azure/text-embedding-,
             "azure-responses:"]
@@ -191,7 +193,7 @@
     python_import: [vertexai, google.cloud.aiplatform, langchain_google_vertexai,
                     llama_index.llms.vertex, anthropic.lib.vertex, agentplatform]
     symbol: ["aiplatform.init", "vertexai.init", ChatVertexAI, VertexAI, "vertexai=True",
-             AnthropicVertex, AsyncAnthropicVertex]
+             AnthropicVertex, AsyncAnthropicVertex, "GenerativeBackend.vertexAI("]
     model: ["google-vertex:gemini-", "vertex_ai/", "google-cloud:gemini-"]
     endpoint: [aiplatform.googleapis.com, aiplatform.us.rep.googleapis.com,
                aiplatform.eu.rep.googleapis.com]

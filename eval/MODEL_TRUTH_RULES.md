@@ -32,10 +32,28 @@ DOES NOT SELECT (leave it out)
 9. Tests, specs, fixtures, mocks, fake or sample data (`fakeData.ts`), recorded
    responses, database migrations (history; the current model definition counts), and
    CI configuration under `.github/` (it runs the project's checks, not the product).
-10. The id sent through a partner platform or gateway with its own schedule: Azure
-    OpenAI deployments, AWS Bedrock (`anthropic.claude-3-haiku-20240307-v1:0`), Vertex AI
-    (`claude-3-haiku@20240307`, Vertex Gemini), OpenRouter or another gateway
-    (`openai/gpt-4`). Put these in `uncertain` with the reason.
+10. The id sent through a platform the retirement list has no vendor for: OpenRouter or
+    another gateway (`openai/gpt-4`). Put these in `uncertain` with the reason.
+
+PLATFORMS (Azure, Bedrock, Vertex AI have vendors of their own in the list)
+Each vendor's ids count only where the code reaches that vendor: `gpt-4o` is on Azure's
+list, not OpenAI's, so `gpt-4o` sent to api.openai.com selects nothing.
+11. An id sent through Azure OpenAI or Azure AI Foundry, Amazon Bedrock or Vertex AI is
+    judged against that platform's vendor only (`azure`, `bedrock`, `vertex`,
+    `vertex-partners`), and selects by rules 1-4 when that vendor lists it:
+    - Bedrock: the model id (`anthropic.claude-3-haiku-20240307-v1:0`; a Region prefix
+      such as `us.` or `global.` names the same id).
+    - Vertex: Gemini, Imagen, Veo and embedding ids as written; a partner model by the
+      name Google lists, without its version: `claude-3-5-sonnet-v2@20241022` is
+      `claude-3-5-sonnet-v2`.
+    - Azure: the model name as Azure lists it (`gpt-4o`, `o3-mini`) where the code names
+      the model: a `model` given to an Azure client, a Foundry model name, the model
+      name in the IaC that deploys it. A deployment name (`azure_deployment=`,
+      `AZURE_OPENAI_DEPLOYMENT`, `deploymentName`) is the user's name for a deployment,
+      not the model: `uncertain`, with that reason.
+12. An id sent through a platform whose vendor does not list it (OpenAI's `gpt-4`
+    through Azure, Anthropic's `claude-3-5-sonnet-20240620` on Bedrock) is not on that
+    platform's schedule: `uncertain`, with the reason.
 
 When a hit is genuinely ambiguous, put it in `uncertain` with the reason. Unsure whether
 a setting is a menu or a default: read where it is consumed.

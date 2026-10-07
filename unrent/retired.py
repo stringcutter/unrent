@@ -17,10 +17,12 @@ from .catalog import Catalog, Retirement
 from .detect import Fact, Finding
 
 # A model id as written in code: `gpt-4-1106-preview`, `models/gemini-2.0-flash`,
-# `openai:gpt-4`. Bedrock (`anthropic.claude-...-v1:0`) and Vertex (`claude-...@2024`)
-# spellings never equal a first-party id, so their own schedules are not mixed in.
+# `openai:gpt-4`, Bedrock's `us.anthropic.claude-...-v1:0`, Vertex's `claude-...@2024...`.
 _TOKEN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._:@/-]*")
-_PREFIX = re.compile(r"^(?:[\w.-]+[/:])+")  # openai/, models/, google-gla:
+# openai/, models/, google-gla:; not Bedrock's version (`-v1:0`).
+_PREFIX = re.compile(r"^(?:[\w.-]+(?:/|:(?!\d)))+")
+# A Bedrock cross-Region inference profile names the model after its geography.
+_REGION = re.compile(r"^(?:us|us-gov|eu|apac|au|jp|ca|global)\.")
 
 # What stands right before an id that the line selects. Matched against the text up
 # to the id's opening quote, so `model == "gpt-4"` and `models = ["gpt-4"` don't count.
@@ -28,12 +30,14 @@ _SELECTS = re.compile(
     r"""(?ix)
     (?:
         # model = "x", model_name: "x", "model": "x", DefaultModel: "x", default="x",
-        # OPENAI_MODEL=x, model: str | None = "x", ModelName { get; set; } = "x";
-        # not == or !=
-        (?:model|engine|deployment|default)[\w.-]*["'\]]?
-        (?:\s*:\s*[\w.\[\]]+(?:\s*\|\s*[\w.\[\]]+)*(?=\s*=)|\s*\{[^}]*\})?
+        # OPENAI_MODEL=x, model: str | None = "x", ModelName { get; set; } = "x",
+        # Bicep's param modelName string = 'x'; not == or !=, nor a deployment, whose
+        # name is the user's to choose
+        (?:model|engine|default)[\w.-]*["'\]]?
+        (?:\s*:\s*[\w.\[\]]+(?:\s*\|\s*[\w.\[\]]+)*(?=\s*=)|\s*\{[^}]*\}|\s+string(?=\s*=))?
         \s*(?::=|(?<![=!<>])=(?!=)|:)\s*
-      | (?:\.|\bwith|\bset)model(?:name|id)?\(\s*    # WithModel("x"), .modelName("x")
+      | (?:\.|\bwith|\bset|generative)model(?:name|id)?\(\s*  # WithModel("x"), generativeModel("x")
+      | --model(?:-name|-id)?(?:\s+|=)              # az ... --model-name "x"
       | ["'`](?:model|engine)[\w-]*["'`]\s*,\s*(?:["'`]\w["'`]\s*,\s*)?  # flag("model", "m", "x"
       | (?:\|\||\?\?)\s*                            # M || "x", M ?? "x"
       | \b(?:or|else)\s*(?=["'])                    # M or "x"; not prose: `x` or `y`
@@ -109,13 +113,29 @@ def replacement(r: Retirement, catalog: Catalog) -> str | None:
     """The vendor's replacement, followed while that one is retiring too."""
     seen = {r.id}
     current = r.replacement
-    while current in catalog.retirements and current not in seen:
+    while (step := _lookup(catalog, current, r.services[0])) and current not in seen:
         seen.add(current)
-        nxt = catalog.retirements[current].replacement
+        nxt = step.replacement
         if nxt is None or nxt in seen:
             break
         current = nxt
     return current
+
+
+def _lookup(catalog: Catalog, model: str | None, service: str) -> Retirement | None:
+    r = catalog.retirements.get(model) if model else None
+    return r.on(service) if r else None
+
+
+def _retirement(catalog: Catalog, model: str, services: list[str]) -> Retirement | None:
+    """The retirement of `model` by the vendor of the first of `services` that has one:
+    as written, without a Bedrock Region (`us.`), without a Vertex version (`@2024...`;
+    Google lists partner models by name)."""
+    for service in services:
+        for m in dict.fromkeys((model, _REGION.sub("", model), model.split("@")[0])):
+            if r := _lookup(catalog, m, service):
+                return r
+    return None
 
 
 def _rel(path: Path, root: Path) -> str:
@@ -128,18 +148,42 @@ def _rel(path: Path, root: Path) -> str:
 def snaps(findings: list[Finding], catalog: Catalog, root: Path) -> list[Snap]:
     """Every retiring id outside tests in findings of the vendor's own services, oldest
     retirement first. Those with `sites` are snapped or snapping; the rest are only
-    named (menus, tables, checks, sample data)."""
-    found: dict[str, Snap] = {}
+    named (menus, tables, checks, sample data).
+
+    The finding's service picks the vendor: gpt-4o through Azure OpenAI retires on
+    Azure's date. A capability (Imagen, OpenAI's embeddings) takes the platform with
+    evidence in the same file that it is part of (Vertex) or that stands in for what it
+    is part of (Azure OpenAI for OpenAI) unless the file also has OpenAI's own host,
+    else its own."""
+    in_file: dict[Path, set[str]] = {}
+    hosts: set[tuple[str, Path]] = set()
+    excludes = {f.service.id: set(f.service.excludes) for f in findings}
+    for f in findings:
+        for fact in f.facts:
+            in_file.setdefault(fact.file, set()).add(f.service.id)
+            if fact.kind == "endpoint":
+                hosts.add((f.service.id, fact.file))
+    found: dict[tuple[str, str], Snap] = {}
     for f in findings:
         for fact in f.facts:
             if fact.kind != "model" or fact.in_test:
                 continue
             call = not _NOT_A_CALL.search(_rel(fact.file, root))
+            bases = set(f.service.part_of)
+            stand_in = not any((b, fact.file) in hosts for b in bases)
+            services = [
+                *sorted(
+                    s
+                    for s in in_file[fact.file]
+                    if s in bases or (stand_in and bases & excludes[s])
+                ),
+                f.service.id,
+            ]
             for model, start, end in _ids(fact):
-                r = catalog.retirements.get(model)
-                if r is None or f.service.id not in r.services:
+                r = _retirement(catalog, model, services)
+                if r is None:
                     continue
-                snap = found.setdefault(model, Snap(r, f))
+                snap = found.setdefault((r.vendor, r.id), Snap(r, f))
                 where = (str(fact.file), fact.line)
                 if not (call and selects(fact.evidence, start, end)):
                     snap.named.add(where)

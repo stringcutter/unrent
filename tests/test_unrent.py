@@ -2454,6 +2454,9 @@ D = datetime.date
         'model: str | None = "gpt-4-0613"',
         'llm = {"provider": "openai", model: gpt-4-0613, "temperature": 0}',
         'resp = client.chat.completions.create(max_tokens=100, model="gpt-4-0613")',
+        "param chatModelName string = 'gpt-4-0613'",
+        '  --model-name "gpt-4-0613" \\',
+        'model = ai.generativeModel("gpt-4-0613")',
     ],
 )
 def test_a_line_that_selects_a_retiring_model(tmp_path, catalog, line):
@@ -2474,6 +2477,7 @@ def test_a_line_that_selects_a_retiring_model(tmp_path, catalog, line):
         'ok = supportsModel("gpt-4-0613")',
         'deprecatedModel = "gpt-4-0613"',
         'n = num_tokens_from_messages(msgs, model="gpt-4-0613")',
+        'llm = Client(azure_deployment="gpt-4-0613")',
     ],
 )
 def test_a_line_that_only_names_a_retiring_model(tmp_path, catalog, line):
@@ -2509,6 +2513,77 @@ def test_partner_spellings_and_sample_data_are_not_snapped(tmp_path, catalog):
     )
     cat = _retiring(catalog, claude_3_haiku_20240307=(D(2026, 4, 20), "claude-haiku-4-5-20251001"))
     assert all(not s.sites for s in _snaps(tmp_path, cat))
+
+
+def _platforms(catalog):
+    """The catalog with one retirement per vendor, and o3-mini and veo on two of them."""
+    from unrent.catalog import parse_retirements
+
+    def vendor(services, **models):
+        return {
+            "url": "https://example.org/x",
+            "services": services,
+            "models": {m.replace("_", "-"): {"retires": d, "replacement": r} for m, (d, r) in models.items()},
+        }  # fmt: skip
+
+    veo = "veo-3.0-generate-001"
+    raw = {"vendors": {
+        "openai": vendor(["openai"], o3_mini=(D(2026, 10, 23), "gpt-5.6-sol")),
+        "google": vendor(["google-gemini", "google-imagen"], **{veo: (D(2025, 11, 12), None)}),
+    }, "platforms": {
+        "azure": vendor(["azure-openai"], o3_mini=(D(2026, 11, 19), "gpt-5.6-terra"), text_embedding_3_small=(D(2028, 2, 9), None)),
+        "bedrock": vendor(["aws-bedrock"], **{"anthropic.claude-3-haiku-20240307-v1:0": (D(2026, 9, 10), None)}),
+        "vertex": vendor(["google-vertex"], claude_3_5_sonnet_v2=(D(2026, 2, 19), None), **{veo: (D(2026, 6, 30), None)}),
+    }}  # fmt: skip
+    ids = {s.id for s in catalog.services}
+    return dataclasses.replace(catalog, retirements=parse_retirements(raw, "t", ids))
+
+
+def test_platform_spellings_retire_on_the_platforms_dates(tmp_path, catalog):
+    write(tmp_path, {
+        "app.py": 'import openai\nMODEL = "o3-mini"\n',
+        "azure.py": 'from openai import AzureOpenAI\nc = AzureOpenAI(azure_endpoint=E)\n'
+        'c.chat.completions.create(model="o3-mini")\nc.chat.completions.create(azure_deployment="o3-mini")\n',
+        "bedrock.py": 'import boto3\nc = boto3.client("bedrock-runtime")\n'
+        'MODEL_ID = "us.anthropic.claude-3-haiku-20240307-v1:0"\n',
+        "vertex.py": 'from anthropic import AnthropicVertex\nc = AnthropicVertex(region="us-east5")\n'
+        'c.messages.create(model="claude-3-5-sonnet-v2@20241022")\n',
+        "video.py": 'import vertexai\nvertexai.init(project=P)\nmodel = "veo-3.0-generate-001"\n',
+        "imagine.py": 'from google import genai\nc = genai.Client()\nmodel = "veo-3.0-generate-001"\n',
+        # Bicep that deploys an Azure OpenAI model; OpenAI's embeddings on Azure.
+        "main.bicep": "var chat = {\n  format: 'OpenAI'\n  modelName: 'o3-mini'\n}\n",
+        "embed.py": 'from openai import AzureOpenAI\nc = AzureOpenAI(azure_endpoint=E)\n'
+        'c.embeddings.create(model="text-embedding-3-small")\n',
+        # Calls OpenAI's API too, or picks among providers: the id could be either's.
+        "both.py": 'from openai import AzureOpenAI\nURL = "https://api.openai.com/v1"\n'
+        'MODEL = "o3-mini"\nEMBEDDING_MODEL = "text-embedding-3-small"\n',
+        "dispatch.py": 'from openai import AzureOpenAI\nKEY = os.environ["GROQ_API_KEY"]\nMODEL = "o3-mini"\n',
+    })  # fmt: skip
+    found = _snaps(tmp_path, _platforms(catalog))
+    assert sorted(
+        (s.retirement.vendor, s.id, s.retirement.retires, [f"{x.file.name}:{x.line}" for x in s.sites])
+        for s in found
+    ) == [
+        # A deployment named after the model is the user's choice, not the model's id.
+        ("azure", "o3-mini", D(2026, 11, 19), ["azure.py:3", "main.bicep:3"]),
+        ("azure", "text-embedding-3-small", D(2028, 2, 9), ["embed.py:3"]),
+        ("bedrock", "anthropic.claude-3-haiku-20240307-v1:0", D(2026, 9, 10), ["bedrock.py:3"]),
+        ("google", "veo-3.0-generate-001", D(2025, 11, 12), ["imagine.py:3"]),
+        ("openai", "o3-mini", D(2026, 10, 23), ["app.py:2"]),
+        ("vertex", "claude-3-5-sonnet-v2", D(2026, 2, 19), ["vertex.py:3"]),
+        ("vertex", "veo-3.0-generate-001", D(2026, 6, 30), ["video.py:3"]),
+    ]  # fmt: skip
+
+
+def test_gemini_api_resource_names_are_model_ids(tmp_path, catalog):
+    write(tmp_path, {"app.py": 'from google import genai\nMODEL = "models/gemini-2.0-flash"\n'})
+    found = _snaps(tmp_path, _retiring(catalog, **{"gemini-2.0-flash": (D(2026, 6, 1), None)}))
+    assert [(s.id, [x.line for x in s.sites]) for s in found] == [("gemini-2.0-flash", [2])]
+
+
+def test_a_replacement_is_followed_on_its_own_platform(catalog):
+    cat = _platforms(catalog)
+    assert replacement(cat.retirements["o3-mini"].on("azure-openai"), cat) == "gpt-5.6-terra"
 
 
 def test_retired_or_retiring_depends_on_the_day(tmp_path, catalog):
@@ -2576,7 +2651,9 @@ def _own_catalog(tmp_path: Path) -> Path:
         "vendors:\n  openai:\n    url: https://example.org/x\n    services: [openai]\n"
         "    models:\n      gpt-4-0613: {retires: 2026-10-23, replacement: gpt-5.6-sol}\n"
         "      gpt-4-0314: {retires: 2026-03-26, replacement: gpt-4-0613}\n"
-        "      gpt-4: {retires: 2026-10-23, replacement: gpt-5.6-sol}\n",
+        "      gpt-4: {retires: 2026-10-23, replacement: gpt-5.6-sol}\n"
+        "platforms:\n  bedrock:\n    url: https://example.org/b\n    services: [aws-bedrock]\n"
+        "    models:\n      anthropic.claude-3-haiku-20240307-v1:0: {retires: 2026-09-10, replacement: null}\n",
         encoding="utf-8",
     )
     return tmp_path / "cat"
@@ -2650,6 +2727,14 @@ def test_hook_reports_a_retiring_model_just_written(
     context = out["hookSpecificOutput"].pop("additionalContext")
     assert out == {"hookSpecificOutput": {"hookEventName": "PostToolUse"}}
     assert context.startswith(f"unrent: src/app.py:2 selects gpt-4-0613, {says}")
+
+
+def test_hook_reports_a_bedrock_model_behind_a_region(tmp_path, monkeypatch, capsys):
+    app = 'import boto3\nc = boto3.client("bedrock-runtime")\nMODEL = "us.anthropic.claude-3-haiku-20240307-v1:0"\n'
+    path = write(tmp_path / "repo", {"app.py": app}) / "app.py"
+    event = {"tool_input": {"file_path": str(path), "content": app}}
+    out = _hook(monkeypatch, capsys, tmp_path, event, "--as-of", "2026-10-07")
+    assert "app.py:3 selects anthropic.claude-3-haiku-20240307-v1:0, which was retired" in out
 
 
 def test_hook_reads_notebook_edits(tmp_path, monkeypatch, capsys):
@@ -2759,7 +2844,16 @@ def test_retirements_file_is_validated(tmp_path, body, error):
 
 def test_shipped_retirements_load(catalog):
     assert len(catalog.retirements) > 100
-    assert {r.vendor for r in catalog.retirements.values()} == {"openai", "anthropic", "google"}
+    vendors = {x.vendor for r in catalog.retirements.values() for x in (r, *r.also)}
+    assert vendors == {
+        "openai",
+        "anthropic",
+        "google",
+        "azure",
+        "bedrock",
+        "vertex",
+        "vertex-partners",
+    }
 
 
 # --------------------------------------------------------------------------

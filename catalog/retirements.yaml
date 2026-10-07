@@ -1,7 +1,8 @@
-# Model retirements the vendors announce for their own APIs: a model id the code
-# selects that has stopped working, or will on the date given. Azure OpenAI, Bedrock
-# and Vertex keep schedules of their own and are not covered. Checked weekly against
-# each vendor's page by scripts/retirements.py; edit by hand only to fix a mistake.
+# Model retirements the vendors announce for their own APIs (`vendors`) and the cloud
+# platforms for the models they serve (`platforms`: Azure, Bedrock, Vertex): a model id
+# the code selects that has stopped working, or will on the date given. The same id can
+# retire on two dates: gpt-4o on Azure is not gpt-4o on OpenAI's API. Checked weekly
+# against each page by scripts/retirements.py; edit by hand only to fix a mistake.
 vendors:
   openai:
     url: https://developers.openai.com/api/docs/deprecations
@@ -220,3 +221,198 @@ vendors:
       embedding-gecko-001: {retires: 2025-10-30, replacement: gemini-embedding-2}
       gemini-embedding-exp: {retires: 2025-10-30, replacement: gemini-embedding-2}
       gemini-embedding-exp-03-07: {retires: 2025-10-30, replacement: gemini-embedding-2}
+# The same models on the cloud platforms, each on a schedule of its own.
+platforms:
+  azure:
+    url: https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/model-retirement-schedule
+    services: [azure-openai, azure-ai-foundry]
+    models:
+      DeepSeek-V4-Flash: {retires: 2028-02-20, replacement: DeepSeek-V4-Flash-0731}
+      DeepSeek-V4-Pro: {retires: 2028-02-20, replacement: null}
+      text-embedding-3-large: {retires: 2028-02-09, replacement: null}
+      text-embedding-3-small: {retires: 2028-02-09, replacement: null}
+      text-embedding-ada-002: {retires: 2028-02-09, replacement: null}
+      gpt-5.6-luna: {retires: 2028-01-11, replacement: null}
+      gpt-5.6-sol: {retires: 2028-01-11, replacement: null}
+      gpt-5.6-terra: {retires: 2028-01-11, replacement: null}
+      claude-fable-5: {retires: 2027-12-05, replacement: null}
+      claude-fable-5-1: {retires: 2027-12-05, replacement: null}
+      gpt-5.5: {retires: 2027-10-26, replacement: null}
+      gpt-image-2: {retires: 2027-10-21, replacement: null}
+      gpt-5.4-mini: {retires: 2027-09-21, replacement: null}
+      gpt-5.4-nano: {retires: 2027-09-21, replacement: null}
+      gpt-image-2.5-flare: {retires: 2027-09-09, replacement: null}
+      gpt-image-2.5-sunburst: {retires: 2027-09-09, replacement: null}
+      gpt-5.4-pro: {retires: 2027-09-07, replacement: null}
+      gpt-5.4: {retires: 2027-09-02, replacement: null}
+      claude-opus-4-8: {retires: 2027-09-01, replacement: null}
+      gpt-5.3-codex: {retires: 2027-08-24, replacement: null}
+      gpt-audio-1.5: {retires: 2027-08-24, replacement: null}
+      gpt-realtime-1.5: {retires: 2027-08-24, replacement: null}
+      gpt-5.2-codex: {retires: 2027-07-13, replacement: null}
+      claude-opus-5: {retires: 2027-07-08, replacement: null}
+      FW-DeepSeek-V3.1: {retires: 2027-07-01, replacement: null}
+      FW-DeepSeek-V3.2: {retires: 2027-07-01, replacement: null}
+      FW-GLM-4.7: {retires: 2027-07-01, replacement: null}
+      FW-GLM-5: {retires: 2027-07-01, replacement: null}
+      FW-GLM-5.1: {retires: 2027-07-01, replacement: null}
+      FW-GPT-OSS-120B: {retires: 2027-07-01, replacement: null}
+      FW-Kimi-K2-Instruct-0905: {retires: 2027-07-01, replacement: null}
+      FW-Kimi-K2-Thinking: {retires: 2027-07-01, replacement: null}
+      FW-Kimi-K2.5: {retires: 2027-07-01, replacement: null}
+      FW-MiniMax-M2.5: {retires: 2027-07-01, replacement: null}
+      FW-Qwen3-14B: {retires: 2027-07-01, replacement: null}
+      FW-Qwen3.5-122B-A10B: {retires: 2027-07-01, replacement: null}
+      FW-Qwen3.5-397B-A17B: {retires: 2027-07-01, replacement: null}
+      claude-sonnet-5: {retires: 2027-06-30, replacement: null}
+      gpt-realtime-2.1: {retires: 2027-06-25, replacement: null}
+      gpt-realtime-2.1-mini: {retires: 2027-06-25, replacement: null}
+      gpt-4o-mini-transcribe: {retires: 2027-06-15, replacement: null}
+      gpt-4o-mini-tts: {retires: 2027-06-15, replacement: null}
+      gpt-audio-mini: {retires: 2027-06-15, replacement: null}
+      gpt-realtime-mini: {retires: 2027-06-15, replacement: null}
+      gpt-5.2: {retires: 2027-06-08, replacement: null}
+      model-router: {retires: 2027-05-20, replacement: null}
+      gpt-5.1-codex-max: {retires: 2027-05-18, replacement: null}
+      gpt-5.1: {retires: 2027-05-15, replacement: null}
+      gpt-5.1-codex: {retires: 2027-05-15, replacement: null}
+      gpt-5.1-codex-mini: {retires: 2027-05-15, replacement: null}
+      Kimi-K2.6: {retires: 2027-04-16, replacement: null}
+      gpt-4o-transcribe-diarize: {retires: 2027-04-15, replacement: null}
+      gpt-4.1: {retires: 2027-04-14, replacement: null}
+      gpt-4.1-mini: {retires: 2027-04-14, replacement: null}
+      gpt-4o: {retires: 2027-04-14, replacement: gpt-5.1}
+      gpt-4o-mini: {retires: 2027-04-14, replacement: null}
+      gpt-5-pro: {retires: 2027-04-07, replacement: null}
+      gpt-image-1-mini: {retires: 2027-04-07, replacement: null}
+      claude-opus-4-7: {retires: 2027-04-06, replacement: null}
+      grok-4-20-non-reasoning: {retires: 2027-04-06, replacement: null}
+      grok-4-20-reasoning: {retires: 2027-04-06, replacement: null}
+      gpt-5-codex: {retires: 2027-03-17, replacement: null}
+      gpt-audio: {retires: 2027-03-02, replacement: null}
+      gpt-realtime: {retires: 2027-03-02, replacement: null}
+      claude-sonnet-4-6: {retires: 2027-02-10, replacement: null}
+      gpt-5: {retires: 2027-02-09, replacement: null}
+      gpt-5-mini: {retires: 2027-02-09, replacement: null}
+      gpt-5-nano: {retires: 2027-02-09, replacement: null}
+      claude-opus-4-6: {retires: 2027-02-02, replacement: null}
+      Kimi-K2.5: {retires: 2027-01-26, replacement: null}
+      gpt-image-1.5: {retires: 2026-12-16, replacement: null}
+      Cohere-parse-v5: {retires: 2026-12-15, replacement: null}
+      tts: {retires: 2026-12-15, replacement: null}
+      tts-hd: {retires: 2026-12-15, replacement: null}
+      whisper: {retires: 2026-12-15, replacement: null}
+      DeepSeek-V4-Flash-0731: {retires: 2026-12-03, replacement: null}
+      gpt-chat-latest: {retires: 2026-12-02, replacement: null}
+      claude-sonnet-4-5: {retires: 2026-11-30, replacement: claude-sonnet-5-5}
+      claude-opus-4-5: {retires: 2026-11-24, replacement: null}
+      o1: {retires: 2026-11-19, replacement: gpt-5.6-sol}
+      o1-pro: {retires: 2026-11-19, replacement: gpt-5.6-sol}
+      o3: {retires: 2026-11-19, replacement: gpt-5.6-sol}
+      o3-deep-research: {retires: 2026-11-19, replacement: gpt-5.6-sol}
+      o3-mini: {retires: 2026-11-19, replacement: gpt-5.6-terra}
+      o3-pro: {retires: 2026-11-19, replacement: gpt-5.6-sol}
+      o4-mini: {retires: 2026-11-19, replacement: gpt-5.6-terra}
+      claude-haiku-4-5: {retires: 2026-11-15, replacement: null}
+      codex-mini: {retires: 2026-11-15, replacement: null}
+      gpt-image-1: {retires: 2026-10-23, replacement: null}
+      Cohere-command-a-plus-05-2026: {retires: 2026-10-16, replacement: coherelabs-command-a-plus-05-2026-fp8}
+      gpt-4o-transcribe: {retires: 2026-10-15, replacement: null}
+      sora-2: {retires: 2026-10-15, replacement: null}
+      gpt-4.1-nano: {retires: 2026-10-14, replacement: null}
+      Kimi-K2.7-Code: {retires: 2026-10-03, replacement: null}
+      MAI-Image-2.5: {retires: 2026-10-01, replacement: null}
+      MAI-Image-2.5-Flash: {retires: 2026-10-01, replacement: null}
+      MAI-Image-2.5-Pro: {retires: 2026-10-01, replacement: null}
+      MAI-Transcribe-1: {retires: 2026-09-15, replacement: MAI-Transcribe-1.5}
+      TimeGEN-1: {retires: 2026-08-31, replacement: TimeGPT-1}
+      tsuzumi-7b: {retires: 2026-08-31, replacement: tsuzumi2}
+      MAI-Image-2: {retires: 2026-08-15, replacement: MAI-Image-2.5}
+      MAI-Image-2e: {retires: 2026-08-15, replacement: MAI-Image-2.5-Flash}
+      DeepSeek-R1: {retires: 2026-08-13, replacement: DeepSeek-V4-Pro}
+      claude-opus-4-1: {retires: 2026-08-05, replacement: claude-opus-5}
+      Stable-Diffusion-3.5-Large: {retires: 2026-07-31, replacement: null}
+      Stable-Image-Core: {retires: 2026-07-31, replacement: null}
+      Stable-Image-Ultra: {retires: 2026-07-31, replacement: null}
+      mistral-document-ai-2505: {retires: 2026-07-20, replacement: mistral-document-ai-2512}
+      DeepSeek-R1-0528: {retires: 2026-07-13, replacement: DeepSeek-V4-Pro}
+      DeepSeek-V3-0324: {retires: 2026-07-13, replacement: DeepSeek-V4-Flash}
+      DeepSeek-V3.1: {retires: 2026-07-13, replacement: DeepSeek-V4-Flash}
+      gpt-5-chat: {retires: 2026-06-29, replacement: gpt-chat-latest}
+      gpt-5.1-chat: {retires: 2026-06-29, replacement: gpt-chat-latest}
+      gpt-5.2-chat: {retires: 2026-06-29, replacement: gpt-chat-latest}
+      gpt-5.3-chat: {retires: 2026-06-29, replacement: gpt-chat-latest}
+      Llama-3.2-11B-Vision-Instruct: {retires: 2026-06-13, replacement: null}
+      Llama-3.2-90B-Vision-Instruct: {retires: 2026-06-13, replacement: null}
+      Meta-Llama-3.1-405B-Instruct: {retires: 2026-06-13, replacement: null}
+      Meta-Llama-3.1-8B: {retires: 2026-06-13, replacement: null}
+      Meta-Llama-3.1-8B-Instruct: {retires: 2026-06-13, replacement: null}
+      Cohere-rerank-v3.5: {retires: 2026-05-14, replacement: Cohere-rerank-v4.0-pro}
+      Cohere-command-r-08-2024: {retires: 2026-05-12, replacement: null}
+      Cohere-command-r-plus-08-2024: {retires: 2026-05-12, replacement: null}
+      grok-3: {retires: 2026-05-01, replacement: grok-4}
+      grok-3-mini: {retires: 2026-05-01, replacement: grok-4-1-fast-reasoning}
+      grok-4-fast-non-reasoning: {retires: 2026-05-01, replacement: grok-4-1-fast-non-reasoning}
+      grok-4-fast-reasoning: {retires: 2026-05-01, replacement: grok-4-1-fast-reasoning}
+  bedrock:
+    url: https://docs.aws.amazon.com/bedrock/latest/userguide/model-lifecycle-legacy.html
+    services: [aws-bedrock, aws-bedrock-embeddings]
+    models:
+      anthropic.claude-opus-4-1-20250805-v1:0: {retires: 2027-01-08, replacement: null}
+      twelvelabs.marengo-embed-2-7-v1:0: {retires: 2026-11-30, replacement: null}
+      ai21.jamba-1-5-large-v1:0: {retires: 2026-11-26, replacement: null}
+      ai21.jamba-1-5-mini-v1:0: {retires: 2026-11-26, replacement: null}
+      anthropic.claude-sonnet-4-20250514-v1:0: {retires: 2026-10-14, replacement: null}
+      amazon.nova-canvas-v1:0: {retires: 2026-09-30, replacement: null}
+      amazon.nova-reel-v1:0: {retires: 2026-09-30, replacement: null}
+      amazon.nova-reel-v1:1: {retires: 2026-09-30, replacement: null}
+      amazon.nova-sonic-v1:0: {retires: 2026-09-14, replacement: null}
+      anthropic.claude-3-haiku-20240307-v1:0: {retires: 2026-09-10, replacement: null}
+      cohere.command-r-plus-v1:0: {retires: 2026-08-19, replacement: null}
+      cohere.command-r-v1:0: {retires: 2026-08-19, replacement: null}
+  vertex:
+    url: https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/model-versions
+    services: [google-vertex]
+    models:
+      multimodalembedding@001: {retires: 2027-04-01, replacement: null}
+      text-embedding-004: {retires: 2027-04-01, replacement: null}
+      text-embedding-005: {retires: 2027-04-01, replacement: null}
+      text-multilingual-embedding-002: {retires: 2027-04-01, replacement: null}
+      gemini-2.5-flash-image: {retires: 2027-03-15, replacement: gemini-3.1-flash-lite-image}
+      gemini-3.7-flash: {retires: 2027-01-28, replacement: gemini-3.8-flash}
+      gemini-live-2.5-flash-native-audio: {retires: 2026-12-13, replacement: null}
+      gemini-3.6-flash: {retires: 2026-11-19, replacement: gemini-3.8-flash}
+      gemini-2.5-flash: {retires: 2026-10-20, replacement: gemini-3.8-flash}
+      gemini-2.5-flash-lite: {retires: 2026-10-20, replacement: gemini-3.8-flash}
+      gemini-2.5-pro: {retires: 2026-10-20, replacement: gemini-3.8-flash}
+      veo-3.0-fast-generate-001: {retires: 2026-06-30, replacement: veo-3.1-fast-generate-001}
+      veo-3.0-generate-001: {retires: 2026-06-30, replacement: veo-3.1-generate-001}
+      gemini-2.0-flash: {retires: 2026-06-01, replacement: gemini-3.1-flash-lite}
+      gemini-2.0-flash-lite: {retires: 2026-06-01, replacement: gemini-3.1-flash-lite}
+      gemini-1.5-flash-002: {retires: 2025-09-24, replacement: gemini-2.5-flash-lite}
+      gemini-1.5-pro-002: {retires: 2025-09-24, replacement: gemini-2.5-flash}
+      imagetext: {retires: 2025-09-24, replacement: gemini-2.5-flash-image}
+      gemini-1.5-flash-001: {retires: 2025-05-24, replacement: gemini-2.5-flash-lite}
+      gemini-1.5-pro-001: {retires: 2025-05-24, replacement: gemini-2.5-flash}
+      textembedding-gecko-multilingual@001: {retires: 2025-05-24, replacement: gemini-embedding-001}
+      textembedding-gecko@003: {retires: 2025-05-24, replacement: gemini-embedding-001}
+      chat-bison: {retires: 2025-04-21, replacement: gemini-2.5-flash-lite}
+      code-gecko: {retires: 2025-04-21, replacement: gemini-2.5-flash-lite}
+      gemini-1.0-pro-001: {retires: 2025-04-21, replacement: gemini-2.5-flash}
+      gemini-1.0-pro-002: {retires: 2025-04-21, replacement: gemini-2.5-flash}
+      gemini-1.0-pro-vision-001: {retires: 2025-04-21, replacement: gemini-2.5-flash}
+      text-bison: {retires: 2025-04-21, replacement: gemini-2.5-flash-lite}
+      textembedding-gecko@001: {retires: 2025-04-21, replacement: gemini-embedding-001}
+      textembedding-gecko@002: {retires: 2025-04-21, replacement: gemini-embedding-001}
+  vertex-partners:
+    url: https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/deprecations/partner-models
+    services: [google-vertex]
+    models:
+      claude-3-haiku: {retires: 2026-08-23, replacement: null}
+      claude-3-5-haiku: {retires: 2026-07-05, replacement: null}
+      claude-3-7-sonnet: {retires: 2026-05-11, replacement: null}
+      jamba-1.5-large: {retires: 2026-02-27, replacement: null}
+      jamba-1.5-mini: {retires: 2026-02-27, replacement: null}
+      claude-3-5-sonnet: {retires: 2026-02-19, replacement: null}
+      claude-3-5-sonnet-v2: {retires: 2026-02-19, replacement: null}
+      claude-3-opus: {retires: 2025-08-01, replacement: null}

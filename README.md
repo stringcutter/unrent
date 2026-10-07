@@ -93,11 +93,12 @@ npx skills add stringcutter/unrent
   databases, RAG, document parsing, observability, speech, image generation, search,
   scraping, browser automation, sandboxes, agents and agent memory. 139 hosted model
   providers come from [models.dev](https://models.dev), regenerated weekly.
-- **204 model retirements** from OpenAI, Anthropic and Google, with dates and the
-  vendor's replacement, checked weekly against their deprecation pages. A model counts
-  when the code picks it (a default, a config value, a call), not when it is only listed
-  in a menu or price table. Azure, Bedrock and Vertex have their own schedules and are
-  not covered.
+- **381 model retirements** from OpenAI, Anthropic and Google, and from Azure, Bedrock
+  and Vertex for the models they serve, with dates and the vendor's replacement, checked
+  weekly against their deprecation pages. A model counts when the code picks it (a
+  default, a config value, a call), not when it is only listed in a menu or price table,
+  and on the schedule of the platform the code calls: gpt-4o through Azure retires on
+  Azure's date. An Azure deployment name is not taken for the model.
 - **89 open source projects** you may already run: vector databases, inference servers,
   gateways, RAG frameworks, document parsers, observability, evals, speech.
 - **Unknown candidates:** API hosts and keys that look like a hosted AI service the

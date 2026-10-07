@@ -146,7 +146,8 @@ class Service:
 
 @dataclass(frozen=True)
 class Retirement:
-    """A model id its vendor has retired, or will on `retires`, on its own API."""
+    """A model id its vendor has retired, or will on `retires`, on its own API or
+    platform."""
 
     id: str
     vendor: str
@@ -154,6 +155,12 @@ class Retirement:
     services: tuple[str, ...]  # catalog services whose evidence the id can be
     retires: datetime.date
     replacement: str | None  # the vendor's recommendation
+    # The same id on other platforms, each on its own schedule: gpt-4o on Azure.
+    also: tuple[Retirement, ...] = ()
+
+    def on(self, service: str) -> Retirement | None:
+        """This id as retired by the vendor whose services include `service`."""
+        return next((r for r in (self, *self.also) if service in r.services), None)
 
 
 @dataclass
@@ -162,7 +169,7 @@ class Catalog:
     pools: dict[str, Pool] = field(default_factory=dict)
     rankings_date: str | None = None
     projects: list[Service] = field(default_factory=list)  # recognisable open source
-    retirements: dict[str, Retirement] = field(default_factory=dict)  # by model id
+    retirements: dict[str, Retirement] = field(default_factory=dict)  # by model id, see `also`
 
     def __len__(self) -> int:
         return len(self.services)
@@ -485,12 +492,16 @@ def parse_retirements(
     """A parsed retirements.yaml. `known_only` is for a copy fetched from main: it
     drops, instead of failing on, the services this catalog lacks (and a vendor left
     with none), a vendor whose `url` is not a plain https link and a model whose
-    replacement is not a plain model id."""
+    replacement is not a plain model id.
+
+    `platforms` (Azure, Bedrock, Vertex) has the shape of `vendors`, under a key of its
+    own: releases up to 0.3.0 read only `vendors`, and fail on an id listed twice."""
     vendors = raw.get("vendors") if isinstance(raw, dict) else None
-    if not isinstance(vendors, dict):
-        raise CatalogError(f"{name}: expected a `vendors` mapping")
+    platforms = raw.get("platforms", {}) if isinstance(raw, dict) else None
+    if not isinstance(vendors, dict) or not isinstance(platforms, dict):
+        raise CatalogError(f"{name}: expected a `vendors` mapping, and `platforms` if any")
     out: dict[str, Retirement] = {}
-    for vendor, entry in vendors.items():
+    for vendor, entry in (*vendors.items(), *platforms.items()):
         where = f"{name}: {vendor}"
         if not isinstance(entry, dict) or not isinstance(entry.get("models"), dict):
             raise CatalogError(f"{where}: expected `url`, `services` and `models`")
@@ -516,10 +527,14 @@ def parse_retirements(
                 raise CatalogError(f"{where}: {model} needs a `retires` date and a `replacement`")
             if known_only and replacement is not None and not _MODEL_ID.fullmatch(replacement):
                 continue
+            r = Retirement(str(model), vendor, entry["url"], services, retires, replacement)
             if model in out:
-                raise CatalogError(f"{where}: {model} is also under {out[model].vendor}")
-            url = entry["url"]
-            out[model] = Retirement(str(model), vendor, url, services, retires, replacement)
+                # One id, two vendors: each must speak for services of its own.
+                clash = next((c for s in services if (c := out[model].on(s))), None)
+                if clash:
+                    raise CatalogError(f"{where}: {model} is also under {clash.vendor}")
+                r = dataclasses.replace(out[model], also=(*out[model].also, r))
+            out[model] = r
     return out
 
 

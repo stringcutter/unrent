@@ -9,6 +9,11 @@ and the recommended replacement. Rows that name an endpoint, a parameter or a pr
 ("Assistants API") are skipped, and so are fine-tuned ids (`ft-...`) and the
 `-completions` pseudo-ids, which a client cannot send as a model.
 
+The platforms list the models they serve the same way, with dates of their own: Azure
+once per model version (a name works until its last version retires), Bedrock in a
+table and a list of the models past their end of life, Vertex in tables and, for
+partner models, in prose.
+
 --check   (default) Print what differs from the file: new ids, changed dates or
           replacements, ids the page no longer lists. Exit 1 if anything differs.
 --write   Rewrite the file from the pages, keeping its header comment and each
@@ -40,9 +45,20 @@ SOURCES = {
     "openai": "https://developers.openai.com/api/docs/deprecations.md",
     "anthropic": "https://platform.claude.com/docs/en/about-claude/model-deprecations.md",
     "google": "https://ai.google.dev/gemini-api/docs/deprecations.md.txt",
+    # The Learn page's source, in Microsoft's public docs repository.
+    "azure": "https://raw.githubusercontent.com/MicrosoftDocs/azure-ai-docs/main/articles/"
+    "foundry/openai/includes/concepts-model-retirement-schedule-content.md",
+    # Models launched before 2026-09-07; later ones carry their dates on their model cards.
+    "bedrock": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-lifecycle-legacy.md",
+    "vertex": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/"
+    "model-versions.md.txt",
+    "vertex-partners": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/"
+    "deprecations/partner-models.md.txt",
 }
-MODEL_ID = re.compile(r"^[a-z0-9][a-z0-9._-]*$", re.I)
+# Bedrock's `anthropic.claude-3-haiku-20240307-v1:0`, Vertex's `multimodalembedding@001`.
+MODEL_ID = re.compile(r"^[a-z0-9][a-z0-9._:@-]*$", re.I)
 CODE = re.compile(r"`([^`]+)`")
+LINK = re.compile(r"\[([^\]]*)\]\([^)]*\)")
 DATED_HEADING = re.compile(r"^#{2,4}\s+(\d{4}-\d{2}-\d{2})")
 
 
@@ -68,10 +84,25 @@ def _cells(line: str) -> list[str]:
     return [p.replace("\\|", "|").strip() for p in parts]
 
 
+def listed(text: str) -> str:
+    """Dates a page gives outside a table, as one more table: Bedrock's models past
+    their end of life (`**Model ID:** x`, then an `**EOL date:**` per group of Regions)
+    and Google Cloud's partner models (`shut down on <date>` above `| Model ID | `x` |`)."""
+    rows = []
+    for block in re.split(r"\n(?=- \*\*|## )", text):
+        ids = re.findall(r"\*\*Model ID:\*\*\s*(\S+)|^\| Model ID \| `([^`]+)`", block, re.M)
+        dates = re.findall(
+            r"\*\*EOL date:\*\*\s*([^/\n]+)|shut down on\s+([A-Z][a-z]+ \d{1,2}, \d{4})", block
+        )
+        if len(ids) == 1:
+            rows += [f"| {''.join(ids[0])} | {''.join(d).strip()} |" for d in dates]
+    return "\n\n| Model ID | Shutdown date |\n|---|---|\n" + "\n".join(rows) if rows else ""
+
+
 def tables(text: str):
     """(announcement date or None, header cells, rows) for every Markdown table, with
     the date of the nearest heading above that starts with one."""
-    lines = text.splitlines()
+    lines = (text + listed(text)).splitlines()
     announced = None
     i = 0
     while i < len(lines):
@@ -107,13 +138,13 @@ def _column(header: list[str], *words: str, avoid: tuple[str, ...] = ()) -> int 
 
 def model_ids(cell: str) -> tuple[list[str], list[str]]:
     """The model ids a row names, and the ones it names that are not models."""
-    cell = cell.strip()
+    cell = LINK.sub(r"\1", cell).strip()
     if not cell.startswith("`"):
         # "Videos API", "New fine-tuning training on `babbage-002`"; a bare id is a model.
         return ([cell], []) if MODEL_ID.match(cell) else ([], [cell] if cell else [])
     ids, skipped = [], []
     for raw in CODE.findall(cell):
-        token = raw.strip()
+        token = raw.strip().rstrip("\\*")  # Vertex's footnote: `textembedding-gecko@003\*`
         if token.startswith("/") or token.startswith("ft-") or token.endswith("-completions"):
             skipped.append(token)
         elif MODEL_ID.match(token):
@@ -128,28 +159,39 @@ def replacement(cell: str) -> str | None:
     advice that is not a model ("The most capable cyber model available to you.")."""
     named = CODE.findall(cell)
     first = named[0].strip() if named else cell.strip()
-    first = first.rstrip("*†‡")
+    # Azure: "Cohere-rerank-v4.0-pro, Cohere-rerank-v4.0-fast", "x<sup>1</sup>".
+    first = re.split(r",|<sup>", first)[0].strip().rstrip("*†‡")
     return first if MODEL_ID.match(first) else None
 
 
 def parse(text: str) -> tuple[dict[str, dict], list[str]]:
     """{model id: {retires, replacement}} and notes on rows that were skipped or
     conflicted. A model listed in two announcements keeps the most recent one; the
-    page lists announcements newest first, so a tie keeps the first row."""
+    page lists announcements newest first. A table that lists a model twice (Azure's
+    versions, Bedrock's Regions) keeps its latest date: the id works until then, and
+    on while one of its rows gives no exact date."""
     found: dict[str, dict] = {}
+    undated: dict[str, tuple] = {}
     notes: list[str] = []
     for order, (announced, header, rows) in enumerate(tables(text)):
-        when = _column(header, "shutdown date", "retirement date")
-        if when is None or "tentative retirement date" in header:
-            continue  # "Date | Update" tables and Anthropic's model status overview
+        when = _column(header, "shutdown date", "retirement date", "eol date")
+        if when is None or "tentative retirement date" in header or "training" in header[when]:
+            # "Date | Update" tables, Anthropic's model status overview, Azure's
+            # fine-tuned models
+            continue
         model = _column(
-            header, "model", "system", "agent", avoid=("price", "replacement", "substitute")
+            header,
+            "model",
+            "system",
+            "agent",
+            avoid=("price", "replacement", "substitute", "provider", "name"),
         )
-        repl = _column(header, "replacement", "substitute")
-        if model is None or repl is None or "agent" in header[model]:
+        repl = _column(header, "replacement", "substitute", "upgrade")
+        if model is None or "agent" in header[model]:
             continue  # Google's managed agents are not model ids
+        rank = (announced or dt.date.min, -order)
         for row in rows:
-            if len(row) <= max(when, model, repl) or not row[model]:
+            if len(row) <= max(when, model, repl or 0) or not row[model]:
                 continue  # "Preview models ||||"
             ids, skipped = model_ids(row[model])
             if skipped:
@@ -158,23 +200,26 @@ def parse(text: str) -> tuple[dict[str, dict], list[str]]:
                 continue
             date = parse_date(row[when])
             if date is None:
+                undated.update(dict.fromkeys(ids, rank))
                 if "no shutdown date" not in row[when].lower():
                     notes.append(f"skipped {', '.join(ids)}: no exact date ({row[when]!r})")
                 continue
-            entry = {"retires": date, "replacement": replacement(row[repl])}
-            rank = (announced or dt.date.min, -order)
+            entry = {"retires": date, "replacement": replacement(row[repl]) if repl else None}
             for mid in ids:
                 old = found.get(mid)
+                newer = not old or (rank, date) > (old["_rank"], old["retires"])
                 if old and (old["retires"], old["replacement"]) != (date, entry["replacement"]):
-                    keep, drop = (old, entry) if old["_rank"] >= rank else (entry, old)
+                    keep, drop = (entry, old) if newer else (old, entry)
                     notes.append(
                         f"conflict {mid}: kept {keep['retires']} -> {keep['replacement']}, "
                         f"dropped {drop['retires']} -> {drop['replacement']}"
                     )
-                if not old or rank > old["_rank"]:
+                if newer:
                     found[mid] = {**entry, "_rank": rank}
     models = {
-        k: {"retires": v["retires"], "replacement": v["replacement"]} for k, v in found.items()
+        k: {"retires": v["retires"], "replacement": v["replacement"]}
+        for k, v in found.items()
+        if undated.get(k) != v["_rank"]
     }
     return models, list(dict.fromkeys(notes))
 
@@ -194,9 +239,15 @@ def _scalar(value) -> str:
     return value if plain else yaml.safe_dump(value, default_style='"').strip()
 
 
-def render(header: str, vendors: dict[str, dict]) -> str:
+def render(header: str, vendors: dict[str, dict], platforms: set[str] = frozenset()) -> str:
+    """The file: the vendors in `platforms` go under a key of their own, after the rest."""
     out = [header.rstrip("\n"), "vendors:"]
-    for n, (name, v) in enumerate(vendors.items()):
+    rest = [n for n in vendors if n not in platforms]
+    for n, name in enumerate([*rest, *(n for n in vendors if n in platforms)]):
+        v = vendors[name]
+        if n == len(rest):
+            out.append("# The same models on the cloud platforms, each on a schedule of its own.")
+            out.append("platforms:")
         out += [f"  {name}:", f"    url: {v['url']}"]
         if n == 0:
             out.append("    # The catalog services whose model ids these are.")
@@ -237,7 +288,9 @@ def main() -> int:
     text = FILE.read_text(encoding="utf-8")
     top = text.splitlines()
     header = "\n".join(top[: next(n for n, ln in enumerate(top) if not ln.startswith("#"))])
-    current = yaml.safe_load(text)["vendors"]
+    raw = yaml.safe_load(text)
+    platforms = set(raw.get("platforms") or {})
+    current = {**raw["vendors"], **(raw.get("platforms") or {})}
 
     pages: dict[str, dict] = {}
     for name in current:
@@ -268,7 +321,7 @@ def main() -> int:
 
     if a.write:
         vendors = {name: {**v, "models": pages[name]} for name, v in current.items()}
-        FILE.write_text(render(header, vendors), encoding="utf-8")
+        FILE.write_text(render(header, vendors, platforms), encoding="utf-8")
         print(f"Wrote {FILE}", file=sys.stderr)  # not into the pull request body
         return 0
     return 1 if changed else 0

@@ -24,7 +24,7 @@
                   llama-index-embeddings-vertex, llama-index-embeddings-vertex-endpoint]
     symbol: [GoogleGenerativeAIEmbeddings, VertexAIEmbeddings]
     model: [text-embedding-004, text-embedding-005, gemini-embedding-, textembedding-gecko,
-            text-multilingual-embedding-, multimodalembedding]
+            text-multilingual-embedding-, multimodalembedding, models/embedding-001]
     maven: ["org.springframework.ai:spring-ai-vertex-ai-embedding",
             "org.springframework.ai:spring-ai-starter-model-vertex-ai-embedding",
             "org.springframework.ai:spring-ai-google-genai-embedding",
