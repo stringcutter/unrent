@@ -6,6 +6,7 @@ from __future__ import annotations
 import datetime as _dt
 import json
 import re
+import urllib.parse
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -106,6 +107,17 @@ def _split(findings: list[Finding]) -> Split:
         ],
         running=[f for f in findings if f.service.open_source],
     )
+
+
+def _picks(f: Finding, catalog: Catalog) -> list[tuple[str, list[Alternative]]]:
+    """What a summary names for one closed service: the project it runs on, then the
+    top of each pool."""
+    own = catalog.self_hosted(f.service)
+    picks = [("Self-hosted", [own])] if own else []
+    for pool in catalog.alternatives_for(f.service):
+        if pool.alternatives:
+            picks.append((pool.name, [a for a in pool.alternatives if a is not own][:PICKS]))
+    return picks
 
 
 def _pools_in_order(findings: list[Finding]) -> dict[str, list[str]]:
@@ -310,6 +322,87 @@ def to_json(
     )
 
 
+# ---------------------------------------------------------------- SARIF
+
+
+SARIF_RULES = {
+    "unrent/snapped": "A model id the code selects has been retired: requests fail now",
+    "unrent/snaps": "A model id the code selects retires on a date its vendor announced",
+    "unrent/closed-service": "A closed AI service the code depends on",
+}
+
+
+def to_sarif(
+    findings: list[Finding],
+    root: Path,
+    catalog: Catalog,
+    version: str,
+    base: Path,
+    as_of: _dt.date,
+) -> str:
+    """SARIF 2.1.0 for code scanning: a result per line that selects a retiring model,
+    and per cited line of a closed service. Paths are relative to `base`, which GitHub
+    reads as the repository root."""
+    results = []
+
+    def result(rule: str, level: str, message: str, fact) -> dict:
+        return {
+            "ruleId": rule,
+            "level": level,
+            "message": {"text": message},
+            "locations": [
+                {
+                    "physicalLocation": {
+                        "artifactLocation": {
+                            "uri": urllib.parse.quote(_rel(fact.file, base)),
+                            "uriBaseId": "%SRCROOT%",
+                        },
+                        "region": {"startLine": fact.line},
+                    }
+                }
+            ],
+        }
+
+    for s in snaps(findings, catalog, root):
+        r = s.retirement
+        snapped = state(r, as_of) == "snapped"
+        date = r.retires.isoformat()
+        when = f"was retired on {date}: requests fail now." if snapped else f"retires on {date}."
+        use = replacement(r, catalog)
+        text = f"{r.id} {when}" + (f" Use {use} instead." if use else "") + f" Source: {r.url}"
+        rule = "unrent/snapped" if snapped else "unrent/snaps"
+        level = "error" if snapped else "warning"
+        results += [result(rule, level, text, x) for x in s.sites]
+    for f in _split(findings).closed:
+        picks = "; ".join(
+            f"{label}: {', '.join(a.name for a in alts)}" for label, alts in _picks(f, catalog)
+        )
+        text = f"{f.service.name} is a closed AI service." + (
+            f" Open source: {picks}." if picks else ""
+        )
+        results += [result("unrent/closed-service", "note", text, x) for x in f.cited]
+    run = {
+        "tool": {
+            "driver": {
+                "name": "unrent",
+                "version": version,
+                "informationUri": "https://github.com/stringcutter/unrent",
+                "rules": [
+                    {"id": rule, "shortDescription": {"text": text}}
+                    for rule, text in SARIF_RULES.items()
+                ],
+            }
+        },
+        "results": results,
+    }
+    sarif = {
+        "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+        "version": "2.1.0",
+        "runs": [run],
+    }
+    return json.dumps(sarif, indent=2, ensure_ascii=False)
+
+
 # ---------------------------------------------------------------- markdown
 
 
@@ -494,15 +587,10 @@ def to_markdown(
         out += [f"Found **{len(closed)}** closed AI {noun}{also}.", ""]
         out += ["| Closed service | Category | Replace with |", "|---|---|---|"]
         for f in closed:
-            picks = []
-            own = catalog.self_hosted(f.service)
-            if own:
-                picks.append(f"Self-hosted: [{own.name}]({own.url})")
-            for pool in catalog.alternatives_for(f.service):
-                if pool.alternatives:
-                    rest = [a for a in pool.alternatives if a is not own][:PICKS]
-                    tops = ", ".join(f"[{a.name}]({a.url})" for a in rest)
-                    picks.append(f"{pool.name}: {tops}")
+            picks = [
+                f"{label}: " + ", ".join(f"[{a.name}]({a.url})" for a in alts)
+                for label, alts in _picks(f, catalog)
+            ]
             name = f"{f.service.name} *(only in tests)*" if f.test_only else f.service.name
             out.append(f"| {name} | {f.service.category} | {'<br>'.join(picks) or '—'} |")
         if any(f.test_only for f in closed):

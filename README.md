@@ -84,6 +84,33 @@ Only the skill, with a workflow for what unrent can't see on its own:
 npx skills add stringcutter/unrent
 ```
 
+## Use it in CI
+
+On GitHub, the action annotates each line that selects a retiring model (and each closed
+service, as a note) in code scanning, and fails the build on what you name:
+
+```yaml
+permissions:
+  contents: read
+  security-events: write   # for the annotations
+steps:
+  - uses: actions/checkout@v5
+  - uses: stringcutter/unrent@v0.4.0
+    with:
+      fail-on: snapped,snaps   # snapped, snaps, closed
+      within: 30               # snaps only within 30 days
+```
+
+On pull requests from forks, and in private repositories without code scanning, add
+`upload-sarif: false`: the build still fails on what you name.
+
+Anywhere else:
+
+```bash
+unrent . --fail-on snaps --within 30 -o unrent.md   # exit 1, and one line saying why
+unrent . --format sarif -o unrent.sarif             # SARIF 2.1.0 for code scanning
+```
+
 ## How it works
 
 <details>
