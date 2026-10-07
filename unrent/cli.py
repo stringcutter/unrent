@@ -19,8 +19,9 @@ import yaml
 
 from . import fresh
 from .catalog import CatalogError, load_catalog
-from .detect import LEFT_OUT, collect_facts, file_root, left_out, match
+from .detect import collect_facts, file_root, match
 from .discover import scan_unknown
+from .files import LEFT_OUT, left_out
 from .render import _split, to_json, to_markdown, to_sarif, today
 from .retired import REGIONS, _rel, replacement, snaps, state
 from .terminal import Progress, to_terminal, wants_colour, why, why_model

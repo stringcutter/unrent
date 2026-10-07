@@ -12,7 +12,8 @@ from pathlib import Path
 from typing import TextIO
 
 from .catalog import Catalog
-from .detect import Fact, Finding
+from .detect import Finding
+from .facts import Fact
 from .render import PICKS, RANKED_BY, Split, _describe, _split, standings, today
 from .retired import Snap, _rel, replacement, snaps, state
 

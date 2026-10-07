@@ -25,19 +25,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from .catalog import Catalog
-from .detect import (
-    PROVIDER_CATALOG_AT,
-    _is_text_source,
-    _own_repo,
-    _read,
-    _snippet,
-    code_view,
-    is_test_path,
-    iter_files,
-    map_files,
-    redact,
-    registered_domain,
-)
+from .detect import PROVIDER_CATALOG_AT
+from .facts import _is_text_source, _read, _snippet, code_view, redact, registered_domain
+from .files import _own_repo, is_test_path, iter_files, map_files
 
 URL = re.compile(r"https?://([A-Za-z0-9][A-Za-z0-9.-]*\.[A-Za-z]{2,})(?::\d+)?(/[^\s\"'`)<>,\\]*)?")
 SETTING = re.compile(

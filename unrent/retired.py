@@ -14,7 +14,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from .catalog import Catalog, Retirement
-from .detect import Fact, Finding
+from .detect import Finding
+from .facts import Fact
 
 # A model id as written in code: `gpt-4-1106-preview`, `models/gemini-2.0-flash`,
 # `openai:gpt-4`, Bedrock's `us.anthropic.claude-...-v1:0`, Vertex's `claude-...@2024...`.

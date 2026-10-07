@@ -25,7 +25,8 @@ from unrent.catalog import (  # noqa: E402
     load_catalog,
 )
 from unrent.cli import main  # noqa: E402
-from unrent.detect import collect_facts, image_name, js_package, match, redact  # noqa: E402
+from unrent.detect import collect_facts, match  # noqa: E402
+from unrent.facts import image_name, js_package, redact  # noqa: E402
 from unrent.render import payload, standings, to_json, to_markdown  # noqa: E402
 from unrent.retired import replacement, snaps  # noqa: E402
 from unrent.terminal import Progress, to_terminal, wants_colour, why  # noqa: E402
@@ -3264,7 +3265,7 @@ def _scan(root, catalog, **kw):
 
 @pytest.mark.parametrize("skip_tests", [False, True])
 def test_worker_processes_find_what_one_process_finds(tmp_path, catalog, monkeypatch, skip_tests):
-    import unrent.detect as detect
+    import unrent.files as detect
 
     write(tmp_path, SPREAD)
     serial = _scan(tmp_path, catalog, skip_tests=skip_tests)
@@ -3287,7 +3288,7 @@ def test_worker_processes_find_what_one_process_finds(tmp_path, catalog, monkeyp
 
 def test_scan_without_worker_processes(tmp_path, catalog, monkeypatch):
     """A sandbox that can't start processes: the scan reads every file itself."""
-    import unrent.detect as detect
+    import unrent.files as detect
 
     write(tmp_path, SPREAD)
     serial = _scan(tmp_path, catalog)
@@ -3303,7 +3304,7 @@ def test_scan_without_worker_processes(tmp_path, catalog, monkeypatch):
 def test_statement_walk_visits_what_ast_walk_visits():
     import ast
 
-    from unrent.detect import _statements
+    from unrent.facts import _statements
 
     tree = ast.parse(
         '"""doc"""\nimport a\nclass C:\n    """c"""\n    import b\n'

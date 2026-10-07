@@ -21,8 +21,9 @@ from mcp.types import ToolAnnotations
 from . import fresh
 from .catalog import Catalog, CatalogError, Pool, Service, load_catalog
 from .cli import DEFAULT_CATALOG, _version
-from .detect import LEFT_OUT, collect_facts, file_root, left_out, match
+from .detect import collect_facts, file_root, match
 from .discover import scan_unknown
+from .files import LEFT_OUT, left_out
 from .render import (
     RANKED_BY,
     Standing,

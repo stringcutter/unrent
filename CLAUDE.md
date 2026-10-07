@@ -23,7 +23,9 @@ writes in Danish; answer in the language of their latest message.
 
 | Path | What |
 |---|---|
-| `unrent/detect.py` | Facts from files (manifests, imports, code views without comments), matching against the catalog, overlap rules (`excludes`, `part_of`, models-only) |
+| `unrent/files.py` | Which files a scan reads (git, `.gitignore`, `.unrentignore`, `--exclude`, skipped dirs, size limits, test paths), worker processes, ripgrep |
+| `unrent/facts.py` | Facts from one file: code views without comments, catalog needles, imports, install commands, manifests, images, notebooks |
+| `unrent/detect.py` | `collect_facts`, then matching against the catalog and the overlap rules (`excludes`, `part_of`, models-only, registries, local servers) |
 | `unrent/discover.py` | `unknown_candidates`: API hosts and keys no catalog entry explains that look like a hosted AI API. Never counted as findings |
 | `unrent/render.py` | JSON payload and Markdown report (`report.py` is the old name; don't recreate it) |
 | `unrent/terminal.py` | The terminal view (`cut`/`held`/`snapped`/`snaps`/`runs` rows), `--why`, colour and the progress line; stdlib only |
