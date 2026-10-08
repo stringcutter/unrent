@@ -5,7 +5,7 @@ All notable changes to this project are documented here. The format follows
 [Semantic Versioning](https://semver.org/). Weekly ranking refreshes are not listed;
 each release ships the rankings as of its date.
 
-## Unreleased
+## [0.4.0] - 2026-10-08
 
 ### Added
 - `unrent scan --fail-on snapped,snaps,closed` (and `--within DAYS` for `snaps`): exit 1
@@ -32,7 +32,6 @@ each release ships the rankings as of its date.
   partner models with their version (`claude-3-5-sonnet-v2@20241022`). A value given to
   an Azure deployment name is not taken for the model. They sit under `platforms` in
   retirements.yaml, which 0.3.0 does not read, so its copy from `main` keeps loading.
-
 - Bicep files are scanned, and `format: 'OpenAI'` in Bicep or ARM is Azure OpenAI: the
   model an azd template deploys is the model the app runs. Gemini API resource names
   (`models/text-embedding-004`) are model ids; Firebase AI on its Vertex backend is
@@ -258,6 +257,7 @@ First public release.
 - Open source signatures: `SEARX_URL` and `SearxSearch` (SearXNG), vLLM behind an
   OpenAI-compatible base URL, a self-hosted Firecrawl URL, LangChain's `FAISS`.
 
+[0.4.0]: https://github.com/stringcutter/unrent/releases/tag/v0.4.0
 [0.3.0]: https://github.com/stringcutter/unrent/releases/tag/v0.3.0
 [0.2.2]: https://github.com/stringcutter/unrent/releases/tag/v0.2.2
 [0.2.1]: https://github.com/stringcutter/unrent/releases/tag/v0.2.1
