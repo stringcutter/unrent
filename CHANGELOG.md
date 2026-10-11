@@ -5,7 +5,7 @@ All notable changes to this project are documented here. The format follows
 [Semantic Versioning](https://semver.org/). Daily ranking refreshes are not listed;
 each release ships the rankings as of its date.
 
-## Unreleased
+## [0.5.1] - 2026-10-11
 
 ### Changed
 - In the terminal, each row is its name, file and count, with the answer under it: the
@@ -295,6 +295,7 @@ First public release.
 - Open source signatures: `SEARX_URL` and `SearxSearch` (SearXNG), vLLM behind an
   OpenAI-compatible base URL, a self-hosted Firecrawl URL, LangChain's `FAISS`.
 
+[0.5.1]: https://github.com/stringcutter/unrent/releases/tag/v0.5.1
 [0.5.0]: https://github.com/stringcutter/unrent/releases/tag/v0.5.0
 [0.4.0]: https://github.com/stringcutter/unrent/releases/tag/v0.4.0
 [0.3.0]: https://github.com/stringcutter/unrent/releases/tag/v0.3.0

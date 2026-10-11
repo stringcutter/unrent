@@ -95,7 +95,7 @@ permissions:
   security-events: write   # for the annotations
 steps:
   - uses: actions/checkout@v5
-  - uses: stringcutter/unrent@v0.5.0
+  - uses: stringcutter/unrent@v0.5.1
     with:
       fail-on: snapped,snaps   # snapped, snaps, closed
       within: 30               # snaps only within 30 days
