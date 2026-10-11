@@ -970,14 +970,14 @@ def test_judged_members_exclude_listed_and_denied_repos(refresh):
         {"id": "vector-db", "source": "github", "projects": [{"repo": "a/listed"}], "deny": ["c/Denied"]},
         {"id": "ocr", "source": "github", "projects": [{"repo": "b/elsewhere"}]},
     ]  # fmt: skip
-    yes = {"p": {"job": 0.9, "software": 0.9}}
+    yes = {"p": {"job": 0.9, "software": 0.9, "client": 0.1}}
     verdicts = {
         "vector-db": {
             "a/listed": yes,
             "b/elsewhere": yes,
             "c/denied": yes,
             "d/new": yes,
-            "e/no": {"p": {"job": 0.3, "software": 0.9}},
+            "e/no": {"p": {"job": 0.3, "software": 0.9, "client": 0.1}},
         }
     }
     assert list(refresh.found(pools, verdicts)["vector-db"]) == ["d/new"]
@@ -985,18 +985,20 @@ def test_judged_members_exclude_listed_and_denied_repos(refresh):
 
 def test_a_verdict_is_jevs_answers_combined_in_code(refresh):
     def verdict(kind="server", **p):
-        p = {"job": 0.912, "software": 0.97, **p}
+        p = {"job": 0.912, "software": 0.97, "client": 0.05, **p}
         return refresh.parse_verdict({"model": "jev-1.13.0", "answers": {
             **{q: {"type": "noul", "noul": v} for q, v in p.items()},
             "kind": {"type": "choice", "choice": kind}}})  # fmt: skip
 
     assert verdict() == {
-        "p": {"job": 0.91, "software": 0.97}, "kind": ["server"], "model": "jev-1.13.0"
+        "p": {"job": 0.91, "software": 0.97, "client": 0.05}, "kind": ["server"],
+        "model": "jev-1.13.0",
     }  # fmt: skip
     assert refresh.belongs(verdict())
     # Each property must hold on its own.
     assert not refresh.belongs(verdict(job=0.4))
     assert not refresh.belongs(verdict(software=0.2))
+    assert not refresh.belongs(verdict(client=0.65))  # the SDK of a hosted service
     assert verdict(kind="other")["kind"] == []
     assert refresh.parse_verdict({"answers": {}}) is None
     assert refresh.parse_verdict({"error": "quota"}) is None

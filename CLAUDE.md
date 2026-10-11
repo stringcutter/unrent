@@ -133,9 +133,11 @@ claude plugin validate .                   # plugin + marketplace (CLAUDE.md-at-
   Jev (`JUDGE_MODEL`, `TYPESAFE_API_KEY`) judge new candidates once. Follow
   TypeSafe's practice (the `typesafe` plugin, docs.typesafe.ai): one property per
   question (`JUDGE_QUESTIONS`), all in one request, combined in code (`belongs`, with
-  `JUDGE_THRESHOLD`, so the line moves without judging again). Jev's answers live in
-  `catalog/discovered.json` (generated: don't hand-edit). To correct the judge, add
-  the repo to the pool's `deny`, or list it by hand where it belongs.
+  the thresholds in `MUST`/`MUST_NOT`, so they move without judging again). Measure a
+  change to the questions or thresholds on hand-labelled candidates before shipping
+  it. Jev's answers live in `catalog/discovered.json` (generated: don't hand-edit).
+  To correct the judge, add the repo to the pool's `deny`, or list it by hand where
+  it belongs.
 - Hugging Face pools: each listed publisher's own models (not fine-tunes or GGUF
   re-uploads) under an open licence, ranked by trending score.
 

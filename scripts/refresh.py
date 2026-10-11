@@ -71,7 +71,6 @@ DISCOVER_MIN_STARS = 1000
 SEARCH_PAUSE = 2.1  # GitHub's search API allows 30 requests a minute
 README_CHARS = 6000
 JUDGE_MODEL = "jev-latest"  # TypeSafe's Jev
-JUDGE_THRESHOLD = 0.5  # on each of Jev's yes/no answers; see `belongs`
 JUDGE_LIMIT = 1000  # per run, so a broken query cannot run up a bill
 # A project can change what it is; a rejection is not forever.
 REJUDGE_DAYS = 180
@@ -257,6 +256,10 @@ JUDGE_QUESTIONS = {
             ),
         },
     },
+    "client": {
+        "type": "noul",
+        "instructions": "Is `candidate` mainly an SDK or client for a hosted service?",
+    },
     "kind": {
         "type": "choice",
         "instructions": "What kind of software is `candidate`?",
@@ -276,18 +279,21 @@ JUDGE_QUESTIONS = {
     },
 }
 assert set(JUDGE_QUESTIONS["kind"]["criteria"]) == KINDS | {"other"}
-# A member does the job and is software to run. Measured 2026-10-11 on 44
-# hand-labelled candidates from the first run: precision 0.97, recall 0.97 at 0.5,
-# against 0.96 / 0.76 for one compound question. Asking also whether it is an SDK for
-# a hosted service or an add-on to a member, or requiring a member's kind, only cost
-# real members.
-MUST = ("job", "software")
+# A member does the job and is software to run (at least MUST), and is not the SDK
+# of a hosted service (under MUST_NOT). Measured 2026-10-11 on 44 hand-labelled
+# candidates from the first run: precision 0.97, recall 0.97, against 0.96 / 0.76 for
+# one compound question; an add-on question or requiring a member's kind only cost
+# real members. Of the 140 the second run let in, `client` >= 0.6 caught Logfire's,
+# Judgment's, E2B's, Tensorlake's and Bright Data's SDKs, and one self-hostable
+# platform (Latitude, 0.68).
+MUST = {"job": 0.5, "software": 0.5}
+MUST_NOT = {"client": 0.6}
 
 
 def parse_verdict(data: dict) -> dict | None:
     """Jev's answers as a verdict, or None when they are not there."""
     answers = data.get("answers") or {}
-    p = {q: (answers.get(q) or {}).get("noul") for q in MUST}
+    p = {q: (answers.get(q) or {}).get("noul") for q in (*MUST, *MUST_NOT)}
     if not all(isinstance(v, (int, float)) for v in p.values()):
         return None
     kind = (answers.get("kind") or {}).get("choice")
@@ -299,9 +305,10 @@ def parse_verdict(data: dict) -> dict | None:
 
 
 def belongs(verdict: dict) -> bool:
-    """Decided here rather than stored, so JUDGE_THRESHOLD can move without judging
+    """Decided here rather than stored, so the thresholds can move without judging
     again."""
-    return all(verdict["p"][q] >= JUDGE_THRESHOLD for q in MUST)
+    p = verdict["p"]
+    return all(p[q] >= t for q, t in MUST.items()) and all(p[q] < t for q, t in MUST_NOT.items())
 
 
 def judge(state: dict, key: str) -> dict | None:
