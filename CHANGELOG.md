@@ -5,6 +5,24 @@ All notable changes to this project are documented here. The format follows
 [Semantic Versioning](https://semver.org/). Daily ranking refreshes are not listed;
 each release ships the rankings as of its date.
 
+## Unreleased
+
+### Added
+- Models in use: every model a line selects, closed (`claude-opus-5-5`) or open
+  (`gemma4:31b` in an Ollama call, `Qwen/Qwen3.8-27B` behind `vllm serve` or
+  `--model`), gets a `│ model` row with the open-weight models that match it on
+  LMArena's text leaderboard (overall, CC BY 4.0, refreshed daily): as good within the
+  rating's interval, nearest in rating first, so a model gets its peers rather than the
+  best there is; the closest below, marked `none as good`, when none reaches it; for an
+  open model, none bigger. Open weights under the maker's own licence are included and
+  name it (`kimi-k3 (Kimi K3 license)`); non-commercial ones are not. Under them,
+  `arena` gives the ratings and `rising` the trending ones on Hugging Face. Also in
+  `--why <model>`, JSON and MCP (`models_in_use`, credited in `model_ratings`) and the
+  report. A retiring model keeps its `snaps` row, whose `open` note is now its nearest
+  open peer by LMArena. One spelling per model however it is written (`model_key`).
+  A file or directory that sets six or more models lists them and doesn't count.
+  Measured on the 77-repo corpus: 318 model uses, 36 of 40 sampled are real choices.
+
 ## [0.5.1] - 2026-10-11
 
 ### Changed

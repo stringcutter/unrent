@@ -22,7 +22,7 @@ which models are about to stop working.**
 uvx unrent .
 ```
 
-![unrent my-app: 3 strings attached, 3 can be cut, 1 will snap. Rows for OpenAI API, Pinecone and ElevenLabs marked cut with their open source replacements, each with the biggest open source replacements and the fastest rising ones, gpt-4-turbo marked snaps with its retirement date and replacement, and mem0 marked runs with its rank in agent memory and what is rising around it](https://github.com/stringcutter/unrent/raw/main/docs/scan.svg?v=8)
+![unrent my-app: 3 strings attached, 3 can be cut, 1 will snap. Rows for OpenAI API, Pinecone and ElevenLabs marked cut with their open source replacements, each with the biggest open source replacements and the fastest rising ones, gpt-4-turbo marked snaps with its retirement date and replacement, and mem0 marked runs with its rank in agent memory and what is rising around it](https://github.com/stringcutter/unrent/raw/main/docs/scan.svg?v=9)
 
 ## What each row means
 
@@ -32,11 +32,12 @@ uvx unrent .
 | `│ held` | You use a closed AI service with no open source replacement yet. |
 | `┆ snapped` | Your code asks for a model the vendor has shut down. Those calls fail today. |
 | `┆ snaps` | Your code asks for a model the vendor shuts down on the date shown, with the vendor's replacement and an open-weight one. |
+| `│ model` | A model your code selects, closed or open, and the open-weight models that match it on LMArena: as good, nearest in rating first (or the closest below, when none is), no bigger for an open one. |
 | `│ runs` | Open source AI you already run, and how it ranks. |
 
 Every row points to a file and line. `--why` shows all of them, and what to use instead:
 
-![unrent my-app --why gpt-4-turbo: main.py line 9 selects gpt-4-turbo, which retires on 2026-10-23; openai recommends gpt-5.6-sol, with the link to OpenAI's deprecations page, or the open-weight Qwen3.8-27B](https://github.com/stringcutter/unrent/raw/main/docs/why-model.svg?v=7)
+![unrent my-app --why gpt-4-turbo: main.py line 9 selects gpt-4-turbo, which retires on 2026-10-23; openai recommends gpt-5.6-sol, with the link to OpenAI's deprecations page, or its open-weight peer on LMArena, olmo-3.1-32b-think](https://github.com/stringcutter/unrent/raw/main/docs/why-model.svg?v=9)
 
 > [!NOTE]
 > unrent runs on your machine. No account, no upload, no telemetry.
@@ -166,7 +167,9 @@ listed, never skipped silently.
   [leaderboard dataset](https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset)
   (CC BY 4.0).
 - Open source only: an OSI licence for code; Apache, MIT, BSD or CC-BY for weights.
-  Archived projects are dropped, and open core is marked.
+  Archived projects are dropped, and open core is marked. The one exception: a model
+  that matches yours may carry its maker's own licence (Kimi K3's), and is shown with
+  it; non-commercial weights never are.
 
 The CLI uses the rankings shipped with its release. The MCP server fetches the latest
 from this repo, and the CLI, the MCP server and the hook fetch the latest model

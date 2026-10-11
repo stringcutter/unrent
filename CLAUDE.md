@@ -9,9 +9,10 @@ writes in Danish; answer in the language of their latest message.
 
 ## Scope (decided by the maintainer; don't reopen it)
 
-- unrent does three things: detect closed AI dependencies (edge cases matter most), list
-  open source alternatives ranked by momentum, and flag model ids the code selects that
-  their vendor has retired or will retire (`snapped`). No lock-in scores, effort levels
+- unrent does four things: detect closed AI dependencies (edge cases matter most), list
+  open source alternatives ranked by momentum, flag model ids the code selects that
+  their vendor has retired or will retire (`snapped`), and match every model the code
+  selects, closed or open, to open-weight peers by LMArena rating (`models_in_use`). No lock-in scores, effort levels
   or "what you lose" text: they were removed on purpose.
 - unrent is a stringcutter product (`github.com/stringcutter/unrent`). The terminal view
   speaks of strings: `cut`, `held`, `snapped`/`snaps`, `runs`.
@@ -30,6 +31,7 @@ writes in Danish; answer in the language of their latest message.
 | `unrent/render.py` | JSON payload and Markdown report (`report.py` is the old name; don't recreate it) |
 | `unrent/terminal.py` | The terminal view (`cut`/`held`/`snapped`/`snaps`/`runs` rows), `--why`, colour and the progress line; stdlib only |
 | `unrent/retired.py` | Snapped models: which model facts select a retiring id (`selects`), the replacement chain |
+| `unrent/models.py` | Models in use (closed from model facts, open from `open_model` facts per model family), registries of models, and `matches`: open-weight peers by LMArena |
 | `unrent/server.py` | `unrent mcp`: tools `scan`, `alternatives`, `standing`, `catalog` |
 | `unrent/fresh.py` | Live rankings (MCP server) and retirements (scan, MCP, hook) from `catalog/` on `main`, cached 6 h, else the shipped copy; `UNRENT_OFFLINE=1` to test local catalog edits |
 | `catalog/services/*.yaml` | Closed services. `models-dev.yaml` is **generated**; the others are hand-written |
@@ -143,6 +145,9 @@ claude plugin validate .                   # plugin + marketplace (CLAUDE.md-at-
 - Model ratings (`arena` in rankings.json) come from LMArena's text leaderboard through
   the Hugging Face dataset `lmarena-ai/leaderboard-dataset` (CC BY 4.0), never from
   arena.ai itself (its terms forbid scraping). Output that shows them must credit it.
+  Artificial Analysis was ruled out: its terms forbid redistributing its data and
+  using it for model selection guidance. A model matches when its rating's interval
+  reaches the other's; peers nearest in rating first, never the best there is.
 
 ## CI and automation
 

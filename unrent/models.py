@@ -111,14 +111,16 @@ def _clean(token: str) -> str:
 
 
 def matches(model: ArenaModel, catalog: Catalog, n: int = PICKS) -> Matches:
-    """The open-weight models as good as `model` by LMArena, best first. For an open
-    model, only those no bigger, and none when none is as good: it is the best there is
-    at its size."""
+    """The open-weight models that match `model` by LMArena: as good, the nearest in
+    rating first, so a model gets its peers (Kimi K3 for Opus, a 27B for a 31B), not
+    the best there is; rising has the trending ones among the rest. For an open model,
+    only those no bigger, and none when none is as good: it is the best at its size."""
     pool = [a for a in catalog.arena.values() if a.open and a is not model]
     if model.open and (size := model.params):
         pool = [a for a in pool if a.params is not None and a.params <= size * SIZE_SLACK]
     reach = [a for a in pool if a.high >= model.low]
-    best = sorted(reach or ([] if model.open else pool), key=lambda a: -a.rating)
+    near = reach or ([] if model.open else pool)
+    best = sorted(near, key=lambda a: (abs(a.rating - model.rating), -a.rating))
     picks = best[:n]
     # Rising stays in the picks' league: as good as the model, or as the last pick when
     # none is. A trending 27B is no news next to a frontier model.

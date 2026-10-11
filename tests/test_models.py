@@ -55,6 +55,7 @@ def search_mode(request, monkeypatch):
 
 def write(root: Path, files: dict[str, str]) -> Path:
     for name, content in files.items():
+        (root / name).parent.mkdir(parents=True, exist_ok=True)
         (root / name).write_text(content, encoding="utf-8")
     return root
 
@@ -169,8 +170,11 @@ def test_terminal_shows_each_model_with_the_open_ones_as_good(tmp_path, catalog)
 def test_terminal_shows_five_models_and_counts_the_rest(tmp_path, catalog):
     names = ["mimo-v2.6-pro", "kimi-k3-max", "glm-5.3-max", "gemma-4-31b", "qwen3.8-27b",
              "big-open-400b", "tiny-open-4b"]  # fmt: skip
-    code = "import ollama\n" + "".join(f'ollama.chat(model="{n}")\n' for n in names)
-    findings, models = scanned(tmp_path, catalog, {"run.py": code})
+    # One service each, so no file or directory lists six models.
+    files = {
+        f"svc{i}/run.py": f'import ollama\nollama.chat(model="{n}")\n' for i, n in enumerate(names)
+    }
+    findings, models = scanned(tmp_path, catalog, files)
     assert len(models) == 7
     out = to_terminal(findings, tmp_path, catalog, models=models, as_of=AS_OF)
     assert out.count("│ model") == 5
@@ -180,7 +184,7 @@ def test_terminal_shows_five_models_and_counts_the_rest(tmp_path, catalog):
     assert "→ the best" not in out
 
 
-def test_a_retiring_model_keeps_its_snaps_row_with_the_open_model_as_good(tmp_path):
+def test_a_retiring_model_keeps_its_snaps_row_with_its_nearest_open_peer(tmp_path):
     rankings = json.loads((CATALOG_DIR / "rankings.json").read_text("utf-8"))
     extra = [arena("gpt-4-turbo-2024-04-09", "Proprietary", 1270)]
     rankings["arena"] = {"date": "2026-10-08", "models": ARENA + extra}
@@ -195,7 +199,7 @@ def test_a_retiring_model_keeps_its_snaps_row_with_the_open_model_as_good(tmp_pa
     assert "│ model" not in out
     lines = [line.rstrip() for line in out.splitlines()]
     at = next(i for i, line in enumerate(lines) if line.startswith("┆ snaps  gpt-4-turbo"))
-    assert lines[at + 2].split() == ["open", "mimo-v2.6-pro"]
+    assert lines[at + 2].split() == ["open", "tiny-open-4b"]  # 1300 for 1270, not the best
     assert "model ratings LMArena (CC BY 4.0)" in out
 
 
@@ -209,8 +213,8 @@ def test_why_a_model_lists_its_lines_ratings_and_the_credit(tmp_path, catalog, m
     assert "Open weights as good" in out
     assert "1441 (1435-1447), Apache 2.0" in out
     assert out.rstrip().endswith(
-        "ratings: LMArena text leaderboard, overall, 2026-10-08 (CC BY 4.0) "
-        "https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset"
+        "ratings: LMArena text leaderboard, overall, 2026-10-08 (CC BY 4.0)\n"
+        "  https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset"
     )
     # A service still wins on its name.
     assert cli.main(["scan", str(tmp_path), "--why", "anthropic", "-f", "terminal"]) == 0
@@ -249,3 +253,16 @@ def test_markdown_has_a_models_section_with_the_credit(tmp_path, catalog):
     assert "(https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset), 2026-10-08" in section
     assert out.index("## Models in use") < out.index("## Open source alternatives")
     assert "## Models in use" not in to_markdown(findings, tmp_path, catalog)
+
+
+def test_a_file_or_directory_that_sets_six_models_lists_them(tmp_path, catalog):
+    names = ["mimo-v2.6-pro", "kimi-k3-max", "glm-5.3-max", "gemma-4-31b", "qwen3.8-27b",
+             "big-open-400b"]  # fmt: skip
+    one_file = "".join(f'PROFILES["{n}"] = {{"model": "{n}"}}\n' for n in names)
+    per_file = {
+        f"providers/p{i}.py": f'checkModel = {{"model": "{n}"}}\n' for i, n in enumerate(names)
+    }
+    for files in ({"settings.py": one_file}, per_file):
+        root = tmp_path / str(len(files))
+        root.mkdir()
+        assert scanned(root, catalog, files)[1] == []

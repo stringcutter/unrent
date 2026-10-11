@@ -181,10 +181,8 @@ def snap_rows(retiring: list[Snap], root: Path, catalog: Catalog, as_of) -> list
         r = s.retirement
         gone = state(r, as_of) == "snapped"
         use = replacement(r, catalog)
-        rated = catalog.arena.get(model_key(r.id))
-        picks = matches(rated, catalog).picks[:1] if rated else []
-        model = _open_model(s.finding.service, catalog)
-        opens = _rated(picks) if picks else _names([model]) if model else ""
+        peer, model = _open_peer(s, catalog)
+        opens = _rated([peer]) if peer else _names([model]) if model else ""
         out.append(
             Row(
                 "snapped" if gone else "snaps",
@@ -203,6 +201,24 @@ def snap_rows(retiring: list[Snap], root: Path, catalog: Catalog, as_of) -> list
 
 MODELS_SHOWN = 5
 BEST_OPEN = "the best open model of its size on LMArena"
+
+
+def _open_peer(s: Snap, catalog: Catalog) -> tuple[ArenaModel | None, Alternative | None]:
+    """What to run instead of a retiring model: its nearest open peer when LMArena rates
+    it, else the top trending model of its service's Hugging Face pool."""
+    rated = catalog.arena.get(model_key(s.retirement.id))
+    picks = matches(rated, catalog).picks if rated else []
+    if picks:
+        return picks[0], None
+    return None, _open_model(s.finding.service, catalog)
+
+
+def _credit(catalog: Catalog, st: Style) -> list[str]:
+    """LMArena's ratings are CC BY 4.0: what shows one says whose it is."""
+    return [
+        st.mute(f"  ratings: {ARENA_SOURCE}, {catalog.arena_date} (CC BY 4.0)"),
+        st.mute(f"  {ARENA_URL}"),
+    ]
 
 
 def _rated(models: list[ArenaModel]) -> str:
@@ -550,7 +566,17 @@ def why_model(s: Snap, root: Path, catalog: Catalog, *, as_of=None, colour: bool
     if s.named:
         out.append(st.mute(f"  also named on {len(s.named)} lines that don't select it"))
     out += [st.mute(f"  {r.url}"), ""]
-    if model := _open_model(s.finding.service, catalog):
+    peer, model = _open_peer(s, catalog)
+    if peer:
+        rated = catalog.arena[model_key(r.id)]
+        url = f"  {peer.weights.url}" if peer.weights else ""
+        out += [
+            f"  or an open-weight peer: {st.bold(_rated([peer]))}{st.mute(url)}",
+            st.mute(f"  LMArena {_arena(peer)}, against {_arena(rated)} for {r.id}"),
+            *_credit(catalog, st),
+            "",
+        ]
+    elif model:
         out += [f"  or an open-weight model: {st.bold(model.name)}", st.mute(f"  {model.url}"), ""]
     return "\n".join(out)
 
@@ -578,8 +604,7 @@ def why_use(use: ModelUse, root: Path, catalog: Catalog, *, colour: bool = False
     if m.rising:
         out.append(st.mute("    rising"))
         out += _models_field(m.rising, st)
-    credit = f"ratings: {ARENA_SOURCE}, {catalog.arena_date} (CC BY 4.0) {ARENA_URL}"
-    out += ["", st.mute(f"  {credit}"), ""]
+    out += ["", *_credit(catalog, st), ""]
     return "\n".join(out)
 
 
