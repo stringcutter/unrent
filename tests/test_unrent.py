@@ -858,6 +858,50 @@ def test_refresh_treats_rate_limits_as_transient(refresh, monkeypatch):
     assert result["status"] == "unreachable"
 
 
+def test_refresh_reads_the_overall_arena_rows(refresh, monkeypatch):
+    def row(name, licence, rating, category="overall"):
+        return {"row": {
+            "model_name": name, "organization": "lab", "license": licence,
+            "rating": rating, "rating_lower": rating - 8.04, "rating_upper": rating + 8.06,
+            "variance": 17.0, "vote_count": 6272.0, "rank": 1.0, "category": category,
+            "leaderboard_publish_date": "2026-10-08",
+        }}  # fmt: skip
+
+    pages = [
+        {"rows": [row("closed-a", "Proprietary", 1490.0)] * 100},
+        {"rows": [row("open-b", "Apache 2.0", 1515.23), row("coding-c", "MIT", 1600, "coding")]},
+    ]
+    urls = []
+    monkeypatch.setattr(refresh, "_get", lambda url: urls.append(url) or pages[len(urls) - 1])
+    section = refresh.arena(None)
+    assert len(urls) == 2 and "offset=100" in urls[1]
+    assert {k: v for k, v in section.items() if k != "models"} == {
+        "date": "2026-10-08",
+        "source": "lmarena-ai/leaderboard-dataset",
+        "licence": "CC-BY-4.0",
+        "category": "overall",
+    }
+    assert len(section["models"]) == 101  # stops at the first row of another category
+    assert section["models"][0] == {
+        "model": "open-b", "org": "lab", "licence": "Apache 2.0",
+        "rating": 1515.2, "low": 1507.2, "high": 1523.3, "votes": 6272,
+    }  # fmt: skip
+
+
+def test_refresh_keeps_the_last_arena_when_it_cannot_be_read(refresh, monkeypatch):
+    last = {"date": "2026-10-01", "models": [{"model": "m"}]}
+
+    def down(url):
+        raise refresh.Transient("server error 503")
+
+    monkeypatch.setattr(refresh, "_get", down)
+    assert refresh.arena(last) is last
+    monkeypatch.setattr(refresh, "_get", lambda url: {"rows": []})
+    assert refresh.arena(last) is last
+    monkeypatch.setattr(refresh, "_get", lambda url: {"error": "changed"})
+    assert refresh.arena(None) is None
+
+
 # --- which files ----------------------------------------------------------------
 
 

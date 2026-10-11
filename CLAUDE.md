@@ -140,6 +140,9 @@ claude plugin validate .                   # plugin + marketplace (CLAUDE.md-at-
   it belongs.
 - Hugging Face pools: each listed publisher's own models (not fine-tunes or GGUF
   re-uploads) under an open licence, ranked by trending score.
+- Model ratings (`arena` in rankings.json) come from LMArena's text leaderboard through
+  the Hugging Face dataset `lmarena-ai/leaderboard-dataset` (CC BY 4.0), never from
+  arena.ai itself (its terms forbid scraping). Output that shows them must credit it.
 
 ## CI and automation
 

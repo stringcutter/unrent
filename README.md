@@ -162,6 +162,9 @@ listed, never skipped silently.
   it do the job of the pool's projects, is it software you run, and is it not just the
   SDK of a hosted service. What it lets in is marked "found by unrent".
 - Models by Hugging Face trending: labs' own releases under an open licence.
+- Model ratings from LMArena's text leaderboard, through its
+  [leaderboard dataset](https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset)
+  (CC BY 4.0).
 - Open source only: an OSI licence for code; Apache, MIT, BSD or CC-BY for weights.
   Archived projects are dropped, and open core is marked.
 

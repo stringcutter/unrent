@@ -19,6 +19,8 @@ is moving now rather than what someone remembered.
   huggingface pools  Open-weight models, discovered rather than listed: each listed
                      publisher's own models (not community fine-tunes or re-uploads)
                      under an open licence, ranked by Hugging Face's trending score.
+  arena              LMArena's text leaderboard (overall), from its Hugging Face dataset
+                     (CC BY 4.0), to match the models a codebase uses on quality.
 
     python scripts/refresh.py            # GITHUB_TOKEN (or `gh auth token`); judging
                                          # new candidates needs TYPESAFE_API_KEY
@@ -38,6 +40,7 @@ from __future__ import annotations
 import argparse
 import base64
 import datetime as dt
+import itertools
 import json
 import os
 import re
@@ -508,15 +511,72 @@ def hf_pool(pool: dict, by_author: dict[str, list[dict]]) -> list[dict]:
     return ranked[:MODELS_PER_POOL]
 
 
+# ---------------------------------------------------------------- arena
+
+ARENA_DATASET = "lmarena-ai/leaderboard-dataset"
+ARENA_PAGES = 30  # about 5 today; a format change must not page forever
+
+
+def arena(previous: dict | None) -> dict | None:
+    """LMArena's text leaderboard, overall category, from its Hugging Face dataset
+    (CC BY 4.0; arena.ai's own terms forbid scraping). When it cannot be read, the
+    previous run's section stands."""
+    try:
+        rows = []
+        for page in range(ARENA_PAGES):
+            query = urllib.parse.urlencode(
+                {
+                    "dataset": ARENA_DATASET,
+                    "config": "text",
+                    "split": "latest",
+                    "offset": page * 100,
+                    "length": 100,
+                }
+            )
+            batch = [
+                r["row"]
+                for r in _get(f"https://datasets-server.huggingface.co/rows?{query}")["rows"]
+            ]
+            # The split is ordered by category, and overall comes first.
+            overall = list(itertools.takewhile(lambda r: r["category"] == "overall", batch))
+            rows += overall
+            if len(overall) < 100:
+                break
+        if not rows:
+            raise ValueError("no overall rows")
+        models = [
+            {
+                "model": r["model_name"],
+                "org": r["organization"],
+                "licence": r["license"],
+                "rating": round(r["rating"], 1),
+                "low": round(r["rating_lower"], 1),
+                "high": round(r["rating_upper"], 1),
+                "votes": int(r["vote_count"]),
+            }
+            for r in rows
+        ]
+    except (Transient, urllib.error.HTTPError, KeyError, TypeError, ValueError) as exc:
+        print(f"warning: LMArena leaderboard unread ({exc}); keeping the last one", file=sys.stderr)
+        return previous
+    return {
+        "date": rows[0]["leaderboard_publish_date"],
+        "source": ARENA_DATASET,
+        "licence": "CC-BY-4.0",
+        "category": "overall",
+        "models": sorted(models, key=lambda m: -m["rating"]),
+    }
+
+
 # ---------------------------------------------------------------- main
 
 
-def _previous_rankings() -> dict[str, dict]:
+def _previous_rankings() -> dict:
     file = CATALOG / "rankings.json"
     if not file.is_file():
         return {}
     try:
-        return json.loads(file.read_text("utf-8")).get("pools") or {}
+        return json.loads(file.read_text("utf-8"))
     except ValueError:
         return {}
 
@@ -594,7 +654,9 @@ def main() -> int:
         history[repo] = [*points, [today.isoformat(), info["stars"]]]
         info["stars_30d"] = momentum(history[repo], info.get("created"), today)
 
-    previous = _previous_rankings()
+    last = _previous_rankings()
+    previous = last.get("pools") or {}
+    leaderboard = arena(last.get("arena"))
     problems = []
     out_pools: dict[str, dict] = {}
     for pool in pools:
@@ -651,6 +713,10 @@ def main() -> int:
                 print(f"  {i:>2}. {e['id']:<50} trend {e['trending']:>4}  dl {e['downloads']:>10}")
         for e in pool["dropped"]:
             print(f"   x  {e['repo']:<42} {e.get('problem')}")
+    if leaderboard:
+        models = leaderboard["models"]
+        open_weights = sum(m["licence"] != "Proprietary" for m in models)
+        print(f"\narena  {len(models)} models, {open_weights} open weights, {leaderboard['date']}")
 
     if problems:
         print(f"\n{len(problems)} problem(s):", file=sys.stderr)
@@ -669,6 +735,7 @@ def main() -> int:
             "generated": today.isoformat(),
             "momentum_days": MOMENTUM_DAYS,
             "pools": out_pools,
+            **({"arena": leaderboard} if leaderboard else {}),
         }
         (CATALOG / "rankings.json").write_text(
             json.dumps(payload, indent=1, ensure_ascii=False) + "\n", "utf-8", newline="\n"
