@@ -13,6 +13,7 @@ from pathlib import Path
 
 from .catalog import ArenaModel, Catalog, model_key
 from .detect import Finding
+from .detect import _registries as _closed_registries
 from .facts import Fact
 from .retired import _NOT_A_CALL, _TOKEN, _rel, selects
 
@@ -47,10 +48,10 @@ class Matches:
 def in_use(
     findings: list[Finding], facts: list[Fact], root: Path, catalog: Catalog
 ) -> list[ModelUse]:
-    """Every model LMArena rates that a line outside tests selects: closed ones in the
-    evidence of the service they are sent to, open ones wherever a line runs them.
-    Most selected first."""
-    found: dict[str, ModelUse] = {}
+    """Every model LMArena rates that a line outside tests and registries selects:
+    closed ones in the evidence of the service they are sent to, open ones wherever a
+    line runs them. Most selected first."""
+    picked: list[tuple[ArenaModel, str, Fact, Finding | None]] = []
 
     def add(token: str, fact: Fact, start: int, end: int, open_: bool, f: Finding | None):
         model = catalog.arena.get(model_key(token))
@@ -59,11 +60,8 @@ def in_use(
         line = fact.evidence
         if _NOT_A_CALL.search(_rel(fact.file, root)):
             return
-        if not (selects(line, start, end) or (open_ and _RUNS.search(line[:start]))):
-            return
-        use = found.setdefault(model_key(model.name), ModelUse(model, written=token, finding=f))
-        if all((x.file, x.line) != (fact.file, fact.line) for x in use.sites):
-            use.sites.append(fact)
+        if selects(line, start, end) or (open_ and _RUNS.search(line[:start])):
+            picked.append((model, token, fact, f))
 
     for f in findings:
         for fact in f.facts:
@@ -75,9 +73,37 @@ def in_use(
         if fact.kind == "open_model":
             for m in _TOKEN.finditer(fact.evidence):
                 add(_clean(m.group()), fact, m.start(), m.end(), True, None)
+
+    listing = _registries(picked) | _closed_registries(findings)
+    found: dict[str, ModelUse] = {}
+    for model, token, fact, f in picked:
+        if fact.file in listing or fact.file.parent in listing:
+            continue
+        use = found.setdefault(model_key(model.name), ModelUse(model, written=token, finding=f))
+        if all((x.file, x.line) != (fact.file, fact.line) for x in use.sites):
+            use.sites.append(fact)
     for use in found.values():
         use.sites.sort(key=lambda x: (str(x.file), x.line))
     return sorted(found.values(), key=lambda u: (-len(u.sites), u.model.name))
+
+
+# A file, or a directory of files, that sets this many different models lists what a
+# project supports, not what it runs: aider's model-settings.yml, lobe-chat's one file
+# per provider (modelProviders/*.ts), a provider adapter's default in each of llms/*.
+MODELS_LISTED_AT = 6
+
+
+def _registries(picked: list[tuple[ArenaModel, str, Fact, Finding | None]]) -> set[Path]:
+    per_file: dict[Path, set[str]] = {}
+    for model, _, fact, _ in picked:
+        per_file.setdefault(fact.file, set()).add(model.name)
+    per_dir: dict[Path, set[str]] = {}
+    for file, names in per_file.items():
+        per_dir.setdefault(file.parent, set()).update(names)
+    return {
+        *(f for f, names in per_file.items() if len(names) >= MODELS_LISTED_AT),
+        *(d for d, names in per_dir.items() if len(names) >= MODELS_LISTED_AT),
+    }
 
 
 def _clean(token: str) -> str:
