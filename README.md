@@ -22,7 +22,7 @@ which models are about to stop working.**
 uvx unrent .
 ```
 
-![unrent my-app: 3 strings attached, 3 can be cut, 1 will snap. Rows for OpenAI API, Pinecone and ElevenLabs marked cut with their open source replacements, each with the biggest open source replacements and the fastest rising ones, gpt-4-turbo marked snaps with its retirement date and replacement, and mem0 marked runs with its rank in agent memory and what is rising around it](https://github.com/stringcutter/unrent/raw/main/docs/scan.svg?v=9)
+![unrent my-app: 3 strings attached, 3 can be cut, 1 will snap. Rows for OpenAI API, Pinecone and ElevenLabs marked cut with their open source replacements, each with the biggest open source replacements and the fastest rising ones, gpt-4-turbo marked snaps with its retirement date, replacement and nearest open-weight peer, gpt-5.6-sol marked model with the open-weight models LMArena rates as good, and mem0 marked runs with its rank in agent memory and what is rising around it](https://github.com/stringcutter/unrent/raw/main/docs/scan.svg?v=10)
 
 ## What each row means
 
