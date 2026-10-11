@@ -1090,6 +1090,20 @@
     - api.longcat.chat
     env:
     - LONGCAT_API_KEY
+- id: lowrouter
+  name: LowRouter
+  category: LLM gateway
+  replace_with:
+  - llm-gateway
+  source: models.dev
+  doc: https://lowrouter.ai/docs/models/available
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.lowrouter.ai
+    env:
+    - LOWROUTER_API_KEY
 - id: lucidquery
   name: LucidQuery
   category: LLM API
@@ -1850,17 +1864,6 @@
     - api.unorouter.com
     env:
     - UNOROUTER_API_KEY
-- id: v0
-  name: v0
-  category: LLM API
-  replace_with:
-  - open-llm
-  - llm-serving
-  source: models.dev
-  doc: https://sdk.vercel.ai/providers/ai-sdk-providers/vercel
-  detect:
-    npm:
-    - '@ai-sdk/vercel'
 - id: vancine
   name: Vancine
   category: LLM API
