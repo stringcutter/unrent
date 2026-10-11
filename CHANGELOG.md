@@ -16,8 +16,8 @@ each release ships the rankings as of its date.
   both, and what is rising around it.
 - New projects find their way in by themselves: a daily GitHub search per pool
   (`discover` in alternatives.yaml) yields candidates with 1,000 stars or more, an open
-  licence and a push in the last 30 days, and Claude judges each once against the pool
-  (catalog/discovered.json, with its reason). What it lets in is marked "found by
+  licence and a push in the last 30 days, and Jev (TypeSafe) judges each once against
+  the pool (catalog/discovered.json, with its probability). What it lets in is marked "found by
   unrent" and `discovered` in JSON; `deny` overrides it.
 
 ### Changed

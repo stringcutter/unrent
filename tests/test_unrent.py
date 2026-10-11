@@ -967,7 +967,7 @@ def test_judged_members_exclude_listed_and_denied_repos(refresh):
         {"id": "vector-db", "source": "github", "projects": [{"repo": "a/listed"}], "deny": ["c/Denied"]},
         {"id": "ocr", "source": "github", "projects": [{"repo": "b/elsewhere"}]},
     ]  # fmt: skip
-    yes = {"belongs": True, "kind": ["server"], "what": "x", "reason": "y"}
+    yes = {"belongs": True, "p": 0.9, "kind": ["server"], "what": "x"}
     verdicts = {
         "vector-db": {
             "a/listed": yes,
@@ -980,14 +980,19 @@ def test_judged_members_exclude_listed_and_denied_repos(refresh):
     assert list(refresh.found(pools, verdicts)["vector-db"]) == ["d/new"]
 
 
-def test_a_verdict_is_json_with_a_boolean_and_known_kinds(refresh):
-    v = refresh.parse_verdict(
-        'Sure. {"belongs": true, "kind": "server", "what": "Vector database", "reason": "r"}'
-    )
-    assert v == {"belongs": True, "kind": ["server"], "what": "Vector database", "reason": "r"}
-    assert refresh.parse_verdict('{"belongs": "yes"}') is None
-    assert refresh.parse_verdict("no json here") is None
-    assert refresh.parse_verdict('{"belongs": false, "kind": "spaceship"}')["kind"] == []
+def test_a_verdict_is_jevs_probability_and_a_known_kind(refresh):
+    def answers(p, kind):
+        return {"answers": {"belongs": {"type": "noul", "noul": p},
+                            "kind": {"type": "choice", "choice": kind}}}  # fmt: skip
+
+    assert refresh.parse_verdict(answers(0.912, "server")) == {
+        "belongs": True, "p": 0.91, "kind": ["server"]
+    }  # fmt: skip
+    assert refresh.parse_verdict(answers(0.2, "spaceship")) == {
+        "belongs": False, "p": 0.2, "kind": []
+    }  # fmt: skip
+    assert refresh.parse_verdict({"answers": {}}) is None
+    assert refresh.parse_verdict({"error": "quota"}) is None
 
 
 def test_established_and_rising_are_two_lists_that_never_overlap():

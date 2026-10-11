@@ -130,9 +130,10 @@ claude plugin validate .                   # plugin + marketplace (CLAUDE.md-at-
   at least 2% of its stars and 100); never merge them into one score. Never present a
   star delta you computed yourself as growth.
 - Pools grow by themselves: refresh.py runs each pool's `discover` searches and has
-  Claude (`JUDGE_MODEL`, `ANTHROPIC_API_KEY`) judge new candidates once; verdicts with
-  reasons live in `catalog/discovered.json` (generated: don't hand-edit). To correct
-  the judge, add the repo to the pool's `deny`, or list it by hand where it belongs.
+  Jev (`JUDGE_MODEL`, `TYPESAFE_API_KEY`) judge new candidates once; verdicts with
+  Jev's probability (`p`; a member from `JUDGE_THRESHOLD`) live in
+  `catalog/discovered.json` (generated: don't hand-edit). To correct the judge, add
+  the repo to the pool's `deny`, or list it by hand where it belongs.
 - Hugging Face pools: each listed publisher's own models (not fine-tunes or GGUF
   re-uploads) under an open licence, ranked by trending score.
 

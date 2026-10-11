@@ -158,7 +158,7 @@ listed, never skipped silently.
   most stars gained in the last 30 days (at least 2% of their own), from unrent's own
   daily snapshots. Rising is where attention moves, not a verdict on quality.
 - Besides the projects listed by hand, a daily search finds new ones on GitHub (1,000
-  stars or more, open licence, active); Claude judges each once against its pool, and
+  stars or more, open licence, active); Jev (TypeSafe) judges each once against its pool, and
   what it lets in is marked "found by unrent".
 - Models by Hugging Face trending: labs' own releases under an open licence.
 - Open source only: an OSI licence for code; Apache, MIT, BSD or CC-BY for weights.

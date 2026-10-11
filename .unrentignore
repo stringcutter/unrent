@@ -3,3 +3,7 @@
 catalog/
 tests/
 eval/
+# The daily rankings refresh asks TypeSafe's Jev whether a new project belongs in a pool:
+# a closed service on purpose, in the maintainers' automation, not in what users install.
+scripts/refresh.py
+.github/workflows/refresh.yml

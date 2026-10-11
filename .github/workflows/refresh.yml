@@ -6,7 +6,7 @@ name: refresh rankings
 # open for review. Weekly, on Mondays: packages, new services, retirements.
 #
 # Needs Settings > Actions > General > "Allow GitHub Actions to create and approve
-# pull requests" to be enabled, or the last step fails, and the ANTHROPIC_API_KEY
+# pull requests" to be enabled, or the last step fails, and the TYPESAFE_API_KEY
 # secret for judging new projects (without it the rankings still refresh).
 on:
   schedule:
@@ -36,7 +36,7 @@ jobs:
         id: rank
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
         # Exit 3: rankings written, but a listed project is missing, renamed, archived,
         # inactive or no longer open source; the pull request says so. Anything else
         # non-zero (a crash, or exit 4: a pool collapsed and nothing was written)
