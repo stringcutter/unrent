@@ -169,8 +169,8 @@ claude plugin validate .                   # plugin + marketplace (CLAUDE.md-at-
 
 - The brand (voice, logo, colours) lives in the private repo `stringcutter/brand`;
   `docs/wordmark*.svg` and `docs/stringcutter*.svg` are copies of its sharp (Quicksand)
-  logos, the README screenshots come from its `tools/terminal_svg.py`; bump `?v=` in the
-  README when an image changes, or GitHub's cache shows the old one.
+  logos, the README screenshots come from its `tools/terminal_svg.py` (`STYLE=vscode`);
+  bump `?v=` in the README when an image changes, or GitHub's cache shows the old one.
 
 - Match the surrounding code: comment density, naming, plain wording. Commit messages
   explain the why and include measured results where there are any.
