@@ -8,6 +8,7 @@ import importlib.util
 import io
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -1414,8 +1415,7 @@ def test_hosted_open_source_points_at_the_same_project(tmp_path, catalog):
     assert "Self-hosted: [qdrant/qdrant]" in md
     table_row = next(ln for ln in md.splitlines() if ln.startswith("| Qdrant Cloud"))
     assert table_row.count("[qdrant/qdrant]") == 1  # not again among the pool's picks
-    row = next(ln for ln in terminal(tmp_path, catalog).splitlines() if "Qdrant Cloud" in ln)
-    assert row.endswith("self-host qdrant/qdrant")
+    assert replaced_by(terminal(tmp_path, catalog), "Qdrant Cloud") == "→ self-host qdrant/qdrant"
     assert "Its open source core, self-hosted" in why(
         next(f for f in findings if f.service.id == "qdrant-cloud"), tmp_path, catalog
     )
@@ -1439,14 +1439,14 @@ def test_self_host_dropped_from_its_ranking_falls_back_to_the_pool(tmp_path, cat
         e for e in payload(findings, tmp_path, dropped)["found"] if e["id"] == "qdrant-cloud"
     )
     assert "self_host" not in entry
-    row = next(ln for ln in terminal(tmp_path, dropped).splitlines() if "Qdrant Cloud" in ln)
+    row = replaced_by(terminal(tmp_path, dropped), "Qdrant Cloud")
     assert "self-host" not in row and "milvus" in row
 
 
 def test_summary_names_several_alternatives_not_one(tmp_path, catalog):
     # A ranking by stars is popularity, not fit: the summary row never crowns one.
     write(tmp_path, {"requirements.txt": "pinecone\n"})
-    row = next(ln for ln in terminal(tmp_path, catalog).splitlines() if "Pinecone" in ln)
+    row = replaced_by(terminal(tmp_path, catalog), "Pinecone")
     tops = [a.name.split("/")[1] for a in catalog.pools["vector-db"].alternatives[:3]]
     assert row.endswith(", ".join(tops))
 
@@ -2661,6 +2661,13 @@ def terminal(root: Path, catalog, **kw) -> str:
     return to_terminal(match(collect_facts(root, catalog), catalog), root, catalog, **kw)
 
 
+def replaced_by(text: str, name: str) -> str:
+    """The line under a cut row that names what replaces it."""
+    lines = text.splitlines()
+    at = next(i for i, ln in enumerate(lines) if name in ln)
+    return next(ln for ln in lines[at + 1 :] if "→" in ln).strip()
+
+
 def test_terminal_counts_one_string_per_service(tmp_path, catalog):
     # The package, the key and the host are one dependency on OpenAI, not three. Wide
     # enough for one line per row: the established and rising picks make rows long.
@@ -2689,9 +2696,11 @@ def test_terminal_puts_rising_and_the_open_model_on_lines_of_their_own(tmp_path,
         api = next(i for i, ln in enumerate(lines) if "OpenAI API" in ln)
         snap = first.index("┆")
         assert "open" not in first[api:snap] and "open" in first[snap + 1 : snap + 4]
-        if width == 200:  # side by side, every note starts in the alternatives' column
-            notes = [ln for ln in lines if ln.lstrip().startswith(("rising", "open"))]
-            assert len({len(ln) - len(ln.lstrip()) for ln in notes}) == 1
+        # A note under a cut row starts where the names after its arrow do.
+        arrow = lines[api + 1 + (width == 50)]
+        rising = lines[api + 2 + (width == 50)]
+        assert rising.lstrip().startswith("rising")
+        assert arrow.index("→") + 2 == len(rising) - len(rising.lstrip())
 
 
 def test_terminal_holds_a_service_with_no_open_match(tmp_path, catalog):
@@ -2712,7 +2721,10 @@ def test_terminal_with_nothing_found(tmp_path, catalog):
 def test_terminal_stacks_rows_when_narrow(tmp_path, catalog):
     write(tmp_path, TIED)
     wide, narrow = terminal(tmp_path, catalog, width=200), terminal(tmp_path, catalog, width=50)
-    assert "→ " not in wide and "→ " in narrow
+    # Wide: name and file on one line. Narrow: the file on a line of its own. Both put
+    # the replacements under the name.
+    assert re.search(r"OpenAI API +requirements.txt:1", wide) and "→ " in wide
+    assert next(ln for ln in narrow.splitlines() if "OpenAI API" in ln).rstrip().endswith("API")
     assert max(len(ln) for ln in narrow.splitlines() if "╎" in ln) <= 50
 
 

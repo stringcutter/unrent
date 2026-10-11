@@ -260,36 +260,45 @@ def _notes(r: Row, indent: int, st: Style) -> list[str]:
     return [" " * indent + st.mute(f"{label:<{NOTE_W}}") + GAP + text for label, text in r.notes]
 
 
-def _line(r: Row, widths: tuple[int, int, int, int], st: Style) -> list[str]:
-    bar_w, name_w, where_w, more_w = widths
+def _body(r: Row, indent: int, st: Style) -> list[str]:
+    """What replaces a row, or where it stands, under its name: then its notes, in line
+    with the text past the arrow."""
+    pad = " " * indent
+    return [pad + _then(r, st, True), *_notes(r, indent + (2 if r.state == "cut" else 0), st)]
+
+
+def _line(r: Row, widths: tuple[int, int, int], st: Style) -> list[str]:
+    """Name, file and count on one line, the answer under it."""
+    bar_w, name_w, where_w = widths
     name = r.name + (" (tests)" if r.tests else "")
     more = f"+{r.more}" if r.more else ""
     head = (
         f"{_bar(r.state, bar_w, st)}{GAP}{name:<{name_w}}{GAP}"
-        f"{st.mute(f'{r.where:<{where_w}}  {more:<{more_w}}')}{GAP}{_then(r, st, False)}"
+        f"{st.mute(f'{r.where:<{where_w}}  {more}')}"
     ).rstrip()
-    return [head, *_notes(r, bar_w + name_w + where_w + 2 + more_w + 3 * len(GAP), st)]
+    return [head, *_body(r, bar_w + len(GAP), st)]
 
 
 def _stacked(r: Row, bar_w: int, st: Style) -> list[str]:
+    """Narrow terminals: the file on a line of its own too."""
     name = r.name + (" (tests)" if r.tests else "")
     indent = bar_w + len(GAP)
     more = f"  +{r.more}" if r.more else ""
     return [
         f"{_bar(r.state, bar_w, st)}{GAP}{name}",
         " " * indent + st.mute(r.where + more),
-        " " * indent + _then(r, st, True),
-        *_notes(r, indent + (2 if r.state == "cut" else 0), st),  # under the text, past →
+        *_body(r, indent, st),
     ]
 
 
 def _width(r: Row) -> int:
-    """The widest of a row's `then` and its notes."""
-    return max([len(r.then), *(NOTE_W + len(GAP) + len(text) for _, text in r.notes)])
+    """The widest line under a row: its `then` past the arrow, or a note."""
+    return max([2 + len(r.then), *(2 + NOTE_W + len(GAP) + len(text) for _, text in r.notes)])
 
 
 def _blocks(groups: list[list[Row]], width: int, st: Style) -> list[str]:
-    """Groups apart by a blank line, in one set of columns; stacked when they don't fit."""
+    """Groups apart by a blank line, names and files in one set of columns; the file
+    on a line of its own when they don't fit."""
     groups = [g for g in groups if g]
     if not groups:
         return []
@@ -298,15 +307,16 @@ def _blocks(groups: list[list[Row]], width: int, st: Style) -> list[str]:
     name_w = max(len(r.name) + (8 if r.tests else 0) for r in group)
     where_w = max(len(r.where) for r in group)
     more_w = max((len(f"+{r.more}") for r in group if r.more), default=0)
-    full = bar_w + 3 * len(GAP) + name_w + where_w + 2 + more_w + max(map(_width, group))
-    wide = width >= NARROW and full <= width
+    head = bar_w + 2 * len(GAP) + name_w + where_w + 2 + more_w
+    body = bar_w + len(GAP) + max(map(_width, group))
+    wide = width >= NARROW and max(head, body) <= width
     out: list[str] = []
     for g in groups:
         if out:
             out.append("")
         for r in g:
             if wide:
-                out += _line(r, (bar_w, name_w, where_w, more_w), st)
+                out += _line(r, (bar_w, name_w, where_w), st)
             else:
                 out += _stacked(r, bar_w, st)
     return out

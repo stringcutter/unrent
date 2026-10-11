@@ -8,9 +8,9 @@ each release ships the rankings as of its date.
 ## Unreleased
 
 ### Changed
-- In the terminal, the fastest rising projects get a line of their own under a row's
-  alternatives (`rising`, the two fastest; `--why` and the report show the rest)
-  instead of sharing its line.
+- In the terminal, each row is its name, file and count, with the answer under it: the
+  replacements after `→`, and the fastest rising on a line of their own (`rising`, the
+  two fastest; `--why` and the report show the rest).
 - The open-weight model moves from the service's row to the row of the model it would
   replace: `┆ snaps gpt-4-turbo  retires 2026-10-23 → gpt-5.6-sol`, and under it
   `open  Qwen3.8-27B`. A model replaces a model; inference servers replace the API.
