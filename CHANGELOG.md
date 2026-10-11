@@ -5,7 +5,7 @@ All notable changes to this project are documented here. The format follows
 [Semantic Versioning](https://semver.org/). Daily ranking refreshes are not listed;
 each release ships the rankings as of its date.
 
-## Unreleased
+## [0.5.0] - 2026-10-11
 
 ### Added
 - Two lenses on every GitHub pool: **established**, the biggest by stars, and
@@ -16,9 +16,11 @@ each release ships the rankings as of its date.
   both, and what is rising around it.
 - New projects find their way in by themselves: a daily GitHub search per pool
   (`discover` in alternatives.yaml) yields candidates with 1,000 stars or more, an open
-  licence and a push in the last 30 days, and Jev (TypeSafe) judges each once against
-  the pool (catalog/discovered.json, with its probability). What it lets in is marked "found by
-  unrent" and `discovered` in JSON; `deny` overrides it.
+  licence and a push in the last 30 days, and TypeSafe's Jev judges each once: does it
+  do the job of the pool's projects, is it software you run, and is it not just the SDK
+  of a hosted service (precision 0.97, recall 0.97 on 44 hand-labelled candidates). Its
+  answers are in catalog/discovered.json; what it lets in is marked "found by unrent"
+  and `discovered` in JSON, and `deny` overrides it.
 
 ### Changed
 - Rankings refresh daily instead of weekly, and growth is measured over 30 days instead
@@ -27,7 +29,8 @@ each release ships the rankings as of its date.
   counts its average since creation, so a fast riser shows the day it is found.
 - Summary rows name one pool's projects plus the top open-weight model, instead of two
   pools: with two lenses, two pools no longer fit on a line. `--why` shows them all.
-  Short generic repo names carry their owner (`e2b-dev/runtime`).
+  Repo names made of generic words carry their owner (`e2b-dev/runtime`,
+  `tigerless-labs/agent-memory`).
 
 ## [0.4.0] - 2026-10-08
 
@@ -281,6 +284,7 @@ First public release.
 - Open source signatures: `SEARX_URL` and `SearxSearch` (SearXNG), vLLM behind an
   OpenAI-compatible base URL, a self-hosted Firecrawl URL, LangChain's `FAISS`.
 
+[0.5.0]: https://github.com/stringcutter/unrent/releases/tag/v0.5.0
 [0.4.0]: https://github.com/stringcutter/unrent/releases/tag/v0.4.0
 [0.3.0]: https://github.com/stringcutter/unrent/releases/tag/v0.3.0
 [0.2.2]: https://github.com/stringcutter/unrent/releases/tag/v0.2.2

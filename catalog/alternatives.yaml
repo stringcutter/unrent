@@ -152,6 +152,7 @@ pools:
     name: RAG framework
     source: github
     discover: ["topic:retrieval-augmented-generation", "topic:rag topic:framework"]
+    deny: [EmbeddedLLM/JamAIBase]  # a spreadsheet for AI pipelines, not a RAG framework
     projects:
       - {repo: HKUDS/LightRAG, what: Simple and fast graph-based RAG}
       - {repo: microsoft/graphrag, what: Graph-based retrieval-augmented generation}
@@ -315,6 +316,7 @@ pools:
     name: Browser automation for agents
     source: github
     discover: ["topic:browser-automation topic:llm", "topic:browser-agent"]
+    deny: [Player-YN/BrowserKitten]  # a Chrome extension for people, not automation for agents
     projects:
       - {repo: browser-use/browser-use, what: Makes websites accessible to AI agents}
       - {repo: microsoft/playwright, what: "Browser automation for Chromium, Firefox and WebKit"}
@@ -336,6 +338,7 @@ pools:
     name: Agent memory
     source: github
     discover: ["topic:agent-memory", "topic:llm-memory", "topic:ai-memory"]
+    deny: [ClaudioDrews/memory-os]  # memory for one agent (Hermes), not a memory layer
     projects:
       - {repo: mem0ai/mem0, what: "Memory layer for AI agents, self-hostable"}
       - {repo: getzep/graphiti, what: Real-time knowledge graphs for agent memory}

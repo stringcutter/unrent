@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/stringcutter/unrent/raw/main/docs/wordmark-on-dark.svg?v=4">
-  <img alt="unrent" src="https://github.com/stringcutter/unrent/raw/main/docs/wordmark.svg?v=4" width="320">
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/stringcutter/unrent/raw/main/docs/wordmark-on-dark.svg?v=5">
+  <img alt="unrent" src="https://github.com/stringcutter/unrent/raw/main/docs/wordmark.svg?v=5" width="320">
 </picture>
 
 
@@ -22,7 +22,7 @@ which models are about to stop working.**
 uvx unrent .
 ```
 
-![unrent my-app: 3 strings attached, 3 can be cut, 1 will snap. Rows for OpenAI API, Pinecone and ElevenLabs marked cut with their open source replacements, gpt-4-turbo marked snaps with its retirement date and replacement, and faiss marked runs with its rank](https://github.com/stringcutter/unrent/raw/main/docs/scan.svg?v=4)
+![unrent my-app: 3 strings attached, 3 can be cut, 1 will snap. Rows for OpenAI API, Pinecone and ElevenLabs marked cut with their open source replacements, each with the biggest open source replacements and the fastest rising ones, gpt-4-turbo marked snaps with its retirement date and replacement, and mem0 marked runs with its rank in agent memory and what is rising around it](https://github.com/stringcutter/unrent/raw/main/docs/scan.svg?v=5)
 
 ## What each row means
 
@@ -36,7 +36,7 @@ uvx unrent .
 
 Every row points to a file and line. `--why` shows all of them, and what to use instead:
 
-![unrent my-app --why gpt-4-turbo: main.py line 9 selects gpt-4-turbo, which retires on 2026-10-23; openai recommends gpt-5.6-sol, with the link to OpenAI's deprecations page](https://github.com/stringcutter/unrent/raw/main/docs/why-model.svg?v=4)
+![unrent my-app --why gpt-4-turbo: main.py line 9 selects gpt-4-turbo, which retires on 2026-10-23; openai recommends gpt-5.6-sol, with the link to OpenAI's deprecations page](https://github.com/stringcutter/unrent/raw/main/docs/why-model.svg?v=5)
 
 > [!NOTE]
 > unrent runs on your machine. No account, no upload, no telemetry.
@@ -95,7 +95,7 @@ permissions:
   security-events: write   # for the annotations
 steps:
   - uses: actions/checkout@v5
-  - uses: stringcutter/unrent@v0.4.0
+  - uses: stringcutter/unrent@v0.5.0
     with:
       fail-on: snapped,snaps   # snapped, snaps, closed
       within: 30               # snaps only within 30 days
@@ -116,7 +116,7 @@ unrent . --format sarif -o unrent.sarif             # SARIF 2.1.0 for code scann
 <details>
 <summary><b>What it finds</b></summary>
 
-- **357 closed AI services** in 21 categories: LLM APIs and gateways, embeddings, vector
+- **359 closed AI services** in 21 categories: LLM APIs and gateways, embeddings, vector
   databases, RAG, document parsing, observability, speech, image generation, search,
   scraping, browser automation, sandboxes, agents and agent memory. 139 hosted model
   providers come from [models.dev](https://models.dev), regenerated weekly.
@@ -158,8 +158,9 @@ listed, never skipped silently.
   most stars gained in the last 30 days (at least 2% of their own), from unrent's own
   daily snapshots. Rising is where attention moves, not a verdict on quality.
 - Besides the projects listed by hand, a daily search finds new ones on GitHub (1,000
-  stars or more, open licence, active); Jev (TypeSafe) judges each once against its pool, and
-  what it lets in is marked "found by unrent".
+  stars or more, open licence, active). [Jev](https://typesafe.ai) judges each once: does
+  it do the job of the pool's projects, is it software you run, and is it not just the
+  SDK of a hosted service. What it lets in is marked "found by unrent".
 - Models by Hugging Face trending: labs' own releases under an open licence.
 - Open source only: an OSI licence for code; Apache, MIT, BSD or CC-BY for weights.
   Archived projects are dropped, and open core is marked.
@@ -174,11 +175,21 @@ public lists come in; your code never goes out.
 <details>
 <summary><b>How accurate it is</b></summary>
 
-Every rule has a test that fails without it. A golden corpus of 54 real repos, labelled
-by hand, runs in CI: closed services precision 0.993, recall 0.957; models that stop
-working precision 0.939, recall 0.886.
+Every rule has a test that fails without it. A golden corpus of 77 real repos, labelled
+by hand, runs in CI: closed services precision 0.987, recall 0.970; open source in use
+precision 0.990, recall 0.938; models that stop working precision 0.943, recall 0.892.
 
 With [ripgrep](https://github.com/BurntSushi/ripgrep) installed, a 5,500-file repo scans
 in about 6 s.
 
 </details>
+
+<div align="center">
+<br>
+<a href="https://github.com/stringcutter">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/stringcutter/unrent/raw/main/docs/stringcutter-on-dark.svg?v=5">
+  <img alt="stringcutter" src="https://github.com/stringcutter/unrent/raw/main/docs/stringcutter.svg?v=5" width="180">
+</picture>
+</a>
+</div>

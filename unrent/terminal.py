@@ -100,7 +100,8 @@ def _loc(fact: Fact, root: Path) -> str:
     return _clean(f"{_rel(fact.file, root)}:{fact.line}")
 
 
-# Repo names that say little without their owner: e2b-dev/runtime, livekit/agents.
+# Repo names that say little without their owner: e2b-dev/runtime, livekit/agents,
+# tigerless-labs/agent-memory (every word generic).
 # ponytail: a word list; grow it when a short name reads as nothing.
 GENERIC = frozenset(
     {"agent", "agents", "api", "app", "core", "engine", "gateway", "inference", "memory",
@@ -111,7 +112,7 @@ GENERIC = frozenset(
 
 def _short(name: str) -> str:
     repo = name.rsplit("/", 1)[-1]
-    return name if repo.lower() in GENERIC else repo
+    return name if all(w in GENERIC for w in re.split(r"[-_.]", repo.lower())) else repo
 
 
 def _names(alts: list[Alternative]) -> str:

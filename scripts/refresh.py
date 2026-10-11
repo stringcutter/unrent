@@ -393,7 +393,7 @@ def discover(pools: list[dict], verdicts: dict, token: str | None, key: str, tod
                 }
                 verdict = judge(state, key)
                 if verdict:
-                    verdict["what"] = (hit.get("description") or "")[:120]
+                    verdict["what"] = hit.get("description") or ""
                     seen[repo] = {**verdict, "judged": today.isoformat()}
                     judged += 1
                     print(
@@ -402,6 +402,14 @@ def discover(pools: list[dict], verdicts: dict, token: str | None, key: str, tod
                         file=sys.stderr,
                     )
     return judged
+
+
+def clip(text: str, n: int = 100) -> str:
+    """A found project's own description, cut at a word when it runs long."""
+    text = " ".join(text.split())
+    if len(text) <= n:
+        return text
+    return text[: n - 1].rsplit(" ", 1)[0].rstrip(",.;:\u2014\u2013- ") + "…"
 
 
 def found(pools: list[dict], verdicts: dict) -> dict[str, dict[str, dict]]:
@@ -596,7 +604,7 @@ def main() -> int:
             entries = []
             own = [(p["repo"], {"what": p["what"]}) for p in pool["projects"]]
             judged = [
-                (repo, {"what": v["what"], "kind": v["kind"], "discovered": True})
+                (repo, {"what": clip(v["what"]), "kind": v["kind"], "discovered": True})
                 for repo, v in members[pool["id"]].items()
             ]
             for repo, extra in own + judged:

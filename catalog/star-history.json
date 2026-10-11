@@ -64,7 +64,7 @@
 ],
 [
 "2026-10-11",
-60968
+60970
 ]
 ],
 "BitMiracle-AI/Dormice":[
@@ -110,7 +110,7 @@
 ],
 [
 "2026-10-11",
-136919
+136920
 ]
 ],
 "Continuum-AI-Corp/OrcaRouter-Lite":[
@@ -258,7 +258,7 @@
 ],
 [
 "2026-10-11",
-37250
+37252
 ]
 ],
 "JaidedAI/EasyOCR":[
@@ -328,7 +328,7 @@
 "MakazhanAlpamys/Soup":[
 [
 "2026-10-11",
-8545
+8547
 ]
 ],
 "Mirix-AI/MIRIX":[
@@ -446,7 +446,7 @@
 "OpenBMB/VoxCPM":[
 [
 "2026-10-11",
-38905
+38908
 ]
 ],
 "PaddlePaddle/FastDeploy":[
@@ -530,7 +530,7 @@
 ],
 [
 "2026-10-11",
-49716
+49718
 ]
 ],
 "QuentinFuxa/WhisperLiveKit":[
@@ -564,7 +564,7 @@
 "QwenAudio/SenseVoice":[
 [
 "2026-10-11",
-9491
+9492
 ]
 ],
 "QwenAudio/qwen-audio-agent":[
@@ -654,7 +654,7 @@
 ],
 [
 "2026-10-11",
-31686
+31687
 ]
 ],
 "SeekStorm/SeekStorm":[
@@ -752,7 +752,7 @@
 "agentgateway/agentgateway":[
 [
 "2026-10-11",
-5282
+5283
 ]
 ],
 "agentscope-ai/agentscope":[
@@ -950,7 +950,7 @@
 ],
 [
 "2026-10-11",
-117646
+117647
 ]
 ],
 "browserbase/stagehand":[
@@ -1086,7 +1086,7 @@
 "debpalash/VoiceStudio":[
 [
 "2026-10-11",
-58418
+58437
 ]
 ],
 "decolua/9router":[
@@ -1120,7 +1120,7 @@
 ],
 [
 "2026-10-11",
-23939
+23940
 ]
 ],
 "deepset-ai/haystack":[
@@ -1148,7 +1148,7 @@
 "diegosouzapw/OmniRoute":[
 [
 "2026-10-11",
-75229
+75234
 ]
 ],
 "dingodb/dingo":[
@@ -1176,7 +1176,7 @@
 ],
 [
 "2026-10-11",
-68681
+68682
 ]
 ],
 "doobidoo/mcp-memory-service":[
@@ -1288,7 +1288,7 @@
 ],
 [
 "2026-10-11",
-37290
+37291
 ]
 ],
 "firecrawl/firecrawl":[
@@ -1310,13 +1310,13 @@
 ],
 [
 "2026-10-11",
-190444
+190453
 ]
 ],
 "firecrawl/pdf-inspector":[
 [
 "2026-10-11",
-19611
+19610
 ]
 ],
 "fishaudio/Bert-VITS2":[
@@ -1372,7 +1372,7 @@
 ],
 [
 "2026-10-11",
-130835
+130836
 ]
 ],
 "ggml-org/whisper.cpp":[
@@ -1472,7 +1472,7 @@
 "handy-computer/transcribe.cpp":[
 [
 "2026-10-11",
-2002
+2003
 ]
 ],
 "higress-group/higress":[
@@ -1594,7 +1594,7 @@
 "ifixai-ai/iFixAi":[
 [
 "2026-10-11",
-23793
+23794
 ]
 ],
 "infiniflow/infinity":[
@@ -1638,7 +1638,7 @@
 ],
 [
 "2026-10-11",
-91998
+91999
 ]
 ],
 "invoke-ai/InvokeAI":[
@@ -1660,7 +1660,7 @@
 ],
 [
 "2026-10-11",
-28563
+28564
 ]
 ],
 "jina-ai/reader":[
@@ -1800,7 +1800,7 @@
 ],
 [
 "2026-10-11",
-11638
+11639
 ]
 ],
 "langfuse/langfuse":[
@@ -2164,7 +2164,7 @@
 ],
 [
 "2026-10-11",
-189546
+189547
 ]
 ],
 "microsoft/playwright":[
@@ -2390,7 +2390,7 @@
 ],
 [
 "2026-10-11",
-182764
+182765
 ]
 ],
 "onyx-dot-app/onyx":[
@@ -2412,7 +2412,7 @@
 ],
 [
 "2026-10-11",
-32405
+32406
 ]
 ],
 "oomol-lab/pdf-craft":[
@@ -2552,7 +2552,7 @@
 ],
 [
 "2026-10-11",
-16358
+16359
 ]
 ],
 "plastic-labs/honcho":[
@@ -2770,7 +2770,7 @@
 ],
 [
 "2026-10-11",
-38229
+38231
 ]
 ],
 "sgl-project/sglang":[
@@ -3030,7 +3030,7 @@
 ],
 [
 "2026-10-11",
-32020
+32022
 ]
 ],
 "traceloop/openllmetry":[
@@ -3102,7 +3102,7 @@
 ],
 [
 "2026-10-11",
-85239
+85241
 ]
 ],
 "unslothai/unsloth":[
@@ -3124,7 +3124,7 @@
 ],
 [
 "2026-10-11",
-77786
+77787
 ]
 ],
 "unum-cloud/USearch":[
@@ -3140,7 +3140,7 @@
 "vectorize-io/hindsight":[
 [
 "2026-10-11",
-48353
+48356
 ]
 ],
 "verl-project/verl":[
@@ -3292,7 +3292,7 @@
 "xerj-org/xerj":[
 [
 "2026-10-11",
-3582
+3583
 ]
 ],
 "xorbitsai/inference":[
@@ -3342,7 +3342,7 @@
 "youssofal/MTPLX":[
 [
 "2026-10-11",
-2564
+2565
 ]
 ],
 "zilliztech/memsearch":[

@@ -1004,6 +1004,21 @@ def test_a_verdict_is_jevs_answers_combined_in_code(refresh):
     assert refresh.parse_verdict({"error": "quota"}) is None
 
 
+def test_found_projects_read_whole(refresh):
+    from unrent.terminal import _short
+
+    long = "Long-term memory runtime for AI agents, plain Markdown as the source of truth, and an independent index"
+    assert refresh.clip(long) == (
+        "Long-term memory runtime for AI agents, plain Markdown as the source of truth, and an "
+        "independent…"
+    )
+    assert refresh.clip("A short one.") == "A short one."
+    # A name of generic words alone says nothing without its owner.
+    assert _short("tigerless-labs/agent-memory") == "tigerless-labs/agent-memory"
+    assert _short("e2b-dev/runtime") == "e2b-dev/runtime"
+    assert _short("topoteretes/cognee") == "cognee"
+
+
 def test_established_and_rising_are_two_lists_that_never_overlap():
     from unrent.catalog import Alternative, Pool
 
