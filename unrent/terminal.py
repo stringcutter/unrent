@@ -94,6 +94,7 @@ class Row:
     more: int  # further locations
     then: str  # what replaces it, or where it stands
     tests: bool
+    notes: tuple[tuple[str, str], ...] = ()  # lines under `then`: ("rising", "a, b")
 
 
 def _loc(fact: Fact, root: Path) -> str:
@@ -119,34 +120,43 @@ def _names(alts: list[Alternative]) -> str:
     return ", ".join(_short(a.name) for a in alts)
 
 
-def _best(f: Finding, catalog: Catalog) -> str:
+# A row names the two fastest rising; --why and the report show the rest.
+RISING_SHOWN = 2
+
+
+def _best(f: Finding, catalog: Catalog) -> tuple[str, tuple[tuple[str, str], ...]]:
     """The project a hosted service runs, else the biggest few of the first pool that
-    replaces it; then the fastest rising among the rest, and the top open-weight model.
-    A popularity ranking crowns no winner."""
+    replaces it; under it the fastest rising among the rest, and the top open-weight
+    model, each on a line of its own. A popularity ranking crowns no winner."""
     own = catalog.self_hosted(f.service)
     pools = [p for p in catalog.alternatives_for(f.service) if p.alternatives]
     github = next((p for p in pools if p.source == "github"), None)
     model = next((p for p in pools if p.source != "github"), None)
-    parts = []
+    main, notes = "", []
     if github:
         big, rising = github.lenses(PICKS, skip=(own.name,) if own else ())
-        head = f"self-host {own.name}" if own else _names(big)
-        parts.append(head + (f" · rising {_names(rising)}" if rising else ""))
+        main = f"self-host {own.name}" if own else _names(big)
+        if rising:
+            notes.append(("rising", _names(rising[:RISING_SHOWN])))
     elif own:
-        parts.append(f"self-host {own.name}")
+        main = f"self-host {own.name}"
     if model:
-        parts.append(_names(model.alternatives[:1]))
-    return " + ".join(parts)
+        top = _names(model.alternatives[:1])
+        if main:
+            notes.append(("model", top))
+        else:
+            main = top
+    return main, tuple(notes)
 
 
-def _standing(f: Finding, catalog: Catalog) -> str:
+def _standing(f: Finding, catalog: Catalog) -> tuple[str, tuple[tuple[str, str], ...]]:
     ranked = [s for s in standings(f, catalog) if s.rank is not None]
     if not ranked:
-        return "dropped from its ranking"
+        return "dropped from its ranking", ()
     s = min(ranked, key=lambda s: s.rank)
-    rising = s.pool.rising(PICKS, skip=(f.service.repo,))
-    return f"#{s.rank} of {s.of} in {s.pool.name}" + (
-        f" · rising {_names(rising)}" if rising else ""
+    rising = s.pool.rising(RISING_SHOWN, skip=(f.service.repo,))
+    return f"#{s.rank} of {s.of} in {s.pool.name}", (
+        (("rising", _names(rising)),) if rising else ()
     )
 
 
@@ -176,7 +186,7 @@ def snap_rows(retiring: list[Snap], root: Path, catalog: Catalog, as_of) -> list
 def rows(split: Split, root: Path, catalog: Catalog) -> list[Row]:
     out = []
     for f in split.closed:
-        best = _best(f, catalog)
+        best, notes = _best(f, catalog)
         out.append(
             Row(
                 "cut" if best else "held",
@@ -186,11 +196,13 @@ def rows(split: Split, root: Path, catalog: Catalog) -> list[Row]:
                 len(f.cited) - 1,
                 best or "no open match yet",
                 f.test_only,
+                notes,
             )
         )
     # What can be cut first, and the string with the most locations first within it.
     out.sort(key=lambda r: (r.state != "cut", -r.more))
     for f in split.running:
+        standing, notes = _standing(f, catalog)
         out.append(
             Row(
                 "runs",
@@ -198,8 +210,9 @@ def rows(split: Split, root: Path, catalog: Catalog) -> list[Row]:
                 f.service.name,
                 _loc(f.cited[0], root),
                 len(f.cited) - 1,
-                _standing(f, catalog),
+                standing,
                 f.test_only,
+                notes,
             )
         )
     return out
@@ -235,25 +248,40 @@ def _then(r: Row, st: Style, arrow: bool) -> str:
     return st.mute(r.then)
 
 
-def _line(r: Row, widths: tuple[int, int, int, int], st: Style) -> str:
+NOTE_W = len("rising")
+
+
+def _notes(r: Row, indent: int, st: Style) -> list[str]:
+    """The lines under a row's `then`, each with a quiet label: rising, model."""
+    return [" " * indent + st.mute(f"{label:<{NOTE_W}}") + GAP + text for label, text in r.notes]
+
+
+def _line(r: Row, widths: tuple[int, int, int, int], st: Style) -> list[str]:
     bar_w, name_w, where_w, more_w = widths
     name = r.name + (" (tests)" if r.tests else "")
     more = f"+{r.more}" if r.more else ""
-    return (
+    head = (
         f"{_bar(r.state, bar_w, st)}{GAP}{name:<{name_w}}{GAP}"
         f"{st.mute(f'{r.where:<{where_w}}  {more:<{more_w}}')}{GAP}{_then(r, st, False)}"
     ).rstrip()
+    return [head, *_notes(r, bar_w + name_w + where_w + 2 + more_w + 3 * len(GAP), st)]
 
 
 def _stacked(r: Row, bar_w: int, st: Style) -> list[str]:
     name = r.name + (" (tests)" if r.tests else "")
-    indent = " " * (bar_w + len(GAP))
+    indent = bar_w + len(GAP)
     more = f"  +{r.more}" if r.more else ""
     return [
         f"{_bar(r.state, bar_w, st)}{GAP}{name}",
-        indent + st.mute(r.where + more),
-        indent + _then(r, st, True),
+        " " * indent + st.mute(r.where + more),
+        " " * indent + _then(r, st, True),
+        *_notes(r, indent + (2 if r.state == "cut" else 0), st),  # under the text, past →
     ]
+
+
+def _width(r: Row) -> int:
+    """The widest of a row's `then` and its notes."""
+    return max([len(r.then), *(NOTE_W + len(GAP) + len(text) for _, text in r.notes)])
 
 
 def _blocks(groups: list[list[Row]], width: int, st: Style) -> list[str]:
@@ -266,7 +294,7 @@ def _blocks(groups: list[list[Row]], width: int, st: Style) -> list[str]:
     name_w = max(len(r.name) + (8 if r.tests else 0) for r in group)
     where_w = max(len(r.where) for r in group)
     more_w = max((len(f"+{r.more}") for r in group if r.more), default=0)
-    full = bar_w + 3 * len(GAP) + name_w + where_w + 2 + more_w + max(len(r.then) for r in group)
+    full = bar_w + 3 * len(GAP) + name_w + where_w + 2 + more_w + max(map(_width, group))
     wide = width >= NARROW and full <= width
     out: list[str] = []
     for g in groups:
@@ -274,7 +302,7 @@ def _blocks(groups: list[list[Row]], width: int, st: Style) -> list[str]:
             out.append("")
         for r in g:
             if wide:
-                out.append(_line(r, (bar_w, name_w, where_w, more_w), st))
+                out += _line(r, (bar_w, name_w, where_w, more_w), st)
             else:
                 out += _stacked(r, bar_w, st)
     return out
@@ -377,7 +405,7 @@ def why(
     elif f.template_only:
         state = "env template"
     else:
-        state = "cut" if _best(f, catalog) else "held"
+        state = "cut" if _best(f, catalog)[0] else "held"
     bar = _bar(state, len(TAGS[state]), st) if state in TAGS else st.mute(f"│ {state}")
     tests = " (only in tests)" if f.test_only else ""
     out = ["", f"{bar}{GAP}{st.bold(f.service.name)}{tests}  {st.mute(f.service.category)}", ""]

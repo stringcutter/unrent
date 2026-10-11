@@ -5,6 +5,15 @@ All notable changes to this project are documented here. The format follows
 [Semantic Versioning](https://semver.org/). Daily ranking refreshes are not listed;
 each release ships the rankings as of its date.
 
+## Unreleased
+
+### Changed
+- In the terminal, the fastest rising projects and the open-weight model each get a line
+  of their own under a row's alternatives, labelled `rising` and `model`, instead of
+  sharing its line: inference servers, what is gaining on them, and an LLM to run on
+  them are three different answers. A row names the two fastest rising; `--why` and the
+  report show the rest.
+
 ## [0.5.0] - 2026-10-11
 
 ### Added

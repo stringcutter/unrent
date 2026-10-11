@@ -22,13 +22,13 @@ which models are about to stop working.**
 uvx unrent .
 ```
 
-![unrent my-app: 3 strings attached, 3 can be cut, 1 will snap. Rows for OpenAI API, Pinecone and ElevenLabs marked cut with their open source replacements, each with the biggest open source replacements and the fastest rising ones, gpt-4-turbo marked snaps with its retirement date and replacement, and mem0 marked runs with its rank in agent memory and what is rising around it](https://github.com/stringcutter/unrent/raw/main/docs/scan.svg?v=5)
+![unrent my-app: 3 strings attached, 3 can be cut, 1 will snap. Rows for OpenAI API, Pinecone and ElevenLabs marked cut with their open source replacements, each with the biggest open source replacements and the fastest rising ones, gpt-4-turbo marked snaps with its retirement date and replacement, and mem0 marked runs with its rank in agent memory and what is rising around it](https://github.com/stringcutter/unrent/raw/main/docs/scan.svg?v=6)
 
 ## What each row means
 
 | | |
 |---|---|
-| `╎ cut` | You use a closed AI service. The best open source replacement is on the row. |
+| `╎ cut` | You use a closed AI service. The biggest open source replacements are on the row; under them, the fastest rising (`rising`) and an open-weight model (`model`). |
 | `│ held` | You use a closed AI service with no open source replacement yet. |
 | `┆ snapped` | Your code asks for a model the vendor has shut down. Those calls fail today. |
 | `┆ snaps` | Your code asks for a model the vendor shuts down on the date shown. |

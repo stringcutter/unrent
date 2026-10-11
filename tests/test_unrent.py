@@ -2672,6 +2672,20 @@ def test_terminal_counts_one_string_per_service(tmp_path, catalog):
     assert "--why openai" in text  # the hint names the top row
 
 
+def test_terminal_puts_rising_and_the_model_on_lines_of_their_own(tmp_path, catalog):
+    # Servers, the projects gaining fastest, and an open-weight LLM are three different
+    # answers: never one line.
+    for width in (200, 50):
+        lines = terminal(write(tmp_path, TIED), catalog, width=width).splitlines()
+        assert not any(" · rising" in ln or " + " in ln for ln in lines)
+        at = next(i for i, ln in enumerate(lines) if "OpenAI API" in ln)
+        below = [ln.split()[0] for ln in lines[at + 1 : at + 6] if ln.startswith(" ")]
+        assert "model" in below
+        notes = [ln for ln in lines if ln.lstrip().startswith(("rising", "model"))]
+        if width == 200:  # side by side, every note starts in the alternatives' column
+            assert len({len(ln) - len(ln.lstrip()) for ln in notes}) == 1
+
+
 def test_terminal_holds_a_service_with_no_open_match(tmp_path, catalog):
     empty = dataclasses.replace(
         catalog,
