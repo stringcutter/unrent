@@ -68,6 +68,7 @@ def test_one_key_for_one_model_however_it_is_written():
         ("Qwen/Qwen3.8-27B", "qwen3.8-27b"),
         ("qwen3.8:latest", "qwen3.8"),
         ("deepseek-v4-pro-high-20260813", "deepseek-v4-pro"),
+        ("mimo-v2-flash (non-thinking)", "mimo-v2-flash"),
     ]
     for a, b in same:
         assert model_key(a) == model_key(b), (a, b)
@@ -155,12 +156,10 @@ def test_terminal_shows_each_model_with_the_open_ones_as_good(tmp_path, catalog)
     qwen = catalog.arena[model_key("qwen3.8-27b")].display
     lines = [line.rstrip() for line in out.splitlines()]
     at = lines.index("│ model  claude-opus-5.5  agent.py:3")
-    assert lines[at + 1 : at + 3] == [
-        "         → mimo-v2.6-pro, kimi-k3 (Kimi K3 license), glm-5.3",
-        "           arena   1515 vs 1492, 1476, 1471 · none as good",
-    ]
+    # None reaches Opus: the closest below, said so; the ratings are for --why and JSON.
+    assert lines[at + 1] == "         → closest: mimo-v2.6-pro, kimi-k3 (Kimi K3 license), glm-5.3"
     assert f"         → {qwen}" in lines
-    assert "           arena   1443 vs 1441" in lines
+    assert not any(line.lstrip().startswith("arena") for line in lines)
     assert "1 string attached." in out  # a model is not a string
     assert "model ratings LMArena (CC BY 4.0)" in out
     # Without models, the view is as it was.

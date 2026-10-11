@@ -227,19 +227,15 @@ def _rated(models: list[ArenaModel]) -> str:
 
 
 def model_rows(models: list[ModelUse], root: Path, catalog: Catalog) -> list[Row]:
-    """A model the code selects, the open-weight models LMArena rates as good (or the
-    nearest below, `none as good`), and the ratings that say so."""
+    """A model the code selects and the open-weight models LMArena rates as good, or
+    the closest below when none is; the ratings are in --why and the JSON."""
     out = []
     for u in models:
         m = matches(u.model, catalog)
         if not m.picks and not u.model.open:
             continue
-        arena = f"{round(u.model.rating)}"
-        if m.picks:
-            arena += " vs " + ", ".join(f"{round(p.rating)}" for p in m.picks)
-        notes = [("arena", arena + (" · none as good" if m.close else ""))]
-        if m.rising:
-            notes.append(("rising", _rated(m.rising)))
+        picks = ("closest: " if m.close else "") + _rated(m.picks)
+        notes = (("rising", _rated(m.rising)),) if m.rising else ()
         out.append(
             Row(
                 "model",
@@ -247,9 +243,9 @@ def model_rows(models: list[ModelUse], root: Path, catalog: Catalog) -> list[Row
                 u.model.display,
                 _loc(u.sites[0], root),
                 len(u.sites) - 1,
-                _rated(m.picks) or BEST_OPEN,
+                picks if m.picks else BEST_OPEN,
                 False,
-                tuple(notes),
+                notes,
             )
         )
     return out
@@ -348,7 +344,7 @@ def _line(r: Row, widths: tuple[int, int, int], st: Style) -> list[str]:
     more = f"+{r.more}" if r.more else ""
     head = (
         f"{_bar(r.state, bar_w, st)}{GAP}{name:<{name_w}}{GAP}"
-        f"{st.mute(f'{r.where:<{where_w}}  {more}')}"
+        f"{st.mute(f'{r.where:<{where_w}}  {more}'.rstrip())}"
     ).rstrip()
     return [head, *_body(r, bar_w + len(GAP), st)]
 
@@ -568,12 +564,10 @@ def why_model(s: Snap, root: Path, catalog: Catalog, *, as_of=None, colour: bool
     out += [st.mute(f"  {r.url}"), ""]
     peer, model = _open_peer(s, catalog)
     if peer:
-        rated = catalog.arena[model_key(r.id)]
         url = f"  {peer.weights.url}" if peer.weights else ""
         out += [
             f"  or an open-weight peer: {st.bold(_rated([peer]))}{st.mute(url)}",
-            st.mute(f"  LMArena {_arena(peer)}, against {_arena(rated)} for {r.id}"),
-            *_credit(catalog, st),
+            st.mute("  as good by LMArena's text leaderboard (CC BY 4.0)"),
             "",
         ]
     elif model:

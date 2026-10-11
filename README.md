@@ -22,7 +22,7 @@ which models are about to stop working.**
 uvx unrent .
 ```
 
-![unrent my-app: 3 strings attached, 3 can be cut, 1 will snap. Rows for OpenAI API, Pinecone and ElevenLabs marked cut with their open source replacements, each with the biggest open source replacements and the fastest rising ones, gpt-4-turbo marked snaps with its retirement date, replacement and nearest open-weight peer, gpt-5.6-sol marked model with the open-weight models LMArena rates as good, and mem0 marked runs with its rank in agent memory and what is rising around it](https://github.com/stringcutter/unrent/raw/main/docs/scan.svg?v=10)
+![unrent my-app: 3 strings attached, 3 can be cut, 1 will snap. Rows for OpenAI API, Pinecone and ElevenLabs marked cut with their open source replacements, each with the biggest open source replacements and the fastest rising ones, gpt-4-turbo marked snaps with its retirement date, replacement and nearest open-weight peer, gpt-5.4-mini marked model with the open-weight models LMArena rates as good, and mem0 marked runs with its rank in agent memory and what is rising around it](https://github.com/stringcutter/unrent/raw/main/docs/scan.svg?v=12)
 
 ## What each row means
 
@@ -37,7 +37,7 @@ uvx unrent .
 
 Every row points to a file and line. `--why` shows all of them, and what to use instead:
 
-![unrent my-app --why gpt-4-turbo: main.py line 9 selects gpt-4-turbo, which retires on 2026-10-23; openai recommends gpt-5.6-sol, with the link to OpenAI's deprecations page, or its open-weight peer on LMArena, olmo-3.1-32b-think](https://github.com/stringcutter/unrent/raw/main/docs/why-model.svg?v=9)
+![unrent my-app --why gpt-4-turbo: main.py line 9 selects gpt-4-turbo, which retires on 2026-10-23; openai recommends gpt-5.6-sol, with the link to OpenAI's deprecations page, or olmo-3.1-32b-think, an open-weight model as good by LMArena's text leaderboard](https://github.com/stringcutter/unrent/raw/main/docs/why-model.svg?v=12)
 
 > [!NOTE]
 > unrent runs on your machine. No account, no upload, no telemetry.

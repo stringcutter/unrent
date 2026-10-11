@@ -118,7 +118,7 @@ _SIZE = re.compile(r"(?i)(?<![a-z0-9])(\d+(?:\.\d+)?)b(?![a-z0-9])")
 def model_base(name: str) -> str:
     """A model's name without its publisher and variant: `claude-opus-5.5-high` and
     `Qwen/Qwen3.8-27B-Instruct` give `claude-opus-5.5` and `Qwen3.8-27B`."""
-    name = name.rsplit("/", 1)[-1]
+    name = re.sub(r"\s*\([^)]*\)$", "", name.rsplit("/", 1)[-1])  # `(non-thinking)`
     while (shorter := _VARIANT.sub("", name)) != name:
         name = shorter
     return name
