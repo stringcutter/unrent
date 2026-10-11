@@ -15,17 +15,17 @@ from .detect import Finding
 from .retired import Snap, _rel, replacement, snaps, state
 
 RANKED_BY = {
-    "momentum": "ranked by GitHub stars gained in the last 90 days",
-    "stars": "ranked by GitHub stars (momentum needs four weeks of history)",
+    "stars": "established by GitHub stars, rising by stars gained in the last 30 days",
     "trending": "ranked by Hugging Face trending",
     None: "catalog order, not ranked",
 }
 EVIDENCE_SHOWN = 5
 _BACKTICKS = re.compile(r"`+")
-AHEAD_SHOWN = 3
-# Alternatives named per pool in a summary row: a ranking by popularity is no verdict
-# on which fits, so the summary never crowns one.
+# Alternatives named per pool and lens in a summary row: a ranking by popularity is no
+# verdict on which fits, so the summary never crowns one.
 PICKS = 3
+# A repo younger than this says when it was created: new is part of the news.
+NEW_DAYS = 365
 
 
 def _compact(n: int | None) -> str:
@@ -50,8 +50,10 @@ def _stats(alt: Alternative, pool: Pool) -> list[str]:
     bits = []
     if pool.source == "github":
         if alt.stars is not None:
-            gain = f", +{_compact(alt.stars_90d)} in 90 days" if alt.stars_90d is not None else ""
+            gain = f", +{_compact(alt.stars_30d)} in 30 days" if alt.stars_30d is not None else ""
             bits.append(f"★ {_compact(alt.stars)}{gain}")
+        if alt.created and (today() - _dt.date.fromisoformat(alt.created)).days < NEW_DAYS:
+            bits.append(f"created {alt.created[:7]}")
     else:
         if alt.params:
             bits.append(f"{_params(alt.params)} params")
@@ -67,6 +69,8 @@ def _licence(alt: Alternative) -> str:
 def _describe(alt: Alternative, pool: Pool) -> str:
     kind = [_kinds(alt.kind)] if alt.kind else []
     bits = kind + _stats(alt, pool) + ([_licence(alt)] if alt.licence else [])
+    if alt.discovered:
+        bits.append("found by unrent")
     meta = f" ({', '.join(bits)})" if bits else ""
     return f"[{alt.name}]({alt.url}) — {alt.what}{meta}"
 
@@ -110,13 +114,16 @@ def _split(findings: list[Finding]) -> Split:
 
 
 def _picks(f: Finding, catalog: Catalog) -> list[tuple[str, list[Alternative]]]:
-    """What a summary names for one closed service: the project it runs on, then the
-    top of each pool."""
+    """What a summary names for one closed service: the project it runs on, then each
+    pool's established and rising projects."""
     own = catalog.self_hosted(f.service)
     picks = [("Self-hosted", [own])] if own else []
     for pool in catalog.alternatives_for(f.service):
-        if pool.alternatives:
-            picks.append((pool.name, [a for a in pool.alternatives if a is not own][:PICKS]))
+        big, rising = pool.lenses(PICKS, skip=(own.name,) if own else ())
+        if big:
+            picks.append((pool.name, big))
+        if rising:
+            picks.append((f"{pool.name}, rising", rising))
     return picks
 
 
@@ -164,8 +171,9 @@ class Standing:
     """Where one open source component stands in one pool."""
 
     pool: Pool
-    rank: int | None  # None: no longer ranked (archived, inactive, relicensed)
+    rank: int | None  # by stars; None: no longer ranked (archived, inactive, relicensed)
     of: int
+    rising_rank: int | None  # by stars gained in 30 days
     kind_rank: int | None  # among projects sharing a kind with it
     kind_of: int
     ahead: list[Alternative]  # every project ranked above it, in rank order
@@ -196,6 +204,7 @@ def standings_of(repo: str, kind: tuple[str, ...], pools: list[Pool]) -> list[St
                 pool=pool,
                 rank=None if position is None else position + 1,
                 of=len(alts),
+                rising_rank=pool.rising_rank(repo),
                 kind_rank=None if kind_position is None else kind_position + 1,
                 kind_of=len(peers),
                 ahead=alts[:position] if position is not None else alts,
@@ -211,15 +220,25 @@ def alternative_json(a: Alternative) -> dict:
 
 def standing_json(s: Standing, ahead: int | None = None) -> dict:
     """`ahead` caps the list of projects ranked above; None lists them all."""
+    big, rising = s.pool.lenses(PICKS, skip=(s.own.name,) if s.own else ())
     return {
         "pool": s.pool.id,
         "ranked_by": s.pool.ranked_by,
         "rank": s.rank,
         "of": s.of,
+        "rising_rank": s.rising_rank,
         "rank_among_same_kind": s.kind_rank,
         "same_kind": s.kind_of,
+        # The rest of the field: the biggest, and the fastest rising among the others.
+        "established": [a.name for a in big],
+        "rising": [a.name for a in rising],
         "ahead": [alternative_json(a) for a in s.ahead[:ahead]],
     }
+
+
+def _lenses_json(pool: Pool, n: int = PICKS) -> dict:
+    big, rising = pool.lenses(n)
+    return {"established": [a.name for a in big], "rising": [a.name for a in rising]}
 
 
 def _running_json(f: Finding, root: Path, catalog: Catalog) -> dict:
@@ -299,6 +318,7 @@ def payload(
                 "name": catalog.pools[pool_id].name,
                 "replaces": services,
                 "ranked_by": catalog.pools[pool_id].ranked_by,
+                **_lenses_json(catalog.pools[pool_id]),
                 "items": [alternative_json(a) for a in catalog.pools[pool_id].alternatives],
             }
             for pool_id, services in _pools_in_order(split.closed).items()
@@ -428,23 +448,22 @@ def _standing_line(s: Standing, kind: tuple[str, ...]) -> list[str]:
             f"- **{pool.name}**: dropped from the ranking — archived, no push in a year, or "
             "no longer open source."
         ]
-    head = f"- **{pool.name}**: #{s.rank} of {s.of}"
+    head = f"- **{pool.name}**: #{s.rank} of {s.of} by stars"
+    if s.rising_rank:
+        head += f", #{s.rising_rank} by stars gained in 30 days"
     if kind and s.kind_of > 1 and s.kind_of < s.of:
         head += f", #{s.kind_rank} of {s.kind_of} of its kind"
     stats = _stats(s.own, pool) if s.own else []
     head += f" ({', '.join(stats)})" if stats else ""
-    if s.rank == 1:
-        return [head + "."]
-    # Only momentum says who is gaining ground; total stars say who is bigger.
-    lead_in = "Gaining ground faster" if pool.ranked_by == "momentum" else "Ranked above it"
-    lines = [f"{head}. {lead_in}:"]
-    for a in s.ahead[:AHEAD_SHOWN]:
-        mark = " *(same kind)*" if same_kind(a, kind) else ""
-        label = f"{_kinds(a.kind)}, " if a.kind else ""
-        stats_a = ", ".join(_stats(a, pool)) or a.what
-        lines.append(f"  - [{a.name}]({a.url}) — {label}{stats_a}{mark}")
-    if len(s.ahead) > AHEAD_SHOWN:
-        lines.append(f"  - …and {len(s.ahead) - AHEAD_SHOWN} more")
+    lines = [head + "."]
+    big, rising = pool.lenses(PICKS, skip=(s.own.name,) if s.own else ())
+    for label, alts in (("Established", big), ("Rising", rising)):
+        if alts:
+            named = ", ".join(
+                f"[{a.name}]({a.url})" + (" *(same kind)*" if same_kind(a, kind) else "")
+                for a in alts
+            )
+            lines.append(f"  - {label}: {named}")
     return lines
 
 
@@ -454,7 +473,8 @@ def _running(running: list[Finding], root: Path, catalog: Catalog) -> list[str]:
     out = [
         "## Open source you already run",
         "",
-        "Rank in its pool, overall and among projects of the same kind.",
+        "Rank in its pool by stars and by stars gained in 30 days, and the rest of the "
+        "field: the biggest, and the fastest rising among the others.",
         "",
     ]
     for f in running:
@@ -638,8 +658,12 @@ def to_markdown(
                 f"Replaces {', '.join(services)} · {RANKED_BY.get(pool.ranked_by, pool.ranked_by)}",
                 "",
             ]
-            for i, alt in enumerate(pool.alternatives[:top], start=1):
+            big, rising = pool.lenses(top)
+            for i, alt in enumerate(big, start=1):
                 out.append(f"{i}. {_describe(alt, pool)}")
+            if rising:
+                out += ["", "Rising:", ""]
+                out += [f"{i}. {_describe(a, pool)}" for i, a in enumerate(rising, start=1)]
             if not pool.alternatives:
                 out.append("No ranking in this catalog. Run `scripts/refresh.py`.")
             out.append("")

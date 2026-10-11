@@ -1,11 +1,11 @@
 """The latest rankings and model retirements, fetched from the unrent repository.
 
-The weekly jobs commit catalog/rankings.json and catalog/retirements.yaml to main. The
-MCP server reads both from there instead of the copies shipped with the release, and a
-scan and the hook read the retirements, so dates and rankings are at most a week old
-however old the install. Only these two public files are fetched: nothing about the
-scanned code leaves the machine. When a fetch fails, or with UNRENT_OFFLINE=1, the
-shipped copy is used, and the result says why.
+Scheduled jobs commit catalog/rankings.json (daily) and catalog/retirements.yaml
+(weekly) to main. The MCP server reads both from there instead of the copies shipped
+with the release, and a scan and the hook read the retirements, so rankings are at most
+a day old and dates a week, however old the install. Only these two public files are
+fetched: nothing about the scanned code leaves the machine. When a fetch fails, or with
+UNRENT_OFFLINE=1, the shipped copy is used, and the result says why.
 """
 
 from __future__ import annotations

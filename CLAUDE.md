@@ -34,7 +34,7 @@ writes in Danish; answer in the language of their latest message.
 | `unrent/fresh.py` | Live rankings (MCP server) and retirements (scan, MCP, hook) from `catalog/` on `main`, cached 6 h, else the shipped copy; `UNRENT_OFFLINE=1` to test local catalog edits |
 | `catalog/services/*.yaml` | Closed services. `models-dev.yaml` is **generated**; the others are hand-written |
 | `catalog/alternatives.yaml` | Pools of open source alternatives and the open source projects recognised in code |
-| `catalog/rankings.json`, `star-history.json` | Written weekly by `scripts/refresh.py` |
+| `catalog/rankings.json`, `star-history.json`, `discovered.json` | Written daily by `scripts/refresh.py`: stars, 30-day gains, and the projects it found and judged |
 | `catalog/retirements.yaml` | Model retirements from the vendors' pages (`vendors`) and from Azure, Bedrock and Vertex (`platforms`: a key of its own, since releases up to 0.3.0 fail on an id listed twice), rewritten weekly by `scripts/retirements.py` (pull request left open for review). An id resolves to the vendor of the finding's service |
 | `eval/` | Golden corpus (77 repos, pinned commits) with hand-labelled truth, `TRUTH_RULES.md`, `OSS_TRUTH_RULES.md`, `MODEL_TRUTH_RULES.md` (`corpus_models.yaml`), `run_eval.py` |
 | `scripts/` | `refresh.py` (rankings), `verify_packages.py`, `new_services.py` (models.dev + corpus candidates), `mcp_smoke.py` |
@@ -124,10 +124,15 @@ claude plugin validate .                   # plugin + marketplace (CLAUDE.md-at-
 ## Rankings and data sources
 
 - GitHub no longer lists stargazers with dates, and OSSInsight is degraded since
-  2026-05. Momentum comes only from unrent's own weekly snapshots
-  (`star-history.json`); a pool falls back to total stars until it has four weeks of
-  history, and `ranked_by` says which. Never present a star delta you computed yourself
-  as momentum.
+  2026-05. Growth comes only from unrent's own daily snapshots (`star-history.json`):
+  `stars_30d`, from a week of history (`momentum` in refresh.py covers repos too new for
+  it). Each GitHub pool shows two lenses, established (stars) and rising (`stars_30d`,
+  at least 2% of its stars and 100); never merge them into one score. Never present a
+  star delta you computed yourself as growth.
+- Pools grow by themselves: refresh.py runs each pool's `discover` searches and has
+  Claude (`JUDGE_MODEL`, `ANTHROPIC_API_KEY`) judge new candidates once; verdicts with
+  reasons live in `catalog/discovered.json` (generated: don't hand-edit). To correct
+  the judge, add the repo to the pool's `deny`, or list it by hand where it belongs.
 - Hugging Face pools: each listed publisher's own models (not fine-tunes or GGUF
   re-uploads) under an open licence, ranked by trending score.
 
@@ -137,11 +142,12 @@ claude plugin validate .                   # plugin + marketplace (CLAUDE.md-at-
 - `eval.yml`: the golden corpus with floors on changes to `unrent/`, `catalog/services/`,
   `catalog/alternatives.yaml` or `eval/`; its job summary ranks the corpus's
   `unknown_candidates`.
-- `refresh.yml` (Mondays 05:17 UTC): rankings PR (merges itself on a quiet week);
-  `packages` (verify_packages); `new-services` (regenerates `models-dev.yaml`, runs tests
-  and the corpus, opens a PR that merges itself when all pass).
+- `refresh.yml`: daily at 05:17 UTC the rankings PR (discovery and judging included;
+  merges itself on a quiet day); Mondays at 05:47 `packages` (verify_packages),
+  `new-services` (regenerates `models-dev.yaml`, runs tests and the corpus, opens a PR
+  that merges itself when all pass) and `retirements`.
 - `publish.yml`: PyPI on a GitHub release (trusted publishing).
-- The bots push to `main` weekly: pull before you start.
+- The bots push to `main` daily: pull before you start.
 - The repo is public and unrent is on PyPI. Renaming the repo or moving
   `catalog/rankings.json` breaks live rankings for every installed MCP server; renaming
   it also breaks the plugin marketplace (`stringcutter/unrent`).

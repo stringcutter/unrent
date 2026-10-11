@@ -17,7 +17,7 @@ description: >-
 # unrent: closed AI dependencies, retiring models and their open source replacements
 
 unrent (by stringcutter) is a deterministic scanner with a hand-curated catalog of closed
-AI services, the vendors' model retirements and open source alternatives, ranked weekly
+AI services, the vendors' model retirements and open source alternatives, ranked daily
 from GitHub and Hugging Face. It is fast (seconds), its file:line evidence is exact, and
 its rankings and retirement dates are newer than your training data. What it cannot do
 is see services outside its catalog, or judge whether a replacement fits this particular
@@ -104,7 +104,7 @@ not list it; the default config and compose files show it.
 ## 4. Recommend replacements
 
 Start from `alternatives` (or call `alternatives` with a category or service name). The
-numbers in it were checked against GitHub and Hugging Face at the last weekly refresh,
+numbers in it were checked against GitHub and Hugging Face at the last daily refresh,
 so you don't need to re-measure them. Add the judgement unrent leaves out:
 
 - **Self-host first.** When a finding has `self_host`, that project is the recommendation
@@ -114,10 +114,13 @@ so you don't need to re-measure them. Add the judgement unrent leaves out:
 - **Rank is popularity, not fit.** Pick from the top few by what the code needs: its
   `kind` where given (a server, a library, a Postgres extension), the features it uses (filters,
   hybrid search, multi-tenancy) and what it already runs. Say why the pick fits.
-- **Read `ranked_by`.** `stars` means biggest, not fastest rising: say so rather than
-  calling it a trend. Don't compute star growth yourself; there is no reliable public
-  source for it today, and figures from different methods disagree by 10x or more. If
-  `stars_90d` is present, that is the growth figure.
+- **Two lenses: established and rising.** `established` is the biggest by stars: proven
+  at scale. `rising` gained the most stars in 30 days (`stars_30d`, at least 2% of its
+  own): where attention is moving, and newer, so riskier. Offer both and say which is
+  which; for something in production, lean established unless the rising project
+  clearly fits better. Items with `discovered` were found and judged a fit
+  automatically, not listed by hand: check those before recommending them. Don't
+  compute star growth yourself; `stars_30d` is the figure.
 - **Fit the model to the stack.** Hugging Face pools rank by trending, whatever the size:
   a 1-trillion-parameter model tops the list for a week after release. Match the
   recommendation to how this codebase runs models (a laptop with Ollama, one GPU,

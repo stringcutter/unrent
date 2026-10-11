@@ -62,12 +62,14 @@ Know its limits:
 - `models_named` entries rest on model names alone (a token-limit table, a model menu)
   or on a registry (a price table, a provider catalog), `env_template_only` entries on a
   key in an example env file: check the code before calling them dependencies.
-- Each pool says how it is ranked (`ranked_by`): GitHub pools by stars gained over 90
-  days once enough weekly history exists, by total stars until then; Hugging Face pools
-  by trending, whatever the model's size. Stars, licences and activity are checked
-  against GitHub at each weekly refresh. A rank is popularity, not fit: choose among
-  the top few by what the code needs (each item's `kind`, where given, says whether
-  it is a server, a library or an extension).
+- A GitHub pool has two lenses: `established` (the biggest by stars: proven at scale)
+  and `rising` (gaining the most stars in the last 30 days, at least 2% of their own:
+  where attention is moving). Rising is not better, and new projects carry more risk:
+  say which lens a name comes from. Each item has `stars`, `stars_30d`, `created` and
+  `kind` (server, library, extension) where known; `discovered` items were found and
+  judged a fit automatically, not listed by hand. Hugging Face pools are one list, by
+  trending, whatever the model's size. Stars, licences and activity are checked against
+  GitHub daily. A rank is popularity, not fit: choose by what the code needs.
 - `open_core` marks projects where part of the repo is under a licence that is not open.
 
 unrent lists and ranks; whether a switch makes sense is for you and the user to judge."""
@@ -141,12 +143,15 @@ def _standing(s: Standing, top: int) -> dict:
 
 
 def _pool_json(pool: Pool, top: int) -> dict:
+    big, rising = pool.lenses(top)
     return {
         "id": pool.id,
         "name": pool.name,
         "ranked_by": _ranked_by(pool.ranked_by),
         "size": len(pool.alternatives),
-        "items": [alternative_json(a) for a in pool.alternatives[:top]],
+        "established": [a.name for a in big],
+        "rising": [a.name for a in rising],
+        "items": [alternative_json(a) for a in big + rising],
     }
 
 
@@ -220,9 +225,8 @@ def scan(
     running = [f for f in findings if f.service.open_source]
     for entry, f in zip(result["open_source"], running, strict=True):
         entry["standing"] = [_standing(s, top) for s in standings(f, catalog)]
-    for pool in result["alternatives"].values():
-        pool["ranked_by"] = _ranked_by(pool["ranked_by"])
-        _capped([pool], "items", top)
+    for pool_id, pool in result["alternatives"].items():
+        pool.update(_pool_json(catalog.pools[pool_id], top))
     result["rankings"] = _rankings_json(rankings)
     result["retirements"] = _retirements_json()
     del result["rankings_date"]
@@ -255,8 +259,8 @@ def alternatives(query: str, top: int = 5) -> dict[str, Any]:
       closed service ("Pinecone", "OpenAI API", "elevenlabs").
     top: entries per pool.
 
-    GitHub pools are ranked by stars gained in the last 90 days (total stars until
-    enough history exists; see each pool's `ranked_by`), Hugging Face pools by
+    GitHub pools come as two lenses: `established` (biggest by stars) and `rising`
+    (most stars gained in 30 days among the rest); Hugging Face pools are ranked by
     trending. Open source only: OSI licence for code (`open_core` marks a part that is
     not), open licence for weights, no archived projects or projects without a push in
     a year.
@@ -310,8 +314,9 @@ def _find_repo(query: str, catalog: Catalog) -> tuple[str, tuple[str, ...]] | No
 
 @server.tool(annotations=READ_ONLY, structured_output=True)
 def standing(repo: str, top: int = 5) -> dict[str, Any]:
-    """Where one open source project ranks in its field, overall and among projects of
-    the same kind (library, server, embedded, ...), with the projects ranked above it.
+    """Where one open source project ranks in its field, by stars and by stars gained in
+    30 days, overall and among projects of the same kind (library, server, embedded,
+    ...), with the established and rising projects around it.
 
     repo: "owner/name" on GitHub ("qdrant/qdrant"), a GitHub URL, or a bare name when
       it is unambiguous ("faiss").

@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TextIO
 
-from .catalog import Catalog
+from .catalog import Alternative, Catalog, Pool
 from .detect import Finding
 from .facts import Fact
 from .render import PICKS, RANKED_BY, Split, _describe, _split, standings, today
@@ -100,22 +100,42 @@ def _loc(fact: Fact, root: Path) -> str:
     return _clean(f"{_rel(fact.file, root)}:{fact.line}")
 
 
+# Repo names that say little without their owner: e2b-dev/runtime, livekit/agents.
+# ponytail: a word list; grow it when a short name reads as nothing.
+GENERIC = frozenset(
+    {"agent", "agents", "api", "app", "core", "engine", "gateway", "inference", "memory",
+     "model", "models", "platform", "runtime", "sandbox", "sdk", "search", "server",
+     "speech", "tools"}
+)  # fmt: skip
+
+
+def _short(name: str) -> str:
+    repo = name.rsplit("/", 1)[-1]
+    return name if repo.lower() in GENERIC else repo
+
+
+def _names(alts: list[Alternative]) -> str:
+    return ", ".join(_short(a.name) for a in alts)
+
+
 def _best(f: Finding, catalog: Catalog) -> str:
-    """The project a hosted service runs, else the top few of each pool that replaces
-    it (projects first, then open weights): a popularity ranking crowns no winner."""
+    """The project a hosted service runs, else the biggest few of the first pool that
+    replaces it; then the fastest rising among the rest, and the top open-weight model.
+    A popularity ranking crowns no winner."""
     own = catalog.self_hosted(f.service)
-    if own:
-        return f"self-host {own.name}"
-    pools = sorted(catalog.alternatives_for(f.service), key=lambda p: p.source != "github")
-    tops = []
-    for pool in pools:
-        if pool.source == "github":
-            top = ", ".join(a.name.split("/")[-1] for a in pool.alternatives[:PICKS])
-        else:
-            top = pool.alternatives[0].name.rsplit("/", 1)[-1] if pool.alternatives else ""
-        if top and top not in tops:
-            tops.append(top)
-    return " + ".join(tops[:2])
+    pools = [p for p in catalog.alternatives_for(f.service) if p.alternatives]
+    github = next((p for p in pools if p.source == "github"), None)
+    model = next((p for p in pools if p.source != "github"), None)
+    parts = []
+    if github:
+        big, rising = github.lenses(PICKS, skip=(own.name,) if own else ())
+        head = f"self-host {own.name}" if own else _names(big)
+        parts.append(head + (f" · rising {_names(rising)}" if rising else ""))
+    elif own:
+        parts.append(f"self-host {own.name}")
+    if model:
+        parts.append(_names(model.alternatives[:1]))
+    return " + ".join(parts)
 
 
 def _standing(f: Finding, catalog: Catalog) -> str:
@@ -123,7 +143,10 @@ def _standing(f: Finding, catalog: Catalog) -> str:
     if not ranked:
         return "dropped from its ranking"
     s = min(ranked, key=lambda s: s.rank)
-    return f"#{s.rank} of {s.of} · {s.pool.name}"
+    rising = s.pool.rising(PICKS, skip=(f.service.repo,))
+    return f"#{s.rank} of {s.of} in {s.pool.name}" + (
+        f" · rising {_names(rising)}" if rising else ""
+    )
 
 
 def snap_rows(retiring: list[Snap], root: Path, catalog: Catalog, as_of) -> list[Row]:
@@ -361,10 +384,12 @@ def why(
     out.append("")
     if f.service.open_source:
         for s in standings(f, catalog):
-            rank = f"#{s.rank} of {s.of}" if s.rank else "dropped from its ranking"
-            out.append(f"  {s.pool.name}: {rank}")
-            for a in s.ahead[:top]:
-                out.append(st.mute(f"    above it: {a.name}"))
+            if s.rank is None:
+                out.append(f"  {st.bold(s.pool.name)}  dropped from its ranking")
+                continue
+            rising = f", #{s.rising_rank} by stars gained in 30 days" if s.rising_rank else ""
+            out.append(f"  {st.bold(s.pool.name)}  #{s.rank} of {s.of} by stars{rising}")
+            out += _field(s.pool, top, (f.service.repo,), st)
     else:
         own = catalog.self_hosted(f.service)
         if own:
@@ -373,15 +398,25 @@ def why(
             out.append("")
         for pool in catalog.alternatives_for(f.service):
             out.append(f"  {st.bold(pool.name)}  {st.mute(RANKED_BY.get(pool.ranked_by, ''))}")
-            for i, alt in enumerate(pool.alternatives[:top], start=1):
-                line = _describe(alt, pool)
-                # Markdown link to plain text: name, then the URL muted.
-                text = line.replace(f"[{alt.name}]({alt.url})", alt.name, 1)
-                out.append(f"    {i}. {text}  {st.mute(alt.url)}")
+            out += _field(pool, top, (own.name,) if own else (), st)
             if not pool.alternatives:
                 out.append(st.mute("    no ranked alternatives in this catalog"))
     out.append("")
     return "\n".join(out)
+
+
+def _field(pool: Pool, top: int, skip: tuple[str, ...], st: Style) -> list[str]:
+    """The established projects of a pool, then the rising ones, one per line."""
+    big, rising = pool.lenses(top, skip)
+    out = []
+    for label, alts in (("", big), ("rising", rising)):
+        if alts and label:
+            out.append(st.mute(f"    {label}"))
+        for i, alt in enumerate(alts, start=1):
+            # Markdown link to plain text: name, then the URL muted.
+            text = _describe(alt, pool).replace(f"[{alt.name}]({alt.url})", alt.name, 1)
+            out.append(f"    {i}. {text}  {st.mute(alt.url)}")
+    return out
 
 
 def why_model(s: Snap, root: Path, catalog: Catalog, *, as_of=None, colour: bool = False) -> str:

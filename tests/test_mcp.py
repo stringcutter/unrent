@@ -28,9 +28,10 @@ def snapshot(generated: str, pools: dict | None = None) -> dict:
 
 
 def vector_db_led_by(repo: str) -> dict:
-    """The shipped vector-db pool with `repo` moved to the top."""
+    """The shipped vector-db pool with `repo` the biggest."""
     pool = json.loads(json.dumps(SHIPPED["pools"]["vector-db"]))
     pool["ranked"].sort(key=lambda e: e["repo"] != repo)
+    pool["ranked"][0]["stars"] = max(e["stars"] for e in pool["ranked"]) + 1
     return {"vector-db": pool}
 
 
@@ -398,9 +399,11 @@ def test_scan_reports_services_evidence_and_standing(monkeypatch, project):
     assert openai["evidence"][0]["file"] == "requirements.txt"  # strongest first
     assert [p["repo"] for p in out["open_source"]] == ["facebookresearch/faiss"]
     standing = out["open_source"][0]["standing"][0]
-    assert standing["ranked_by"].startswith("ranked by")
+    assert standing["ranked_by"].startswith("established by")
     assert len(standing["ahead"]) <= 1
-    assert all(len(p["items"]) == 1 for p in out["alternatives"].values())
+    assert all(
+        len(p["established"]) == 1 and len(p["rising"]) <= 1 for p in out["alternatives"].values()
+    )
     assert out["rankings"] == {
         "date": SHIPPED["generated"],
         "source": "shipped",
@@ -455,7 +458,7 @@ def test_alternatives_by_service_or_category(monkeypatch, query, pool):
     monkeypatch.setenv("UNRENT_OFFLINE", "1")
     out = call("alternatives", query=query, top=2)
     assert pool in [p["id"] for p in out["pools"]]
-    assert all(len(p["items"]) <= 2 for p in out["pools"])
+    assert all(len(p["established"]) <= 2 and len(p["rising"]) <= 2 for p in out["pools"])
 
 
 @pytestmark_mcp

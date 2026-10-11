@@ -4,13 +4,19 @@
 # service names the pools that replace it (see services/*.yaml), so a project added
 # here is offered everywhere it applies.
 #
-# Order in this file means nothing. `scripts/refresh.py` ranks every pool by momentum
-# and writes catalog/rankings.json; the scanner reads that snapshot and never touches
-# the network.
+# Order in this file means nothing. `scripts/refresh.py` ranks every pool daily and
+# writes catalog/rankings.json; the scanner reads that snapshot and never touches the
+# network.
 #
-#   github pools       — ranked by stars gained in the last 90 days. Archived repos,
-#                        repos with no push in 365 days and repos whose licence is not
-#                        OSI-approved are dropped from the ranking.
+#   github pools       — shown two ways: established (total stars) and rising (stars
+#                        gained in the last 30 days). Archived repos, repos with no
+#                        push in 365 days and repos whose licence is not OSI-approved
+#                        are dropped. Besides the projects listed here, a pool holds
+#                        what the refresh found itself: it runs each `discover` GitHub
+#                        search (1,000 stars or more, pushed in the last 30 days) and
+#                        has Claude judge each new candidate against the pool once
+#                        (catalog/discovered.json). A repo in `deny` is never shown;
+#                        listing a repo here by hand overrides the judge.
 #   huggingface pools  — open-weight models, discovered rather than listed: the newest
 #                        original (non-derived) models from the listed publishers, with
 #                        an open licence, ranked by Hugging Face's trending score.
@@ -32,6 +38,7 @@ pools:
   - id: llm-serving
     name: Inference server
     source: github
+    discover: ["topic:llm-inference", "topic:llm-serving", "topic:inference-engine"]
     projects:
       - {repo: vllm-project/vllm, what: "High-throughput production inference server, OpenAI-compatible API"}
       - {repo: sgl-project/sglang, what: "Fast inference server for LLMs and multimodal models, OpenAI-compatible API"}
@@ -55,6 +62,7 @@ pools:
   - id: llm-gateway
     name: LLM gateway
     source: github
+    discover: ["topic:llm-gateway", "topic:ai-gateway"]
     projects:
       - {repo: BerriAI/litellm, what: "Proxy exposing 100+ providers behind one OpenAI-compatible API, with keys, budgets and fallbacks", licence: MIT, open_core: "enterprise/ is under a commercial licence"}
       - {repo: Portkey-AI/gateway, what: "Fast AI gateway with routing, retries and guardrails"}
@@ -67,6 +75,7 @@ pools:
   - id: fine-tuning
     name: Fine-tuning framework
     source: github
+    discover: ["topic:fine-tuning topic:llm", "topic:llm-training"]
     projects:
       - {repo: unslothai/unsloth, what: "Fast, memory-efficient fine-tuning and RL for open models"}
       - {repo: hiyouga/LlamaFactory, what: "Unified fine-tuning of 100+ LLMs, with a web UI"}
@@ -78,6 +87,7 @@ pools:
   - id: guardrails
     name: Guardrails and moderation
     source: github
+    discover: ["topic:guardrails", "topic:llm-security"]
     projects:
       - {repo: NVIDIA-NeMo/Guardrails, what: Programmable guardrails for LLM applications, licence: Apache-2.0}
       - {repo: guardrails-ai/guardrails, what: Input and output validation for LLMs}
@@ -87,6 +97,7 @@ pools:
   - id: vector-db
     name: Vector database
     source: github
+    discover: ["topic:vector-database", "topic:vector-search"]
     projects:
       - {repo: qdrant/qdrant, what: Vector database and search engine written in Rust}
       - {repo: milvus-io/milvus, what: Cloud-native vector database built for scale}
@@ -101,6 +112,7 @@ pools:
   - id: vector-index
     name: Vector search library
     source: github
+    discover: ["topic:approximate-nearest-neighbor-search", "topic:nearest-neighbor-search"]
     projects:
       - {repo: facebookresearch/faiss, what: Library for efficient similarity search}
       - {repo: nmslib/hnswlib, what: Header-only HNSW library for approximate nearest neighbours}
@@ -109,6 +121,7 @@ pools:
   - id: search-engine
     name: Search engine
     source: github
+    discover: ["topic:search-engine topic:full-text-search", "topic:hybrid-search"]
     projects:
       - {repo: opensearch-project/OpenSearch, what: "Search and analytics suite with vector, lexical and hybrid search"}
       - {repo: meilisearch/meilisearch, what: "Search engine with hybrid (keyword + vector) search", licence: MIT, open_core: "Enterprise Edition features are BUSL-1.1"}
@@ -121,6 +134,7 @@ pools:
   - id: search-library
     name: Search library
     source: github
+    discover: ["topic:full-text-search"]
     projects:
       - {repo: quickwit-oss/tantivy, what: Full-text search engine library in Rust}
       - {repo: blevesearch/bleve, what: "Text, numeric, geo and vector indexing library for Go"}
@@ -129,6 +143,7 @@ pools:
   - id: rag-application
     name: RAG application
     source: github
+    discover: ["topic:rag topic:chatbot", "topic:knowledge-base topic:llm"]
     projects:
       - {repo: infiniflow/ragflow, what: RAG engine with deep document understanding}
       - {repo: onyx-dot-app/onyx, what: "Self-hostable enterprise search and chat over your documents", licence: MIT, open_core: "ee/ is under a commercial licence"}
@@ -136,6 +151,7 @@ pools:
   - id: rag-framework
     name: RAG framework
     source: github
+    discover: ["topic:retrieval-augmented-generation", "topic:rag topic:framework"]
     projects:
       - {repo: HKUDS/LightRAG, what: Simple and fast graph-based RAG}
       - {repo: microsoft/graphrag, what: Graph-based retrieval-augmented generation}
@@ -153,6 +169,7 @@ pools:
   - id: embedding-serving
     name: Embedding inference
     source: github
+    discover: ["topic:embeddings topic:inference", "topic:text-embeddings"]
     projects:
       - {repo: huggingface/text-embeddings-inference, what: "Fast inference server for embedding and reranker models"}
       - {repo: michaelfeil/infinity, what: "OpenAI-compatible server for embedding, reranking and CLIP models"}
@@ -171,6 +188,7 @@ pools:
   - id: document-parsing
     name: Document parsing
     source: github
+    discover: ["topic:document-parsing", "topic:pdf-parser"]
     projects:
       - {repo: docling-project/docling, what: "Parses PDF, DOCX, PPTX and more into structured output for AI"}
       - {repo: Unstructured-IO/unstructured, what: Open source ETL for unstructured documents}
@@ -183,6 +201,7 @@ pools:
   - id: ocr
     name: OCR and document understanding
     source: github
+    discover: ["topic:ocr"]
     projects:
       - {repo: PaddlePaddle/PaddleOCR, what: "OCR and document parsing toolkit, 100+ languages"}
       - {repo: docling-project/docling, what: "Layout analysis, tables and OCR for PDFs and scans"}
@@ -197,6 +216,7 @@ pools:
   - id: llm-observability
     name: LLM observability and evals
     source: github
+    discover: ["topic:llm-observability", "topic:llmops topic:observability"]
     projects:
       - {repo: langfuse/langfuse, what: "LLM tracing, prompt management, evals and metrics", licence: MIT, open_core: "ee/ is under a commercial licence"}
       - {repo: comet-ml/opik, what: "Tracing, evaluation and monitoring for LLM apps"}
@@ -208,6 +228,7 @@ pools:
   - id: llm-evals
     name: LLM evaluation
     source: github
+    discover: ["topic:llm-evaluation", "topic:llm-eval"]
     projects:
       - {repo: promptfoo/promptfoo, what: "Evals, red-teaming and regression testing for prompts"}
       - {repo: confident-ai/deepeval, what: Evaluation framework for LLM applications}
@@ -216,6 +237,7 @@ pools:
   - id: speech-to-text
     name: Speech-to-text
     source: github
+    discover: ["topic:speech-to-text", "topic:asr"]
     projects:
       - {repo: openai/whisper, what: General-purpose speech recognition model}
       - {repo: SYSTRAN/faster-whisper, what: "Whisper reimplemented on CTranslate2, up to 4x faster"}
@@ -229,6 +251,7 @@ pools:
   - id: text-to-speech
     name: Text-to-speech
     source: github
+    discover: ["topic:text-to-speech", "topic:tts"]
     projects:
       - {repo: resemble-ai/chatterbox, what: "Expressive TTS with voice cloning, MIT weights"}
       - {repo: nari-labs/dia, what: "Dialogue TTS model generating multi-speaker conversation"}
@@ -241,6 +264,7 @@ pools:
   - id: voice-agent
     name: Voice agent framework
     source: github
+    discover: ["topic:voice-agent", "topic:voice-ai"]
     projects:
       - {repo: pipecat-ai/pipecat, what: Framework for real-time voice and multimodal agents}
       - {repo: livekit/agents, what: Framework for real-time voice AI agents on WebRTC}
@@ -248,6 +272,7 @@ pools:
   - id: image-generation
     name: Image generation
     source: github
+    discover: ["topic:image-generation", "topic:stable-diffusion"]
     projects:
       - {repo: Comfy-Org/ComfyUI, what: "Node-based engine for diffusion models, the de-facto standard"}
       - {repo: huggingface/diffusers, what: Library for state-of-the-art diffusion models}
@@ -260,6 +285,7 @@ pools:
   - id: web-search
     name: Web search
     source: github
+    discover: ["topic:metasearch-engine", "topic:metasearch"]
     projects:
       - {repo: searxng/searxng, what: "Self-hosted metasearch engine with a JSON API"}
       - {repo: yacy/yacy_search_server, what: "Self-hosted, peer-to-peer web search engine with its own index", licence: GPL-2.0}
@@ -267,6 +293,7 @@ pools:
   - id: answer-engine
     name: Answer engine
     source: github
+    discover: ["topic:answer-engine", "topic:ai-search"]
     projects:
       - {repo: ItzCrazyKns/Vane, what: "AI-powered answer engine, open source Perplexity alternative"}
       - {repo: khoj-ai/khoj, what: Self-hostable AI answer engine and personal assistant}
@@ -275,6 +302,7 @@ pools:
   - id: web-scraping
     name: Web scraping for LLMs
     source: github
+    discover: ["topic:web-scraping topic:llm", "topic:web-crawler topic:llm"]
     projects:
       - {repo: unclecode/crawl4ai, what: "LLM-friendly web crawler producing clean Markdown"}
       - {repo: firecrawl/firecrawl, what: "Turns websites into LLM-ready data, self-hostable"}
@@ -286,6 +314,7 @@ pools:
   - id: browser-automation
     name: Browser automation for agents
     source: github
+    discover: ["topic:browser-automation topic:llm", "topic:browser-agent"]
     projects:
       - {repo: browser-use/browser-use, what: Makes websites accessible to AI agents}
       - {repo: microsoft/playwright, what: "Browser automation for Chromium, Firefox and WebKit"}
@@ -296,6 +325,7 @@ pools:
   - id: code-sandbox
     name: Code execution sandbox
     source: github
+    discover: ["topic:sandbox topic:ai-agents", "topic:code-interpreter", "topic:microvm"]
     projects:
       - {repo: e2b-dev/runtime, what: "Self-hostable infrastructure behind E2B sandboxes"}
       - {repo: superradcompany/microsandbox, what: Self-hosted microVM sandboxes for untrusted code}
@@ -305,6 +335,7 @@ pools:
   - id: agent-memory
     name: Agent memory
     source: github
+    discover: ["topic:agent-memory", "topic:llm-memory", "topic:ai-memory"]
     projects:
       - {repo: mem0ai/mem0, what: "Memory layer for AI agents, self-hostable"}
       - {repo: getzep/graphiti, what: Real-time knowledge graphs for agent memory}

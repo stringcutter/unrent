@@ -1,14 +1,17 @@
 name: refresh rankings
 
-# Weekly: record every alternative's star count, re-rank the pools, open a pull request
-# and merge it. Momentum is computed from this history, so a skipped week costs
-# accuracy, not correctness. A week with catalog problems is left open for review.
+# Daily: record every alternative's star count, find and judge new projects, re-rank
+# the pools, open a pull request and merge it. Rising is computed from this history,
+# so a skipped day costs accuracy, not correctness. A day with catalog problems is left
+# open for review. Weekly, on Mondays: packages, new services, retirements.
 #
 # Needs Settings > Actions > General > "Allow GitHub Actions to create and approve
-# pull requests" to be enabled, or the last step fails.
+# pull requests" to be enabled, or the last step fails, and the ANTHROPIC_API_KEY
+# secret for judging new projects (without it the rankings still refresh).
 on:
   schedule:
-    - cron: "17 5 * * 1"
+    - cron: "17 5 * * *"  # rankings
+    - cron: "47 5 * * 1"  # the weekly jobs
   workflow_dispatch:
 
 permissions:
@@ -21,7 +24,8 @@ concurrency:
 
 jobs:
   refresh:
-    if: github.repository == 'stringcutter/unrent'  # not on forks
+    # Not on forks, and not on the weekly schedule.
+    if: github.repository == 'stringcutter/unrent' && github.event.schedule != '47 5 * * 1'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -32,6 +36,7 @@ jobs:
         id: rank
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         # Exit 3: rankings written, but a listed project is missing, renamed, archived,
         # inactive or no longer open source; the pull request says so. Anything else
         # non-zero (a crash, or exit 4: a pool collapsed and nothing was written)
@@ -64,8 +69,9 @@ jobs:
           add-paths: |
             catalog/rankings.json
             catalog/star-history.json
-      # A quiet week merges itself: the snapshot was validated and tested above, and
-      # merging is what advances the star history. A week with catalog problems stays
+            catalog/discovered.json
+      # A quiet day merges itself: the snapshot was validated and tested above, and
+      # merging is what advances the star history. A day with catalog problems stays
       # open for a human, with the problems in its description.
       - name: Merge
         if: steps.pr.outputs.pull-request-number && steps.rank.outputs.problems != 'true'
@@ -77,7 +83,7 @@ jobs:
   # removed package is a silent false negative. Separate from the ranking job, so a
   # catalog problem does not cost a week of star history.
   packages:
-    if: github.repository == 'stringcutter/unrent'
+    if: github.repository == 'stringcutter/unrent' && github.event.schedule != '17 5 * * *'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -97,7 +103,7 @@ jobs:
   # lists the providers, and the new endpoints of vendors the catalog already knows,
   # which a person adds to the hand-written entry.
   new-services:
-    if: github.repository == 'stringcutter/unrent'
+    if: github.repository == 'stringcutter/unrent' && github.event.schedule != '17 5 * * *'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -139,7 +145,7 @@ jobs:
   # whose layout changed shows up as ids that are gone, so the pull request is left
   # open for a person to read. The tests run first.
   retirements:
-    if: github.repository == 'stringcutter/unrent'
+    if: github.repository == 'stringcutter/unrent' && github.event.schedule != '17 5 * * *'
     runs-on: ubuntu-latest
     permissions:
       contents: write

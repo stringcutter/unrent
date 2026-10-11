@@ -2,8 +2,32 @@
 
 All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow
-[Semantic Versioning](https://semver.org/). Weekly ranking refreshes are not listed;
+[Semantic Versioning](https://semver.org/). Daily ranking refreshes are not listed;
 each release ships the rankings as of its date.
+
+## Unreleased
+
+### Added
+- Two lenses on every GitHub pool: **established**, the biggest by stars, and
+  **rising**, the most stars gained in the last 30 days among the rest (at least 2% of
+  their own, and 100 stars). In the terminal row (`ollama, llama.cpp, vllm · rising
+  sglang, dynamo`), `--why`, the Markdown report, JSON (`established`, `rising`,
+  `stars_30d`, `created`) and MCP. A component the code already runs shows its rank by
+  both, and what is rising around it.
+- New projects find their way in by themselves: a daily GitHub search per pool
+  (`discover` in alternatives.yaml) yields candidates with 1,000 stars or more, an open
+  licence and a push in the last 30 days, and Claude judges each once against the pool
+  (catalog/discovered.json, with its reason). What it lets in is marked "found by
+  unrent" and `discovered` in JSON; `deny` overrides it.
+
+### Changed
+- Rankings refresh daily instead of weekly, and growth is measured over 30 days instead
+  of 90, from a week of history instead of four. A repo created in the last 30 days
+  counts every star it has, and one younger than 90 days that is new to the history
+  counts its average since creation, so a fast riser shows the day it is found.
+- Summary rows name one pool's projects plus the top open-weight model, instead of two
+  pools: with two lenses, two pools no longer fit on a line. `--why` shows them all.
+  Short generic repo names carry their owner (`e2b-dev/runtime`).
 
 ## [0.4.0] - 2026-10-08
 

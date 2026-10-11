@@ -949,20 +949,71 @@ def refresh():
     return module
 
 
-def test_momentum_needs_four_weeks_and_scales(refresh):
-    today = datetime.date(2026, 9, 26)
-    assert refresh.momentum([["2026-09-20", 100], ["2026-09-26", 150]], today) is None
-    assert refresh.momentum([["2026-08-27", 100], ["2026-09-26", 400]], today) == 900
+def test_momentum_is_30_days_from_a_week_of_history_or_from_the_repos_age(refresh):
+    today = datetime.date(2026, 10, 11)
+    old = "2020-01-01"
+    # Under a week of history, an old repo has no figure yet.
+    assert refresh.momentum([["2026-10-08", 100], ["2026-10-11", 150]], old, today) is None
+    # A week or more is scaled to 30 days.
+    assert refresh.momentum([["2026-09-26", 100], ["2026-10-11", 400]], old, today) == 600
+    # A repo created within the window gained every star it has.
+    assert refresh.momentum([["2026-10-11", 5000]], "2026-09-21", today) == 5000
+    # A young repo new to the history: its average since creation, so it counts today.
+    assert refresh.momentum([["2026-10-11", 6000]], "2026-08-12", today) == 3000
 
 
-def test_newcomers_rank_after_projects_with_momentum(refresh):
-    ranked, by = refresh.rank_github([
-        {"repo": "a/big", "stars": 90000, "stars_90d": 100},
-        {"repo": "b/hot", "stars": 5000, "stars_90d": 3000},
-        {"repo": "c/new", "stars": 99999, "stars_90d": None},
-    ])  # fmt: skip
-    assert by == "momentum"
-    assert [p["repo"] for p in ranked] == ["b/hot", "a/big", "c/new"]
+def test_judged_members_exclude_listed_and_denied_repos(refresh):
+    pools = [
+        {"id": "vector-db", "source": "github", "projects": [{"repo": "a/listed"}], "deny": ["c/Denied"]},
+        {"id": "ocr", "source": "github", "projects": [{"repo": "b/elsewhere"}]},
+    ]  # fmt: skip
+    yes = {"belongs": True, "kind": ["server"], "what": "x", "reason": "y"}
+    verdicts = {
+        "vector-db": {
+            "a/listed": yes,
+            "b/elsewhere": yes,
+            "c/denied": yes,
+            "d/new": yes,
+            "e/no": {**yes, "belongs": False},
+        }
+    }
+    assert list(refresh.found(pools, verdicts)["vector-db"]) == ["d/new"]
+
+
+def test_a_verdict_is_json_with_a_boolean_and_known_kinds(refresh):
+    v = refresh.parse_verdict(
+        'Sure. {"belongs": true, "kind": "server", "what": "Vector database", "reason": "r"}'
+    )
+    assert v == {"belongs": True, "kind": ["server"], "what": "Vector database", "reason": "r"}
+    assert refresh.parse_verdict('{"belongs": "yes"}') is None
+    assert refresh.parse_verdict("no json here") is None
+    assert refresh.parse_verdict('{"belongs": false, "kind": "spaceship"}')["kind"] == []
+
+
+def test_established_and_rising_are_two_lists_that_never_overlap():
+    from unrent.catalog import Alternative, Pool
+
+    def alt(name, stars, gain):
+        return Alternative(name=name, url="", what="", stars=stars, stars_30d=gain)
+
+    pool = Pool(
+        id="p",
+        name="P",
+        source="github",
+        ranked_by="stars",
+        alternatives=(
+            alt("a/huge", 90000, 3000),  # biggest and fastest: established, not rising
+            alt("b/big", 50000, 400),  # under 2% a month: not rising
+            alt("c/mid", 20000, 100),
+            alt("d/new", 8000, 2500),
+            alt("e/small", 3000, 90),  # 3%, but under 100 stars
+        ),
+    )
+    big, rising = pool.lenses(2)
+    assert [a.name for a in big] == ["a/huge", "b/big"]
+    assert [a.name for a in rising] == ["d/new"]
+    assert [a.name for a in pool.rising(3)] == ["a/huge", "d/new"]
+    assert pool.rising_rank("d/new") == 2 and pool.rising_rank("x/none") is None
 
 
 def test_same_lab_fine_tunes_are_original(refresh):
@@ -2582,8 +2633,9 @@ def terminal(root: Path, catalog, **kw) -> str:
 
 
 def test_terminal_counts_one_string_per_service(tmp_path, catalog):
-    # The package, the key and the host are one dependency on OpenAI, not three.
-    text = terminal(write(tmp_path, TIED), catalog)
+    # The package, the key and the host are one dependency on OpenAI, not three. Wide
+    # enough for one line per row: the established and rising picks make rows long.
+    text = terminal(write(tmp_path, TIED), catalog, width=140)
     assert "2 strings attached. 2 can be cut." in text
     openai = next(ln for ln in text.splitlines() if "OpenAI API" in ln)
     assert openai.startswith("╎ cut") and "requirements.txt:1" in openai and "+" in openai
