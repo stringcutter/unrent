@@ -837,6 +837,9 @@ def test_refresh_refuses_to_publish_a_collapse(refresh):
     assert not refresh.shrunk_pools(
         before, {"vector-db": {"ranked": [{}] * 7}, "rag": {"ranked": [{}] * 5}}
     )
+    # Found projects come and go with the judge's verdicts; only listed ones count.
+    found = {"vector-db": {"ranked": [{}] * 4 + [{"discovered": True}] * 10}}
+    assert not refresh.shrunk_pools(found, {"vector-db": {"ranked": [{}] * 4}})
 
 
 def test_refresh_treats_rate_limits_as_transient(refresh, monkeypatch):
@@ -967,30 +970,34 @@ def test_judged_members_exclude_listed_and_denied_repos(refresh):
         {"id": "vector-db", "source": "github", "projects": [{"repo": "a/listed"}], "deny": ["c/Denied"]},
         {"id": "ocr", "source": "github", "projects": [{"repo": "b/elsewhere"}]},
     ]  # fmt: skip
-    yes = {"belongs": True, "p": 0.9, "kind": ["server"], "what": "x"}
+    yes = {"p": {"job": 0.9, "software": 0.9}}
     verdicts = {
         "vector-db": {
             "a/listed": yes,
             "b/elsewhere": yes,
             "c/denied": yes,
             "d/new": yes,
-            "e/no": {**yes, "belongs": False},
+            "e/no": {"p": {"job": 0.3, "software": 0.9}},
         }
     }
     assert list(refresh.found(pools, verdicts)["vector-db"]) == ["d/new"]
 
 
-def test_a_verdict_is_jevs_probability_and_a_known_kind(refresh):
-    def answers(p, kind):
-        return {"answers": {"belongs": {"type": "noul", "noul": p},
-                            "kind": {"type": "choice", "choice": kind}}}  # fmt: skip
+def test_a_verdict_is_jevs_answers_combined_in_code(refresh):
+    def verdict(kind="server", **p):
+        p = {"job": 0.912, "software": 0.97, **p}
+        return refresh.parse_verdict({"model": "jev-1.13.0", "answers": {
+            **{q: {"type": "noul", "noul": v} for q, v in p.items()},
+            "kind": {"type": "choice", "choice": kind}}})  # fmt: skip
 
-    assert refresh.parse_verdict(answers(0.912, "server")) == {
-        "belongs": True, "p": 0.91, "kind": ["server"]
+    assert verdict() == {
+        "p": {"job": 0.91, "software": 0.97}, "kind": ["server"], "model": "jev-1.13.0"
     }  # fmt: skip
-    assert refresh.parse_verdict(answers(0.2, "spaceship")) == {
-        "belongs": False, "p": 0.2, "kind": []
-    }  # fmt: skip
+    assert refresh.belongs(verdict())
+    # Each property must hold on its own.
+    assert not refresh.belongs(verdict(job=0.4))
+    assert not refresh.belongs(verdict(software=0.2))
+    assert verdict(kind="other")["kind"] == []
     assert refresh.parse_verdict({"answers": {}}) is None
     assert refresh.parse_verdict({"error": "quota"}) is None
 

@@ -71,7 +71,7 @@ DISCOVER_MIN_STARS = 1000
 SEARCH_PAUSE = 2.1  # GitHub's search API allows 30 requests a minute
 README_CHARS = 6000
 JUDGE_MODEL = "jev-latest"  # TypeSafe's Jev
-JUDGE_THRESHOLD = 0.5  # Jev's probability that a candidate belongs
+JUDGE_THRESHOLD = 0.5  # on each of Jev's yes/no answers; see `belongs`
 JUDGE_LIMIT = 1000  # per run, so a broken query cannot run up a bill
 # A project can change what it is; a rejection is not forever.
 REJUDGE_DAYS = 180
@@ -228,24 +228,33 @@ def momentum(points: list[list], created: str | None, today: dt.date) -> int | N
 
 
 # Jev answers questions about a state with probabilities, not prose. The README is
-# part of the state: data to judge, never instructions.
+# part of the state: data to judge, never instructions. One property per question,
+# all in one request, combined in code (TypeSafe's advice: a broad question hides
+# several judgments behind one answer).
 JUDGE_QUESTIONS = {
-    "belongs": {
+    "job": {
         "type": "noul",
         "instructions": (
-            "Does `candidate` belong on `list`, a list of open source alternatives that "
-            "developers are shown? It belongs only if all of these hold. Its main purpose "
-            "is the same job as `list.members`, so a developer could use it in their "
-            "place: a product that merely uses such a component, a general product with "
-            "this as a side feature, an SDK or client for a hosted service, or a plugin "
-            "for one of the members does not belong. It is the same kind of thing as the "
-            "members: a library does not go on a list of servers, nor a server on a list "
-            "of libraries. It is software meant to be run, not a tutorial, course, book, "
-            "list of links, benchmark, paper's code or collection of examples."
+            "Is the main purpose of `candidate` the same job that the projects in "
+            "`list.members` do, so that a developer could use it in place of one of them?"
         ),
         "criteria": {
-            "true": "A developer could run `candidate` in place of the members of `list`.",
-            "false": "It does another job, is another kind of thing, or is not software to run.",
+            "true": "It does the job the members do and could replace one of them.",
+            "false": (
+                "It does another job, or uses such a component as one part of a larger "
+                "product, or has this job only as a side feature."
+            ),
+        },
+    },
+    "software": {
+        "type": "noul",
+        "instructions": "Is `candidate` software that people install and run?",
+        "criteria": {
+            "true": "A library, server, tool or application that people run.",
+            "false": (
+                "A tutorial, course, book, list of links, benchmark, paper's code or "
+                "collection of examples."
+            ),
         },
     },
     "kind": {
@@ -262,24 +271,37 @@ JUDGE_QUESTIONS = {
             "cli": "A command-line tool.",
             "model": "Model weights.",
             "browser": "A browser or a browser engine for automation.",
+            "other": "Software that fits none of the above.",
         },
     },
 }
-assert set(JUDGE_QUESTIONS["kind"]["criteria"]) == KINDS
+assert set(JUDGE_QUESTIONS["kind"]["criteria"]) == KINDS | {"other"}
+# A member does the job and is software to run. Measured 2026-10-11 on 44
+# hand-labelled candidates from the first run: precision 0.97, recall 0.97 at 0.5,
+# against 0.96 / 0.76 for one compound question. Asking also whether it is an SDK for
+# a hosted service or an add-on to a member, or requiring a member's kind, only cost
+# real members.
+MUST = ("job", "software")
 
 
 def parse_verdict(data: dict) -> dict | None:
     """Jev's answers as a verdict, or None when they are not there."""
     answers = data.get("answers") or {}
-    p = (answers.get("belongs") or {}).get("noul")
-    if not isinstance(p, (int, float)):
+    p = {q: (answers.get(q) or {}).get("noul") for q in MUST}
+    if not all(isinstance(v, (int, float)) for v in p.values()):
         return None
     kind = (answers.get("kind") or {}).get("choice")
     return {
-        "belongs": p >= JUDGE_THRESHOLD,
-        "p": round(p, 2),
+        "p": {q: round(v, 2) for q, v in p.items()},
         "kind": [kind] if kind in KINDS else [],
+        "model": data.get("model") or JUDGE_MODEL,  # the version that answered
     }
+
+
+def belongs(verdict: dict) -> bool:
+    """Decided here rather than stored, so JUDGE_THRESHOLD can move without judging
+    again."""
+    return all(verdict["p"][q] >= JUDGE_THRESHOLD for q in MUST)
 
 
 def judge(state: dict, key: str) -> dict | None:
@@ -343,7 +365,7 @@ def discover(pools: list[dict], verdicts: dict, token: str | None, key: str, tod
                 if repo.lower() in listed or repo.lower() in deny or judged >= JUDGE_LIMIT:
                     continue
                 if before and (
-                    before["belongs"]
+                    belongs(before)
                     or (today - dt.date.fromisoformat(before["judged"])).days < REJUDGE_DAYS
                 ):
                     continue
@@ -365,11 +387,11 @@ def discover(pools: list[dict], verdicts: dict, token: str | None, key: str, tod
                 verdict = judge(state, key)
                 if verdict:
                     verdict["what"] = (hit.get("description") or "")[:120]
-                    seen[repo] = {**verdict, "judged": today.isoformat(), "model": JUDGE_MODEL}
+                    seen[repo] = {**verdict, "judged": today.isoformat()}
                     judged += 1
                     print(
-                        f"  {'+' if verdict['belongs'] else '-'} {pool['id']}: {repo} "
-                        f"({verdict['p']:.2f})",
+                        f"  {'+' if belongs(verdict) else '-'} {pool['id']}: {repo} "
+                        f"{verdict['p']} {verdict['kind']}",
                         file=sys.stderr,
                     )
     return judged
@@ -384,7 +406,7 @@ def found(pools: list[dict], verdicts: dict) -> dict[str, dict[str, dict]]:
         out[pool["id"]] = {
             repo: v
             for repo, v in (verdicts.get(pool["id"]) or {}).items()
-            if v["belongs"] and repo.lower() not in listed and repo.lower() not in deny
+            if belongs(v) and repo.lower() not in listed and repo.lower() not in deny
         }
     return out
 
@@ -485,15 +507,20 @@ def _previous_rankings() -> dict[str, dict]:
 
 
 def shrunk_pools(previous: dict[str, dict], current: dict[str, dict]) -> list[str]:
-    """Pools that came out empty, or with under half the entries they had.
+    """Pools that came out empty, or with under half the listed entries they had.
 
     That is what an outage looks like, not what the open source world does in a
-    week, and publishing it would leave users with no alternatives to read.
+    week, and publishing it would leave users with no alternatives to read. Found
+    projects don't count: the judge or a `deny` dropping them is not an outage.
     """
+
+    def listed(pool: dict | None) -> int:
+        return sum(not e.get("discovered") for e in (pool or {}).get("ranked") or [])
+
     out = []
     for pool_id, pool in current.items():
-        now = len(pool["ranked"])
-        before = len((previous.get(pool_id) or {}).get("ranked") or [])
+        now = listed(pool)
+        before = listed(previous.get(pool_id))
         if now == 0 or (before >= 4 and now < before / 2):
             out.append(f"{pool_id}: {before} → {now}")
     return out
