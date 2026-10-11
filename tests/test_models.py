@@ -1,14 +1,18 @@
 """Models the code runs on, and the open-weight models LMArena rates as good."""
 
+import datetime
 import json
 import shutil
 from pathlib import Path
 
 import pytest
 
+from unrent import cli
 from unrent.catalog import load_catalog, model_key, model_size
 from unrent.detect import collect_facts, match
 from unrent.models import in_use, matches
+from unrent.render import payload, to_markdown
+from unrent.terminal import to_terminal
 
 CATALOG_DIR = Path(__file__).resolve().parents[1] / "catalog"
 
@@ -121,3 +125,127 @@ def test_models_in_use_are_the_ones_a_line_selects(tmp_path, catalog):
     ]
     assert uses["qwen3.8-27b"].written == "Qwen/Qwen3.8-27B"
     assert uses["claude-opus-5.5-high"].finding.service.id == "anthropic"
+
+
+AS_OF = datetime.date(2026, 10, 11)
+
+
+def scanned(root: Path, catalog, files: dict[str, str]):
+    write(root, files)
+    facts = collect_facts(root, catalog)
+    findings = match(facts, catalog)
+    return findings, in_use(findings, facts, root, catalog)
+
+
+AGENT = {
+    "requirements.txt": "anthropic\nollama\n",
+    "agent.py": (
+        "import anthropic\nimport ollama\n"
+        'MODEL = "claude-opus-5-5"\n'
+        "client = anthropic.Anthropic()\n"
+        'ollama.chat(model="gemma4:31b", messages=[])\n'
+    ),
+}
+
+
+def test_terminal_shows_each_model_with_the_open_ones_as_good(tmp_path, catalog):
+    findings, models = scanned(tmp_path, catalog, AGENT)
+    out = to_terminal(findings, tmp_path, catalog, models=models, as_of=AS_OF)
+    qwen = catalog.arena[model_key("qwen3.8-27b")].display
+    lines = [line.rstrip() for line in out.splitlines()]
+    at = lines.index("│ model  claude-opus-5.5  agent.py:3")
+    assert lines[at + 1 : at + 3] == [
+        "         → mimo-v2.6-pro, kimi-k3 (Kimi K3 license), glm-5.3",
+        "           arena   1515 vs 1492, 1476, 1471 · none as good",
+    ]
+    assert f"         → {qwen}" in lines
+    assert "           arena   1443 vs 1441" in lines
+    assert "1 string attached." in out  # a model is not a string
+    assert "model ratings LMArena (CC BY 4.0)" in out
+    # Without models, the view is as it was.
+    assert "│ model" not in to_terminal(findings, tmp_path, catalog, as_of=AS_OF)
+
+
+def test_terminal_shows_five_models_and_counts_the_rest(tmp_path, catalog):
+    names = ["mimo-v2.6-pro", "kimi-k3-max", "glm-5.3-max", "gemma-4-31b", "qwen3.8-27b",
+             "big-open-400b", "tiny-open-4b"]  # fmt: skip
+    code = "import ollama\n" + "".join(f'ollama.chat(model="{n}")\n' for n in names)
+    findings, models = scanned(tmp_path, catalog, {"run.py": code})
+    assert len(models) == 7
+    out = to_terminal(findings, tmp_path, catalog, models=models, as_of=AS_OF)
+    assert out.count("│ model") == 5
+    assert "2 more models in use" in out
+    # The best rated open model has nothing as good: no arrow, no picks.
+    assert "the best open model of its size on LMArena" in out
+    assert "→ the best" not in out
+
+
+def test_a_retiring_model_keeps_its_snaps_row_with_the_open_model_as_good(tmp_path):
+    rankings = json.loads((CATALOG_DIR / "rankings.json").read_text("utf-8"))
+    extra = [arena("gpt-4-turbo-2024-04-09", "Proprietary", 1270)]
+    rankings["arena"] = {"date": "2026-10-08", "models": ARENA + extra}
+    catalog = load_catalog(CATALOG_DIR, rankings)
+    findings, models = scanned(
+        tmp_path,
+        catalog,
+        {"main.py": 'from openai import OpenAI\nclient = OpenAI()\nMODEL = "gpt-4-turbo"\n'},
+    )
+    assert [u.model.name for u in models] == ["gpt-4-turbo-2024-04-09"]
+    out = to_terminal(findings, tmp_path, catalog, models=models, as_of=AS_OF)
+    assert "│ model" not in out
+    lines = [line.rstrip() for line in out.splitlines()]
+    at = next(i for i, line in enumerate(lines) if line.startswith("┆ snaps  gpt-4-turbo"))
+    assert lines[at + 2].split() == ["open", "mimo-v2.6-pro"]
+    assert "model ratings LMArena (CC BY 4.0)" in out
+
+
+def test_why_a_model_lists_its_lines_ratings_and_the_credit(tmp_path, catalog, monkeypatch, capsys):
+    write(tmp_path, AGENT)
+    monkeypatch.setattr(cli, "load_catalog", lambda *_: catalog)
+    assert cli.main(["scan", str(tmp_path), "--why", "gemma4:31b", "-f", "terminal"]) == 0
+    out = capsys.readouterr().out
+    assert "agent.py:5" in out
+    assert "LMArena 1443 (1437-1449), 5,000 votes, as gemma-4-31b" in out
+    assert "Open weights as good" in out
+    assert "1441 (1435-1447), Apache 2.0" in out
+    assert out.rstrip().endswith(
+        "ratings: LMArena text leaderboard, overall, 2026-10-08 (CC BY 4.0) "
+        "https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset"
+    )
+    # A service still wins on its name.
+    assert cli.main(["scan", str(tmp_path), "--why", "anthropic", "-f", "terminal"]) == 0
+    assert "Anthropic API" in capsys.readouterr().out
+
+
+def test_json_lists_models_in_use_and_credits_the_ratings(tmp_path, catalog):
+    findings, models = scanned(tmp_path, catalog, AGENT)
+    out = payload(findings, tmp_path, catalog, models=models)
+    assert out["model_ratings"] == {
+        "source": "LMArena text leaderboard, overall",
+        "dataset": "lmarena-ai/leaderboard-dataset",
+        "licence": "CC-BY-4.0",
+        "date": "2026-10-08",
+    }
+    opus = next(m for m in out["models_in_use"] if m["name"] == "claude-opus-5.5-high")
+    assert opus["written"] == "claude-opus-5-5" and opus["service"] == "anthropic"
+    assert opus["where"] == ["agent.py:3"] and opus["close"] and not opus["open"]
+    assert opus["rating"] == 1515 and opus["votes"] == 5000
+    kimi = opus["picks"][1]
+    assert set(kimi) == {"model", "name", "licence", "open_licence", "rating", "low", "high",
+                         "params", "url"}  # fmt: skip
+    assert kimi["name"] == "kimi-k3-max" and not kimi["open_licence"]
+    gemma = next(m for m in out["models_in_use"] if m["name"] == "gemma-4-31b")
+    assert gemma["service"] is None and gemma["picks"][0]["params"] is not None
+    assert payload(findings, tmp_path, catalog)["models_in_use"] == []
+
+
+def test_markdown_has_a_models_section_with_the_credit(tmp_path, catalog):
+    findings, models = scanned(tmp_path, catalog, AGENT)
+    out = to_markdown(findings, tmp_path, catalog, models=models)
+    section = out.split("## Models in use")[1].split("\n## ")[0]
+    row = "| `claude-opus-5.5` | `agent.py:3` | 1515 (1509-1521) | closest, none as good: "
+    assert row in section
+    assert "kimi-k3 1476 (Kimi K3 license)" in section
+    assert "(https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset), 2026-10-08" in section
+    assert out.index("## Models in use") < out.index("## Open source alternatives")
+    assert "## Models in use" not in to_markdown(findings, tmp_path, catalog)

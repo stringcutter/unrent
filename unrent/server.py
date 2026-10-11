@@ -24,6 +24,7 @@ from .cli import DEFAULT_CATALOG, _version
 from .detect import collect_facts, file_root, match
 from .discover import scan_unknown
 from .files import LEFT_OUT, left_out
+from .models import in_use
 from .render import (
     RANKED_BY,
     Standing,
@@ -71,6 +72,11 @@ Know its limits:
   trending, whatever the model's size. Stars, licences and activity are checked against
   GitHub daily. A rank is popularity, not fit: choose by what the code needs.
 - `open_core` marks projects where part of the repo is under a licence that is not open.
+- `models_in_use` lists the models the code selects that LMArena rates, each with the
+  open-weight models rated as good (`picks`). `close: true` means none is as good: the
+  picks are the nearest below. Open weights may carry their maker's own licence
+  (`open_licence: false`). Credit the ratings to LMArena (CC BY 4.0, `model_ratings`)
+  wherever you show them.
 
 unrent lists and ranks; whether a switch makes sense is for you and the user to judge."""
 
@@ -185,9 +191,11 @@ def scan(
     and the pools that replace it), `models_named` (closed model ids with no SDK, key,
     host or package behind them: not dependencies), `models_retiring` (model ids the
     code selects that the vendor has retired, `snapped`, or will retire on `retires`,
-    `snaps`, with `use_instead`), `env_template_only` (keys only in
-    an example env file: not dependencies), `open_source` (components already
-    in use and their rank in their pool), `unknown_candidates` (API hosts and keys that
+    `snaps`, with `use_instead`), `models_in_use` (models the code selects with their
+    LMArena rating and the open-weight models as good, or the nearest below when
+    `close`; credit LMArena, CC BY 4.0, as `model_ratings` says), `env_template_only`
+    (keys only in an example env file: not dependencies), `open_source` (components
+    already in use and their rank in their pool), `unknown_candidates` (API hosts and keys that
     no catalog entry explains and that look like a hosted AI API: closed services
     unrent may not know yet, to check one by one), and `alternatives` (the top open
     source per pool). Secrets in evidence are masked.
@@ -218,10 +226,12 @@ def scan(
     except OSError as exc:
         raise ToolError(f"could not scan {path}: {exc}") from exc
     findings = match(facts, catalog, only)
+    models = in_use(findings, facts, root, catalog)
     unknown = scan_unknown(root, catalog, list(exclude or []), skip_tests=skip_tests, only=only)
-    result = payload(findings, root, catalog, skipped, unknown, scanned=scanned)
+    result = payload(findings, root, catalog, skipped, unknown, scanned=scanned, models=models)
     for key in ("found", "models_named", "models_retiring", "env_template_only", "open_source"):
         _capped(result[key], "evidence", evidence)
+    _capped(result["models_in_use"], "where", evidence)
     running = [f for f in findings if f.service.open_source]
     for entry, f in zip(result["open_source"], running, strict=True):
         entry["standing"] = [_standing(s, top) for s in standings(f, catalog)]

@@ -10,8 +10,9 @@ import urllib.parse
 from dataclasses import dataclass
 from pathlib import Path
 
-from .catalog import Alternative, Catalog, Pool
+from .catalog import Alternative, ArenaModel, Catalog, Pool
 from .detect import Finding
+from .models import ModelUse, matches
 from .retired import Snap, _rel, replacement, snaps, state
 
 RANKED_BY = {
@@ -26,6 +27,10 @@ _BACKTICKS = re.compile(r"`+")
 PICKS = 3
 # A repo younger than this says when it was created: new is part of the news.
 NEW_DAYS = 365
+# Model ratings are LMArena's (CC BY 4.0): whatever shows one credits them.
+ARENA_SOURCE = "LMArena text leaderboard, overall"
+ARENA_DATASET = "lmarena-ai/leaderboard-dataset"
+ARENA_URL = f"https://huggingface.co/datasets/{ARENA_DATASET}"
 
 
 def _compact(n: int | None) -> str:
@@ -274,6 +279,43 @@ def _snap_json(s: Snap, root: Path, catalog: Catalog, as_of: _dt.date) -> dict:
     }
 
 
+# ---------------------------------------------------------------- models in use
+
+
+def _arena_json(a: ArenaModel) -> dict:
+    return {
+        "model": a.display,
+        "name": a.name,  # as LMArena names it
+        "licence": a.licence,
+        "open_licence": a.open_licence,  # false: open weights under the maker's own licence
+        "rating": a.rating,
+        "low": a.low,
+        "high": a.high,
+        "params": round(a.params, 1) if a.params else None,  # billions
+        "url": a.weights.url if a.weights else None,
+    }
+
+
+def _use_json(u: ModelUse, root: Path, catalog: Catalog) -> dict:
+    a, m = u.model, matches(u.model, catalog)
+    return {
+        "model": a.display,
+        "name": a.name,
+        "written": u.written,
+        "open": a.open,
+        "licence": a.licence,
+        "rating": a.rating,
+        "low": a.low,
+        "high": a.high,
+        "votes": a.votes,
+        "service": u.finding.service.id if u.finding else None,
+        "where": [f"{_rel(x.file, root)}:{x.line}" for x in u.sites],
+        "close": m.close,  # no open model reaches it: the picks are the nearest below
+        "picks": [_arena_json(p) for p in m.picks],
+        "rising": [_arena_json(p) for p in m.rising],
+    }
+
+
 # ---------------------------------------------------------------- JSON
 
 
@@ -285,13 +327,15 @@ def payload(
     unknown: list[dict] | None = None,
     as_of: _dt.date | None = None,
     scanned: str | None = None,
+    *,
+    models: list[ModelUse] = (),
 ) -> dict:
     """`as_of`: the day retirements are judged against; today when None. `scanned`:
-    what was scanned when not the whole of root (one file)."""
+    what was scanned when not the whole of root (one file). `models`: models.in_use."""
     split = _split(findings)
     as_of = as_of or today()
     retiring = snaps(findings, catalog, root)
-    return {
+    out = {
         # The folder name; a full path would leak the user's home.
         "scanned": scanned or root.name,
         "scanned_at": _dt.datetime.now(_dt.UTC).isoformat(timespec="seconds"),
@@ -323,7 +367,17 @@ def payload(
             }
             for pool_id, services in _pools_in_order(split.closed).items()
         },
+        # Models the code selects that LMArena rates, and the open-weight models as good.
+        "models_in_use": [_use_json(u, root, catalog) for u in models],
     }
+    if catalog.arena_date:
+        out["model_ratings"] = {
+            "source": ARENA_SOURCE,
+            "dataset": ARENA_DATASET,
+            "licence": "CC-BY-4.0",
+            "date": catalog.arena_date,
+        }
+    return out
 
 
 def to_json(
@@ -334,9 +388,11 @@ def to_json(
     unknown: list[dict] | None = None,
     as_of: _dt.date | None = None,
     scanned: str | None = None,
+    *,
+    models: list[ModelUse] = (),
 ) -> str:
     return json.dumps(
-        payload(findings, root, catalog, skipped, unknown, as_of, scanned),
+        payload(findings, root, catalog, skipped, unknown, as_of, scanned, models=models),
         indent=2,
         ensure_ascii=False,
     )
@@ -568,6 +624,43 @@ def _retiring(retiring: list[Snap], root: Path, catalog: Catalog, as_of: _dt.dat
     return out
 
 
+def _rated(a: ArenaModel) -> str:
+    """An open-weight model in the report: linked when its repo is known, its maker's
+    licence named when it is not an open source one."""
+    name = f"[{a.display}]({a.weights.url})" if a.weights else a.display
+    return f"{name} {round(a.rating)}" + ("" if a.open_licence else f" ({a.licence})")
+
+
+def _models(models: list[ModelUse], root: Path, catalog: Catalog) -> list[str]:
+    if not models:
+        return []
+    out = [
+        "## Models in use",
+        "",
+        "Models the code selects, and the open-weight models rated as good: their rating's "
+        "confidence interval reaches the model's (for an open model, they are also no bigger).",
+        "",
+        "| Model | Where | LMArena | Open weights as good | Rising |",
+        "|---|---|---|---|---|",
+    ]
+    for u in models:
+        a, m = u.model, matches(u.model, catalog)
+        first = u.sites[0]
+        more = f" (+{len(u.sites) - 1})" if len(u.sites) > 1 else ""
+        picks = ", ".join(map(_rated, m.picks))
+        if m.close:
+            picks = f"closest, none as good: {picks}"
+        elif not picks and a.open:
+            picks = "the best open model of its size"
+        out.append(
+            f"| {_code(a.display)} | `{_rel(first.file, root)}:{first.line}`{more} | "
+            f"{round(a.rating)} ({round(a.low)}-{round(a.high)}) | {picks or '—'} | "
+            f"{', '.join(map(_rated, m.rising)) or '—'} |"
+        )
+    out += ["", f"Ratings: [{ARENA_SOURCE}]({ARENA_URL}), {catalog.arena_date} (CC BY 4.0).", ""]
+    return out
+
+
 def to_markdown(
     findings: list[Finding],
     root: Path,
@@ -577,6 +670,8 @@ def to_markdown(
     unknown: list[dict] | None = None,
     as_of: _dt.date | None = None,
     scanned: str | None = None,
+    *,
+    models: list[ModelUse] = (),
 ) -> str:
     split = _split(findings)
     as_of = as_of or today()
@@ -647,6 +742,7 @@ def to_markdown(
         "Not counted as dependencies.",
     )
     out += _unknown(list(unknown or []))
+    out += _models(list(models), root, catalog)
 
     if closed:
         out += ["## Open source alternatives", ""]

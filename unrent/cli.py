@@ -18,13 +18,14 @@ from pathlib import Path
 import yaml
 
 from . import fresh
-from .catalog import CatalogError, load_catalog
+from .catalog import CatalogError, load_catalog, model_key
 from .detect import collect_facts, file_root, match
 from .discover import scan_unknown
 from .files import LEFT_OUT, left_out
+from .models import in_use
 from .render import _split, to_json, to_markdown, to_sarif, today
 from .retired import REGIONS, _rel, replacement, snaps, state
-from .terminal import Progress, to_terminal, wants_colour, why, why_model
+from .terminal import Progress, to_terminal, wants_colour, why, why_model, why_use
 
 
 def _default_catalog() -> Path:
@@ -102,8 +103,8 @@ def build_parser() -> argparse.ArgumentParser:
     scan.add_argument(
         "--why",
         metavar="SERVICE",
-        help="every location behind one service, open source component or retiring model "
-        "id, and what replaces it",
+        help="every location behind one service, open source component, retiring model "
+        "id or model in use, and what replaces it",
     )
     scan.add_argument(
         "--as-of",
@@ -245,6 +246,7 @@ def cmd_scan(args) -> int:
             only=only,
         )
         findings = match(facts, catalog, only)
+        models = in_use(findings, facts, root, catalog)
         if not args.why:
             progress.show("looking for AI APIs the catalog does not know")
             unknown = scan_unknown(root, catalog, exclude, skip_tests=args.skip_tests, only=only)
@@ -258,12 +260,16 @@ def cmd_scan(args) -> int:
         )
         picked = [s for s in snaps(findings, catalog, root) if s.sites]
         model = next((s for s in picked if s.id.lower() == wanted), None)
+        use = next((u for u in models if model_key(u.model.name) == model_key(wanted)), None)
         if hit is not None:
             text = why(hit, root, catalog, top=args.top, colour=colour)
         elif model is not None:
             text = why_model(model, root, catalog, as_of=args.as_of, colour=colour)
+        elif use is not None:
+            text = why_use(use, root, catalog, colour=colour)
         else:
-            ids = ", ".join([f.service.id for f in findings] + [s.id for s in picked]) or "none"
+            found = [f.service.id for f in findings] + [s.id for s in picked]
+            ids = ", ".join(found + [u.model.display for u in models]) or "none"
             print(f"unrent: {args.why} is not among what was found ({ids})", file=sys.stderr)
             return 2
     elif fmt == "sarif":
@@ -271,7 +277,9 @@ def cmd_scan(args) -> int:
         base = next((d for d in (root, *root.parents) if (d / ".git").exists()), root)
         text = to_sarif(findings, root, catalog, _version(), base, args.as_of or today())
     elif fmt == "json":
-        text = to_json(findings, root, catalog, skipped, unknown, args.as_of, scanned)
+        text = to_json(
+            findings, root, catalog, skipped, unknown, args.as_of, scanned, models=models
+        )
     elif fmt == "terminal":
         text = to_terminal(
             findings,
@@ -284,6 +292,7 @@ def cmd_scan(args) -> int:
             unknown=unknown,
             as_of=args.as_of,
             scanned=scanned,
+            models=models,
         )
     else:
         text = to_markdown(
@@ -295,6 +304,7 @@ def cmd_scan(args) -> int:
             unknown=unknown,
             as_of=args.as_of,
             scanned=scanned,
+            models=models,
         )
     if args.output:
         args.output.write_text(text + "\n", encoding="utf-8")

@@ -11,10 +11,21 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TextIO
 
-from .catalog import Alternative, Catalog, Pool
+from .catalog import Alternative, ArenaModel, Catalog, Pool, model_key
 from .detect import Finding
 from .facts import Fact
-from .render import PICKS, RANKED_BY, Split, _describe, _split, standings, today
+from .models import ModelUse, matches
+from .render import (
+    ARENA_SOURCE,
+    ARENA_URL,
+    PICKS,
+    RANKED_BY,
+    Split,
+    _describe,
+    _split,
+    standings,
+    today,
+)
 from .retired import Snap, _rel, replacement, snaps, state
 
 GAP = "  "
@@ -87,7 +98,7 @@ class Style:
 
 @dataclass
 class Row:
-    state: str  # cut, held, snapped, snaps, runs
+    state: str  # cut, held, snapped, snaps, model, runs
     id: str
     name: str
     where: str  # file:line of the strongest evidence
@@ -170,7 +181,10 @@ def snap_rows(retiring: list[Snap], root: Path, catalog: Catalog, as_of) -> list
         r = s.retirement
         gone = state(r, as_of) == "snapped"
         use = replacement(r, catalog)
+        rated = catalog.arena.get(model_key(r.id))
+        picks = matches(rated, catalog).picks[:1] if rated else []
         model = _open_model(s.finding.service, catalog)
+        opens = _rated(picks) if picks else _names([model]) if model else ""
         out.append(
             Row(
                 "snapped" if gone else "snaps",
@@ -181,7 +195,45 @@ def snap_rows(retiring: list[Snap], root: Path, catalog: Catalog, as_of) -> list
                 f"{'retired' if gone else 'retires'} {r.retires.isoformat()}"
                 + (f" → {use}" if use else ""),
                 False,
-                (("open", _names([model])),) if model else (),
+                (("open", opens),) if opens else (),
+            )
+        )
+    return out
+
+
+MODELS_SHOWN = 5
+BEST_OPEN = "the best open model of its size on LMArena"
+
+
+def _rated(models: list[ArenaModel]) -> str:
+    """Open-weight models by name, each under its maker's own licence saying so."""
+    return ", ".join(m.display + ("" if m.open_licence else f" ({m.licence})") for m in models)
+
+
+def model_rows(models: list[ModelUse], root: Path, catalog: Catalog) -> list[Row]:
+    """A model the code selects, the open-weight models LMArena rates as good (or the
+    nearest below, `none as good`), and the ratings that say so."""
+    out = []
+    for u in models:
+        m = matches(u.model, catalog)
+        if not m.picks and not u.model.open:
+            continue
+        arena = f"{round(u.model.rating)}"
+        if m.picks:
+            arena += " vs " + ", ".join(f"{round(p.rating)}" for p in m.picks)
+        notes = [("arena", arena + (" · none as good" if m.close else ""))]
+        if m.rising:
+            notes.append(("rising", _rated(m.rising)))
+        out.append(
+            Row(
+                "model",
+                u.model.display,
+                u.model.display,
+                _loc(u.sites[0], root),
+                len(u.sites) - 1,
+                _rated(m.picks) or BEST_OPEN,
+                False,
+                tuple(notes),
             )
         )
     return out
@@ -230,6 +282,7 @@ TAGS = {
     "held": "│ held",
     "snapped": "┆ snapped",
     "snaps": "┆ snaps",
+    "model": "│ model",
     "runs": "│ runs",
 }
 
@@ -240,11 +293,16 @@ def _bar(state: str, w: int, st: Style) -> str:
         return st.pink(tag)
     if state in ("snapped", "snaps"):
         return st.amber(tag)
-    return st.mute(tag) if state == "runs" else tag
+    return st.mute(tag) if state in ("runs", "model") else tag
+
+
+def _arrow(r: Row) -> bool:
+    """Does the row's answer name what replaces it?"""
+    return r.state == "cut" or (r.state == "model" and r.then != BEST_OPEN)
 
 
 def _then(r: Row, st: Style, arrow: bool) -> str:
-    if r.state == "cut":
+    if _arrow(r):
         return f"→ {r.then}" if arrow else r.then
     if r.state in ("snapped", "snaps"):
         when, _, use = r.then.partition(" → ")
@@ -264,7 +322,7 @@ def _body(r: Row, indent: int, st: Style) -> list[str]:
     """What replaces a row, or where it stands, under its name: then its notes, in line
     with the text past the arrow."""
     pad = " " * indent
-    return [pad + _then(r, st, True), *_notes(r, indent + (2 if r.state == "cut" else 0), st)]
+    return [pad + _then(r, st, True), *_notes(r, indent + (2 if _arrow(r) else 0), st)]
 
 
 def _line(r: Row, widths: tuple[int, int, int], st: Style) -> list[str]:
@@ -334,8 +392,12 @@ def _headline(n: int, cut: int, snapped: int, snapping: int, st: Style) -> str:
     return " ".join(parts)
 
 
-def _also(split: Split, skipped: list[Path], unknown: list[dict], named: int) -> str:
+def _also(
+    split: Split, skipped: list[Path], unknown: list[dict], named: int, models: int = 0
+) -> str:
     bits = []
+    if models:
+        bits.append(f"{models} more {'model' if models == 1 else 'models'} in use")
     if named:
         bits.append(f"{named} retiring model ids only named, in menus or tables")
     if split.named:
@@ -361,10 +423,11 @@ def to_terminal(
     unknown: list[dict] | None = None,
     as_of=None,
     scanned: str | None = None,
+    models: list[ModelUse] = (),
 ) -> str:
     """`command` is how the user ran the scan, for the hints at the end; `as_of` the day
     retirements are judged against (today when None); `scanned` what was scanned when
-    not the whole of root."""
+    not the whole of root; `models` the models in use (models.in_use)."""
     st = Style(colour)
     split = _split(findings)
     unknown = list(unknown or [])
@@ -373,18 +436,26 @@ def to_terminal(
     closed = [r for r in tied if r.state != "runs"]
     running = [r for r in tied if r.state == "runs"]
     snapping = snap_rows(retiring, root, catalog, as_of or today())
-    all_rows = closed + snapping + running
+    # A retiring model has its row already, with an open model on it.
+    gone_keys = {model_key(r.id) for r in snapping}
+    rated = model_rows(
+        [u for u in models if model_key(u.model.name) not in gone_keys], root, catalog
+    )
+    in_use = rated[:MODELS_SHOWN]
+    all_rows = closed + snapping + in_use + running
     cut = sum(1 for r in closed if r.state == "cut")
     gone = sum(1 for r in snapping if r.state == "snapped")
     out = ["", _headline(len(closed), cut, gone, len(snapping) - gone, st)]
     ranked = f" · alternatives ranked {catalog.rankings_date}" if catalog.rankings_date else ""
+    if in_use or any(model_key(r.id) in catalog.arena for r in snapping):
+        ranked += " · model ratings LMArena (CC BY 4.0)"
     out += [st.mute(f"{scanned or root.name}{ranked}"), ""]
-    out += _blocks([closed, snapping, running], width, st)
+    out += _blocks([closed, snapping, in_use, running], width, st)
     if all_rows:
         out.append("")
 
     named = sum(1 for s in retiring if not s.sites)
-    also = _also(split, list(skipped), unknown, named)
+    also = _also(split, list(skipped), unknown, named, len(rated) - len(in_use))
     if also:
         out += [st.mute(f"  also: {also}"), ""]
     hints = []
@@ -482,6 +553,43 @@ def why_model(s: Snap, root: Path, catalog: Catalog, *, as_of=None, colour: bool
     if model := _open_model(s.finding.service, catalog):
         out += [f"  or an open-weight model: {st.bold(model.name)}", st.mute(f"  {model.url}"), ""]
     return "\n".join(out)
+
+
+def _arena(a: ArenaModel) -> str:
+    return f"{round(a.rating)} ({round(a.low)}-{round(a.high)})"
+
+
+def why_use(use: ModelUse, root: Path, catalog: Catalog, *, colour: bool = False) -> str:
+    """Every line that selects one model, its rating, and the open-weight models LMArena
+    rates as good, credited."""
+    st = Style(colour)
+    a, m = use.model, matches(use.model, catalog)
+    out = ["", f"{_bar('model', len(TAGS['model']), st)}{GAP}{st.bold(a.display)}"]
+    out[-1] += "  " + st.mute(f"{a.org}, {a.licence}" if a.org else a.licence)
+    out.append("")
+    out += _where(use.sites, root, st)
+    out += ["", f"  LMArena {_arena(a)}, {a.votes:,} votes, as {a.name}", ""]
+    if m.picks:
+        title = "Nearest open weights, none as good" if m.close else "Open weights as good"
+        out.append(f"  {st.bold(title)}")
+        out += _models_field(m.picks, st)
+    elif a.open:
+        out.append(f"  {BEST_OPEN}")
+    if m.rising:
+        out.append(st.mute("    rising"))
+        out += _models_field(m.rising, st)
+    credit = f"ratings: {ARENA_SOURCE}, {catalog.arena_date} (CC BY 4.0) {ARENA_URL}"
+    out += ["", st.mute(f"  {credit}"), ""]
+    return "\n".join(out)
+
+
+def _models_field(models: list[ArenaModel], st: Style) -> list[str]:
+    out = []
+    for i, a in enumerate(models, start=1):
+        size = f", {round(a.params, 1):g}B" if a.params else ""
+        url = f"  {st.mute(a.weights.url)}" if a.weights else ""
+        out.append(f"    {i}. {a.display}  {_arena(a)}, {a.licence}{size}{url}")
+    return out
 
 
 # ---------------------------------------------------------------- progress
