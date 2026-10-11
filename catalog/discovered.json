@@ -1,1 +1,5815 @@
-{}
+{
+ "agent-memory": {
+  "666ghj/MiroFish": {
+   "p": {
+    "job": 0.07,
+    "software": 0.9,
+    "client": 0.08
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A Simple and Universal Swarm Intelligence Engine, Predicting Anything. 简洁通用的群体智能引擎，预测万物",
+   "judged": "2026-10-11"
+  },
+  "Ar9av/obsidian-wiki": {
+   "p": {
+    "job": 0.72,
+    "software": 0.96,
+    "client": 0.04
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Framework for AI agents to build and maintain a digital brain through Obsidian wiki | Memory System for Agents",
+   "judged": "2026-10-11"
+  },
+  "Bitterbot-AI/bitterbot-desktop": {
+   "p": {
+    "job": 0.2,
+    "software": 0.96,
+    "client": 0.05
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Bitterbot - a mesh of agents that turns shared experience into collective capability.",
+   "judged": "2026-10-11"
+  },
+  "CaviraOSS/LongMemory": {
+   "p": {
+    "job": 0.88,
+    "software": 0.97,
+    "client": 0.12
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Local persistent memory store for LLM applications including claude desktop, github copilot, codex, antigravity, etc.",
+   "judged": "2026-10-11"
+  },
+  "ClaudioDrews/memory-os": {
+   "p": {
+    "job": 0.62,
+    "software": 0.95,
+    "client": 0.05
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A 7-layer memory operating system for Hermes Agent — persistent memory with Qdrant, structured facts, fabric recall, aut",
+   "judged": "2026-10-11"
+  },
+  "Dataojitori/nocturne_memory": {
+   "p": {
+    "job": 0.83,
+    "software": 0.94,
+    "client": 0.14
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A lightweight, rollbackable, and visual Long-Term Memory Server for MCP Agents. Say goodbye to Vector RAG and amnesia. E",
+   "judged": "2026-10-11"
+  },
+  "EverMind-AI/EverOS": {
+   "p": {
+    "job": 0.86,
+    "software": 0.95,
+    "client": 0.06
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "One portable memory layer for every AI agent: local-first, Markdown-native, user-owned, and self-evolving across apps, t",
+   "judged": "2026-10-11"
+  },
+  "IAAR-Shanghai/Awesome-AI-Memory": {
+   "p": {
+    "job": 0.05,
+    "software": 0.06,
+    "client": 0.03
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "Awesome AI Memory | LLM Memory | A curated knowledge base on AI memory for LLMs and agents, covering long-term memory, r",
+   "judged": "2026-10-11"
+  },
+  "Intuition-Lab/personal-model": {
+   "p": {
+    "job": 0.59,
+    "software": 0.96,
+    "client": 0.04
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Build your HUMAN.md.",
+   "judged": "2026-10-11"
+  },
+  "Mirix-AI/MIRIX": {
+   "p": {
+    "job": 0.51,
+    "software": 0.95,
+    "client": 0.1
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Mirix is a multi-agent personal assistant designed to track on-screen activities and answer user questions intelligently",
+   "judged": "2026-10-11"
+  },
+  "NirDiamant/Agent_Memory_Techniques": {
+   "p": {
+    "job": 0.08,
+    "software": 0.13,
+    "client": 0.03
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "Agent memory for LLMs: 30 runnable Jupyter notebooks covering conversation buffers, vector stores, knowledge graphs, epi",
+   "judged": "2026-10-11"
+  },
+  "Prismer-AI/PrismerCloud": {
+   "p": {
+    "job": 0.22,
+    "software": 0.84,
+    "client": 0.79
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Prismer Cloud",
+   "judged": "2026-10-11"
+  },
+  "activeloopai/hivemind": {
+   "p": {
+    "job": 0.43,
+    "software": 0.93,
+    "client": 0.67
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Hivemind turns your traces into reusable skills across agents",
+   "judged": "2026-10-11"
+  },
+  "agentrq/agentrq": {
+   "p": {
+    "job": 0.06,
+    "software": 0.94,
+    "client": 0.1
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "AgentRQ: Human-in-loop realtime conversational task manager for AI Agents. Self-hosted! Control your own agents from whe",
+   "judged": "2026-10-11"
+  },
+  "alibaba/zvec": {
+   "p": {
+    "job": 0.12,
+    "software": 0.95,
+    "client": 0.04
+   },
+   "kind": [
+    "embedded"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A lightweight, lightning-fast, in-process vector database",
+   "judged": "2026-10-11"
+  },
+  "alookai/alook": {
+   "p": {
+    "job": 0.1,
+    "software": 0.93,
+    "client": 0.36
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Rooms for people and agents.",
+   "judged": "2026-10-11"
+  },
+  "bojieli/ai-agent-book": {
+   "p": {
+    "job": 0.02,
+    "software": 0.06,
+    "client": 0.02
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "《深入理解 AI Agent：设计原理与工程实践》（李博杰 著）开源主仓库：全书正文、编译版 PDF 与按章配套代码",
+   "judged": "2026-10-11"
+  },
+  "cortexkit/magic-context": {
+   "p": {
+    "job": 0.54,
+    "software": 0.93,
+    "client": 0.2
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Unbounded context. Memory that manages itself. One session, for life. The hippocampus for coding agents, part of CortexK",
+   "judged": "2026-10-11"
+  },
+  "cytostack/openwolf": {
+   "p": {
+    "job": 0.28,
+    "software": 0.96,
+    "client": 0.04
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Portable project memory across Claude Code, Codex and OpenCode, plus token accounting measured from harness transcripts.",
+   "judged": "2026-10-11"
+  },
+  "deeplethe/utopia": {
+   "p": {
+    "job": 0.22,
+    "software": 0.9,
+    "client": 0.06
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "World's first open-source enterprise world model.",
+   "judged": "2026-10-11"
+  },
+  "dolthub/dolt": {
+   "p": {
+    "job": 0.26,
+    "software": 0.97,
+    "client": 0.06
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Dolt – Git for Data",
+   "judged": "2026-10-11"
+  },
+  "doobidoo/mcp-memory-service": {
+   "p": {
+    "job": 0.89,
+    "software": 0.98,
+    "client": 0.06
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source persistent memory for AI agent pipelines (LangGraph, CrewAI, AutoGen) and Claude. REST API + knowledge graph",
+   "judged": "2026-10-11"
+  },
+  "felinics/Memoh": {
+   "p": {
+    "job": 0.18,
+    "software": 0.96,
+    "client": 0.16
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "✨ The open-source multi-agent platform. Every agent gets its own computer, desktop, network, and long-term memory.  You ",
+   "judged": "2026-10-11"
+  },
+  "iwe-org/iwe": {
+   "p": {
+    "job": 0.41,
+    "software": 0.95,
+    "client": 0.06
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Markdown knowledge graph — LSP for your editor, CLI + MCP memory for your AI agents",
+   "judged": "2026-10-11"
+  },
+  "ix-infrastructure/Ix": {
+   "p": {
+    "job": 0.2,
+    "software": 0.95,
+    "client": 0.1
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Understand any codebase instantly. System intelligence for codebases, built for humans and AI.",
+   "judged": "2026-10-11"
+  },
+  "kayba-ai/agentic-context-engine": {
+   "p": {
+    "job": 0.4,
+    "software": 0.91,
+    "client": 0.44
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "🧠 Make your agents learn from experience. Now available as a hosted solution at kayba.ai ",
+   "judged": "2026-10-11"
+  },
+  "kungfu-systems/kungfu": {
+   "p": {
+    "job": 0.14,
+    "software": 0.95,
+    "client": 0.12
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Your agents don’t hand off the work. Kungfu keeps the same Work moving across Codex, Claude, OpenCode, and your own exec",
+   "judged": "2026-10-11"
+  },
+  "letta-ai/letta-code": {
+   "p": {
+    "job": 0.29,
+    "software": 0.95,
+    "client": 0.55
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Stateful agents that are like people, with memory, identity, and the ability to learn and adapt",
+   "judged": "2026-10-11"
+  },
+  "moorcheh-ai/memanto": {
+   "p": {
+    "job": 0.32,
+    "software": 0.95,
+    "client": 0.19
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Memory that AI Agents Love!",
+   "judged": "2026-10-11"
+  },
+  "neomjs/neo": {
+   "p": {
+    "job": 0.11,
+    "software": 0.87,
+    "client": 0.13
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Neo.mjs is a self-evolving software organism: a professional end-to-end AI engineering team whose cross-model swarm inha",
+   "judged": "2026-10-11"
+  },
+  "pingcap/tidb": {
+   "p": {
+    "job": 0.12,
+    "software": 0.96,
+    "client": 0.04
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "TiDB is built for agentic workloads that grow unpredictably, with ACID guarantees and native support for transactions, a",
+   "judged": "2026-10-11"
+  },
+  "plastic-labs/honcho": {
+   "p": {
+    "job": 0.91,
+    "software": 0.96,
+    "client": 0.18
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": " Memory library for building stateful agents",
+   "judged": "2026-10-11"
+  },
+  "semantica-agi/semantica": {
+   "p": {
+    "job": 0.43,
+    "software": 0.93,
+    "client": 0.08
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Graph-Native Infrastructure for Context and Accountable AI Systems",
+   "judged": "2026-10-11"
+  },
+  "supermemoryai/supermemory": {
+   "p": {
+    "job": 0.9,
+    "software": 0.96,
+    "client": 0.28
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Memory and context engine + app that is extremely fast, scalable, and can be run fully locally. The Memory API for the A",
+   "judged": "2026-10-11"
+  },
+  "thedotmack/claude-mem": {
+   "p": {
+    "job": 0.47,
+    "software": 0.92,
+    "client": 0.52
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Persistent Context Across Sessions for Every Agent –  Captures everything your agent does during sessions, compresses it",
+   "judged": "2026-10-11"
+  },
+  "tigerless-labs/agent-memory": {
+   "p": {
+    "job": 0.83,
+    "software": 0.93,
+    "client": 0.04
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Long-term memory runtime for AI agents — plain Markdown as the source of truth, local ranked retrieval, and an independe",
+   "judged": "2026-10-11"
+  },
+  "vectorize-io/hindsight": {
+   "p": {
+    "job": 0.9,
+    "software": 0.96,
+    "client": 0.3
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Hindsight: Agent Memory That Learns",
+   "judged": "2026-10-11"
+  },
+  "volcengine/OpenViking": {
+   "p": {
+    "job": 0.76,
+    "software": 0.93,
+    "client": 0.08
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Self-evolving Context Database for AI Agents. Unify Agent Memory, Knowledge RAG and Skills.",
+   "judged": "2026-10-11"
+  },
+  "vshulcz/deja-vu": {
+   "p": {
+    "job": 0.43,
+    "software": 0.97,
+    "client": 0.04
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Memory for Claude Code, Codex, Cursor and 38 more coding agents, built from the session history already on your disk. Lo",
+   "judged": "2026-10-11"
+  },
+  "zilliztech/memsearch": {
+   "p": {
+    "job": 0.76,
+    "software": 0.94,
+    "client": 0.14
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A persistent, unified memory layer for all your AI agents (e.g. Claude Code, Codex, DSH), backed by Markdown and Milvus.",
+   "judged": "2026-10-11"
+  }
+ },
+ "answer-engine": {
+  "Azure-Samples/chat-with-your-data-solution-accelerator": {
+   "p": {
+    "job": 0.37,
+    "software": 0.8,
+    "client": 0.24
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A Solution Accelerator for the RAG pattern running in Azure, using Azure AI Search for retrieval and Azure OpenAI large ",
+   "judged": "2026-10-11"
+  },
+  "Panniantong/Agent-Reach": {
+   "p": {
+    "job": 0.12,
+    "software": 0.92,
+    "client": 0.14
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Give your AI agent eyes to see the entire internet. Read & search Twitter, Reddit, YouTube, GitHub, Bilibili, XiaoHongSh",
+   "judged": "2026-10-11"
+  },
+  "SeekStorm/SeekStorm": {
+   "p": {
+    "job": 0.1,
+    "software": 0.93,
+    "client": 0.13
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "SeekStorm: vector & lexical search - in-process library & multi-tenancy server, in Rust.",
+   "judged": "2026-10-11"
+  },
+  "codelibs/fess": {
+   "p": {
+    "job": 0.18,
+    "software": 0.98,
+    "client": 0.03
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source, self-hosted enterprise & site search server built on OpenSearch. Crawls web / file / DB / cloud sources, 20",
+   "judged": "2026-10-11"
+  },
+  "import-ai/omnibox": {
+   "p": {
+    "job": 0.33,
+    "software": 0.92,
+    "client": 0.34
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Anywhere, anything to memory, memory to anything.",
+   "judged": "2026-10-11"
+  },
+  "swirlai/swirl-search": {
+   "p": {
+    "job": 0.64,
+    "software": 0.96,
+    "client": 0.08
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "AI Search & RAG Without Moving Your Data. Get instant answers from your company's knowledge across 100+ apps while keepi",
+   "judged": "2026-10-11"
+  },
+  "volcengine/SearchCLI": {
+   "p": {
+    "job": 0.14,
+    "software": 0.94,
+    "client": 0.93
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open CLI for integrating AI search, recommendation, and conversational retrieval into agent systems and business systems",
+   "judged": "2026-10-11"
+  },
+  "xerj-org/xerj": {
+   "p": {
+    "job": 0.24,
+    "software": 0.97,
+    "client": 0.06
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "XERJ is the new way for AI to search data. Its autoindex capability activates agents to know your data without the token",
+   "judged": "2026-10-11"
+  }
+ },
+ "browser-automation": {
+  "AtomicBot-ai/atomic-agent": {
+   "p": {
+    "job": 0.14,
+    "software": 0.97,
+    "client": 0.06
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Atomic Agent is a local-first AI agent. Runs open-weight models on your own machine via llama.cpp.",
+   "judged": "2026-10-11"
+  },
+  "CelestoAI/celesto": {
+   "p": {
+    "job": 0.29,
+    "software": 0.95,
+    "client": 0.44
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Secure and persistent computer for AI agents",
+   "judged": "2026-10-11"
+  },
+  "Player-YN/BrowserKitten": {
+   "p": {
+    "job": 0.55,
+    "software": 0.95,
+    "client": 0.06
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Paw Work - selection-first web agent for Chrome: select on the live page, describe the outcome, take away an editable of",
+   "judged": "2026-10-11"
+  },
+  "Skyvern-AI/skyvern": {
+   "p": {
+    "job": 0.78,
+    "software": 0.96,
+    "client": 0.26
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Automate browser based workflows with AI",
+   "judged": "2026-10-11"
+  },
+  "TIGER-AI-Lab/ClawBench": {
+   "p": {
+    "job": 0.06,
+    "software": 0.25,
+    "client": 0.05
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "Open-source benchmark for browser AI agents on daily tasks.",
+   "judged": "2026-10-11"
+  },
+  "brightdata/brightdata-mcp": {
+   "p": {
+    "job": 0.42,
+    "software": 0.91,
+    "client": 0.81
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A powerful Model Context Protocol (MCP) server that provides an all-in-one solution for public web access.",
+   "judged": "2026-10-11"
+  },
+  "browser-use/browser-harness": {
+   "p": {
+    "job": 0.72,
+    "software": 0.92,
+    "client": 0.16
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Browser Harness | Self-healing harness that enables LLMs to complete any task.",
+   "judged": "2026-10-11"
+  },
+  "browseros-ai/BrowserOS": {
+   "p": {
+    "job": 0.38,
+    "software": 0.97,
+    "client": 0.06
+   },
+   "kind": [
+    "browser"
+   ],
+   "model": "jev-1.13.0",
+   "what": "🌐 The open-source Agentic browser; alternative to ChatGPT Atlas, Perplexity Comet, Dia.",
+   "judged": "2026-10-11"
+  },
+  "feder-cr/invisible_playwright_mcp": {
+   "p": {
+    "job": 0.74,
+    "software": 0.97,
+    "client": 0.11
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Playwright MCP server undetected by anti-bots and captchas: AI agent browses the web on anti-detect stealth Firefox, Pyt",
+   "judged": "2026-10-11"
+  },
+  "nicedreamzapp/claude-code-local": {
+   "p": {
+    "job": 0.04,
+    "software": 0.96,
+    "client": 0.06
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Run Claude Code 100% on-device with local AI on Apple Silicon. MLX-native Anthropic-API server. 6 fighters incl. Muse-Gl",
+   "judged": "2026-10-11"
+  },
+  "platonai/Browser4": {
+   "p": {
+    "job": 0.87,
+    "software": 0.95,
+    "client": 0.1
+   },
+   "kind": [
+    "browser"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Browser4 — an AI-native browser engine for autonomous agents, intelligent extraction, and large-scale web automation.",
+   "judged": "2026-10-11"
+  },
+  "vmoranv/jshookmcp": {
+   "p": {
+    "job": 0.2,
+    "software": 0.95,
+    "client": 0.07
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A search-first, profile-aware reverse-engineering workspace for AI agents — 735 tools across 36 domains in one MCP serve",
+   "judged": "2026-10-11"
+  }
+ },
+ "code-sandbox": {
+  "BitMiracle-AI/Dormice": {
+   "p": {
+    "job": 0.87,
+    "software": 0.97,
+    "client": 0.05
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "The SQLite of agent sandboxes — self-hosted, E2B-compatible. One machine, sandboxes that live forever, idle costs nothin",
+   "judged": "2026-10-11"
+  },
+  "arcboxlabs/arcbox": {
+   "p": {
+    "job": 0.55,
+    "software": 0.97,
+    "client": 0.04
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Run AI agents on real and isolated machines — own kernel, filesystem, and network — with <100ms boot. Local first, OCI c",
+   "judged": "2026-10-11"
+  },
+  "astrid-runtime/astrid": {
+   "p": {
+    "job": 0.41,
+    "software": 0.95,
+    "client": 0.07
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Astrid is a portable, capability-secure operating system for composable software.",
+   "judged": "2026-10-11"
+  },
+  "deeplethe/forkd": {
+   "p": {
+    "job": 0.82,
+    "software": 0.96,
+    "client": 0.04
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Fork() for AI agent microVMs. Spawn 100 children in ~100ms from a warm parent; BRANCH a live VM in ~150ms. KVM-isolated,",
+   "judged": "2026-10-11"
+  },
+  "e2b-dev/E2B": {
+   "p": {
+    "job": 0.65,
+    "software": 0.89,
+    "client": 0.87
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source, secure environment with real-world tools for enterprise-grade agents.",
+   "judged": "2026-10-11"
+  },
+  "e2b-dev/code-interpreter": {
+   "p": {
+    "job": 0.17,
+    "software": 0.9,
+    "client": 0.91
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Python & JS/TS SDK for running AI-generated code/code interpreting in your AI app ",
+   "judged": "2026-10-11"
+  },
+  "e2b-dev/fragments": {
+   "p": {
+    "job": 0.07,
+    "software": 0.86,
+    "client": 0.35
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source Next.js template for building apps that are fully generated by AI. By E2B.",
+   "judged": "2026-10-11"
+  },
+  "eugene1g/agent-safehouse": {
+   "p": {
+    "job": 0.13,
+    "software": 0.96,
+    "client": 0.04
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Sandbox your local AI agents so they can read/write only what they need",
+   "judged": "2026-10-11"
+  },
+  "liquidmetal-dev/flintlock": {
+   "p": {
+    "job": 0.7,
+    "software": 0.95,
+    "client": 0.05
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Lock, Stock, and Two Smoking MicroVMs. Create and manage the lifecycle of MicroVMs backed by containerd.",
+   "judged": "2026-10-11"
+  },
+  "microvm-nix/microvm.nix": {
+   "p": {
+    "job": 0.47,
+    "software": 0.89,
+    "client": 0.04
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "NixOS MicroVMs",
+   "judged": "2026-10-11"
+  },
+  "omnigent-ai/omnigent": {
+   "p": {
+    "job": 0.09,
+    "software": 0.97,
+    "client": 0.16
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Omnigent is an open-source AI agent framework and meta-harness: orchestrate Claude Code, Codex, Cursor, Pi, and custom a",
+   "judged": "2026-10-11"
+  },
+  "openebs/mayastor": {
+   "p": {
+    "job": 0.03,
+    "software": 0.95,
+    "client": 0.04
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Dynamically provision Stateful Persistent Replicated Cluster-wide Fabric Volumes & Filesystems for Kubernetes that is pr",
+   "judged": "2026-10-11"
+  },
+  "rivet-dev/agents": {
+   "p": {
+    "job": 0.18,
+    "software": 0.89,
+    "client": 0.4
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A durable process per agent, with memory that survives restarts",
+   "judged": "2026-10-11"
+  },
+  "smol-machines/smolvm": {
+   "p": {
+    "job": 0.84,
+    "software": 0.97,
+    "client": 0.11
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "An embeddable, portable, branchable virtual machine to safely run Agents locally.",
+   "judged": "2026-10-11"
+  },
+  "tensorlakeai/tensorlake": {
+   "p": {
+    "job": 0.72,
+    "software": 0.91,
+    "client": 0.8
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Tensorlake is a serverless runtime for sandboxes and deploying background agentic applications",
+   "judged": "2026-10-11"
+  },
+  "vndee/llm-sandbox": {
+   "p": {
+    "job": 0.57,
+    "software": 0.96,
+    "client": 0.09
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Lightweight and portable LLM sandbox runtime (code interpreter) Python library.",
+   "judged": "2026-10-11"
+  }
+ },
+ "document-parsing": {
+  "AlexandrosGounis/pdfx": {
+   "p": {
+    "job": 0.04,
+    "software": 0.93,
+    "client": 0.05
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A free-floating 2D Canvas for processing multiple PDF files simultaneously",
+   "judged": "2026-10-11"
+  },
+  "Topdu/OpenOCR": {
+   "p": {
+    "job": 0.73,
+    "software": 0.87,
+    "client": 0.05
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "OpenOCR: An Open-Source Toolkit for General-OCR Research and Applications, integrates a unified training and evaluation ",
+   "judged": "2026-10-11"
+  },
+  "aiptimizer/TurboOCR": {
+   "p": {
+    "job": 0.86,
+    "software": 0.96,
+    "client": 0.06
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "TurboOCR, >200 img/s OmnidocBench. TensorRT FP16, PP-OCRv6, HTTP + gRPC",
+   "judged": "2026-10-11"
+  },
+  "enoch3712/ExtractThinker": {
+   "p": {
+    "job": 0.3,
+    "software": 0.96,
+    "client": 0.11
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "ExtractThinker is a Document Intelligence library for LLMs, offering ORM-style interaction for flexible and powerful doc",
+   "judged": "2026-10-11"
+  },
+  "firecrawl/pdf-inspector": {
+   "p": {
+    "job": 0.81,
+    "software": 0.96,
+    "client": 0.04
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Fast Rust library for PDF inspection, classification, and text extraction. Intelligently detects scanned vs text-based P",
+   "judged": "2026-10-11"
+  },
+  "oomol-lab/pdf-craft": {
+   "p": {
+    "job": 0.69,
+    "software": 0.96,
+    "client": 0.45
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "PDF craft can convert PDF files into various other formats. This project will focus on processing PDF files of scanned b",
+   "judged": "2026-10-11"
+  },
+  "opendataloader-project/opendataloader-pdf": {
+   "p": {
+    "job": 0.85,
+    "software": 0.96,
+    "client": 0.08
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "PDF Parser for AI-ready data. Automate PDF accessibility. Open-source.",
+   "judged": "2026-10-11"
+  },
+  "run-llama/liteparse": {
+   "p": {
+    "job": 0.87,
+    "software": 0.96,
+    "client": 0.05
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A fast, helpful, and open-source document parser",
+   "judged": "2026-10-11"
+  },
+  "yfedoseev/pdf_oxide": {
+   "p": {
+    "job": 0.37,
+    "software": 0.97,
+    "client": 0.03
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "The fastest PDF library for Python and Rust. Text extraction, image extraction, markdown conversion, PDF creation & edit",
+   "judged": "2026-10-11"
+  }
+ },
+ "embedding-serving": {
+  "superlinked/sie": {
+   "p": {
+    "job": 0.48,
+    "software": 0.96,
+    "client": 0.08
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source inference server and production cluster for all the models your agent needs.",
+   "judged": "2026-10-11"
+  }
+ },
+ "fine-tuning": {
+  "AI-Hypercomputer/maxtext": {
+   "p": {
+    "job": 0.52,
+    "software": 0.95,
+    "client": 0.05
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A simple, performant, and scalable Jax LLM!",
+   "judged": "2026-10-11"
+  },
+  "Human-Agent-Society/reef": {
+   "p": {
+    "job": 0.14,
+    "software": 0.96,
+    "client": 0.1
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Infrastructure for continually self‑improving agents",
+   "judged": "2026-10-11"
+  },
+  "MakazhanAlpamys/Soup": {
+   "p": {
+    "job": 0.84,
+    "software": 0.96,
+    "client": 0.07
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Fine-tune LLMs from one YAML. Layer streaming trains an 8B model on a 4 GB laptop GPU.",
+   "judged": "2026-10-11"
+  },
+  "NVIDIA-NeMo/Curator": {
+   "p": {
+    "job": 0.04,
+    "software": 0.97,
+    "client": 0.05
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Scalable data pre processing and curation toolkit for LLMs",
+   "judged": "2026-10-11"
+  },
+  "amitshekhariitbhu/ai-engineering-interview-questions": {
+   "p": {
+    "job": 0.02,
+    "software": 0.03,
+    "client": 0.02
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "Your Cheat Sheet for AI Engineering Interview – Questions and Answers.",
+   "judged": "2026-10-11"
+  },
+  "beam-cloud/beta9": {
+   "p": {
+    "job": 0.04,
+    "software": 0.95,
+    "client": 0.67
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Ultrafast serverless GPU inference, sandboxes, and background jobs",
+   "judged": "2026-10-11"
+  },
+  "bentoml/OpenLLM": {
+   "p": {
+    "job": 0.05,
+    "software": 0.98,
+    "client": 0.12
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Run any open-source LLMs, such as DeepSeek and Llama, as OpenAI compatible API endpoint in the cloud.",
+   "judged": "2026-10-11"
+  },
+  "bespokelabsai/curator": {
+   "p": {
+    "job": 0.1,
+    "software": 0.96,
+    "client": 0.24
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Synthetic data curation for post-training and structured data extraction",
+   "judged": "2026-10-11"
+  },
+  "bojieli/ai-infra-book": {
+   "p": {
+    "job": 0.02,
+    "software": 0.1,
+    "client": 0.02
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "《深入理解 AI Infra：量化分析与系统设计》（李博杰 著）开源书稿：从硬件约束和模型架构出发，量化推导 LLM 推理与训练系统设计。含全书正文、PDF、配套计算工具与实验",
+   "judged": "2026-10-11"
+  },
+  "flyteorg/flyte": {
+   "p": {
+    "job": 0.05,
+    "software": 0.96,
+    "client": 0.35
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Type-safe, distributed orchestration of agents, ML pipelines, and real-time inference on your k8s — in pure Python with ",
+   "judged": "2026-10-11"
+  },
+  "gitleaks/gitleaks": {
+   "p": {
+    "job": 0.01,
+    "software": 0.98,
+    "client": 0.03
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Find secrets with Gitleaks 🔑",
+   "judged": "2026-10-11"
+  },
+  "h2oai/h2o-llmstudio": {
+   "p": {
+    "job": 0.85,
+    "software": 0.96,
+    "client": 0.07
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "H2O LLM Studio - a framework and no-code GUI for fine-tuning LLMs. Documentation: https://docs.h2o.ai/h2o-llmstudio/",
+   "judged": "2026-10-11"
+  },
+  "huggingface/peft": {
+   "p": {
+    "job": 0.36,
+    "software": 0.96,
+    "client": 0.03
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "🤗 PEFT: State-of-the-art Parameter-Efficient Fine-Tuning.",
+   "judged": "2026-10-11"
+  },
+  "kubeflow/trainer": {
+   "p": {
+    "job": 0.32,
+    "software": 0.93,
+    "client": 0.08
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Distributed AI Model Training and LLM Fine-Tuning on Kubernetes",
+   "judged": "2026-10-11"
+  },
+  "linkedin/Liger-Kernel": {
+   "p": {
+    "job": 0.12,
+    "software": 0.95,
+    "client": 0.03
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Efficient Triton Kernels for LLM Training",
+   "judged": "2026-10-11"
+  },
+  "ludwig-ai/ludwig": {
+   "p": {
+    "job": 0.66,
+    "software": 0.97,
+    "client": 0.04
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Low-code framework for building custom LLMs, neural networks, and other AI models",
+   "judged": "2026-10-11"
+  },
+  "openlake-project/openlake": {
+   "p": {
+    "job": 0.04,
+    "software": 0.96,
+    "client": 0.06
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "OpenLake is a high performance storage engine for efficient LLM inference and GPU Training",
+   "judged": "2026-10-11"
+  },
+  "oumi-ai/oumi": {
+   "p": {
+    "job": 0.73,
+    "software": 0.96,
+    "client": 0.13
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Easily fine-tune (SFT/RL), evaluate, and deploy Qwen, Gemma, or any open agentic LLM/VLM!",
+   "judged": "2026-10-11"
+  },
+  "rllm-org/rllm": {
+   "p": {
+    "job": 0.52,
+    "software": 0.96,
+    "client": 0.09
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Democratizing Reinforcement Learning for LLMs",
+   "judged": "2026-10-11"
+  },
+  "skypilot-org/skypilot": {
+   "p": {
+    "job": 0.05,
+    "software": 0.96,
+    "client": 0.12
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "The AI Compute Platform for frontier teams. SkyPilot turns fragmented AI compute into one AI supercomputer, so frontier ",
+   "judged": "2026-10-11"
+  },
+  "stochasticai/xTuring": {
+   "p": {
+    "job": 0.86,
+    "software": 0.96,
+    "client": 0.07
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Build, personalize and control your own LLMs. From data pre-processing to fine-tuning, xTuring provides an easy way to p",
+   "judged": "2026-10-11"
+  },
+  "utkuozdemir/nvidia_gpu_exporter": {
+   "p": {
+    "job": 0.01,
+    "software": 0.97,
+    "client": 0.04
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Nvidia GPU exporter for prometheus using nvidia-smi binary OR using NVML",
+   "judged": "2026-10-11"
+  }
+ },
+ "guardrails": {
+  "ASCIT31/Dark-Moon": {
+   "p": {
+    "job": 0.03,
+    "software": 0.97,
+    "client": 0.06
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source autonomous AI penetration testing. 50 specialist agents across web, API, cloud, Active Directory, Kubernetes",
+   "judged": "2026-10-11"
+  },
+  "BoundaryML/baml": {
+   "p": {
+    "job": 0.11,
+    "software": 0.9,
+    "client": 0.12
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "The programming language for agents",
+   "judged": "2026-10-11"
+  },
+  "CyberStrikeus/CyberStrike": {
+   "p": {
+    "job": 0.03,
+    "software": 0.97,
+    "client": 0.16
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source AI-powered offensive security harness for automated penetration testing.",
+   "judged": "2026-10-11"
+  },
+  "Giskard-AI/giskard-oss": {
+   "p": {
+    "job": 0.14,
+    "software": 0.96,
+    "client": 0.07
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "🐢 Open-Source Evaluation & Testing library for LLM Agents",
+   "judged": "2026-10-11"
+  },
+  "NVIDIA/garak": {
+   "p": {
+    "job": 0.1,
+    "software": 0.97,
+    "client": 0.06
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "the LLM vulnerability scanner",
+   "judged": "2026-10-11"
+  },
+  "Tencent/AI-Infra-Guard": {
+   "p": {
+    "job": 0.16,
+    "software": 0.93,
+    "client": 0.12
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A full-stack AI Red Teaming platform securing AI ecosystems via Agent Scan, Skills Scan, MCP scan, AI Infra scan and LLM",
+   "judged": "2026-10-11"
+  },
+  "akto-api-security/akto": {
+   "p": {
+    "job": 0.09,
+    "software": 0.95,
+    "client": 0.18
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Akto is the fastest growing AI Security platform for your teams to secure AI agents, MCPs, LLMs, Agent skills, Gen AI ap",
+   "judged": "2026-10-11"
+  },
+  "archestra-ai/OpenAPPA": {
+   "p": {
+    "job": 0.39,
+    "software": 0.93,
+    "client": 0.1
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Deterministic guardrails that don't break agents",
+   "judged": "2026-10-11"
+  },
+  "beelzebub-labs/beelzebub": {
+   "p": {
+    "job": 0.04,
+    "software": 0.97,
+    "client": 0.07
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A secure low code deception runtime framework, leveraging AI for System Virtualization.",
+   "judged": "2026-10-11"
+  },
+  "data-privacy-stack/presidio": {
+   "p": {
+    "job": 0.08,
+    "software": 0.97,
+    "client": 0.11
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "An open-source framework for detecting, redacting, masking, and anonymizing sensitive data (PII) across text, images, an",
+   "judged": "2026-10-11"
+  },
+  "future-agi/future-agi": {
+   "p": {
+    "job": 0.19,
+    "software": 0.93,
+    "client": 0.18
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source, end-to-end platform for evaluating, observing, and improving LLM and AI agent applications. Tracing · Evals",
+   "judged": "2026-10-11"
+  },
+  "ifixai-ai/iFixAi": {
+   "p": {
+    "job": 0.14,
+    "software": 0.9,
+    "client": 0.35
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Independent Auditing of AI Agents. Run by human or the agent itself, to answer the most crucial question in the AI Agent",
+   "judged": "2026-10-11"
+  },
+  "kenryu42/cc-safety-net": {
+   "p": {
+    "job": 0.12,
+    "software": 0.94,
+    "client": 0.05
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A pre-execution guard for AI coding agents. It blocks destructive Git and file system commands, plus common attempts to ",
+   "judged": "2026-10-11"
+  },
+  "lennney/stop-that-shit": {
+   "p": {
+    "job": 0.18,
+    "software": 0.9,
+    "client": 0.06
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Stop That Shit（别再造史了）｜面向 Codex/GPT 场景的多平台 Hook + Skill Guard：拦截 AI coding agent 无需求的哈希、校验和与任务范围膨胀。 A multi-platform Hook",
+   "judged": "2026-10-11"
+  },
+  "msoedov/agentic_security": {
+   "p": {
+    "job": 0.11,
+    "software": 0.96,
+    "client": 0.09
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Agentic LLM Vulnerability Scanner / AI red teaming kit 🧪",
+   "judged": "2026-10-11"
+  },
+  "nolabs-ai/nono": {
+   "p": {
+    "job": 0.09,
+    "software": 0.96,
+    "client": 0.18
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "agent runtime security - zero trust, zero setup, zero latency agent sandbox",
+   "judged": "2026-10-11"
+  },
+  "uber/ADR": {
+   "p": {
+    "job": 0.13,
+    "software": 0.77,
+    "client": 0.07
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "ADR secures enterprise AI agents through observability, security benchmarking, and threat detection. Deployed at Uber.",
+   "judged": "2026-10-11"
+  },
+  "usestrix/strix": {
+   "p": {
+    "job": 0.07,
+    "software": 0.96,
+    "client": 0.18
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source AI penetration testing tool to find and fix your app’s vulnerabilities.",
+   "judged": "2026-10-11"
+  },
+  "vllm-project/semantic-router": {
+   "p": {
+    "job": 0.08,
+    "software": 0.94,
+    "client": 0.22
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "An open, programmable decision layer for models and compute.",
+   "judged": "2026-10-11"
+  }
+ },
+ "image-generation": {
+  "1038lab/ComfyUI-RMBG": {
+   "p": {
+    "job": 0.04,
+    "software": 0.94,
+    "client": 0.04
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A ComfyUI custom node designed for advanced image background removal and object, face, clothes, and fashion segmentation",
+   "judged": "2026-10-11"
+  },
+  "ATH-MaaS/ComfyUI-Copilot": {
+   "p": {
+    "job": 0.07,
+    "software": 0.91,
+    "client": 0.35
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "An AI-powered custom node for ComfyUI designed to enhance workflow automation and provide intelligent assistance",
+   "judged": "2026-10-11"
+  },
+  "Acly/krita-ai-diffusion": {
+   "p": {
+    "job": 0.3,
+    "software": 0.97,
+    "client": 0.12
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Streamlined interface for generating images with AI in Krita. Inpaint and outpaint with optional text prompt, no tweakin",
+   "judged": "2026-10-11"
+  },
+  "Akegarasu/lora-scripts": {
+   "p": {
+    "job": 0.08,
+    "software": 0.95,
+    "client": 0.05
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "SD-Trainer. LoRA & Dreambooth training scripts & GUI use kohya-ss's trainer, for diffusion model.",
+   "judged": "2026-10-11"
+  },
+  "Capsize-Games/airunner": {
+   "p": {
+    "job": 0.22,
+    "software": 0.97,
+    "client": 0.05
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Offline inference engine for art, real-time voice conversations, LLM powered chatbots and automated workflows",
+   "judged": "2026-10-11"
+  },
+  "CookSleep/gpt_image_playground": {
+   "p": {
+    "job": 0.35,
+    "software": 0.89,
+    "client": 0.88
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "基于 OpenAI gpt-image-2.5 API 的图片生成与编辑工具",
+   "judged": "2026-10-11"
+  },
+  "FurkanGozukara/Stable-Diffusion": {
+   "p": {
+    "job": 0.06,
+    "software": 0.09,
+    "client": 0.04
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "FLUX, Stable Diffusion, SDXL, SD3, LoRA, Fine Tuning, DreamBooth, Training, Automatic1111, Forge WebUI, SwarmUI, DeepFak",
+   "judged": "2026-10-11"
+  },
+  "HBAI-Ltd/Toonflow-app": {
+   "p": {
+    "job": 0.13,
+    "software": 0.95,
+    "client": 0.1
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "短剧、漫剧制作工具 Toonflow：开源 AI 视频创作平台，集成剧本创作、智能分镜、角色与场景资产管理、图像生成和视频生成。融合无限画布、AI Agent 与可视化工作流，支持本地部署、自选模型、跨平台客户端、MCP 与插件扩展。Ope",
+   "judged": "2026-10-11"
+  },
+  "HanaokaYuzu/Gemini-API": {
+   "p": {
+    "job": 0.16,
+    "software": 0.95,
+    "client": 0.95
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "✨ Reverse-engineered Python API for Google Gemini web app",
+   "judged": "2026-10-11"
+  },
+  "LykosAI/StabilityMatrix": {
+   "p": {
+    "job": 0.16,
+    "software": 0.97,
+    "client": 0.06
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Multi-Platform Package Manager for Stable Diffusion",
+   "judged": "2026-10-11"
+  },
+  "MochiDiffusion/MochiDiffusion": {
+   "p": {
+    "job": 0.56,
+    "software": 0.97,
+    "client": 0.04
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Run Stable Diffusion on Mac natively",
+   "judged": "2026-10-11"
+  },
+  "PurpleDoubleD/locally-uncensored": {
+   "p": {
+    "job": 0.23,
+    "software": 0.98,
+    "client": 0.12
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "The all-in-one local AI studio for your desktop: chat, image and video generation and a coding agent in one free, open s",
+   "judged": "2026-10-11"
+  },
+  "WeThinkIn/AIGC-Interview-Book": {
+   "p": {
+    "job": 0.01,
+    "software": 0.04,
+    "client": 0.03
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "【三年面试五年模拟】AIGC/LLM/AI Agent算法工程师面试资源平台。涵盖AIGC、LLM大模型、AI Agent、具身智能、传统深度学习、计算机视觉、自然语言处理、自动驾驶、机器学习、强化学习、大数据挖掘、世界模型、元宇宙、AGI",
+   "judged": "2026-10-11"
+  },
+  "bghira/SimpleTuner": {
+   "p": {
+    "job": 0.09,
+    "software": 0.94,
+    "client": 0.04
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A general fine-tuning kit geared toward image/video/audio diffusion models.",
+   "judged": "2026-10-11"
+  },
+  "calesthio/OpenMontage": {
+   "p": {
+    "job": 0.07,
+    "software": 0.85,
+    "client": 0.1
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "World's first open-source, agentic video production system. 12 production pipelines, 100+ tools, 700+ agent skill and pr",
+   "judged": "2026-10-11"
+  },
+  "carson-katri/dream-textures": {
+   "p": {
+    "job": 0.21,
+    "software": 0.97,
+    "client": 0.11
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Stable Diffusion built-in to Blender",
+   "judged": "2026-10-11"
+  },
+  "civitai/civitai": {
+   "p": {
+    "job": 0.06,
+    "software": 0.9,
+    "client": 0.23
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A repository of models, textual inversions, and more",
+   "judged": "2026-10-11"
+  },
+  "elegantapp/pwa-asset-generator": {
+   "p": {
+    "job": 0.02,
+    "software": 0.96,
+    "client": 0.04
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Automates PWA asset generation and image declaration. Automatically generates icon and splash screen images, favicons an",
+   "judged": "2026-10-11"
+  },
+  "helloianneo/ian-handdrawn-ppt": {
+   "p": {
+    "job": 0.08,
+    "software": 0.51,
+    "client": 0.07
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "中文手绘技术 PPT 整页图像生成 Skill | 21:9 封面 + 16:9 正文配图 | PNG 输出",
+   "judged": "2026-10-11"
+  },
+  "helloianneo/ian-xiaohei-illustrations": {
+   "p": {
+    "job": 0.07,
+    "software": 0.55,
+    "client": 0.06
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "中文小黑怪诞正文配图生成 Skill | 16:9 白底手绘 | 少量红橙蓝批注 | Codex Skill",
+   "judged": "2026-10-11"
+  },
+  "kane50613/takumi": {
+   "p": {
+    "job": 0.03,
+    "software": 0.96,
+    "client": 0.04
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Render OG images and paged PDFs from JSX, HTML, and CSS. No headless browser. Runs on Node.js, Cloudflare Workers, brows",
+   "judged": "2026-10-11"
+  },
+  "krillinai/OpenCreator": {
+   "p": {
+    "job": 0.17,
+    "software": 0.94,
+    "client": 0.19
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Formerly KrillinAI. Open-source AI workspace for creators, powered by Codex. Video translation, create videos, images, v",
+   "judged": "2026-10-11"
+  },
+  "leejet/stable-diffusion.cpp": {
+   "p": {
+    "job": 0.6,
+    "software": 0.95,
+    "client": 0.05
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Diffusion model(SD,Flux,Wan,Qwen Image,Z-Image,...) inference in pure C/C++",
+   "judged": "2026-10-11"
+  },
+  "lobehub/sd-webui-lobe-theme": {
+   "p": {
+    "job": 0.04,
+    "software": 0.85,
+    "client": 0.05
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "🅰️ Lobe theme - The modern theme for stable diffusion webui, exquisite interface design, highly customizable UI, and eff",
+   "judged": "2026-10-11"
+  },
+  "mcmonkeyprojects/SwarmUI": {
+   "p": {
+    "job": 0.51,
+    "software": 0.97,
+    "client": 0.07
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "SwarmUI (formerly StableSwarmUI), A Modular Stable Diffusion Web-User-Interface, with an emphasis on making powertools e",
+   "judged": "2026-10-11"
+  },
+  "openvinotoolkit/openvino": {
+   "p": {
+    "job": 0.1,
+    "software": 0.96,
+    "client": 0.06
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "OpenVINO™ is an open source toolkit for optimizing and deploying AI inference",
+   "judged": "2026-10-11"
+  },
+  "rgthree/rgthree-comfy": {
+   "p": {
+    "job": 0.05,
+    "software": 0.92,
+    "client": 0.03
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Making ComfyUI more comfortable!",
+   "judged": "2026-10-11"
+  },
+  "techjarves/Portable-Local-Studio": {
+   "p": {
+    "job": 0.26,
+    "software": 0.96,
+    "client": 0.04
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Portable local AI studio for Windows, Linux, and macOS. Zero-setup GUI for Image Generation, GGUF LLMs, Text to Speech &",
+   "judged": "2026-10-11"
+  },
+  "tenstorrent/tt-metal": {
+   "p": {
+    "job": 0.04,
+    "software": 0.89,
+    "client": 0.06
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": ":metal: TT-NN operator library, and TT-Metalium low level kernel programming model.",
+   "judged": "2026-10-11"
+  },
+  "vercel/satori": {
+   "p": {
+    "job": 0.04,
+    "software": 0.94,
+    "client": 0.06
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Enlightened library to convert HTML and CSS to SVG",
+   "judged": "2026-10-11"
+  },
+  "vladmandic/sdnext": {
+   "p": {
+    "job": 0.67,
+    "software": 0.96,
+    "client": 0.06
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "SD.Next: All-in-one WebUI for AI generative image and video creation, captioning and processing",
+   "judged": "2026-10-11"
+  },
+  "vllm-project/vllm-omni": {
+   "p": {
+    "job": 0.18,
+    "software": 0.94,
+    "client": 0.07
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A framework for efficient model inference with omni-modality models",
+   "judged": "2026-10-11"
+  },
+  "wiltodelta/remove-ai-watermarks": {
+   "p": {
+    "job": 0.02,
+    "software": 0.97,
+    "client": 0.14
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Remove visible and invisible AI watermarks and provenance metadata from images and video. Python library and CLI for Syn",
+   "judged": "2026-10-11"
+  },
+  "wuyoscar/GPT-Image2-Skill": {
+   "p": {
+    "job": 0.12,
+    "software": 0.66,
+    "client": 0.5
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "GPT Image 2/2.5 prompt gallery, image prompt library, agentic skill, and CLI for OpenAI image generation/editing",
+   "judged": "2026-10-11"
+  },
+  "yangjian102621/geekai": {
+   "p": {
+    "job": 0.12,
+    "software": 0.96,
+    "client": 0.44
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "AI 助手全套开源解决方案，自带运营管理后台，开箱即用。集成了 ChatGPT, Azure, ChatGLM,讯飞星火，文心一言等多个平台的大语言模型。支持 MJ AI 绘画，Stable Diffusion AI  绘画，微博热搜等插件",
+   "judged": "2026-10-11"
+  }
+ },
+ "llm-evals": {
+  "Giskard-AI/giskard-oss": {
+   "p": {
+    "job": 0.88,
+    "software": 0.97,
+    "client": 0.06
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "🐢 Open-Source Evaluation & Testing library for LLM Agents",
+   "judged": "2026-10-11"
+  },
+  "JudgmentLabs/judgeval": {
+   "p": {
+    "job": 0.53,
+    "software": 0.95,
+    "client": 0.91
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "The Continuous-Improvement Stack for Agents. Our environment data and evals power agent improvement and monitoring.",
+   "judged": "2026-10-11"
+  },
+  "NVIDIA/garak": {
+   "p": {
+    "job": 0.43,
+    "software": 0.97,
+    "client": 0.06
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "the LLM vulnerability scanner",
+   "judged": "2026-10-11"
+  },
+  "Q00/ouroboros": {
+   "p": {
+    "job": 0.09,
+    "software": 0.94,
+    "client": 0.13
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Agent OS: the agent gets smarter on its own. We just hold the line: Interview-gated, staged evaluation, budgeted evoluti",
+   "judged": "2026-10-11"
+  },
+  "TIGER-AI-Lab/ClawBench": {
+   "p": {
+    "job": 0.2,
+    "software": 0.4,
+    "client": 0.06
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "Open-source benchmark for browser AI agents on daily tasks.",
+   "judged": "2026-10-11"
+  },
+  "Tencent/AI-Infra-Guard": {
+   "p": {
+    "job": 0.21,
+    "software": 0.93,
+    "client": 0.11
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A full-stack AI Red Teaming platform securing AI ecosystems via Agent Scan, Skills Scan, MCP scan, AI Infra scan and LLM",
+   "judged": "2026-10-11"
+  },
+  "cvs-health/uqlm": {
+   "p": {
+    "job": 0.48,
+    "software": 0.94,
+    "client": 0.04
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": " [JMLR 2026] UQLM: A Python package for LLM hallucination detection using uncertainty quantification",
+   "judged": "2026-10-11"
+  },
+  "future-agi/future-agi": {
+   "p": {
+    "job": 0.55,
+    "software": 0.93,
+    "client": 0.16
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source, end-to-end platform for evaluating, observing, and improving LLM and AI agent applications. Tracing · Evals",
+   "judged": "2026-10-11"
+  },
+  "genieincodebottle/generative-ai": {
+   "p": {
+    "job": 0.03,
+    "software": 0.06,
+    "client": 0.04
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "Comprehensive resources on Generative AI, including a detailed roadmap, projects, use cases, interview preparation, and ",
+   "judged": "2026-10-11"
+  },
+  "huggingface/aisheets": {
+   "p": {
+    "job": 0.05,
+    "software": 0.94,
+    "client": 0.17
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Build, enrich, and transform datasets using AI models with no code",
+   "judged": "2026-10-11"
+  },
+  "ifixai-ai/iFixAi": {
+   "p": {
+    "job": 0.59,
+    "software": 0.91,
+    "client": 0.38
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Independent Auditing of AI Agents. Run by human or the agent itself, to answer the most crucial question in the AI Agent",
+   "judged": "2026-10-11"
+  },
+  "lmnr-ai/lmnr": {
+   "p": {
+    "job": 0.33,
+    "software": 0.96,
+    "client": 0.37
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Laminar - open-source observability platform purpose-built for AI agents. YC S24.",
+   "judged": "2026-10-11"
+  },
+  "microsoft/prompty": {
+   "p": {
+    "job": 0.17,
+    "software": 0.95,
+    "client": 0.1
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Prompty makes it easy to create, manage, debug, and evaluate LLM prompts for your AI applications.  Prompty is an asset ",
+   "judged": "2026-10-11"
+  },
+  "msoedov/agentic_security": {
+   "p": {
+    "job": 0.29,
+    "software": 0.97,
+    "client": 0.07
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Agentic LLM Vulnerability Scanner / AI red teaming kit 🧪",
+   "judged": "2026-10-11"
+  },
+  "open-compass/opencompass": {
+   "p": {
+    "job": 0.8,
+    "software": 0.91,
+    "client": 0.09
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "OpenCompass is an LLM evaluation platform, supporting a wide range of models from OpenAI, Anthropic, Gemini, Qwen, GLM, ",
+   "judged": "2026-10-11"
+  },
+  "oumi-ai/oumi": {
+   "p": {
+    "job": 0.15,
+    "software": 0.96,
+    "client": 0.13
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Easily fine-tune (SFT/RL), evaluate, and deploy Qwen, Gemma, or any open agentic LLM/VLM!",
+   "judged": "2026-10-11"
+  },
+  "truera/trulens": {
+   "p": {
+    "job": 0.89,
+    "software": 0.97,
+    "client": 0.09
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Evaluation and Tracking for LLM Experiments and AI Agents",
+   "judged": "2026-10-11"
+  }
+ },
+ "llm-gateway": {
+  "Continuum-AI-Corp/OrcaRouter-Lite": {
+   "p": {
+    "job": 0.9,
+    "software": 0.97,
+    "client": 0.09
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Self-hosted LLM router with a managed safety net. OpenAI-compatible. BYOK. Single-workspace. Streaming. For more advance",
+   "judged": "2026-10-11"
+  },
+  "ENTERPILOT/GoModel": {
+   "p": {
+    "job": 0.95,
+    "software": 0.98,
+    "client": 0.04
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "AI gateway / AI control plane / AI proxy written in Go. Unified OpenAI-compatible and Anthropic-compatible API for OpenA",
+   "judged": "2026-10-11"
+  },
+  "Kong/kong": {
+   "p": {
+    "job": 0.75,
+    "software": 0.97,
+    "client": 0.05
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "🦍 The API and AI Gateway",
+   "judged": "2026-10-11"
+  },
+  "LiteLLM-Labs/litellm-agent-control-plane": {
+   "p": {
+    "job": 0.14,
+    "software": 0.94,
+    "client": 0.12
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "1 place to call all your agents - OpenCode, Hermes, Claude Managed Agents, Cursor Agents API, DeepAgents.",
+   "judged": "2026-10-11"
+  },
+  "Paritok-official/paritok-4b-v1": {
+   "p": {
+    "job": 0.21,
+    "software": 0.93,
+    "client": 0.08
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Non-destructive compression gateway for AI coding agents. Cuts token bills 25% on turn 1 to past 85% in long or saturate",
+   "judged": "2026-10-11"
+  },
+  "agentgateway/agentgateway": {
+   "p": {
+    "job": 0.74,
+    "software": 0.96,
+    "client": 0.04
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Next Generation Agentic Proxy for AI Agents and MCP servers",
+   "judged": "2026-10-11"
+  },
+  "apache/apisix": {
+   "p": {
+    "job": 0.47,
+    "software": 0.97,
+    "client": 0.03
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "The Cloud-Native API Gateway and AI Gateway",
+   "judged": "2026-10-11"
+  },
+  "astaxie/TokenHub": {
+   "p": {
+    "job": 0.82,
+    "software": 0.96,
+    "client": 0.05
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "TokenHub gives enterprises a private gateway to unify AI model access and governance, making every request controllable,",
+   "judged": "2026-10-11"
+  },
+  "bestruirui/octopus": {
+   "p": {
+    "job": 0.92,
+    "software": 0.97,
+    "client": 0.05
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "One Hub All LLMs For You | 为个人打造的 LLM API 聚合网关",
+   "judged": "2026-10-11"
+  },
+  "casdoor/casdoor": {
+   "p": {
+    "job": 0.13,
+    "software": 0.97,
+    "client": 0.05
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "An open-source Agent-first Identity and Access Management (IAM) /LLM MCP & agent gateway and auth server with web UI sup",
+   "judged": "2026-10-11"
+  },
+  "decolua/9router": {
+   "p": {
+    "job": 0.65,
+    "software": 0.96,
+    "client": 0.2
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Unlimited FREE AI coding. Connect Claude Code, Codex, Cursor, Cline, Copilot, Antigravity to FREE Claude/GPT/Gemini via ",
+   "judged": "2026-10-11"
+  },
+  "diegosouzapw/OmniRoute": {
+   "p": {
+    "job": 0.91,
+    "software": 0.92,
+    "client": 0.1
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Never stop coding. Free MIT AI gateway: one endpoint, 359 providers (150+ free), 1200+ models Kimi, Claude, GPT, Gemini,",
+   "judged": "2026-10-11"
+  },
+  "future-agi/future-agi": {
+   "p": {
+    "job": 0.24,
+    "software": 0.93,
+    "client": 0.13
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source, end-to-end platform for evaluating, observing, and improving LLM and AI agent applications. Tracing · Evals",
+   "judged": "2026-10-11"
+  },
+  "higress-group/higress": {
+   "p": {
+    "job": 0.69,
+    "software": 0.97,
+    "client": 0.04
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "🤖 AI Gateway | AI Native API Gateway",
+   "judged": "2026-10-11"
+  },
+  "kaitranntt/ccs": {
+   "p": {
+    "job": 0.33,
+    "software": 0.97,
+    "client": 0.2
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Switch between Claude accounts, Gemini, Copilot, OpenRouter (300+ models) via CLIProxyAPI OAuth proxy. Visual dashboard,",
+   "judged": "2026-10-11"
+  },
+  "katanemo/plano": {
+   "p": {
+    "job": 0.64,
+    "software": 0.95,
+    "client": 0.07
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Plano is an AI-native proxy server and data plane for agentic apps. Smart LLM routing, observability, agent orchestratio",
+   "judged": "2026-10-11"
+  },
+  "krakend/krakend-ce": {
+   "p": {
+    "job": 0.22,
+    "software": 0.97,
+    "client": 0.03
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "KrakenD Community Edition: High-performance, stateless, declarative, API Gateway written in Go.",
+   "judged": "2026-10-11"
+  },
+  "lidge-jun/opencodex": {
+   "p": {
+    "job": 0.47,
+    "software": 0.97,
+    "client": 0.1
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Universal provider proxy for OpenAI Codex & Claude Code — use any LLM (Claude, Gemini, Grok, DeepSeek, Ollama…) with Cod",
+   "judged": "2026-10-11"
+  },
+  "octelium/octelium": {
+   "p": {
+    "job": 0.29,
+    "software": 0.97,
+    "client": 0.04
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A next-gen FOSS self-hosted unified zero trust secure access platform that can operate as a remote access VPN, a ZTNA pl",
+   "judged": "2026-10-11"
+  },
+  "seakee/CPA-Manager-Plus": {
+   "p": {
+    "job": 0.15,
+    "software": 0.96,
+    "client": 0.07
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A self-hosted CPA / CLIProxyAPI management panel and AI gateway observability dashboard for requests, usage, cost, quota",
+   "judged": "2026-10-11"
+  },
+  "tbphp/gpt-load": {
+   "p": {
+    "job": 0.91,
+    "software": 0.97,
+    "client": 0.05
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Self-hosted AI gateway for multi-channel, multi-credential setups — API keys and subscription accounts, scheduling, fail",
+   "judged": "2026-10-11"
+  },
+  "vllm-project/semantic-router": {
+   "p": {
+    "job": 0.53,
+    "software": 0.95,
+    "client": 0.07
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "An open, programmable decision layer for models and compute.",
+   "judged": "2026-10-11"
+  },
+  "weave-os/router": {
+   "p": {
+    "job": 0.56,
+    "software": 0.81,
+    "client": 0.13
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Model router for agentic systems. Routes every prompt to the right model in <50ms. Cut costs 40-70% with just an endpoin",
+   "judged": "2026-10-11"
+  }
+ },
+ "llm-observability": {
+  "JudgmentLabs/judgeval": {
+   "p": {
+    "job": 0.8,
+    "software": 0.93,
+    "client": 0.89
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "The Continuous-Improvement Stack for Agents. Our environment data and evals power agent improvement and monitoring.",
+   "judged": "2026-10-11"
+  },
+  "VoltAgent/voltagent": {
+   "p": {
+    "job": 0.16,
+    "software": 0.92,
+    "client": 0.19
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "AI Agent Engineering Platform built on an Open Source TypeScript AI Agent Framework",
+   "judged": "2026-10-11"
+  },
+  "coze-dev/coze-loop": {
+   "p": {
+    "job": 0.72,
+    "software": 0.94,
+    "client": 0.12
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Next-generation AI Agent Optimization Platform: Cozeloop addresses challenges in AI agent development by providing full-",
+   "judged": "2026-10-11"
+  },
+  "future-agi/future-agi": {
+   "p": {
+    "job": 0.75,
+    "software": 0.92,
+    "client": 0.13
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source, end-to-end platform for evaluating, observing, and improving LLM and AI agent applications. Tracing · Evals",
+   "judged": "2026-10-11"
+  },
+  "langwatch/langwatch": {
+   "p": {
+    "job": 0.85,
+    "software": 0.96,
+    "client": 0.23
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-Source Agent Observability & Evals for AI Platform teams. Trace, test, route and govern every agent & coding assist",
+   "judged": "2026-10-11"
+  },
+  "latitude-dev/latitude-llm": {
+   "p": {
+    "job": 0.59,
+    "software": 0.89,
+    "client": 0.74
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source observability for AI agents. Find where your agents fail, dispatch your coding agent to fix it, and verify t",
+   "judged": "2026-10-11"
+  },
+  "lmnr-ai/lmnr": {
+   "p": {
+    "job": 0.92,
+    "software": 0.96,
+    "client": 0.2
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Laminar - open-source observability platform purpose-built for AI agents. YC S24.",
+   "judged": "2026-10-11"
+  },
+  "mnfst/llm-gateway": {
+   "p": {
+    "job": 0.23,
+    "software": 0.96,
+    "client": 0.08
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open Source LLM Gateway 🦚",
+   "judged": "2026-10-11"
+  },
+  "openlit/openlit": {
+   "p": {
+    "job": 0.87,
+    "software": 0.97,
+    "client": 0.13
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "OpenLIT is the open-source agent harness engineering platform: trace, evaluate, guard, and improve everything around the",
+   "judged": "2026-10-11"
+  },
+  "pydantic/logfire": {
+   "p": {
+    "job": 0.77,
+    "software": 0.91,
+    "client": 0.92
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "AI observability platform for production LLM and agent systems.",
+   "judged": "2026-10-11"
+  }
+ },
+ "llm-serving": {
+  "FareedKhan-dev/kimi-k3-in-c": {
+   "p": {
+    "job": 0.3,
+    "software": 0.85,
+    "client": 0.03
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A 2.78-trillion-parameter Kimi K3 running inference on a single CPU in 8.24 GB of RAM. Portable C99: no BLAS, no framewo",
+   "judged": "2026-10-11"
+  },
+  "Lightning-AI/litgpt": {
+   "p": {
+    "job": 0.22,
+    "software": 0.89,
+    "client": 0.08
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "20+ high-performance LLMs with recipes to pretrain, finetune and deploy at scale.",
+   "judged": "2026-10-11"
+  },
+  "PaddlePaddle/FastDeploy": {
+   "p": {
+    "job": 0.82,
+    "software": 0.96,
+    "client": 0.06
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "High-performance Inference and Deployment Toolkit for LLMs and VLMs based on PaddlePaddle",
+   "judged": "2026-10-11"
+  },
+  "SemiAnalysisAI/InferenceX": {
+   "p": {
+    "job": 0.05,
+    "software": 0.21,
+    "client": 0.1
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "Open Source AI Accelerator Research Platform Standard / 开源推理研究平台",
+   "judged": "2026-10-11"
+  },
+  "algorithmicsuperintelligence/openevolve": {
+   "p": {
+    "job": 0.03,
+    "software": 0.91,
+    "client": 0.13
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source implementation of AlphaEvolve",
+   "judged": "2026-10-11"
+  },
+  "algorithmicsuperintelligence/optillm": {
+   "p": {
+    "job": 0.31,
+    "software": 0.97,
+    "client": 0.15
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Optimizing inference proxy for LLMs",
+   "judged": "2026-10-11"
+  },
+  "alibaba/rtp-llm": {
+   "p": {
+    "job": 0.74,
+    "software": 0.9,
+    "client": 0.05
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "RTP-LLM: Alibaba's high-performance LLM inference engine for diverse applications.",
+   "judged": "2026-10-11"
+  },
+  "amitshekhariitbhu/ai-engineering-interview-questions": {
+   "p": {
+    "job": 0.01,
+    "software": 0.02,
+    "client": 0.02
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "Your Cheat Sheet for AI Engineering Interview – Questions and Answers.",
+   "judged": "2026-10-11"
+  },
+  "beam-cloud/beta9": {
+   "p": {
+    "job": 0.34,
+    "software": 0.91,
+    "client": 0.58
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Ultrafast serverless GPU inference, sandboxes, and background jobs",
+   "judged": "2026-10-11"
+  },
+  "bentoml/BentoML": {
+   "p": {
+    "job": 0.53,
+    "software": 0.96,
+    "client": 0.1
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "The easiest way to serve AI apps and models - Build Model Inference APIs, Job queues, LLM apps, Multi-model pipelines, a",
+   "judged": "2026-10-11"
+  },
+  "bentoml/OpenLLM": {
+   "p": {
+    "job": 0.88,
+    "software": 0.98,
+    "client": 0.06
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Run any open-source LLMs, such as DeepSeek and Llama, as OpenAI compatible API endpoint in the cloud.",
+   "judged": "2026-10-11"
+  },
+  "bojieli/ai-infra-book": {
+   "p": {
+    "job": 0.02,
+    "software": 0.07,
+    "client": 0.02
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "《深入理解 AI Infra：量化分析与系统设计》（李博杰 著）开源书稿：从硬件约束和模型架构出发，量化推导 LLM 推理与训练系统设计。含全书正文、PDF、配套计算工具与实验",
+   "judged": "2026-10-11"
+  },
+  "dphnAI/sonar": {
+   "p": {
+    "job": 0.92,
+    "software": 0.97,
+    "client": 0.04
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Large-scale LLM inference engine",
+   "judged": "2026-10-11"
+  },
+  "drumih/turbo-fieldfare": {
+   "p": {
+    "job": 0.33,
+    "software": 0.96,
+    "client": 0.04
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Gemma 4 26B-A4B inference in ~2 GB of RAM on any M-series MacBook",
+   "judged": "2026-10-11"
+  },
+  "flashinfer-ai/flashinfer": {
+   "p": {
+    "job": 0.12,
+    "software": 0.89,
+    "client": 0.03
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "FlashInfer: Kernel Library for LLM Serving",
+   "judged": "2026-10-11"
+  },
+  "gitleaks/gitleaks": {
+   "p": {
+    "job": 0.01,
+    "software": 0.97,
+    "client": 0.02
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Find secrets with Gitleaks 🔑",
+   "judged": "2026-10-11"
+  },
+  "katanemo/plano": {
+   "p": {
+    "job": 0.13,
+    "software": 0.93,
+    "client": 0.14
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Plano is an AI-native proxy server and data plane for agentic apps. Smart LLM routing, observability, agent orchestratio",
+   "judged": "2026-10-11"
+  },
+  "kserve/kserve": {
+   "p": {
+    "job": 0.59,
+    "software": 0.96,
+    "client": 0.04
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Standardized Distributed Generative and Predictive AI Inference Platform for Scalable, Multi-Framework Deployment on Kub",
+   "judged": "2026-10-11"
+  },
+  "lemonade-sdk/lemonade": {
+   "p": {
+    "job": 0.84,
+    "software": 0.97,
+    "client": 0.1
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Lemonade helps users discover and run local AI apps by serving optimized LLMs right from their own GPUs and NPUs. Join o",
+   "judged": "2026-10-11"
+  },
+  "neuron-core/neuron-ai": {
+   "p": {
+    "job": 0.04,
+    "software": 0.87,
+    "client": 0.12
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "The Agentic Framework of the PHP ecosystem to build production-ready AI driven applications. Connect components (LLMs, T",
+   "judged": "2026-10-11"
+  },
+  "openvinotoolkit/openvino": {
+   "p": {
+    "job": 0.25,
+    "software": 0.95,
+    "client": 0.05
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "OpenVINO™ is an open source toolkit for optimizing and deploying AI inference",
+   "judged": "2026-10-11"
+  },
+  "ovg-project/kvcached": {
+   "p": {
+    "job": 0.14,
+    "software": 0.9,
+    "client": 0.05
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Virtualized Elastic KV Cache for Dynamic GPU Sharing and Beyond",
+   "judged": "2026-10-11"
+  },
+  "qualcomm/ai-hub-models": {
+   "p": {
+    "job": 0.05,
+    "software": 0.7,
+    "client": 0.81
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Qualcomm® AI Hub Models is our collection of state-of-the-art machine learning models optimized for performance (latency",
+   "judged": "2026-10-11"
+  },
+  "ray-project/ray": {
+   "p": {
+    "job": 0.2,
+    "software": 0.95,
+    "client": 0.05
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Ray is an AI compute engine. Ray consists of a core distributed runtime and a set of AI Libraries for accelerating ML wo",
+   "judged": "2026-10-11"
+  },
+  "ruvnet/RuVector": {
+   "p": {
+    "job": 0.06,
+    "software": 0.93,
+    "client": 0.09
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "RuVector provides High Performance, Real-Time decisions and agent memory , Self-Learning Ai, Vector GNN DB built in Rust",
+   "judged": "2026-10-11"
+  },
+  "skypilot-org/skypilot": {
+   "p": {
+    "job": 0.13,
+    "software": 0.94,
+    "client": 0.12
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "The AI Compute Platform for frontier teams. SkyPilot turns fragmented AI compute into one AI supercomputer, so frontier ",
+   "judged": "2026-10-11"
+  },
+  "spiceai/spiceai": {
+   "p": {
+    "job": 0.22,
+    "software": 0.96,
+    "client": 0.05
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Add a real-time analytics node to your operational database. Spice is a portable, accelerated SQL query, search, and LLM",
+   "judged": "2026-10-11"
+  },
+  "syv-ai/HyperQwen": {
+   "p": {
+    "job": 0.65,
+    "software": 0.94,
+    "client": 0.03
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Serve large Qwen models fast on the GPUs you actually own. Qwen3.8-27B on a single 24 GB card with vLLM: 127 tok/s singl",
+   "judged": "2026-10-11"
+  },
+  "thu-pacman/chitu": {
+   "p": {
+    "job": 0.83,
+    "software": 0.94,
+    "client": 0.05
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "High-performance inference framework for large language models, focusing on efficiency, flexibility, and availability.",
+   "judged": "2026-10-11"
+  },
+  "vllm-project/vllm-ascend": {
+   "p": {
+    "job": 0.16,
+    "software": 0.88,
+    "client": 0.05
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Community maintained hardware plugin for vLLM on Huawei Ascend",
+   "judged": "2026-10-11"
+  },
+  "xLLM-AI/xllm": {
+   "p": {
+    "job": 0.77,
+    "software": 0.92,
+    "client": 0.06
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A high-performance inference engine for LLM, VLM, DiT and REC models, optimized for diverse AI accelerators. It is hoste",
+   "judged": "2026-10-11"
+  },
+  "youssofal/MTPLX": {
+   "p": {
+    "job": 0.8,
+    "software": 0.98,
+    "client": 0.04
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "The fastest way to run Qwen 3.8 Flash Next, Qwen 3.8 27B and Ternary Bonsai 2 27B on a Mac: 125 tok/s in OpenCode on an ",
+   "judged": "2026-10-11"
+  }
+ },
+ "ocr": {
+  "CVHub520/X-AnyLabeling": {
+   "p": {
+    "job": 0.11,
+    "software": 0.97,
+    "client": 0.06
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "X-AnyLabeling: A lightweight, efficient, and unified cross-platform desktop application for annotating text, image, vide",
+   "judged": "2026-10-11"
+  },
+  "HIllya51/LunaTranslator": {
+   "p": {
+    "job": 0.07,
+    "software": 0.95,
+    "client": 0.1
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "视觉小说翻译器 / Visual Novel Translator",
+   "judged": "2026-10-11"
+  },
+  "JabRef/jabref": {
+   "p": {
+    "job": 0.02,
+    "software": 0.98,
+    "client": 0.03
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Desktop app for managing BibTeX and BibLaTeX (.bib) libraries",
+   "judged": "2026-10-11"
+  },
+  "PaddlePaddle/PaddleX": {
+   "p": {
+    "job": 0.27,
+    "software": 0.95,
+    "client": 0.07
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "All-in-One Development Tool based on PaddlePaddle",
+   "judged": "2026-10-11"
+  },
+  "RapidAI/RapidOCR": {
+   "p": {
+    "job": 0.88,
+    "software": 0.97,
+    "client": 0.04
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "📄 Awesome OCR multiple programing languages toolkits based on ONNX Runtime, OpenVINO, MNN, PaddlePaddle, TensorRT and Py",
+   "judged": "2026-10-11"
+  },
+  "STranslate/STranslate": {
+   "p": {
+    "job": 0.18,
+    "software": 0.95,
+    "client": 0.18
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A ready-to-go translation ocr tool developed with WPF/WPF 开发的一款即用即走的翻译、OCR工具",
+   "judged": "2026-10-11"
+  },
+  "ShareX/ShareX": {
+   "p": {
+    "job": 0.05,
+    "software": 0.97,
+    "client": 0.03
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "ShareX is a free and open-source application that enables users to capture or record any area of their screen with a sin",
+   "judged": "2026-10-11"
+  },
+  "TheJoeFin/Text-Grab": {
+   "p": {
+    "job": 0.14,
+    "software": 0.98,
+    "client": 0.04
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Use OCR in Windows quickly and easily with Text Grab. With optional background process and notifications.",
+   "judged": "2026-10-11"
+  },
+  "Zipstack/unstract": {
+   "p": {
+    "job": 0.3,
+    "software": 0.95,
+    "client": 0.17
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "LLM-Driven Extraction of Unstructured Data — Built for API Deployments & ETL Pipeline Workflows",
+   "judged": "2026-10-11"
+  },
+  "dataelement/bisheng": {
+   "p": {
+    "job": 0.08,
+    "software": 0.96,
+    "client": 0.07
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "BISHENG is an open LLM devops platform for next generation Enterprise AI applications. Powerful and comprehensive featur",
+   "judged": "2026-10-11"
+  },
+  "dmMaze/BallonsTranslator": {
+   "p": {
+    "job": 0.08,
+    "software": 0.96,
+    "client": 0.1
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "深度学习辅助漫画翻译工具, 支持一键机翻和简单的图像/文本编辑 | Yet another computer-aided comic/manga translation tool powered by deeplearning",
+   "judged": "2026-10-11"
+  },
+  "jev-chat/jev-chat-jarvis": {
+   "p": {
+    "job": 0.03,
+    "software": 0.97,
+    "client": 0.23
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "The chat decision assistant: before you reply, Jev reads the chat, judges intent and risk, and drafts replies you fill i",
+   "judged": "2026-10-11"
+  },
+  "ocrmypdf/OCRmyPDF": {
+   "p": {
+    "job": 0.31,
+    "software": 0.98,
+    "client": 0.03
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "OCRmyPDF adds an OCR text layer to scanned PDF files, allowing them to be searched",
+   "judged": "2026-10-11"
+  },
+  "oomol-lab/pdf-craft": {
+   "p": {
+    "job": 0.32,
+    "software": 0.96,
+    "client": 0.48
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "PDF craft can convert PDF files into various other formats. This project will focus on processing PDF files of scanned b",
+   "judged": "2026-10-11"
+  },
+  "opendataloader-project/opendataloader-pdf": {
+   "p": {
+    "job": 0.73,
+    "software": 0.97,
+    "client": 0.09
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "PDF Parser for AI-ready data. Automate PDF accessibility. Open-source.",
+   "judged": "2026-10-11"
+  },
+  "paperless-ngx/paperless-ngx": {
+   "p": {
+    "job": 0.07,
+    "software": 0.97,
+    "client": 0.05
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A community-supported supercharged document management system: scan, index and archive all your documents",
+   "judged": "2026-10-11"
+  },
+  "pymupdf/PyMuPDF": {
+   "p": {
+    "job": 0.21,
+    "software": 0.97,
+    "client": 0.03
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "PyMuPDF is a high performance Python library for data extraction, analysis, conversion & manipulation of PDF (and other)",
+   "judged": "2026-10-11"
+  },
+  "ramjke/Translumo": {
+   "p": {
+    "job": 0.09,
+    "software": 0.97,
+    "client": 0.19
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Advanced real-time screen translator for games, hardcoded subtitles in videos, static text and etc.",
+   "judged": "2026-10-11"
+  },
+  "run-llama/liteparse": {
+   "p": {
+    "job": 0.57,
+    "software": 0.96,
+    "client": 0.06
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A fast, helpful, and open-source document parser",
+   "judged": "2026-10-11"
+  },
+  "tesseract-ocr/tesseract": {
+   "p": {
+    "job": 0.81,
+    "software": 0.97,
+    "client": 0.02
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Tesseract Open Source OCR Engine (main repository)",
+   "judged": "2026-10-11"
+  },
+  "tisfeng/Easydict": {
+   "p": {
+    "job": 0.06,
+    "software": 0.97,
+    "client": 0.41
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "一个简洁优雅的词典翻译 macOS App。开箱即用，支持离线 OCR 识别，支持有道词典，🍎 苹果系统词典，🍎 苹果系统翻译，OpenAI，Gemini，DeepL，Google，Bing，腾讯，百度，阿里，小牛，彩云和火山翻译。A co",
+   "judged": "2026-10-11"
+  },
+  "xushengfeng/eSearch": {
+   "p": {
+    "job": 0.09,
+    "software": 0.97,
+    "client": 0.08
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "截屏 离线OCR 搜索翻译 以图搜图 贴图 录屏 万向滚动截屏 屏幕翻译   Screenshot  Offline OCR   Search   Translate   Search for picture   Paste the pic",
+   "judged": "2026-10-11"
+  },
+  "yusufkaraaslan/Skill_Seekers": {
+   "p": {
+    "job": 0.09,
+    "software": 0.97,
+    "client": 0.11
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Convert documentation websites, GitHub repositories, and PDFs into Claude AI skills with automatic conflict detection",
+   "judged": "2026-10-11"
+  },
+  "zyddnys/manga-image-translator": {
+   "p": {
+    "job": 0.12,
+    "software": 0.95,
+    "client": 0.08
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Translate manga/image 一键翻译各类图片内文字 https://cotrans.touhou.ai/ (no longer working)",
+   "judged": "2026-10-11"
+  }
+ },
+ "rag-application": {
+  "1Panel-dev/MaxKB": {
+   "p": {
+    "job": 0.82,
+    "software": 0.97,
+    "client": 0.04
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "🔥 MaxKB is an open-source platform for building enterprise-grade agents.  强大易用的开源企业级智能体平台。",
+   "judged": "2026-10-11"
+  },
+  "EmbeddedLLM/JamAIBase": {
+   "p": {
+    "job": 0.68,
+    "software": 0.92,
+    "client": 0.16
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "The collaborative spreadsheet for AI. Chain cells into powerful pipelines, experiment with prompts and models, and evalu",
+   "judged": "2026-10-11"
+  },
+  "LangChat/langchat": {
+   "p": {
+    "job": 0.57,
+    "software": 0.94,
+    "client": 0.06
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "LangChat 是由 LangChat Team 开发的开源 AI Agent 应用平台，支持多模型、Agent、知识库 RAG、Skills、MCP 与智能问数。",
+   "judged": "2026-10-11"
+  },
+  "Ramakm/AI-Engineering": {
+   "p": {
+    "job": 0.06,
+    "software": 0.13,
+    "client": 0.03
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "A group of notebooks  and other files which can help you learn AI from scratch.",
+   "judged": "2026-10-11"
+  },
+  "SamurAIGPT/llm-wiki-agent": {
+   "p": {
+    "job": 0.28,
+    "software": 0.91,
+    "client": 0.05
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A personal knowledge base that builds and maintains itself. Drop in sources — Claude (or Codex/Gemini) reads them, extra",
+   "judged": "2026-10-11"
+  },
+  "The-Vibe-Company/quivr": {
+   "p": {
+    "job": 0.42,
+    "software": 0.96,
+    "client": 0.04
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "An open-source engine that turns continuous content streams into search and monitoring. Durable ingestion, hybrid search",
+   "judged": "2026-10-11"
+  },
+  "Zleap-AI/SAG": {
+   "p": {
+    "job": 0.89,
+    "software": 0.93,
+    "client": 0.06
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A new SOTA for RAG — an original retrieval architecture and an open-source knowledge base for humans and agents.",
+   "judged": "2026-10-11"
+  },
+  "atomicstrata/llm-wiki-compiler": {
+   "p": {
+    "job": 0.24,
+    "software": 0.94,
+    "client": 0.06
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "The knowledge compiler. Raw sources in, interlinked wiki out. Inspired by Karpathy's LLM Wiki pattern.",
+   "judged": "2026-10-11"
+  },
+  "codexu/note-gen": {
+   "p": {
+    "job": 0.1,
+    "software": 0.93,
+    "client": 0.11
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Capture first. Organize later. A local-first Markdown app that turns scattered records into clear notes with AI.",
+   "judged": "2026-10-11"
+  },
+  "dataelement/bisheng": {
+   "p": {
+    "job": 0.39,
+    "software": 0.96,
+    "client": 0.04
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "BISHENG is an open LLM devops platform for next generation Enterprise AI applications. Powerful and comprehensive featur",
+   "judged": "2026-10-11"
+  },
+  "deeplethe/utopia": {
+   "p": {
+    "job": 0.21,
+    "software": 0.91,
+    "client": 0.07
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "World's first open-source enterprise world model.",
+   "judged": "2026-10-11"
+  },
+  "elizaOS/eliza": {
+   "p": {
+    "job": 0.12,
+    "software": 0.95,
+    "client": 0.11
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open source agentic operating system",
+   "judged": "2026-10-11"
+  },
+  "gptme/gptme": {
+   "p": {
+    "job": 0.06,
+    "software": 0.97,
+    "client": 0.07
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Your agent in your terminal, equipped with local tools: writes code, uses the terminal, browses the web. Make your own p",
+   "judged": "2026-10-11"
+  },
+  "inkeep/open-knowledge": {
+   "p": {
+    "job": 0.11,
+    "software": 0.96,
+    "client": 0.08
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Beautiful, AI-native markdown IDE and LLM wiki",
+   "judged": "2026-10-11"
+  },
+  "johnbean393/Sidekick": {
+   "p": {
+    "job": 0.38,
+    "software": 0.97,
+    "client": 0.05
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A native macOS app that allows users to chat with a local LLM that can respond with information from files, folders and ",
+   "judged": "2026-10-11"
+  },
+  "lucasastorian/llmwiki": {
+   "p": {
+    "job": 0.27,
+    "software": 0.94,
+    "client": 0.11
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open Source Implementation of Karpathy's LLM Wiki. Upload documents, connect your Claude account via MCP, and have it wr",
+   "judged": "2026-10-11"
+  },
+  "melgarafael/DeskcommCRM": {
+   "p": {
+    "job": 0.04,
+    "software": 0.98,
+    "client": 0.06
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source AI sales OS — self-hosted CRM with native AI agents + WhatsApp (WAHA). Open alternative to Kommo, Octadesk &",
+   "judged": "2026-10-11"
+  },
+  "simstudioai/sim": {
+   "p": {
+    "job": 0.23,
+    "software": 0.94,
+    "client": 0.36
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Sim is the collaborative workspace to build, deploy, and monitor AI agents and workflows. Used by 100,000+ builders.",
+   "judged": "2026-10-11"
+  },
+  "the-open-agent/openagent": {
+   "p": {
+    "job": 0.36,
+    "software": 0.96,
+    "client": 0.08
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "⚡️next-generation personal AI assistant powered by LLM, RAG and agent loops, supporting computer-use, browser-use and co",
+   "judged": "2026-10-11"
+  },
+  "virgiliojr94/book-to-skill": {
+   "p": {
+    "job": 0.15,
+    "software": 0.93,
+    "client": 0.08
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Turn any technical book PDF into a Claude Code skill — ready to study, reference, and use while you work.",
+   "judged": "2026-10-11"
+  }
+ },
+ "rag-framework": {
+  "EmbeddedLLM/JamAIBase": {
+   "p": {
+    "job": 0.57,
+    "software": 0.92,
+    "client": 0.23
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "The collaborative spreadsheet for AI. Chain cells into powerful pipelines, experiment with prompts and models, and evalu",
+   "judged": "2026-10-11"
+  },
+  "GiovanniPasq/agentic-rag-for-dummies": {
+   "p": {
+    "job": 0.42,
+    "software": 0.56,
+    "client": 0.04
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A modular Agentic RAG built with LangGraph — learn Retrieval-Augmented Generation Agents in minutes.",
+   "judged": "2026-10-11"
+  },
+  "HKUDS/RAG-Anything": {
+   "p": {
+    "job": 0.77,
+    "software": 0.93,
+    "client": 0.06
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "\"RAG-Anything: All-in-One RAG Framework\"",
+   "judged": "2026-10-11"
+  },
+  "LazyAGI/LazyLLM": {
+   "p": {
+    "job": 0.13,
+    "software": 0.95,
+    "client": 0.07
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Easiest and laziest way for  building multi-agent LLMs applications.",
+   "judged": "2026-10-11"
+  },
+  "LearningCircuit/local-deep-research": {
+   "p": {
+    "job": 0.29,
+    "software": 0.96,
+    "client": 0.07
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": " ~95% on SimpleQA (e.g. Qwen3.6-27B on a 3090). Supports all local and cloud LLMs (llama.cpp, Ollama, Google, ...). 10+ ",
+   "judged": "2026-10-11"
+  },
+  "RUC-NLPIR/FlashRAG": {
+   "p": {
+    "job": 0.29,
+    "software": 0.85,
+    "client": 0.04
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "⚡FlashRAG: A Python Toolkit for Efficient RAG Research (WWW2025 Resource)",
+   "judged": "2026-10-11"
+  },
+  "StarTrail-org/LEANN": {
+   "p": {
+    "job": 0.43,
+    "software": 0.91,
+    "client": 0.06
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "[MLsys2026 Best Paper]: https://arxiv.org/abs/2506.08276. RAG on Everything with LEANN. Enjoy 97% storage savings while ",
+   "judged": "2026-10-11"
+  },
+  "The-Vibe-Company/quivr": {
+   "p": {
+    "job": 0.37,
+    "software": 0.95,
+    "client": 0.05
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "An open-source engine that turns continuous content streams into search and monitoring. Durable ingestion, hybrid search",
+   "judged": "2026-10-11"
+  },
+  "VectifyAI/PageIndex": {
+   "p": {
+    "job": 0.72,
+    "software": 0.94,
+    "client": 0.56
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "📑 PageIndex: Document Index for Vectorless, Reasoning-based RAG",
+   "judged": "2026-10-11"
+  },
+  "VoltAgent/voltagent": {
+   "p": {
+    "job": 0.18,
+    "software": 0.93,
+    "client": 0.18
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "AI Agent Engineering Platform built on an Open Source TypeScript AI Agent Framework",
+   "judged": "2026-10-11"
+  },
+  "WangRongsheng/awesome-LLM-resources": {
+   "p": {
+    "job": 0.02,
+    "software": 0.04,
+    "client": 0.03
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "🧑‍🚀 全世界最好的LLM资料总结（多模态生成、Agent、辅助编程、AI审稿、数据处理、模型训练、模型推理、o1 模型、MCP、小语言模型、视觉语言模型） | Summary of the world's best LLM resourc",
+   "judged": "2026-10-11"
+  },
+  "anush008/fastembed-rs": {
+   "p": {
+    "job": 0.07,
+    "software": 0.95,
+    "client": 0.04
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Rust library for generating vector embeddings and reranking locally!",
+   "judged": "2026-10-11"
+  },
+  "elizaOS/eliza": {
+   "p": {
+    "job": 0.09,
+    "software": 0.94,
+    "client": 0.1
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open source agentic operating system",
+   "judged": "2026-10-11"
+  },
+  "genieincodebottle/generative-ai": {
+   "p": {
+    "job": 0.03,
+    "software": 0.06,
+    "client": 0.04
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "Comprehensive resources on Generative AI, including a detailed roadmap, projects, use cases, interview preparation, and ",
+   "judged": "2026-10-11"
+  },
+  "illuin-tech/colpali": {
+   "p": {
+    "job": 0.13,
+    "software": 0.66,
+    "client": 0.05
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "The code used to train and run inference with the ColVision models, e.g. ColPali, ColQwen2, and ColSmol.",
+   "judged": "2026-10-11"
+  },
+  "langchain-ai/langchain": {
+   "p": {
+    "job": 0.38,
+    "software": 0.95,
+    "client": 0.06
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "The agent engineering platform.",
+   "judged": "2026-10-11"
+  },
+  "langchain-ai/langgraph": {
+   "p": {
+    "job": 0.11,
+    "software": 0.95,
+    "client": 0.04
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Build resilient agents.",
+   "judged": "2026-10-11"
+  },
+  "langroid/langroid": {
+   "p": {
+    "job": 0.14,
+    "software": 0.95,
+    "client": 0.05
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Harness LLMs with Multi-Agent Programming",
+   "judged": "2026-10-11"
+  },
+  "llmware-ai/llmware": {
+   "p": {
+    "job": 0.72,
+    "software": 0.95,
+    "client": 0.05
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Unified framework for building enterprise RAG pipelines with small, specialized models",
+   "judged": "2026-10-11"
+  },
+  "neuml/txtai": {
+   "p": {
+    "job": 0.7,
+    "software": 0.96,
+    "client": 0.05
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "💡 All-in-one AI framework for semantic search, LLM orchestration and language model workflows",
+   "judged": "2026-10-11"
+  },
+  "samchon/nestia": {
+   "p": {
+    "job": 0.04,
+    "software": 0.93,
+    "client": 0.12
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "NestJS Helper + AI Chatbot Development",
+   "judged": "2026-10-11"
+  },
+  "simular-ai/Agent-S": {
+   "p": {
+    "job": 0.03,
+    "software": 0.91,
+    "client": 0.14
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Agent S: an open agentic framework that uses computers like a human",
+   "judged": "2026-10-11"
+  },
+  "superlinked/sie": {
+   "p": {
+    "job": 0.09,
+    "software": 0.96,
+    "client": 0.12
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source inference server and production cluster for all the models your agent needs.",
+   "judged": "2026-10-11"
+  },
+  "swirlai/swirl-search": {
+   "p": {
+    "job": 0.49,
+    "software": 0.96,
+    "client": 0.13
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "AI Search & RAG Without Moving Your Data. Get instant answers from your company's knowledge across 100+ apps while keepi",
+   "judged": "2026-10-11"
+  },
+  "vitali87/code-graph-rag": {
+   "p": {
+    "job": 0.4,
+    "software": 0.95,
+    "client": 0.06
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "The ultimate RAG for your monorepo. Query, understand, and edit multi-language codebases with the power of AI and knowle",
+   "judged": "2026-10-11"
+  }
+ },
+ "search-engine": {
+  "SeekStorm/SeekStorm": {
+   "p": {
+    "job": 0.9,
+    "software": 0.95,
+    "client": 0.07
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "SeekStorm: vector & lexical search - in-process library & multi-tenancy server, in Rust.",
+   "judged": "2026-10-11"
+  },
+  "codelibs/fess": {
+   "p": {
+    "job": 0.6,
+    "software": 0.98,
+    "client": 0.03
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source, self-hosted enterprise & site search server built on OpenSearch. Crawls web / file / DB / cloud sources, 20",
+   "judged": "2026-10-11"
+  },
+  "dingodb/dingo": {
+   "p": {
+    "job": 0.54,
+    "software": 0.96,
+    "client": 0.03
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A multi-modal vector database that supports upserts and vector queries using unified SQL (MySQL-Compatible) on structure",
+   "judged": "2026-10-11"
+  },
+  "manticoresoftware/manticoresearch": {
+   "p": {
+    "job": 0.95,
+    "software": 0.96,
+    "client": 0.02
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source search database for full-text, vector, and hybrid search with real-time indexing and SQL.",
+   "judged": "2026-10-11"
+  },
+  "oceanbase/seekdb": {
+   "p": {
+    "job": 0.69,
+    "software": 0.96,
+    "client": 0.05
+   },
+   "kind": [
+    "embedded"
+   ],
+   "model": "jev-1.13.0",
+   "what": "The AI-Native Search Database. Best for agent storage, it unifies vector, text, structured, and semi-structured data int",
+   "judged": "2026-10-11"
+  },
+  "pipeshub-ai/pipeshub-ai": {
+   "p": {
+    "job": 0.18,
+    "software": 0.94,
+    "client": 0.08
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "The open-source context layer for AI agents. PipesHub turns your company's knowledge (Slack, Drive, Jira, GitHub, Micros",
+   "judged": "2026-10-11"
+  },
+  "xerj-org/xerj": {
+   "p": {
+    "job": 0.79,
+    "software": 0.97,
+    "client": 0.05
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "XERJ is the new way for AI to search data. Its autoindex capability activates agents to know your data without the token",
+   "judged": "2026-10-11"
+  },
+  "zilliztech/memsearch": {
+   "p": {
+    "job": 0.12,
+    "software": 0.92,
+    "client": 0.23
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A persistent, unified memory layer for all your AI agents (e.g. Claude Code, Codex, DSH), backed by Markdown and Milvus.",
+   "judged": "2026-10-11"
+  }
+ },
+ "search-library": {
+  "SeekStorm/SeekStorm": {
+   "p": {
+    "job": 0.83,
+    "software": 0.95,
+    "client": 0.1
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "SeekStorm: vector & lexical search - in-process library & multi-tenancy server, in Rust.",
+   "judged": "2026-10-11"
+  },
+  "Sync-in/server": {
+   "p": {
+    "job": 0.05,
+    "software": 0.97,
+    "client": 0.07
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Sync-in · Sovereign platform for file storage, sharing, synchronization, and collaboration.",
+   "judged": "2026-10-11"
+  },
+  "codelibs/fess": {
+   "p": {
+    "job": 0.1,
+    "software": 0.98,
+    "client": 0.05
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source, self-hosted enterprise & site search server built on OpenSearch. Crawls web / file / DB / cloud sources, 20",
+   "judged": "2026-10-11"
+  },
+  "manticoresoftware/manticoresearch": {
+   "p": {
+    "job": 0.33,
+    "software": 0.96,
+    "client": 0.04
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source search database for full-text, vector, and hybrid search with real-time indexing and SQL.",
+   "judged": "2026-10-11"
+  },
+  "oceanbase/seekdb": {
+   "p": {
+    "job": 0.25,
+    "software": 0.95,
+    "client": 0.09
+   },
+   "kind": [
+    "embedded"
+   ],
+   "model": "jev-1.13.0",
+   "what": "The AI-Native Search Database. Best for agent storage, it unifies vector, text, structured, and semi-structured data int",
+   "judged": "2026-10-11"
+  },
+  "spiceai/spiceai": {
+   "p": {
+    "job": 0.14,
+    "software": 0.95,
+    "client": 0.07
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Add a real-time analytics node to your operational database. Spice is a portable, accelerated SQL query, search, and LLM",
+   "judged": "2026-10-11"
+  },
+  "timescale/pg_textsearch": {
+   "p": {
+    "job": 0.32,
+    "software": 0.93,
+    "client": 0.03
+   },
+   "kind": [
+    "Postgres extension"
+   ],
+   "model": "jev-1.13.0",
+   "what": "PostgreSQL extension for BM25 relevance-ranked full-text search. Postgres OSS licensed.",
+   "judged": "2026-10-11"
+  },
+  "zvec-ai/zvec-grep": {
+   "p": {
+    "job": 0.29,
+    "software": 0.95,
+    "client": 0.07
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Local-first search across your workspace, built for humans and AI agents.",
+   "judged": "2026-10-11"
+  }
+ },
+ "speech-to-text": {
+  "Blaizzy/mlx-audio": {
+   "p": {
+    "job": 0.79,
+    "software": 0.97,
+    "client": 0.05
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A text-to-speech (TTS), speech-to-text (STT) and speech-to-speech (STS) library built on Apple's MLX framework, providin",
+   "judged": "2026-10-11"
+  },
+  "FluidInference/FluidAudio": {
+   "p": {
+    "job": 0.67,
+    "software": 0.93,
+    "client": 0.12
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Frontier CoreML audio models in your apps — text-to-speech, speech-to-text, voice activity detection, and speaker diariz",
+   "judged": "2026-10-11"
+  },
+  "HeyWillow/willow": {
+   "p": {
+    "job": 0.19,
+    "software": 0.86,
+    "client": 0.24
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open source, local, and self-hosted Amazon Echo/Google Home competitive Voice Assistant alternative",
+   "judged": "2026-10-11"
+  },
+  "Kieirra/murmure": {
+   "p": {
+    "job": 0.71,
+    "software": 0.98,
+    "client": 0.03
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Fully local, private and cross platform Speech-to-Text with LLM Post-processing",
+   "judged": "2026-10-11"
+  },
+  "KoljaB/RealtimeSTT": {
+   "p": {
+    "job": 0.84,
+    "software": 0.98,
+    "client": 0.05
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A robust, efficient, low-latency speech-to-text library with advanced voice activity detection, wake word activation and",
+   "judged": "2026-10-11"
+  },
+  "Open-Less/openless": {
+   "p": {
+    "job": 0.18,
+    "software": 0.97,
+    "client": 0.31
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Hold a key, speak, release — AI-polished text appears at your cursor in any app. Open-source voice input for macOS & Win",
+   "judged": "2026-10-11"
+  },
+  "OpenWhispr/openwhispr": {
+   "p": {
+    "job": 0.19,
+    "software": 0.97,
+    "client": 0.16
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Voice-to-text dictation app with local (Nvidia Parakeet/Whisper) and cloud models (BYOK). Privacy-first and available cr",
+   "judged": "2026-10-11"
+  },
+  "Osmantic/ODS": {
+   "p": {
+    "job": 0.07,
+    "software": 0.97,
+    "client": 0.05
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "ODS V3 Pre-Release: Public testing and refinement ahead of the official V3 launch. Turn your PC, Mac, or Linux box into ",
+   "judged": "2026-10-11"
+  },
+  "QuentinFuxa/WhisperLiveKit": {
+   "p": {
+    "job": 0.9,
+    "software": 0.98,
+    "client": 0.07
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Real-time, local speech-to-text with streaming ASR, speaker diarization, translation, and OpenAI/Deepgram-compatible API",
+   "judged": "2026-10-11"
+  },
+  "QwenAudio/SenseVoice": {
+   "p": {
+    "job": 0.83,
+    "software": 0.92,
+    "client": 0.05
+   },
+   "kind": [
+    "model"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source SenseVoiceSmall model for Mandarin, Cantonese, English, Japanese, and Korean ASR, language ID, emotion recog",
+   "judged": "2026-10-11"
+  },
+  "TalAter/annyang": {
+   "p": {
+    "job": 0.26,
+    "software": 0.93,
+    "client": 0.1
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "💬 Speech recognition for your site",
+   "judged": "2026-10-11"
+  },
+  "Zackriya-Solutions/meetily": {
+   "p": {
+    "job": 0.17,
+    "software": 0.96,
+    "client": 0.08
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Privacy first, AI meeting assistant with 4x faster Parakeet/Whisper live transcription, speaker diarization, and Ollama ",
+   "judged": "2026-10-11"
+  },
+  "ahmetoner/whisper-asr-webservice": {
+   "p": {
+    "job": 0.82,
+    "software": 0.97,
+    "client": 0.07
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "OpenAI Whisper ASR Webservice API",
+   "judged": "2026-10-11"
+  },
+  "amicalhq/amical": {
+   "p": {
+    "job": 0.15,
+    "software": 0.97,
+    "client": 0.05
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "🎙️ AI Dictation App - Open Source and Local-first ⚡ Type 3x faster, no keyboard needed. 🆓 Powered by open source models,",
+   "judged": "2026-10-11"
+  },
+  "argmaxinc/argmax-oss-swift": {
+   "p": {
+    "job": 0.71,
+    "software": 0.94,
+    "client": 0.24
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "On-device Speech AI for Apple Silicon",
+   "judged": "2026-10-11"
+  },
+  "cjpais/Handy": {
+   "p": {
+    "job": 0.46,
+    "software": 0.98,
+    "client": 0.03
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A free, open source, and extensible speech-to-text application that works completely offline.",
+   "judged": "2026-10-11"
+  },
+  "debpalash/VoiceStudio": {
+   "p": {
+    "job": 0.28,
+    "software": 0.97,
+    "client": 0.08
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "VoiceStudio is the open-source, fully-local ElevenLabs alternative — voice cloning, voice design, video dubbing, dictati",
+   "judged": "2026-10-11"
+  },
+  "dograh-hq/dograh": {
+   "p": {
+    "job": 0.18,
+    "software": 0.96,
+    "client": 0.15
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open source voice AI platform. Self-hosted alternative to Vapi and Retell. On Prem, BYOK across  Speech to Speech or LLM",
+   "judged": "2026-10-11"
+  },
+  "getopenscreen/openscreen": {
+   "p": {
+    "job": 0.04,
+    "software": 0.97,
+    "client": 0.04
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Record your screen, ship a demo. Free and open-source, GPU-accelerated, no watermarks, no subscriptions. Windows, macOS,",
+   "judged": "2026-10-11"
+  },
+  "handy-computer/transcribe.cpp": {
+   "p": {
+    "job": 0.88,
+    "software": 0.95,
+    "client": 0.04
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": " ggml speech-to-text inference for 16+ model families",
+   "judged": "2026-10-11"
+  },
+  "huggingface/speech-to-speech": {
+   "p": {
+    "job": 0.18,
+    "software": 0.95,
+    "client": 0.11
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Build voice agents with open-source models",
+   "judged": "2026-10-11"
+  },
+  "jianchang512/pyvideotrans": {
+   "p": {
+    "job": 0.14,
+    "software": 0.97,
+    "client": 0.12
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Translate the video from one language to another and embed dubbing & subtitles.",
+   "judged": "2026-10-11"
+  },
+  "k2-fsa/sherpa": {
+   "p": {
+    "job": 0.74,
+    "software": 0.93,
+    "client": 0.05
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Speech-to-text server framework with next-gen Kaldi",
+   "judged": "2026-10-11"
+  },
+  "leon-ai/leon": {
+   "p": {
+    "job": 0.05,
+    "software": 0.96,
+    "client": 0.07
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "🧠 Leon is your open-source personal assistant.",
+   "judged": "2026-10-11"
+  },
+  "linto-ai/whisper-timestamped": {
+   "p": {
+    "job": 0.55,
+    "software": 0.96,
+    "client": 0.04
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Multilingual Automatic Speech Recognition with word-level timestamps and confidence",
+   "judged": "2026-10-11"
+  },
+  "liuzhao1225/YouDub-webui": {
+   "p": {
+    "job": 0.1,
+    "software": 0.97,
+    "client": 0.1
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source AI video localization and dubbing for YouTube/Bilibili: speech recognition, subtitle translation, voice clon",
+   "judged": "2026-10-11"
+  },
+  "mbailey/voicemode": {
+   "p": {
+    "job": 0.11,
+    "software": 0.96,
+    "client": 0.24
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Natural voice conversations with Claude Code",
+   "judged": "2026-10-11"
+  },
+  "mkiol/dsnote": {
+   "p": {
+    "job": 0.12,
+    "software": 0.97,
+    "client": 0.04
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Speech Note Linux app. Note taking, reading and translating with offline Speech to Text, Text to Speech and Machine tran",
+   "judged": "2026-10-11"
+  },
+  "modelscope/FunASR": {
+   "p": {
+    "job": 0.9,
+    "software": 0.96,
+    "client": 0.07
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source speech recognition toolkit for training, inference, streaming ASR, VAD, punctuation, speaker diarization pip",
+   "judged": "2026-10-11"
+  },
+  "modelscope/FunClip": {
+   "p": {
+    "job": 0.15,
+    "software": 0.97,
+    "client": 0.08
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "FunASR-powered video transcription, subtitle generation, and LLM-assisted clipping tool with a local Gradio UI.",
+   "judged": "2026-10-11"
+  },
+  "sgl-project/sglang-omni": {
+   "p": {
+    "job": 0.29,
+    "software": 0.95,
+    "client": 0.07
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "SGLang-Omni is a high-performance serving framework for audio models (TTS, ASR) and unified multimodal models.",
+   "judged": "2026-10-11"
+  },
+  "soniqo/speech-swift": {
+   "p": {
+    "job": 0.8,
+    "software": 0.93,
+    "client": 0.05
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "AI speech toolkit for Apple Silicon — ASR, TTS, speech-to-speech, VAD, and diarization powered by MLX and CoreML",
+   "judged": "2026-10-11"
+  },
+  "tensorflow/lingvo": {
+   "p": {
+    "job": 0.13,
+    "software": 0.9,
+    "client": 0.04
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Lingvo",
+   "judged": "2026-10-11"
+  },
+  "tmoroney/auto-subs": {
+   "p": {
+    "job": 0.33,
+    "software": 0.98,
+    "client": 0.04
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "On-device subtitle generation that connects directly to DaVinci Resolve, Premiere, and After Effects.",
+   "judged": "2026-10-11"
+  }
+ },
+ "text-to-speech": {
+  "Alisa0808/vox-director": {
+   "p": {
+    "job": 0.05,
+    "software": 0.71,
+    "client": 0.54
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "Turn one topic into a finished Vox-style paper-collage explainer/ad video — automated end to end on Atlas Cloud + ffmpeg",
+   "judged": "2026-10-11"
+  },
+  "Blaizzy/mlx-audio": {
+   "p": {
+    "job": 0.78,
+    "software": 0.97,
+    "client": 0.06
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A text-to-speech (TTS), speech-to-text (STT) and speech-to-speech (STS) library built on Apple's MLX framework, providin",
+   "judged": "2026-10-11"
+  },
+  "DrewThomasson/ebook2audiobook": {
+   "p": {
+    "job": 0.21,
+    "software": 0.96,
+    "client": 0.06
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Generate audiobooks from e-books, voice cloning & 1158+ languages!",
+   "judged": "2026-10-11"
+  },
+  "FurkanGozukara/Stable-Diffusion": {
+   "p": {
+    "job": 0.04,
+    "software": 0.08,
+    "client": 0.04
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "FLUX, Stable Diffusion, SDXL, SD3, LoRA, Fine Tuning, DreamBooth, Training, Automatic1111, Forge WebUI, SwarmUI, DeepFak",
+   "judged": "2026-10-11"
+  },
+  "GetStream/Vision-Agents": {
+   "p": {
+    "job": 0.06,
+    "software": 0.93,
+    "client": 0.8
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open Vision Agents by Stream. Build voice and vision agents quickly with any model or video provider. Uses Stream's edge",
+   "judged": "2026-10-11"
+  },
+  "IAHispano/Applio": {
+   "p": {
+    "job": 0.15,
+    "software": 0.96,
+    "client": 0.05
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A simple, high-quality voice conversion tool focused on ease of use and performance.",
+   "judged": "2026-10-11"
+  },
+  "KoljaB/RealtimeTTS": {
+   "p": {
+    "job": 0.56,
+    "software": 0.96,
+    "client": 0.16
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Converts text to speech in realtime",
+   "judged": "2026-10-11"
+  },
+  "OpenBMB/VoxCPM": {
+   "p": {
+    "job": 0.94,
+    "software": 0.93,
+    "client": 0.04
+   },
+   "kind": [
+    "model"
+   ],
+   "model": "jev-1.13.0",
+   "what": "VoxCPM2: Tokenizer-Free TTS for Multilingual Speech Generation, Creative Voice Design, and True-to-Life Cloning",
+   "judged": "2026-10-11"
+  },
+  "Osmantic/ODS": {
+   "p": {
+    "job": 0.07,
+    "software": 0.97,
+    "client": 0.05
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "ODS V3 Pre-Release: Public testing and refinement ahead of the official V3 launch. Turn your PC, Mac, or Linux box into ",
+   "judged": "2026-10-11"
+  },
+  "QwenAudio/qwen-audio-agent": {
+   "p": {
+    "job": 0.11,
+    "software": 0.95,
+    "client": 0.21
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A realtime voice runtime that keeps Agents talking, working, and present.  Real-time Voice Runtime for AI Agents",
+   "judged": "2026-10-11"
+  },
+  "RHVoice/RHVoice": {
+   "p": {
+    "job": 0.77,
+    "software": 0.94,
+    "client": 0.04
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "a free and open source speech synthesizer for Russian and other languages",
+   "judged": "2026-10-11"
+  },
+  "RVC-Boss/GPT-SoVITS": {
+   "p": {
+    "job": 0.86,
+    "software": 0.96,
+    "client": 0.05
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "1 min voice data can also be used to train a good TTS model! (few shot voice cloning)",
+   "judged": "2026-10-11"
+  },
+  "VoltAgent/voltagent": {
+   "p": {
+    "job": 0.05,
+    "software": 0.93,
+    "client": 0.25
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "AI Agent Engineering Platform built on an Open Source TypeScript AI Agent Framework",
+   "judged": "2026-10-11"
+  },
+  "argmaxinc/argmax-oss-swift": {
+   "p": {
+    "job": 0.35,
+    "software": 0.94,
+    "client": 0.22
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "On-device Speech AI for Apple Silicon",
+   "judged": "2026-10-11"
+  },
+  "calesthio/OpenMontage": {
+   "p": {
+    "job": 0.03,
+    "software": 0.86,
+    "client": 0.09
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "World's first open-source, agentic video production system. 12 production pipelines, 100+ tools, 700+ agent skill and pr",
+   "judged": "2026-10-11"
+  },
+  "collabora/WhisperLive": {
+   "p": {
+    "job": 0.03,
+    "software": 0.97,
+    "client": 0.07
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A nearly-live implementation of OpenAI's Whisper.",
+   "judged": "2026-10-11"
+  },
+  "debpalash/VoiceStudio": {
+   "p": {
+    "job": 0.54,
+    "software": 0.97,
+    "client": 0.08
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "VoiceStudio is the open-source, fully-local ElevenLabs alternative — voice cloning, voice design, video dubbing, dictati",
+   "judged": "2026-10-11"
+  },
+  "digitalsamba/claude-code-video-toolkit": {
+   "p": {
+    "job": 0.07,
+    "software": 0.9,
+    "client": 0.12
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "AI-native video production toolkit for Claude Code",
+   "judged": "2026-10-11"
+  },
+  "dograh-hq/dograh": {
+   "p": {
+    "job": 0.17,
+    "software": 0.95,
+    "client": 0.15
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open source voice AI platform. Self-hosted alternative to Vapi and Retell. On Prem, BYOK across  Speech to Speech or LLM",
+   "judged": "2026-10-11"
+  },
+  "elevenlabs/elevenlabs-python": {
+   "p": {
+    "job": 0.38,
+    "software": 0.91,
+    "client": 0.98
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "The official Python SDK for the ElevenLabs API.",
+   "judged": "2026-10-11"
+  },
+  "espeak-ng/espeak-ng": {
+   "p": {
+    "job": 0.66,
+    "software": 0.96,
+    "client": 0.03
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "eSpeak NG is an open source speech synthesizer that supports more than hundred languages and accents.",
+   "judged": "2026-10-11"
+  },
+  "espnet/espnet": {
+   "p": {
+    "job": 0.49,
+    "software": 0.96,
+    "client": 0.04
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "End-to-End Speech Processing Toolkit",
+   "judged": "2026-10-11"
+  },
+  "fishaudio/Bert-VITS2": {
+   "p": {
+    "job": 0.84,
+    "software": 0.92,
+    "client": 0.04
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "vits2 backbone with multilingual-bert",
+   "judged": "2026-10-11"
+  },
+  "harry0703/MoneyPrinterTurbo": {
+   "p": {
+    "job": 0.03,
+    "software": 0.94,
+    "client": 0.19
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "利用 AI 大模型和自动化工作流，根据主题或关键词一键生成高清短视频。Generate HD short videos from a topic or keyword with an automated AI workflow.",
+   "judged": "2026-10-11"
+  },
+  "jianchang512/pyvideotrans": {
+   "p": {
+    "job": 0.12,
+    "software": 0.96,
+    "client": 0.1
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Translate the video from one language to another and embed dubbing & subtitles.",
+   "judged": "2026-10-11"
+  },
+  "ken107/read-aloud": {
+   "p": {
+    "job": 0.13,
+    "software": 0.95,
+    "client": 0.51
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "An awesome browser extension that reads aloud webpage content with one click",
+   "judged": "2026-10-11"
+  },
+  "krillinai/OpenCreator": {
+   "p": {
+    "job": 0.08,
+    "software": 0.94,
+    "client": 0.19
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Formerly KrillinAI. Open-source AI workspace for creators, powered by Codex. Video translation, create videos, images, v",
+   "judged": "2026-10-11"
+  },
+  "lemomo-ai/lemo-opuscar": {
+   "p": {
+    "job": 0.03,
+    "software": 0.65,
+    "client": 0.08
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "Claude Code skill for short films with no video model: 43 film styles, each a style prompt plus a demo film made entirel",
+   "judged": "2026-10-11"
+  },
+  "leon-ai/leon": {
+   "p": {
+    "job": 0.05,
+    "software": 0.96,
+    "client": 0.07
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "🧠 Leon is your open-source personal assistant.",
+   "judged": "2026-10-11"
+  },
+  "liuzhao1225/YouDub-webui": {
+   "p": {
+    "job": 0.11,
+    "software": 0.97,
+    "client": 0.09
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source AI video localization and dubbing for YouTube/Bilibili: speech recognition, subtitle translation, voice clon",
+   "judged": "2026-10-11"
+  },
+  "openctp/openctp": {
+   "p": {
+    "job": 0.02,
+    "software": 0.94,
+    "client": 0.65
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "openctp提供CTP股票期权、中泰证券XTP、华鑫证券奇点TORA、东方证券OST、东方财富证券EMT、盈透证券TWS、易盛TAP、量投QDP等各通道的CTPAPI兼容接口，CTP程序可以无缝对接各股票柜台。openctp也提供了一套基",
+   "judged": "2026-10-11"
+  },
+  "pnnbao97/VieNeu-TTS": {
+   "p": {
+    "job": 0.86,
+    "software": 0.95,
+    "client": 0.14
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Vietnamese TTS with instant voice cloning • On-device • Real-time CPU inference • 48kHz audio quality • Chuyển văn bản t",
+   "judged": "2026-10-11"
+  },
+  "promptslab/Awesome-Prompt-Engineering": {
+   "p": {
+    "job": 0.01,
+    "software": 0.05,
+    "client": 0.03
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "This repository contains a hand-curated resources for Prompt Engineering with a focus on Generative Pre-trained Transfor",
+   "judged": "2026-10-11"
+  },
+  "readest/readest": {
+   "p": {
+    "job": 0.04,
+    "software": 0.96,
+    "client": 0.06
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Readest is a modern, feature-rich ebook reader designed for avid readers offering seamless cross-platform access, powerf",
+   "judged": "2026-10-11"
+  },
+  "tensorflow/lingvo": {
+   "p": {
+    "job": 0.06,
+    "software": 0.9,
+    "client": 0.04
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Lingvo",
+   "judged": "2026-10-11"
+  },
+  "trymirai/uzu": {
+   "p": {
+    "job": 0.04,
+    "software": 0.94,
+    "client": 0.13
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A high-performance inference engine for AI models",
+   "judged": "2026-10-11"
+  }
+ },
+ "vector-db": {
+  "CaviraOSS/LongMemory": {
+   "p": {
+    "job": 0.15,
+    "software": 0.97,
+    "client": 0.14
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Local persistent memory store for LLM applications including claude desktop, github copilot, codex, antigravity, etc.",
+   "judged": "2026-10-11"
+  },
+  "HelixDB/helix-db": {
+   "p": {
+    "job": 0.25,
+    "software": 0.96,
+    "client": 0.04
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "HelixDB is an OLTP graph database with native vector and full-text search built in Rust on Object Storage.",
+   "judged": "2026-10-11"
+  },
+  "MariaDB/server": {
+   "p": {
+    "job": 0.34,
+    "software": 0.98,
+    "client": 0.02
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "MariaDB server is a community developed fork of MySQL server. Started by core members of the original MySQL team, MariaD",
+   "judged": "2026-10-11"
+  },
+  "Mintplex-Labs/anything-llm": {
+   "p": {
+    "job": 0.08,
+    "software": 0.96,
+    "client": 0.08
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Stop renting your intelligence. Own it with AnythingLLM. Everything you need for a powerful local-first agent experience",
+   "judged": "2026-10-11"
+  },
+  "Ontos-AI/knowhere": {
+   "p": {
+    "job": 0.07,
+    "software": 0.89,
+    "client": 0.18
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Knowhere extracts, parses, and outputs structured chunks ready for AI Agents and RAG.",
+   "judged": "2026-10-11"
+  },
+  "RyanCodrai/turbovec": {
+   "p": {
+    "job": 0.41,
+    "software": 0.93,
+    "client": 0.04
+   },
+   "kind": [
+    "embedded"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A vector index built on TurboQuant, written in Rust with Python bindings",
+   "judged": "2026-10-11"
+  },
+  "StarTrail-org/LEANN": {
+   "p": {
+    "job": 0.51,
+    "software": 0.89,
+    "client": 0.05
+   },
+   "kind": [
+    "embedded"
+   ],
+   "model": "jev-1.13.0",
+   "what": "[MLsys2026 Best Paper]: https://arxiv.org/abs/2506.08276. RAG on Everything with LEANN. Enjoy 97% storage savings while ",
+   "judged": "2026-10-11"
+  },
+  "VectifyAI/PageIndex": {
+   "p": {
+    "job": 0.08,
+    "software": 0.92,
+    "client": 0.62
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "📑 PageIndex: Document Index for Vectorless, Reasoning-based RAG",
+   "judged": "2026-10-11"
+  },
+  "alibaba/zvec": {
+   "p": {
+    "job": 0.82,
+    "software": 0.96,
+    "client": 0.04
+   },
+   "kind": [
+    "embedded"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A lightweight, lightning-fast, in-process vector database",
+   "judged": "2026-10-11"
+  },
+  "crate/crate": {
+   "p": {
+    "job": 0.18,
+    "software": 0.97,
+    "client": 0.03
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "CrateDB is a distributed and scalable SQL database for storing and analyzing massive amounts of data in near real-time, ",
+   "judged": "2026-10-11"
+  },
+  "genkit-ai/genkit": {
+   "p": {
+    "job": 0.03,
+    "software": 0.91,
+    "client": 0.21
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source framework for building agentic apps in JavaScript, Go, Dart, and Python, built and used in production by Goo",
+   "judged": "2026-10-11"
+  },
+  "giancarloerra/SocratiCode": {
+   "p": {
+    "job": 0.08,
+    "software": 0.96,
+    "client": 0.08
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Enterprise-grade (40m+ LOC) codebase intelligence, zero-setup, local & private Plugin/Skill/Extension or MCP: hybrid sem",
+   "judged": "2026-10-11"
+  },
+  "langchain4j/langchain4j": {
+   "p": {
+    "job": 0.04,
+    "software": 0.87,
+    "client": 0.1
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "LangChain4j is an idiomatic, open-source Java library for building LLM-powered applications on the JVM. It offers a unif",
+   "judged": "2026-10-11"
+  },
+  "microsoft/SPTAG": {
+   "p": {
+    "job": 0.42,
+    "software": 0.91,
+    "client": 0.06
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A distributed approximate nearest neighborhood search (ANN) library which provides a high quality vector index build, se",
+   "judged": "2026-10-11"
+  },
+  "neuml/txtai": {
+   "p": {
+    "job": 0.36,
+    "software": 0.96,
+    "client": 0.06
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "💡 All-in-one AI framework for semantic search, LLM orchestration and language model workflows",
+   "judged": "2026-10-11"
+  },
+  "oceanbase/oceanbase": {
+   "p": {
+    "job": 0.11,
+    "software": 0.97,
+    "client": 0.03
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "OceanBase is the unified distributed database for the AI era — open-source, multi-model, one engine for your most demand",
+   "judged": "2026-10-11"
+  },
+  "srbhr/Resume-Matcher": {
+   "p": {
+    "job": 0.02,
+    "software": 0.95,
+    "client": 0.08
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "The #1 AI Harness for Building Resumes, PDFs, Cover Letters & more, locally with 100+ LLMs support.",
+   "judged": "2026-10-11"
+  },
+  "superlinked/sie": {
+   "p": {
+    "job": 0.04,
+    "software": 0.96,
+    "client": 0.07
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source inference server and production cluster for all the models your agent needs.",
+   "judged": "2026-10-11"
+  },
+  "vcaesar/riot": {
+   "p": {
+    "job": 0.31,
+    "software": 0.88,
+    "client": 0.04
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Go Open Source, Distributed, Simple and efficient Search Engine",
+   "judged": "2026-10-11"
+  },
+  "voxel51/fiftyone": {
+   "p": {
+    "job": 0.04,
+    "software": 0.95,
+    "client": 0.16
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Refine high-quality datasets and visual AI models",
+   "judged": "2026-10-11"
+  },
+  "xerj-org/xerj": {
+   "p": {
+    "job": 0.37,
+    "software": 0.97,
+    "client": 0.05
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "XERJ is the new way for AI to search data. Its autoindex capability activates agents to know your data without the token",
+   "judged": "2026-10-11"
+  },
+  "zilliztech/GPTCache": {
+   "p": {
+    "job": 0.05,
+    "software": 0.95,
+    "client": 0.12
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Semantic cache for LLMs. Fully integrated with LangChain and llama_index. ",
+   "judged": "2026-10-11"
+  },
+  "zilliztech/deep-searcher": {
+   "p": {
+    "job": 0.05,
+    "software": 0.95,
+    "client": 0.22
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open Source Deep Research Alternative to Reason and Search on Private Data. Written in Python.",
+   "judged": "2026-10-11"
+  },
+  "zvec-ai/zvec-grep": {
+   "p": {
+    "job": 0.15,
+    "software": 0.96,
+    "client": 0.06
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Local-first search across your workspace, built for humans and AI agents.",
+   "judged": "2026-10-11"
+  }
+ },
+ "vector-index": {
+  "AddictedCS/soundfingerprinting": {
+   "p": {
+    "job": 0.13,
+    "software": 0.93,
+    "client": 0.04
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open source audio fingerprinting in .NET. An efficient algorithm for acoustic fingerprinting written purely in C#.  ",
+   "judged": "2026-10-11"
+  },
+  "MariaDB/server": {
+   "p": {
+    "job": 0.13,
+    "software": 0.97,
+    "client": 0.03
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "MariaDB server is a community developed fork of MySQL server. Started by core members of the original MySQL team, MariaD",
+   "judged": "2026-10-11"
+  },
+  "NGT-labs/NGT": {
+   "p": {
+    "job": 0.94,
+    "software": 0.96,
+    "client": 0.04
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Nearest Neighbor Search with Neighborhood Graph and Tree for High-dimensional Data",
+   "judged": "2026-10-11"
+  },
+  "microsoft/SPTAG": {
+   "p": {
+    "job": 0.92,
+    "software": 0.94,
+    "client": 0.04
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A distributed approximate nearest neighborhood search (ANN) library which provides a high quality vector index build, se",
+   "judged": "2026-10-11"
+  },
+  "spotify/voyager": {
+   "p": {
+    "job": 0.92,
+    "software": 0.96,
+    "client": 0.03
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "🛰️ An approximate nearest-neighbor search library for Python and Java with a focus on ease of use, simplicity, and deplo",
+   "judged": "2026-10-11"
+  },
+  "vdaas/vald": {
+   "p": {
+    "job": 0.37,
+    "software": 0.96,
+    "client": 0.07
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Vald.  A Highly Scalable Distributed Vector Search Engine",
+   "judged": "2026-10-11"
+  }
+ },
+ "voice-agent": {
+  "GetStream/Vision-Agents": {
+   "p": {
+    "job": 0.58,
+    "software": 0.93,
+    "client": 0.57
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open Vision Agents by Stream. Build voice and vision agents quickly with any model or video provider. Uses Stream's edge",
+   "judged": "2026-10-11"
+  },
+  "Lynpoint/CyberVerse": {
+   "p": {
+    "job": 0.71,
+    "software": 0.94,
+    "client": 0.09
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Self hosted, real-time digital human agent platform. Build voice-first AI agents with WebRTC, persona memory, tools, RAG",
+   "judged": "2026-10-11"
+  },
+  "PatterAI/Patter": {
+   "p": {
+    "job": 0.83,
+    "software": 0.96,
+    "client": 0.32
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source voice-AI SDK. The Vapi/Retell alternative for builders who want to own the stack. Give your AI agent a phone",
+   "judged": "2026-10-11"
+  },
+  "QwenAudio/SenseVoice": {
+   "p": {
+    "job": 0.06,
+    "software": 0.9,
+    "client": 0.05
+   },
+   "kind": [
+    "model"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-source SenseVoiceSmall model for Mandarin, Cantonese, English, Japanese, and Korean ASR, language ID, emotion recog",
+   "judged": "2026-10-11"
+  },
+  "QwenAudio/qwen-audio-agent": {
+   "p": {
+    "job": 0.68,
+    "software": 0.94,
+    "client": 0.18
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A realtime voice runtime that keeps Agents talking, working, and present.  Real-time Voice Runtime for AI Agents",
+   "judged": "2026-10-11"
+  },
+  "agentscope-ai/agentscope": {
+   "p": {
+    "job": 0.45,
+    "software": 0.96,
+    "client": 0.11
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Build and run agents you can see, understand and trust.",
+   "judged": "2026-10-11"
+  },
+  "debpalash/VoiceStudio": {
+   "p": {
+    "job": 0.09,
+    "software": 0.97,
+    "client": 0.07
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "VoiceStudio is the open-source, fully-local ElevenLabs alternative — voice cloning, voice design, video dubbing, dictati",
+   "judged": "2026-10-11"
+  },
+  "jamiepine/voicebox": {
+   "p": {
+    "job": 0.17,
+    "software": 0.96,
+    "client": 0.06
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "The open-source AI voice studio. Clone, dictate, create.",
+   "judged": "2026-10-11"
+  },
+  "livekit/livekit": {
+   "p": {
+    "job": 0.12,
+    "software": 0.95,
+    "client": 0.09
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "End-to-end realtime stack for connecting humans and AI",
+   "judged": "2026-10-11"
+  },
+  "nicedreamzapp/claude-code-local": {
+   "p": {
+    "job": 0.03,
+    "software": 0.97,
+    "client": 0.06
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Run Claude Code 100% on-device with local AI on Apple Silicon. MLX-native Anthropic-API server. 6 fighters incl. Muse-Gl",
+   "judged": "2026-10-11"
+  },
+  "xzf-thu/VoiceMem": {
+   "p": {
+    "job": 0.1,
+    "software": 0.93,
+    "client": 0.13
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Infrastructure for the next generation of voice agents, designed to provide universal memory. It is divided into a left ",
+   "judged": "2026-10-11"
+  }
+ },
+ "web-scraping": {
+  "0xMassi/webclaw": {
+   "p": {
+    "job": 0.93,
+    "software": 0.98,
+    "client": 0.15
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Fast, local-first web content extraction for LLMs. Scrape, crawl, extract structured data — all from Rust. CLI, REST API",
+   "judged": "2026-10-11"
+  },
+  "adbar/trafilatura": {
+   "p": {
+    "job": 0.8,
+    "software": 0.97,
+    "client": 0.03
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Python & Command-line tool to gather text and metadata on the Web: Crawling, scraping, extraction, output as CSV, JSON, ",
+   "judged": "2026-10-11"
+  },
+  "brightdata/brightdata-mcp": {
+   "p": {
+    "job": 0.72,
+    "software": 0.89,
+    "client": 0.77
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A powerful Model Context Protocol (MCP) server that provides an all-in-one solution for public web access.",
+   "judged": "2026-10-11"
+  },
+  "karust/openserp": {
+   "p": {
+    "job": 0.55,
+    "software": 0.98,
+    "client": 0.06
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Self-hosted SERP API for AI, SEO & automation. Browser-rendered Google, Bing, Yandex, Baidu, DuckDuckGo and Ecosia searc",
+   "judged": "2026-10-11"
+  }
+ },
+ "web-search": {
+  "prajwalch/TorrentSearch": {
+   "p": {
+    "job": 0.03,
+    "software": 0.97,
+    "client": 0.25
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "An Android app for searching torrents across multiple providers with fast search speed, detailed results, and packed wit",
+   "judged": "2026-10-11"
+  },
+  "swirlai/swirl-search": {
+   "p": {
+    "job": 0.14,
+    "software": 0.96,
+    "client": 0.09
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "AI Search & RAG Without Moving Your Data. Get instant answers from your company's knowledge across 100+ apps while keepi",
+   "judged": "2026-10-11"
+  },
+  "theotherp/nzbhydra2": {
+   "p": {
+    "job": 0.05,
+    "software": 0.97,
+    "client": 0.07
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Usenet meta search",
+   "judged": "2026-10-11"
+  }
+ }
+}

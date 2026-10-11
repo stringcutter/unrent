@@ -64,7 +64,7 @@
 ],
 [
 "2026-10-11",
-60967
+60968
 ]
 ],
 "BitMiracle-AI/Dormice":[
@@ -110,7 +110,7 @@
 ],
 [
 "2026-10-11",
-136921
+136919
 ]
 ],
 "Continuum-AI-Corp/OrcaRouter-Lite":[
@@ -337,6 +337,12 @@
 3450
 ]
 ],
+"MochiDiffusion/MochiDiffusion":[
+[
+"2026-10-11",
+7966
+]
+],
 "NGT-labs/NGT":[
 [
 "2026-10-11",
@@ -440,7 +446,7 @@
 "OpenBMB/VoxCPM":[
 [
 "2026-10-11",
-38904
+38905
 ]
 ],
 "PaddlePaddle/FastDeploy":[
@@ -598,7 +604,7 @@
 "RVC-Boss/GPT-SoVITS":[
 [
 "2026-10-11",
-62679
+62678
 ]
 ],
 "RapidAI/RapidOCR":[
@@ -758,7 +764,7 @@
 "ahmetoner/whisper-asr-webservice":[
 [
 "2026-10-11",
-3355
+3354
 ]
 ],
 "ai-dynamo/dynamo":[
@@ -1080,7 +1086,7 @@
 "debpalash/VoiceStudio":[
 [
 "2026-10-11",
-58414
+58418
 ]
 ],
 "decolua/9router":[
@@ -1114,7 +1120,7 @@
 ],
 [
 "2026-10-11",
-23937
+23939
 ]
 ],
 "deepset-ai/haystack":[
@@ -1142,7 +1148,7 @@
 "diegosouzapw/OmniRoute":[
 [
 "2026-10-11",
-75225
+75229
 ]
 ],
 "dingodb/dingo":[
@@ -1170,7 +1176,7 @@
 ],
 [
 "2026-10-11",
-68680
+68681
 ]
 ],
 "doobidoo/mcp-memory-service":[
@@ -1260,7 +1266,7 @@
 "feder-cr/invisible_playwright_mcp":[
 [
 "2026-10-11",
-2744
+2745
 ]
 ],
 "firecracker-microvm/firecracker":[
@@ -1282,7 +1288,7 @@
 ],
 [
 "2026-10-11",
-37289
+37290
 ]
 ],
 "firecrawl/firecrawl":[
@@ -1304,7 +1310,7 @@
 ],
 [
 "2026-10-11",
-190442
+190444
 ]
 ],
 "firecrawl/pdf-inspector":[
@@ -1316,7 +1322,7 @@
 "fishaudio/Bert-VITS2":[
 [
 "2026-10-11",
-8806
+8805
 ]
 ],
 "future-agi/future-agi":[
@@ -1588,7 +1594,7 @@
 "ifixai-ai/iFixAi":[
 [
 "2026-10-11",
-23792
+23793
 ]
 ],
 "infiniflow/infinity":[
@@ -1704,13 +1710,13 @@
 ],
 [
 "2026-10-11",
-15221
+15222
 ]
 ],
 "karust/openserp":[
 [
 "2026-10-11",
-1461
+1462
 ]
 ],
 "katanemo/plano":[
@@ -2042,7 +2048,7 @@
 ],
 [
 "2026-10-11",
-66981
+66983
 ]
 ],
 "meta-pytorch/torchtune":[
@@ -2158,7 +2164,7 @@
 ],
 [
 "2026-10-11",
-189540
+189546
 ]
 ],
 "microsoft/playwright":[
@@ -2318,7 +2324,7 @@
 ],
 [
 "2026-10-11",
-49472
+49473
 ]
 ],
 "nari-labs/dia":[
@@ -2642,7 +2648,7 @@
 ],
 [
 "2026-10-11",
-35034
+35035
 ]
 ],
 "quickwit-oss/tantivy":[
@@ -2708,7 +2714,13 @@
 ],
 [
 "2026-10-11",
-26854
+26855
+]
+],
+"rllm-org/rllm":[
+[
+"2026-10-11",
+5869
 ]
 ],
 "run-llama/liteparse":[
@@ -2786,7 +2798,7 @@
 "smol-machines/smolvm":[
 [
 "2026-10-11",
-6680
+6681
 ]
 ],
 "songquanpeng/one-api":[
@@ -2870,7 +2882,7 @@
 ],
 [
 "2026-10-11",
-7784
+7785
 ]
 ],
 "stochasticai/xTuring":[
@@ -2956,7 +2968,7 @@
 "tesseract-ocr/tesseract":[
 [
 "2026-10-11",
-76904
+76905
 ]
 ],
 "theagentrouter/agent-router":[
@@ -3018,7 +3030,7 @@
 ],
 [
 "2026-10-11",
-32016
+32020
 ]
 ],
 "traceloop/openllmetry":[
@@ -3090,7 +3102,7 @@
 ],
 [
 "2026-10-11",
-85238
+85239
 ]
 ],
 "unslothai/unsloth":[
@@ -3112,7 +3124,7 @@
 ],
 [
 "2026-10-11",
-77784
+77786
 ]
 ],
 "unum-cloud/USearch":[
@@ -3128,7 +3140,7 @@
 "vectorize-io/hindsight":[
 [
 "2026-10-11",
-48351
+48353
 ]
 ],
 "verl-project/verl":[
@@ -3206,7 +3218,7 @@
 "vllm-project/semantic-router":[
 [
 "2026-10-11",
-6084
+6085
 ]
 ],
 "vllm-project/vllm":[
@@ -3240,7 +3252,7 @@
 "volcengine/OpenViking":[
 [
 "2026-10-11",
-39667
+39668
 ]
 ],
 "weave-os/router":[
@@ -3280,7 +3292,7 @@
 "xerj-org/xerj":[
 [
 "2026-10-11",
-3580
+3582
 ]
 ],
 "xorbitsai/inference":[
