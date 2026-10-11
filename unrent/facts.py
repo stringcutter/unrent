@@ -390,7 +390,7 @@ def _needle_pattern(kind: str, needle: str) -> re.Pattern:
 
 
 # Needle kinds searched without regard to case: hosts, image names, SQL.
-FOLDED_KINDS = frozenset({"endpoint", "image", "sql_extension"})
+FOLDED_KINDS = frozenset({"endpoint", "image", "sql_extension", "open_model"})
 
 
 def _probe(kind: str, needle: str) -> str:
@@ -438,6 +438,11 @@ class Needles:
                     seen.add((kind, needle))
                     probe = _probe(kind, needle)
                     self.items.append((kind, needle, probe, _needle_pattern(kind, needle)))
+        # A line that may name an open-weight model: its family (`qwen`, `gemma`). Which
+        # model, and whether the line selects it, is for models.in_use to say.
+        for stem in catalog.model_families:
+            word = re.compile(rf"(?<![a-z]){re.escape(stem)}", re.I)  # not `ring` in `string`
+            self.items.append(("open_model", stem, stem, word))
 
     def _hits(self, text: str) -> dict[int, list[Needle]]:
         """Line number → needles whose literal text occurs on it.

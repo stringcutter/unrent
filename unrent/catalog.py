@@ -103,6 +103,79 @@ class Alternative:
     kind: tuple[str, ...] = ()
 
 
+# ---------------------------------------------------------------- model ids
+
+# What a variant adds to a model's name: reasoning effort, date, tuning, format, tag.
+_VARIANT = re.compile(
+    r"[-_:.@](?:x?high|low|medium|max|minimal|none|thinking|reasoning|preview|latest"
+    r"|instruct|it|chat|base|exp|experimental|fp8|bf16|int4|int8|awq|gguf|mlx|nvfp4"
+    r"|\d{8}|\d{4}-\d{2}-\d{2}|\d{4})$",
+    re.IGNORECASE,
+)
+_SIZE = re.compile(r"(?i)(?<![a-z0-9])(\d+(?:\.\d+)?)b(?![a-z0-9])")
+
+
+def model_base(name: str) -> str:
+    """A model's name without its publisher and variant: `claude-opus-5.5-high` and
+    `Qwen/Qwen3.8-27B-Instruct` give `claude-opus-5.5` and `Qwen3.8-27B`."""
+    name = name.rsplit("/", 1)[-1]
+    while (shorter := _VARIANT.sub("", name)) != name:
+        name = shorter
+    return name
+
+
+def model_key(name: str) -> str:
+    """One spelling for one model, however code, Ollama, Hugging Face or LMArena write
+    it: `claude-opus-5-5` and `claude-opus-5.5-high`, `gemma4:31b` and
+    `google/gemma-4-31b-it`."""
+    return re.sub(r"[^a-z0-9]", "", model_base(name).lower())
+
+
+def model_size(name: str) -> float | None:
+    """Billions of parameters a name states: `qwen3.8-27b` 27, `...-550b-a55b` 550."""
+    m = _SIZE.search(name)
+    return float(m.group(1)) if m else None
+
+
+@dataclass(frozen=True)
+class ArenaModel:
+    """A model as LMArena's text leaderboard rates it (overall, CC BY 4.0), its
+    variants merged into the best rated one."""
+
+    name: str  # its best variant there: claude-opus-5.5-high
+    org: str
+    licence: str  # "Proprietary", "Apache 2.0", "Kimi K3 license", ...
+    rating: float
+    low: float  # the rating's confidence interval
+    high: float
+    votes: int
+    weights: Alternative | None = None  # its Hugging Face repo, when a pool ranks it
+
+    @property
+    def display(self) -> str:
+        return model_base(self.weights.name if self.weights else self.name)
+
+    @property
+    def open(self) -> bool:
+        """Weights anyone may download and use commercially, under whatever licence."""
+        return self.licence != "Proprietary" and not _NON_COMMERCIAL.search(self.licence)
+
+    @property
+    def open_licence(self) -> bool:
+        """Under an open source licence, not a licence of its maker's own."""
+        return self.licence.lower().replace(" ", "-") in OPEN_MODEL_LICENCES
+
+    @property
+    def params(self) -> float | None:
+        """Billions of parameters, from its repo, else from its name."""
+        if self.weights and self.weights.params:
+            return self.weights.params / 1e9
+        return model_size(self.name)
+
+
+_NON_COMMERCIAL = re.compile(r"(?i)\bnc\b|non-?commercial|research")
+
+
 @dataclass(frozen=True)
 class Pool:
     id: str
@@ -211,6 +284,8 @@ class Catalog:
     rankings_date: str | None = None
     projects: list[Service] = field(default_factory=list)  # recognisable open source
     retirements: dict[str, Retirement] = field(default_factory=dict)  # by model id, see `also`
+    arena: dict[str, ArenaModel] = field(default_factory=dict)  # by model_key
+    arena_date: str | None = None
 
     def __len__(self) -> int:
         return len(self.services)
@@ -230,6 +305,12 @@ class Catalog:
         none or dropped out of the ranking (archived, inactive)."""
         pools = self.alternatives_for(service)
         return next((a for p in pools for a in p.alternatives if a.name == service.self_host), None)
+
+    @property
+    def model_families(self) -> list[str]:
+        """The leading word of every open-weight model LMArena rates: qwen, gemma, glm."""
+        names = (model_base(a.name).lower() for a in self.arena.values() if a.open)
+        return sorted({w for n in names if len(w := re.match(r"[a-z]*", n).group()) >= 3})
 
     @property
     def categories(self) -> list[str]:
@@ -381,6 +462,32 @@ def _load_pools(path: Path, rankings: dict) -> dict[str, Pool]:
     return pools
 
 
+def _load_arena(raw: dict, pools: dict[str, Pool]) -> tuple[dict[str, ArenaModel], str | None]:
+    """LMArena's ratings by model_key, each model's best variant, linked to the Hugging
+    Face repo a pool ranks under the same name."""
+    repos: dict[str, Alternative] = {}
+    for pool in pools.values():
+        if pool.source != "github":
+            for alt in pool.alternatives:
+                repos.setdefault(model_key(alt.name), alt)
+    out: dict[str, ArenaModel] = {}
+    for m in raw.get("models") or []:
+        key = model_key(m["model"])
+        if key in out and out[key].rating >= m["rating"]:
+            continue
+        out[key] = ArenaModel(
+            name=m["model"],
+            org=m.get("org") or "",
+            licence=m.get("licence") or "Proprietary",
+            rating=m["rating"],
+            low=m.get("low", m["rating"]),
+            high=m.get("high", m["rating"]),
+            votes=int(m.get("votes") or 0),
+            weights=repos.get(key),
+        )
+    return out, raw.get("date")
+
+
 def _from_snapshot(entry: dict, source: str) -> Alternative:
     if source == "github":
         return Alternative(
@@ -489,6 +596,7 @@ def _load_catalog(path: Path, rankings: dict | None) -> Catalog:
     pools = _load_pools(path / "alternatives.yaml", rankings)
 
     catalog = Catalog(pools=pools, rankings_date=rankings.get("generated"))
+    catalog.arena, catalog.arena_date = _load_arena(rankings.get("arena") or {}, pools)
     seen: dict[str, Path] = {}
     for file in files:
         raw = _load_yaml(file) or []
