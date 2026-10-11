@@ -124,29 +124,31 @@ def _names(alts: list[Alternative]) -> str:
 RISING_SHOWN = 2
 
 
+def _open_model(service, catalog: Catalog) -> Alternative | None:
+    """The top open-weight model of the first Hugging Face pool that replaces `service`."""
+    pools = catalog.alternatives_for(service)
+    pool = next((p for p in pools if p.source != "github" and p.alternatives), None)
+    return pool.alternatives[0] if pool else None
+
+
 def _best(f: Finding, catalog: Catalog) -> tuple[str, tuple[tuple[str, str], ...]]:
     """The project a hosted service runs, else the biggest few of the first pool that
-    replaces it; under it the fastest rising among the rest, and the top open-weight
-    model, each on a line of its own. A popularity ranking crowns no winner."""
+    replaces it, and under them the fastest rising among the rest. A popularity ranking
+    crowns no winner. An open-weight model replaces a model, not a service: it stands on
+    the snaps row, next to the vendor's replacement, unless there is nothing else."""
     own = catalog.self_hosted(f.service)
-    pools = [p for p in catalog.alternatives_for(f.service) if p.alternatives]
-    github = next((p for p in pools if p.source == "github"), None)
-    model = next((p for p in pools if p.source != "github"), None)
-    main, notes = "", []
+    github = next(
+        (p for p in catalog.alternatives_for(f.service) if p.source == "github" and p.alternatives),
+        None,
+    )
     if github:
         big, rising = github.lenses(PICKS, skip=(own.name,) if own else ())
         main = f"self-host {own.name}" if own else _names(big)
-        if rising:
-            notes.append(("rising", _names(rising[:RISING_SHOWN])))
-    elif own:
-        main = f"self-host {own.name}"
-    if model:
-        top = _names(model.alternatives[:1])
-        if main:
-            notes.append(("model", top))
-        else:
-            main = top
-    return main, tuple(notes)
+        return main, ((("rising", _names(rising[:RISING_SHOWN])),) if rising else ())
+    if own:
+        return f"self-host {own.name}", ()
+    model = _open_model(f.service, catalog)
+    return (_names([model]) if model else ""), ()
 
 
 def _standing(f: Finding, catalog: Catalog) -> tuple[str, tuple[tuple[str, str], ...]]:
@@ -168,6 +170,7 @@ def snap_rows(retiring: list[Snap], root: Path, catalog: Catalog, as_of) -> list
         r = s.retirement
         gone = state(r, as_of) == "snapped"
         use = replacement(r, catalog)
+        model = _open_model(s.finding.service, catalog)
         out.append(
             Row(
                 "snapped" if gone else "snaps",
@@ -178,6 +181,7 @@ def snap_rows(retiring: list[Snap], root: Path, catalog: Catalog, as_of) -> list
                 f"{'retired' if gone else 'retires'} {r.retires.isoformat()}"
                 + (f" → {use}" if use else ""),
                 False,
+                (("open", _names([model])),) if model else (),
             )
         )
     return out
@@ -465,6 +469,8 @@ def why_model(s: Snap, root: Path, catalog: Catalog, *, as_of=None, colour: bool
     if s.named:
         out.append(st.mute(f"  also named on {len(s.named)} lines that don't select it"))
     out += [st.mute(f"  {r.url}"), ""]
+    if model := _open_model(s.finding.service, catalog):
+        out += [f"  or an open-weight model: {st.bold(model.name)}", st.mute(f"  {model.url}"), ""]
     return "\n".join(out)
 
 

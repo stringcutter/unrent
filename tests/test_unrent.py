@@ -2672,17 +2672,25 @@ def test_terminal_counts_one_string_per_service(tmp_path, catalog):
     assert "--why openai" in text  # the hint names the top row
 
 
-def test_terminal_puts_rising_and_the_model_on_lines_of_their_own(tmp_path, catalog):
-    # Servers, the projects gaining fastest, and an open-weight LLM are three different
-    # answers: never one line.
+def test_terminal_puts_rising_and_the_open_model_on_lines_of_their_own(tmp_path, catalog):
+    # Inference servers, the projects gaining on them, and an open-weight model are three
+    # different answers. The model replaces a model, so it stands on the snaps row, next
+    # to the vendor's replacement, not on the API's.
+    app = {
+        **TIED,
+        "main.py": 'from openai import OpenAI\nOpenAI().chat.completions.create(model="gpt-4-turbo")\n',
+    }
     for width in (200, 50):
-        lines = terminal(write(tmp_path, TIED), catalog, width=width).splitlines()
+        lines = terminal(
+            write(tmp_path, app), catalog, width=width, as_of=datetime.date(2026, 10, 1)
+        ).splitlines()
         assert not any(" · rising" in ln or " + " in ln for ln in lines)
-        at = next(i for i, ln in enumerate(lines) if "OpenAI API" in ln)
-        below = [ln.split()[0] for ln in lines[at + 1 : at + 6] if ln.startswith(" ")]
-        assert "model" in below
-        notes = [ln for ln in lines if ln.lstrip().startswith(("rising", "model"))]
+        first = [ln.split()[0] if ln.strip() else "" for ln in lines]
+        api = next(i for i, ln in enumerate(lines) if "OpenAI API" in ln)
+        snap = first.index("┆")
+        assert "open" not in first[api:snap] and "open" in first[snap + 1 : snap + 4]
         if width == 200:  # side by side, every note starts in the alternatives' column
+            notes = [ln for ln in lines if ln.lstrip().startswith(("rising", "open"))]
             assert len({len(ln) - len(ln.lstrip()) for ln in notes}) == 1
 
 
