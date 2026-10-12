@@ -1755,6 +1755,19 @@
    "what": "短剧、漫剧制作工具 Toonflow：开源 AI 视频创作平台，集成剧本创作、智能分镜、角色与场景资产管理、图像生成和视频生成。融合无限画布、AI Agent 与可视化工作流，支持本地部署、自选模型、跨平台客户端、MCP 与插件扩展。Ope",
    "judged": "2026-10-11"
   },
+  "Haidra-Org/AI-Horde": {
+   "p": {
+    "job": 0.34,
+    "software": 0.92,
+    "client": 0.32
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A crowdsourced distributed cluster for AI art and text generation",
+   "judged": "2026-10-12"
+  },
   "HanaokaYuzu/Gemini-API": {
    "p": {
     "job": 0.16,
@@ -4390,6 +4403,19 @@
    "what": "Real-time, local speech-to-text with streaming ASR, speaker diarization, translation, and OpenAI/Deepgram-compatible API",
    "judged": "2026-10-11"
   },
+  "QwenAudio/Fun-ASR": {
+   "p": {
+    "job": 0.89,
+    "software": 0.93,
+    "client": 0.06
+   },
+   "kind": [
+    "model"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Fun-ASR speech recognition models, with native Hugging Face Transformers support for Fun-ASR-Nano and separate FunASR, vLLM and llama.cpp deployment paths.",
+   "judged": "2026-10-12"
+  },
   "QwenAudio/SenseVoice": {
    "p": {
     "job": 0.83,
@@ -4689,6 +4715,19 @@
    "what": "AI speech toolkit for Apple Silicon — ASR, TTS, speech-to-speech, VAD, and diarization powered by MLX and CoreML",
    "judged": "2026-10-11"
   },
+  "speechbrain/speechbrain": {
+   "p": {
+    "job": 0.47,
+    "software": 0.95,
+    "client": 0.04
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A PyTorch-based Speech Toolkit",
+   "judged": "2026-10-12"
+  },
   "tensorflow/lingvo": {
    "p": {
     "job": 0.13,
@@ -4933,6 +4972,19 @@
    "model": "jev-1.13.0",
    "what": "VoiceStudio is the open-source, fully-local ElevenLabs alternative — voice cloning, voice design, video dubbing, dictati",
    "judged": "2026-10-11"
+  },
+  "denizsafak/abogen": {
+   "p": {
+    "job": 0.38,
+    "software": 0.96,
+    "client": 0.06
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Generate audiobooks from EPUBs, PDFs and text with synchronized captions.",
+   "judged": "2026-10-12"
   },
   "digitalsamba/claude-code-video-toolkit": {
    "p": {
