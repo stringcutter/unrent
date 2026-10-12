@@ -148,7 +148,9 @@ def _fetch(
     younger than MAX_AGE, else a new download, else the stale cache and why."""
     file = cache_dir() / name
     data, age = _cached(file, parse)
-    if 0 <= age < MAX_AGE:  # a copy dated in the future is not trusted to be fresh
+    # A copy dated in the future is not trusted to be fresh; a few seconds' slack, as
+    # time.time() on Windows before Python 3.13 ticks in 15 ms steps behind the mtime.
+    if -5 < age < MAX_AGE:
         return data, "cache", None
     try:
         body = _download(url, timeout)

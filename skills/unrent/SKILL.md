@@ -4,7 +4,8 @@ description: >-
   Find the closed AI services a codebase depends on (OpenAI, Anthropic, Gemini, Bedrock,
   Pinecone, Tavily, LangSmith, ElevenLabs, ...) with file:line evidence, the model ids it
   selects that OpenAI, Anthropic, Google, Azure, Bedrock or Vertex have retired or will
-  retire on an announced date, and the current best open source replacements, using the
+  retire on an announced date, the open-weight models as good as each model it selects
+  (by LMArena), and the current best open source replacements, using the
   unrent MCP server (tools scan, alternatives, standing, catalog) or the unrent CLI. Use
   this whenever someone wants to audit an AI stack for vendor lock-in, list which AI APIs
   or hosted models a repo calls, check whether the models a repo uses are deprecated or
@@ -41,6 +42,10 @@ Call `scan` with the project path (MCP), or run `unrent scan <path> --format jso
 - `models_retiring`: model ids the code selects that the vendor has retired (`snapped`,
   requests fail now) or will retire on `retires` (`snaps`), with `use_instead` and the
   lines that select them. Report these first: they break without anyone touching the code.
+- `models_in_use`: every model the code selects that LMArena rates, closed or open, with
+  the open-weight models rated as good (`picks`, nearest in rating first) and trending
+  ones among the rest (`rising`). `close: true`: none is as good, so the picks are the
+  nearest below. For an open model the picks are no bigger, so they run where it runs.
 - `env_template_only`: keys that appear only in an example env file.
 - `open_source`: open source AI the code already runs, with its rank in its pool.
 - `unknown_candidates`: API hosts and keys that no catalog entry explains and that look
@@ -125,6 +130,11 @@ so you don't need to re-measure them. Add the judgement unrent leaves out:
   a 1-trillion-parameter model tops the list for a week after release. Match the
   recommendation to how this codebase runs models (a laptop with Ollama, one GPU,
   a cluster) and name a smaller model from the same pool when that fits better.
+- **A model for a model.** For a closed model in `models_in_use`, the `picks` are the
+  open-weight models as good by LMArena's text leaderboard, a general chat rating: a
+  coding agent or an extraction pipeline may rank them differently, so say that.
+  `open_licence: false` means open weights under the maker's own licence (Llama, Gemma):
+  name the licence. Credit the ratings to LMArena (CC BY 4.0, `model_ratings`).
 - **Keep the swap small.** Many open servers (vLLM, SGLang, llama.cpp, Ollama, LiteLLM)
   speak the OpenAI API, so a closed LLM behind an OpenAI-compatible client is often a
   base-URL change. Say so when the code allows it.
@@ -166,7 +176,8 @@ Unless the user asked for a specific format, answer with:
 3. **Open source already in use**, with its standing.
 4. **Replacements**, per closed service or category: the top two or three, one project
    per rank, each with one line on why, its licence (with `open_core` if set) and how it
-   plugs in here.
+   plugs in here. Per model in `models_in_use`: its open-weight picks, marked when
+   `close`.
 5. **What to watch**: silent defaults, deprecated or sunsetting APIs, and anything you
    could not verify.
 
