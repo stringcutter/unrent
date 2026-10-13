@@ -3816,6 +3816,19 @@
    "what": " ~95% on SimpleQA (e.g. Qwen3.6-27B on a 3090). Supports all local and cloud LLMs (llama.cpp, Ollama, Google, ...). 10+ ",
    "judged": "2026-10-11"
   },
+  "Marker-Inc-Korea/AutoRAG": {
+   "p": {
+    "job": 0.19,
+    "software": 0.92,
+    "client": 0.24
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "AutoRAG: Now your agent can find anything in your computer. It gets smarter if you are using it frequently.",
+   "judged": "2026-10-13"
+  },
   "RUC-NLPIR/FlashRAG": {
    "p": {
     "job": 0.29,
