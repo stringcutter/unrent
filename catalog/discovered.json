@@ -775,6 +775,19 @@
    "model": "jev-1.13.0",
    "what": "A search-first, profile-aware reverse-engineering workspace for AI agents — 735 tools across 36 domains in one MCP serve",
    "judged": "2026-10-11"
+  },
+  "yeahhe365/Gemini-Nexus": {
+   "p": {
+    "job": 0.11,
+    "software": 0.94,
+    "client": 0.4
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Gemini Nexus 是一款面向浏览器场景的 AI 助手扩展，集成 Gemini Web、Gemini API 与 OpenAI 兼容接口，支持网页上下文、图像处理、工具调用和 MCP 浏览器控制。",
+   "judged": "2026-10-14"
   }
  },
  "code-sandbox": {
@@ -1299,6 +1312,17 @@
    "model": "jev-1.13.0",
    "what": "Distributed AI Model Training and LLM Fine-Tuning on Kubernetes",
    "judged": "2026-10-11"
+  },
+  "liguodongiot/llm-action": {
+   "p": {
+    "job": 0.09,
+    "software": 0.11,
+    "client": 0.03
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "本项目旨在分享大模型相关技术原理以及实战经验（大模型工程化、大模型应用落地）",
+   "judged": "2026-10-14"
   },
   "linkedin/Liger-Kernel": {
    "p": {
@@ -1980,6 +2004,19 @@
    "model": "jev-1.13.0",
    "what": "SwarmUI (formerly StableSwarmUI), A Modular Stable Diffusion Web-User-Interface, with an emphasis on making powertools e",
    "judged": "2026-10-11"
+  },
+  "microsoft/ai-dev-gallery": {
+   "p": {
+    "job": 0.07,
+    "software": 0.82,
+    "client": 0.13
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "An open-source project for Windows developers to learn how to add AI with local models and APIs to Windows apps.",
+   "judged": "2026-10-14"
   },
   "openvinotoolkit/openvino": {
    "p": {
@@ -3006,6 +3043,17 @@
    "what": "Lemonade helps users discover and run local AI apps by serving optimized LLMs right from their own GPUs and NPUs. Join o",
    "judged": "2026-10-11"
   },
+  "liguodongiot/llm-action": {
+   "p": {
+    "job": 0.03,
+    "software": 0.07,
+    "client": 0.03
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "本项目旨在分享大模型相关技术原理以及实战经验（大模型工程化、大模型应用落地）",
+   "judged": "2026-10-14"
+  },
   "neuron-core/neuron-ai": {
    "p": {
     "job": 0.04,
@@ -3475,6 +3523,19 @@
    "model": "jev-1.13.0",
    "what": "Convert documentation websites, GitHub repositories, and PDFs into Claude AI skills with automatic conflict detection",
    "judged": "2026-10-11"
+  },
+  "zai-org/GLM-OCR": {
+   "p": {
+    "job": 0.92,
+    "software": 0.94,
+    "client": 0.33
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "GLM-OCR: Accurate ×  Fast × Comprehensive",
+   "judged": "2026-10-14"
   },
   "zyddnys/manga-image-translator": {
    "p": {
