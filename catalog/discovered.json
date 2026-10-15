@@ -737,6 +737,19 @@
    "what": "Playwright MCP server undetected by anti-bots and captchas: AI agent browses the web on anti-detect stealth Firefox, Pyt",
    "judged": "2026-10-11"
   },
+  "nanobrowser/nanobrowser": {
+   "p": {
+    "job": 0.6,
+    "software": 0.96,
+    "client": 0.07
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Open-Source Chrome extension for AI-powered web automation. Run multi-agent workflows using your own LLM API key. Alternative to OpenAI Operator.",
+   "judged": "2026-10-15"
+  },
   "nicedreamzapp/claude-code-local": {
    "p": {
     "job": 0.04,
@@ -803,6 +816,19 @@
    "model": "jev-1.13.0",
    "what": "The SQLite of agent sandboxes — self-hosted, E2B-compatible. One machine, sandboxes that live forever, idle costs nothin",
    "judged": "2026-10-11"
+  },
+  "Kav-K/GPTDiscord": {
+   "p": {
+    "job": 0.03,
+    "software": 0.98,
+    "client": 0.65
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A robust, all-in-one GPT interface for Discord. ChatGPT-style conversations, image generation, AI-moderation, custom indexes/knowledgebase, youtube summarizer, and more!",
+   "judged": "2026-10-15"
   },
   "arcboxlabs/arcbox": {
    "p": {
@@ -1636,6 +1662,19 @@
    "what": "agent runtime security - zero trust, zero setup, zero latency agent sandbox",
    "judged": "2026-10-11"
   },
+  "pathwaycom/serviette": {
+   "p": {
+    "job": 0.03,
+    "software": 0.97,
+    "client": 0.17
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Ready-to-run cloud templates for RAG, AI pipelines, and enterprise search with live data. 🐳Docker-friendly.⚡Always in sync with Sharepoint, Google Drive, S3, Kafka, PostgreSQL, real-time data APIs, and more.",
+   "judged": "2026-10-15"
+  },
   "uber/ADR": {
    "p": {
     "job": 0.13,
@@ -1728,6 +1767,17 @@
    "model": "jev-1.13.0",
    "what": "SD-Trainer. LoRA & Dreambooth training scripts & GUI use kohya-ss's trainer, for diffusion model.",
    "judged": "2026-10-11"
+  },
+  "Anil-matcha/awesome-agent-apis": {
+   "p": {
+    "job": 0.08,
+    "software": 0.08,
+    "client": 0.14
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "660+ muapi-hosted generative-media models plus community-submitted third-party API tools (SEO, enrichment, social, scraping) — one YAML file per entry, browsable by capability.",
+   "judged": "2026-10-15"
   },
   "Capsize-Games/airunner": {
    "p": {
@@ -1843,6 +1893,19 @@
    "model": "jev-1.13.0",
    "what": "The all-in-one local AI studio for your desktop: chat, image and video generation and a coding agent in one free, open s",
    "judged": "2026-10-11"
+  },
+  "Stability-AI/StableSwarmUI": {
+   "p": {
+    "job": 0.65,
+    "software": 0.96,
+    "client": 0.08
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "StableSwarmUI, A Modular Stable Diffusion Web-User-Interface, with an emphasis on making powertools easily accessible, high performance, and extensibility.",
+   "judged": "2026-10-15"
   },
   "WeThinkIn/AIGC-Interview-Book": {
    "p": {
@@ -2902,6 +2965,19 @@
    "what": "Your Cheat Sheet for AI Engineering Interview – Questions and Answers.",
    "judged": "2026-10-11"
   },
+  "b4rtaz/distributed-llama": {
+   "p": {
+    "job": 0.64,
+    "software": 0.96,
+    "client": 0.04
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Distributed LLM inference. Connect home devices into a powerful cluster to accelerate LLM inference. More devices means faster inference.",
+   "judged": "2026-10-15"
+  },
   "beam-cloud/beta9": {
    "p": {
     "job": 0.34,
@@ -3771,6 +3847,19 @@
    "what": "Open-source AI sales OS — self-hosted CRM with native AI agents + WhatsApp (WAHA). Open alternative to Kommo, Octadesk &",
    "judged": "2026-10-11"
   },
+  "pathwaycom/serviette": {
+   "p": {
+    "job": 0.79,
+    "software": 0.95,
+    "client": 0.14
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Ready-to-run cloud templates for RAG, AI pipelines, and enterprise search with live data. 🐳Docker-friendly.⚡Always in sync with Sharepoint, Google Drive, S3, Kafka, PostgreSQL, real-time data APIs, and more.",
+   "judged": "2026-10-15"
+  },
   "simstudioai/sim": {
    "p": {
     "job": 0.23,
@@ -4081,6 +4170,19 @@
    "what": "💡 All-in-one AI framework for semantic search, LLM orchestration and language model workflows",
    "judged": "2026-10-11"
   },
+  "pathwaycom/serviette": {
+   "p": {
+    "job": 0.63,
+    "software": 0.96,
+    "client": 0.15
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Ready-to-run cloud templates for RAG, AI pipelines, and enterprise search with live data. 🐳Docker-friendly.⚡Always in sync with Sharepoint, Google Drive, S3, Kafka, PostgreSQL, real-time data APIs, and more.",
+   "judged": "2026-10-15"
+  },
   "samchon/nestia": {
    "p": {
     "job": 0.04,
@@ -4292,6 +4394,19 @@
    "model": "jev-1.13.0",
    "what": "Open-source, self-hosted enterprise & site search server built on OpenSearch. Crawls web / file / DB / cloud sources, 20",
    "judged": "2026-10-11"
+  },
+  "coleifer/walrus": {
+   "p": {
+    "job": 0.06,
+    "software": 0.89,
+    "client": 0.38
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Lightweight Python utilities for working with Redis",
+   "judged": "2026-10-15"
   },
   "manticoresoftware/manticoresearch": {
    "p": {
@@ -4541,6 +4656,19 @@
    "model": "jev-1.13.0",
    "what": "OpenAI Whisper ASR Webservice API",
    "judged": "2026-10-11"
+  },
+  "alphacep/vosk-api": {
+   "p": {
+    "job": 0.88,
+    "software": 0.96,
+    "client": 0.06
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Offline speech recognition API for Android, iOS, Raspberry Pi and servers with Python, Java, C# and Node",
+   "judged": "2026-10-15"
   },
   "amicalhq/amical": {
    "p": {
@@ -5435,6 +5563,19 @@
    "what": "CrateDB is a distributed and scalable SQL database for storing and analyzing massive amounts of data in near real-time, ",
    "judged": "2026-10-11"
   },
+  "databendlabs/databend": {
+   "p": {
+    "job": 0.24,
+    "software": 0.96,
+    "client": 0.05
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Data Agent Ready Warehouse : One for  Analytics, Search, AI, Python Sandbox.  — rebuilt from scratch. Unified architecture on your S3.",
+   "judged": "2026-10-15"
+  },
   "genkit-ai/genkit": {
    "p": {
     "job": 0.03,
@@ -5513,6 +5654,19 @@
    "what": "OceanBase is the unified distributed database for the AI era — open-source, multi-model, one engine for your most demand",
    "judged": "2026-10-11"
   },
+  "pathwaycom/serviette": {
+   "p": {
+    "job": 0.06,
+    "software": 0.95,
+    "client": 0.16
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Ready-to-run cloud templates for RAG, AI pipelines, and enterprise search with live data. 🐳Docker-friendly.⚡Always in sync with Sharepoint, Google Drive, S3, Kafka, PostgreSQL, real-time data APIs, and more.",
+   "judged": "2026-10-15"
+  },
   "srbhr/Resume-Matcher": {
    "p": {
     "job": 0.02,
@@ -5551,6 +5705,19 @@
    "model": "jev-1.13.0",
    "what": "Go Open Source, Distributed, Simple and efficient Search Engine",
    "judged": "2026-10-11"
+  },
+  "volcengine/OpenViking": {
+   "p": {
+    "job": 0.22,
+    "software": 0.9,
+    "client": 0.08
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Self-evolving Context Database for AI Agents. Unify Agent Memory, Knowledge RAG and Skills.",
+   "judged": "2026-10-15"
   },
   "voxel51/fiftyone": {
    "p": {
