@@ -152,6 +152,19 @@
    "what": "Prismer Cloud",
    "judged": "2026-10-11"
   },
+  "aakarim/OpenLore": {
+   "p": {
+    "job": 0.27,
+    "software": 0.96,
+    "client": 0.11
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A minimal, extensible, agent-native knowledge repository that keeps shared context current and inspectable",
+   "judged": "2026-10-16"
+  },
   "activeloopai/hivemind": {
    "p": {
     "job": 0.43,
@@ -1571,6 +1584,19 @@
    "what": "A secure low code deception runtime framework, leveraging AI for System Virtualization.",
    "judged": "2026-10-11"
   },
+  "cuga-project/cuga-agent": {
+   "p": {
+    "job": 0.09,
+    "software": 0.95,
+    "client": 0.1
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "CUGA is an open-source generalist agent harness for the enterprise, supporting complex task execution on web and APIs, OpenAPI/MCP integrations, composable architecture, reasoning modes, and policy-aware features.",
+   "judged": "2026-10-16"
+  },
   "data-privacy-stack/presidio": {
    "p": {
     "job": 0.08,
@@ -1778,6 +1804,19 @@
    "model": "jev-1.13.0",
    "what": "660+ muapi-hosted generative-media models plus community-submitted third-party API tools (SEO, enrichment, social, scraping) — one YAML file per entry, browsable by capability.",
    "judged": "2026-10-15"
+  },
+  "Arekejoker/qwen21-nsfw-pose-skill": {
+   "p": {
+    "job": 0.12,
+    "software": 0.77,
+    "client": 0.05
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Qwen-Image 2.1 NSFW/姿势出图 skill：作者级提示词配方 + NSFW LoRA + 136 姿势 VNCCS 人偶控制；适用 Claude Code / Codex / Cursor / OpenClaw",
+   "judged": "2026-10-16"
   },
   "Capsize-Games/airunner": {
    "p": {
@@ -3978,6 +4017,19 @@
    "model": "jev-1.13.0",
    "what": "AutoRAG: Now your agent can find anything in your computer. It gets smarter if you are using it frequently.",
    "judged": "2026-10-13"
+  },
+  "NVIDIA-AI-Blueprints/video-search-and-summarization": {
+   "p": {
+    "job": 0.1,
+    "software": 0.72,
+    "client": 0.16
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "NVIDIA AI Blueprint for video search and summarization (VSS) is a GPU-accelerated reference architecture for building video analytics agents with real-time verified alerts, visual Q&A, and automated reporting. The VSS Blueprint uses vision language models (VLMs) such as NVIDIA Cosmos, LLMs such as NVIDIA Nemotron, RAG, and NVIDIA NIMs.",
+   "judged": "2026-10-16"
   },
   "RUC-NLPIR/FlashRAG": {
    "p": {
