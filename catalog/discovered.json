@@ -293,6 +293,19 @@
    "what": "Open-source persistent memory for AI agent pipelines (LangGraph, CrewAI, AutoGen) and Claude. REST API + knowledge graph",
    "judged": "2026-10-11"
   },
+  "eugeniughelbur/obsidian-second-brain": {
+   "p": {
+    "job": 0.46,
+    "software": 0.94,
+    "client": 0.06
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Persistent memory for Claude Code, Codex and 6 other AI agents, stored as plain markdown in your Obsidian vault. New: Crew, one shared logbook so Claude Code, Codex, Cursor and Grok Bot know what each other did. 48 commands: semantic search, self-rewriting notes, key-less research, scheduled agents.",
+   "judged": "2026-10-17"
+  },
   "felinics/Memoh": {
    "p": {
     "job": 0.18,
@@ -3886,6 +3899,19 @@
    "what": "Open-source AI sales OS — self-hosted CRM with native AI agents + WhatsApp (WAHA). Open alternative to Kommo, Octadesk &",
    "judged": "2026-10-11"
   },
+  "om-ai-lab/OmAgent": {
+   "p": {
+    "job": 0.09,
+    "software": 0.9,
+    "client": 0.08
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "[EMNLP-2024] Build multimodal language agents for fast prototype and production",
+   "judged": "2026-10-17"
+  },
   "pathwaycom/serviette": {
    "p": {
     "job": 0.79,
@@ -4260,6 +4286,19 @@
    "model": "jev-1.13.0",
    "what": "Agent S: an open agentic framework that uses computers like a human",
    "judged": "2026-10-11"
+  },
+  "superlinear-ai/raglite": {
+   "p": {
+    "job": 0.88,
+    "software": 0.96,
+    "client": 0.05
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "🥤 RAGLite is a Python toolkit for Retrieval-Augmented Generation (RAG) with DuckDB or PostgreSQL",
+   "judged": "2026-10-17"
   },
   "superlinked/sie": {
    "p": {
