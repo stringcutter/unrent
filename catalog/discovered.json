@@ -1907,6 +1907,19 @@
    "what": "✨ Reverse-engineered Python API for Google Gemini web app",
    "judged": "2026-10-11"
   },
+  "KohakuBlueleaf/LyCORIS": {
+   "p": {
+    "job": 0.08,
+    "software": 0.93,
+    "client": 0.04
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Lora beYond Conventional methods, Other Rank adaptation Implementations for Stable diffusion.",
+   "judged": "2026-10-18"
+  },
   "LykosAI/StabilityMatrix": {
    "p": {
     "job": 0.16,
@@ -2158,6 +2171,19 @@
    "model": "jev-1.13.0",
    "what": "Making ComfyUI more comfortable!",
    "judged": "2026-10-11"
+  },
+  "scenario-labs/skills": {
+   "p": {
+    "job": 0.14,
+    "software": 0.59,
+    "client": 0.61
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Get production-ready images, video, audio, and 3D from any AI agent: skills that pick the right model, price before spending, and keep characters and brands consistent through the Scenario MCP, plus expert teams that drive Blender, Maya, ZBrush, Unreal, and Unity.",
+   "judged": "2026-10-18"
   },
   "techjarves/Portable-Local-Studio": {
    "p": {
