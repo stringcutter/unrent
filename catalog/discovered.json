@@ -1050,6 +1050,19 @@
    "model": "jev-1.13.0",
    "what": "Lightweight and portable LLM sandbox runtime (code interpreter) Python library.",
    "judged": "2026-10-11"
+  },
+  "zerobootdev/zeroboot": {
+   "p": {
+    "job": 0.9,
+    "software": 0.92,
+    "client": 0.29
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Sub-millisecond VM sandboxes for AI agents via copy-on-write forking",
+   "judged": "2026-10-19"
   }
  },
  "document-parsing": {
@@ -1946,6 +1959,19 @@
    "what": "Run Stable Diffusion on Mac natively",
    "judged": "2026-10-11"
   },
+  "Mukosame/Anime2Sketch": {
+   "p": {
+    "job": 0.04,
+    "software": 0.87,
+    "client": 0.03
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "A sketch extractor for anime/illustration.",
+   "judged": "2026-10-19"
+  },
   "PurpleDoubleD/locally-uncensored": {
    "p": {
     "job": 0.23,
@@ -2430,6 +2456,19 @@
    "what": "Independent Auditing of AI Agents. Run by human or the agent itself, to answer the most crucial question in the AI Agent",
    "judged": "2026-10-11"
   },
+  "jwuthri-cloud/Tracely-ai": {
+   "p": {
+    "job": 0.34,
+    "software": 0.95,
+    "client": 0.28
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Trace-native CI/CD for AI agents: grade production traces, cluster failures, freeze them into replayable regression tests, and block PRs that regress. Self-hostable.",
+   "judged": "2026-10-19"
+  },
   "lmnr-ai/lmnr": {
    "p": {
     "job": 0.33,
@@ -2863,6 +2902,19 @@
    "what": "Open-source, end-to-end platform for evaluating, observing, and improving LLM and AI agent applications. Tracing · Evals",
    "judged": "2026-10-11"
   },
+  "jwuthri-cloud/Tracely-ai": {
+   "p": {
+    "job": 0.55,
+    "software": 0.94,
+    "client": 0.14
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Trace-native CI/CD for AI agents: grade production traces, cluster failures, freeze them into replayable regression tests, and block PRs that regress. Self-hostable.",
+   "judged": "2026-10-19"
+  },
   "langwatch/langwatch": {
    "p": {
     "job": 0.85,
@@ -2968,6 +3020,19 @@
    "model": "jev-1.13.0",
    "what": "20+ high-performance LLMs with recipes to pretrain, finetune and deploy at scale.",
    "judged": "2026-10-11"
+  },
+  "Michael-A-Kuykendall/shimmy": {
+   "p": {
+    "job": 0.91,
+    "software": 0.97,
+    "client": 0.03
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "⚡ Pure-Rust WebGPU inference engine — OpenAI-API compatible, GGUF native, runs on any GPU. No Python. No llama.cpp. Single binary.",
+   "judged": "2026-10-19"
   },
   "PaddlePaddle/FastDeploy": {
    "p": {
@@ -4604,6 +4669,19 @@
    "model": "jev-1.13.0",
    "what": "A text-to-speech (TTS), speech-to-text (STT) and speech-to-speech (STS) library built on Apple's MLX framework, providin",
    "judged": "2026-10-11"
+  },
+  "Evil0ctal/Douyin_TikTok_Download_API": {
+   "p": {
+    "job": 0.04,
+    "software": 0.96,
+    "client": 0.2
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "🚀 自托管的抖音、TikTok 数据采集与无水印视频下载 API，支持 AI agent 通过 MCP 调用与离线语音转文字，Docker 一键部署。| Self-hosted TikTok & Douyin scraper and no-watermark video downloader — async REST API, MCP server for AI agents, CLI and web console, plus offline speech-to-text for downloaded videos. Self-healing identity pool, PostgreSQL archive, one docker compose up.",
+   "judged": "2026-10-19"
   },
   "FluidInference/FluidAudio": {
    "p": {
