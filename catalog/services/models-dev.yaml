@@ -327,6 +327,21 @@
     - openai.bothub.ru
     env:
     - BOTHUB_API_KEY
+- id: boundless
+  name: Boundless
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://inference.boundless.network/models
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.inference.boundless.network
+    env:
+    - BOUNDLESS_API_KEY
 - id: chutes
   name: Chutes
   category: LLM API
@@ -387,6 +402,19 @@
     - api-sherlock.cloudferro.com
     env:
     - CLOUDFERRO_SHERLOCK_API_KEY
+- id: commandcode
+  name: CommandCode
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://commandcode.ai/docs/provider
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.commandcode.ai
 - id: coralbricks
   name: CoralBricks
   category: LLM API
@@ -1342,19 +1370,19 @@
     env:
     - OFOX_API_KEY
 - id: opencode
-  name: OpenCode Zen
+  name: OpenCode
   category: LLM API
   replace_with:
   - open-llm
   - llm-serving
   source: models.dev
-  doc: https://opencode.ai/docs/zen
+  doc: https://opencode.ai/v2/docs/console/models/
   excludes:
   - openai
   detect:
     endpoint:
-    - opencode.ai/zen/go/v1
-    - opencode.ai/zen/v1
+    - opencode.ai/inference/go/openai/v1
+    - opencode.ai/inference/openai/v1
     env:
     - OPENCODE_API_KEY
 - id: openreason
@@ -1491,6 +1519,21 @@
     - inference.poolside.ai
     env:
     - POOLSIDE_API_KEY
+- id: prime
+  name: Prime Inference
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://docs.primeintellect.ai/inference/overview
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.pinference.ai
+    env:
+    - PRIME_API_KEY
 - id: qihang-ai
   name: QiHang
   category: LLM API
@@ -1521,6 +1564,21 @@
     - api.qnaigc.com
     env:
     - QINIU_API_KEY
+- id: reflection
+  name: Reflection
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://developers.reflection.ai/models
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.reflection.ai
+    env:
+    - REFLECTION_API_KEY
 - id: regolo-ai
   name: Regolo AI
   category: LLM API
@@ -1681,6 +1739,21 @@
     - api.openai-compat.model-serving.eu01.onstackit.cloud
     env:
     - STACKIT_API_KEY
+- id: standardcompute
+  name: Standard Compute
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://docs.standardcompute.com/models
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.stdcmpt.com
+    env:
+    - STANDARDCOMPUTE_API_KEY
 - id: subconscious
   name: Subconscious
   category: LLM API
