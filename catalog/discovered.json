@@ -527,6 +527,19 @@
    "what": "Memory for Claude Code, Codex, Cursor and 38 more coding agents, built from the session history already on your disk. Lo",
    "judged": "2026-10-11"
   },
+  "xerj-org/xerj": {
+   "p": {
+    "job": 0.29,
+    "software": 0.97,
+    "client": 0.04
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Local-first search engine and MCP server for AI agents. One Rust binary indexes code, docs, logs, JSONL/CSV and PDFs for BM25 full-text, vector and hybrid search, code search without grep, agent memory and RAG. Elasticsearch-compatible API; Corpus Hub serves hundreds of reference memory corpora.",
+   "judged": "2026-10-20"
+  },
   "zilliztech/memsearch": {
    "p": {
     "job": 0.76,
@@ -881,6 +894,19 @@
    "model": "jev-1.13.0",
    "what": "Astrid is a portable, capability-secure operating system for composable software.",
    "judged": "2026-10-11"
+  },
+  "cuga-project/cuga-agent": {
+   "p": {
+    "job": 0.07,
+    "software": 0.96,
+    "client": 0.08
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "CUGA is an open-source generalist agent harness for the enterprise, supporting complex task execution on web and APIs, OpenAPI/MCP integrations, composable architecture, reasoning modes, and policy-aware features.",
+   "judged": "2026-10-20"
   },
   "deeplethe/forkd": {
    "p": {
@@ -1971,6 +1997,19 @@
    "model": "jev-1.13.0",
    "what": "A sketch extractor for anime/illustration.",
    "judged": "2026-10-19"
+  },
+  "OpenMOSS/MOSS-Image": {
+   "p": {
+    "job": 0.8,
+    "software": 0.8,
+    "client": 0.04
+   },
+   "kind": [
+    "model"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Official repository for MOSS-Image, a 5B-parameter base DiT model with high-quality text rendering, layout generation, and efficient fine-tuning.",
+   "judged": "2026-10-20"
   },
   "PurpleDoubleD/locally-uncensored": {
    "p": {
@@ -3429,6 +3468,17 @@
    "what": "A high-performance inference engine for LLM, VLM, DiT and REC models, optimized for diverse AI accelerators. It is hoste",
    "judged": "2026-10-11"
   },
+  "xlite-dev/Awesome-LLM-Inference": {
+   "p": {
+    "job": 0.02,
+    "software": 0.06,
+    "client": 0.02
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "📚A curated list of Awesome LLM/VLM Inference Papers with Codes: Flash-Attention, Paged-Attention, WINT8/4, Parallelism, etc.🎉",
+   "judged": "2026-10-20"
+  },
   "youssofal/MTPLX": {
    "p": {
     "job": 0.8,
@@ -4054,6 +4104,19 @@
    "model": "jev-1.13.0",
    "what": "Turn any technical book PDF into a Claude Code skill — ready to study, reference, and use while you work.",
    "judged": "2026-10-11"
+  },
+  "zjunlp/LightMem": {
+   "p": {
+    "job": 0.09,
+    "software": 0.76,
+    "client": 0.07
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.13.0",
+   "what": "[ICLR 2026] LightMem: Lightweight and Efficient Memory-Augmented Generation",
+   "judged": "2026-10-20"
   }
  },
  "rag-framework": {
@@ -4641,6 +4704,19 @@
    "model": "jev-1.13.0",
    "what": "PostgreSQL extension for BM25 relevance-ranked full-text search. Postgres OSS licensed.",
    "judged": "2026-10-11"
+  },
+  "xerj-org/xerj": {
+   "p": {
+    "job": 0.24,
+    "software": 0.97,
+    "client": 0.05
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.13.0",
+   "what": "Local-first search engine and MCP server for AI agents. One Rust binary indexes code, docs, logs, JSONL/CSV and PDFs for BM25 full-text, vector and hybrid search, code search without grep, agent memory and RAG. Elasticsearch-compatible API; Corpus Hub serves hundreds of reference memory corpora.",
+   "judged": "2026-10-20"
   },
   "zvec-ai/zvec-grep": {
    "p": {
