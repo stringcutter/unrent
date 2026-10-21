@@ -607,6 +607,17 @@
    "what": "Open-source, self-hosted enterprise & site search server built on OpenSearch. Crawls web / file / DB / cloud sources, 20",
    "judged": "2026-10-11"
   },
+  "i365dev/awesome-seo": {
+   "p": {
+    "job": 0.02,
+    "software": 0.03,
+    "client": 0.03
+   },
+   "kind": [],
+   "model": "jev-1.13.0",
+   "what": "Curated SEO, GEO & AI Search resources — technical SEO, agent discoverability, analytics, and traffic monetization.",
+   "judged": "2026-10-21"
+  },
   "import-ai/omnibox": {
    "p": {
     "job": 0.33,
@@ -1596,6 +1607,19 @@
    "model": "jev-1.13.0",
    "what": "A full-stack AI Red Teaming platform securing AI ecosystems via Agent Scan, Skills Scan, MCP scan, AI Infra scan and LLM",
    "judged": "2026-10-11"
+  },
+  "ZeroDayEvil/ai-security-tool": {
+   "p": {
+    "job": 0.04,
+    "software": 0.96,
+    "client": 0.06
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.13.0",
+   "what": "🛡️ Free open-source AI-powered security terminal & vulnerability scanner (CVE, SBOM). Supports SSH, SFTP, RDP, VNC, Serial, and 12+ autonomous AI agents (DeepSeek, OpenAI) for automated security workflows, CTF & DevSecOps. Cross-platform & Web UI.",
+   "judged": "2026-10-21"
   },
   "akto-api-security/akto": {
    "p": {
@@ -3884,6 +3908,19 @@
    "what": "A personal knowledge base that builds and maintains itself. Drop in sources — Claude (or Codex/Gemini) reads them, extra",
    "judged": "2026-10-11"
   },
+  "SylphAI-Inc/AdalFlow": {
+   "p": {
+    "job": 0.16,
+    "software": 0.93,
+    "client": 0.17
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "AdalFlow: The library to build & auto-optimize LLM applications.",
+   "judged": "2026-10-21"
+  },
   "The-Vibe-Company/quivr": {
    "p": {
     "job": 0.42,
@@ -4236,6 +4273,19 @@
    "model": "jev-1.13.0",
    "what": "[MLsys2026 Best Paper]: https://arxiv.org/abs/2506.08276. RAG on Everything with LEANN. Enjoy 97% storage savings while ",
    "judged": "2026-10-11"
+  },
+  "SylphAI-Inc/AdalFlow": {
+   "p": {
+    "job": 0.29,
+    "software": 0.95,
+    "client": 0.13
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "AdalFlow: The library to build & auto-optimize LLM applications.",
+   "judged": "2026-10-21"
   },
   "The-Vibe-Company/quivr": {
    "p": {
@@ -5044,6 +5094,19 @@
    "model": "jev-1.13.0",
    "what": "Build voice agents with open-source models",
    "judged": "2026-10-11"
+  },
+  "jdepoix/youtube-transcript-api": {
+   "p": {
+    "job": 0.05,
+    "software": 0.92,
+    "client": 0.19
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.13.0",
+   "what": "This is a python API which allows you to get the transcript/subtitles for a given YouTube video. It also works for automatically generated subtitles and it does not require an API key nor a headless browser, like other selenium based solutions do!",
+   "judged": "2026-10-21"
   },
   "jianchang512/pyvideotrans": {
    "p": {
