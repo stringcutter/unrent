@@ -867,6 +867,19 @@
    "what": "The SQLite of agent sandboxes — self-hosted, E2B-compatible. One machine, sandboxes that live forever, idle costs nothin",
    "judged": "2026-10-11"
   },
+  "Ephemeral-AI-Lab/layerfs": {
+   "p": {
+    "job": 0.1,
+    "software": 0.88,
+    "client": 0.22
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Ephemeral Workspaces, durable shared history. LayerFS gives every agent a complete, writable filesystem Workspace over shared committed history, without copying the base. Agents work in parallel, commit what changed as deduplicated checkpoints, then branch, rewind or merge. Try it with LayerFS × DSH.",
+   "judged": "2026-10-22"
+  },
   "Kav-K/GPTDiscord": {
    "p": {
     "job": 0.03,
@@ -1349,6 +1362,17 @@
    "model": "jev-1.13.0",
    "what": "《深入理解 AI Infra：量化分析与系统设计》（李博杰 著）开源书稿：从硬件约束和模型架构出发，量化推导 LLM 推理与训练系统设计。含全书正文、PDF、配套计算工具与实验",
    "judged": "2026-10-11"
+  },
+  "dipakkr/awesome-ai-engineering": {
+   "p": {
+    "job": 0.02,
+    "software": 0.04,
+    "client": 0.03
+   },
+   "kind": [],
+   "model": "jev-1.14.0",
+   "what": "🚀 A curated collection of AI engineering resources, roadmaps, tools, and projects covering LLMs, RAG, AI Agents, MCP, fine-tuning, evaluations, and production AI systems.",
+   "judged": "2026-10-22"
   },
   "flyteorg/flyte": {
    "p": {
@@ -2741,6 +2765,19 @@
    "model": "jev-1.13.0",
    "what": "An open-source Agent-first Identity and Access Management (IAM) /LLM MCP & agent gateway and auth server with web UI sup",
    "judged": "2026-10-11"
+  },
+  "cheaper-inference/OmniRoute": {
+   "p": {
+    "job": 0.9,
+    "software": 0.91,
+    "client": 0.14
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Never stop coding. Free MIT AI gateway: one endpoint, 375 providers (150+ free), 1,400+ models Kimi, Claude, GPT, Gemini, GLM, DeepSeek, MiniMax. Works with Claude Code, Codex, Cursor, OpenCode, Cline & Copilot. Quota-aware auto-fallback, RTK+Caveman compression saves 15-95% tokens, MCP/A2A, Desktop/PWA. Built by 900+ contributors",
+   "judged": "2026-10-22"
   },
   "decolua/9router": {
    "p": {
@@ -5069,6 +5106,19 @@
    "what": "Record your screen, ship a demo. Free and open-source, GPU-accelerated, no watermarks, no subscriptions. Windows, macOS,",
    "judged": "2026-10-11"
   },
+  "gradio-app/fastrtc": {
+   "p": {
+    "job": 0.06,
+    "software": 0.96,
+    "client": 0.15
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": "The python library for real-time communication",
+   "judged": "2026-10-22"
+  },
   "handy-computer/transcribe.cpp": {
    "p": {
     "job": 0.88,
@@ -5600,6 +5650,19 @@
    "what": "vits2 backbone with multilingual-bert",
    "judged": "2026-10-11"
   },
+  "gradio-app/fastrtc": {
+   "p": {
+    "job": 0.06,
+    "software": 0.95,
+    "client": 0.19
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": "The python library for real-time communication",
+   "judged": "2026-10-22"
+  },
   "harry0703/MoneyPrinterTurbo": {
    "p": {
     "job": 0.03,
@@ -5935,6 +5998,19 @@
    "model": "jev-1.13.0",
    "what": "Enterprise-grade (40m+ LOC) codebase intelligence, zero-setup, local & private Plugin/Skill/Extension or MCP: hybrid sem",
    "judged": "2026-10-11"
+  },
+  "lakesoul-io/LakeSoul": {
+   "p": {
+    "job": 0.18,
+    "software": 0.93,
+    "client": 0.06
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.14.0",
+   "what": "LakeSoul is an end-to-end, realtime cloud-native Lakehouse framework for fast data ingestion, concurrent updates, incremental analytics, multimodal data processing and vector search — powering next-generation BI and AI workloads.",
+   "judged": "2026-10-22"
   },
   "langchain4j/langchain4j": {
    "p": {
