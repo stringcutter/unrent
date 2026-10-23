@@ -1671,6 +1671,19 @@
    "what": "Deterministic guardrails that don't break agents",
    "judged": "2026-10-11"
   },
+  "awarexone/Agentic-Bug-Hunter": {
+   "p": {
+    "job": 0.02,
+    "software": 0.96,
+    "client": 0.14
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.14.0",
+   "what": "AI-powered bug bounty hunting toolkit that works with or without subscription.",
+   "judged": "2026-10-23"
+  },
   "beelzebub-labs/beelzebub": {
    "p": {
     "job": 0.04,
@@ -3684,6 +3697,19 @@
    "model": "jev-1.13.0",
    "what": "BISHENG is an open LLM devops platform for next generation Enterprise AI applications. Powerful and comprehensive featur",
    "judged": "2026-10-11"
+  },
+  "datalab-to/chandra": {
+   "p": {
+    "job": 0.94,
+    "software": 0.95,
+    "client": 0.2
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.14.0",
+   "what": "OCR model that handles complex tables, forms, handwriting with full layout.",
+   "judged": "2026-10-23"
   },
   "dmMaze/BallonsTranslator": {
    "p": {
