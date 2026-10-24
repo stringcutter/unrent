@@ -1155,6 +1155,19 @@
    "what": "TurboOCR, >200 img/s OmnidocBench. TensorRT FP16, PP-OCRv6, HTTP + gRPC",
    "judged": "2026-10-11"
   },
+  "datalab-to/indra": {
+   "p": {
+    "job": 0.9,
+    "software": 0.96,
+    "client": 0.11
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.14.0",
+   "what": "1M param OCR model - runs on CPU, 15x faster than tesseract, close to 1B+ param models in accuracy",
+   "judged": "2026-10-24"
+  },
   "enoch3712/ExtractThinker": {
    "p": {
     "job": 0.3,
@@ -4166,6 +4179,19 @@
    "what": "Ready-to-run cloud templates for RAG, AI pipelines, and enterprise search with live data. 🐳Docker-friendly.⚡Always in sync with Sharepoint, Google Drive, S3, Kafka, PostgreSQL, real-time data APIs, and more.",
    "judged": "2026-10-15"
   },
+  "pingcap/autoflow": {
+   "p": {
+    "job": 0.74,
+    "software": 0.92,
+    "client": 0.2
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "pingcap/autoflow is a Graph RAG based and conversational knowledge base tool built with TiDB Serverless Vector Storage. Demo: https://tidb.ai",
+   "judged": "2026-10-24"
+  },
   "simstudioai/sim": {
    "p": {
     "job": 0.23,
@@ -6501,6 +6527,19 @@
   }
  },
  "web-search": {
+  "deedy5/ddgs": {
+   "p": {
+    "job": 0.82,
+    "software": 0.97,
+    "client": 0.15
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": "A metasearch library that aggregates results from diverse web search services",
+   "judged": "2026-10-24"
+  },
   "prajwalch/TorrentSearch": {
    "p": {
     "job": 0.03,
