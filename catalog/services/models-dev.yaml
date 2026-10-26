@@ -445,21 +445,6 @@
     - api.cortecs.ai
     env:
     - CORTECS_API_KEY
-- id: crof
-  name: CrofAI
-  category: LLM API
-  replace_with:
-  - open-llm
-  - llm-serving
-  source: models.dev
-  doc: https://crof.ai/docs
-  excludes:
-  - openai
-  detect:
-    endpoint:
-    - crof.ai/v1
-    env:
-    - CROF_API_KEY
 - id: crossmodel
   name: CrossModel
   category: LLM API
@@ -781,21 +766,6 @@
     - hyper.charm.land
     env:
     - HYPER_API_KEY
-- id: iflowcn
-  name: iFlow
-  category: LLM API
-  replace_with:
-  - open-llm
-  - llm-serving
-  source: models.dev
-  doc: https://platform.iflow.cn/en/docs
-  excludes:
-  - openai
-  detect:
-    endpoint:
-    - apis.iflow.cn
-    env:
-    - IFLOW_API_KEY
 - id: impossibl
   name: Impossibl
   category: LLM API
@@ -1044,21 +1014,21 @@
     - api.getlilac.com
     env:
     - LILAC_API_KEY
-- id: llama
-  name: Llama
+- id: liquid
+  name: Liquid Inference
   category: LLM API
   replace_with:
   - open-llm
   - llm-serving
   source: models.dev
-  doc: https://llama.developer.meta.com/docs/models
+  doc: https://inference.ai.exchange/docs
   excludes:
   - openai
   detect:
     endpoint:
-    - api.llama.com
+    - router.inference.ai.exchange
     env:
-    - LLAMA_API_KEY
+    - LIQUID_API_KEY
 - id: llmgateway
   name: DevPass
   category: LLM gateway
@@ -1264,6 +1234,22 @@
     - api.morphllm.com
     env:
     - MORPH_API_KEY
+- id: munito
+  name: Munito AI
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://docs.munito.ai/models
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.eu.munito.ai
+    - api.munito.ai
+    env:
+    - MUNITO_API_KEY
 - id: nan
   name: NaN
   category: LLM API
