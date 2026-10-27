@@ -945,6 +945,19 @@
    "what": "Fork() for AI agent microVMs. Spawn 100 children in ~100ms from a warm parent; BRANCH a live VM in ~150ms. KVM-isolated,",
    "judged": "2026-10-11"
   },
+  "deeplethe/sandstorm": {
+   "p": {
+    "job": 0.76,
+    "software": 0.93,
+    "client": 0.04
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Fork() for AI agent microVMs. Spawn 100 children in ~100ms from a warm parent; BRANCH a live VM in ~150ms. KVM-isolated, snapshot CoW.",
+   "judged": "2026-10-27"
+  },
   "e2b-dev/E2B": {
    "p": {
     "job": 0.65,
