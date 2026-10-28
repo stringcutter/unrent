@@ -410,6 +410,19 @@
    "what": "Neo.mjs is a self-evolving software organism: a professional end-to-end AI engineering team whose cross-model swarm inha",
    "judged": "2026-10-11"
   },
+  "oceanbase/powercontext": {
+   "p": {
+    "job": 0.78,
+    "software": 0.95,
+    "client": 0.09
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Self-evolving long-term memory for Codex, Claude Code, and other AI agents. Pick up where another agent left off.",
+   "judged": "2026-10-28"
+  },
   "pingcap/tidb": {
    "p": {
     "job": 0.12,
@@ -4285,6 +4298,19 @@
    "what": "The collaborative spreadsheet for AI. Chain cells into powerful pipelines, experiment with prompts and models, and evalu",
    "judged": "2026-10-11"
   },
+  "FlagOpen/FlagEmbedding": {
+   "p": {
+    "job": 0.11,
+    "software": 0.9,
+    "client": 0.06
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Retrieval and Retrieval-augmented LLMs",
+   "judged": "2026-10-28"
+  },
   "GiovanniPasq/agentic-rag-for-dummies": {
    "p": {
     "job": 0.42,
@@ -5417,6 +5443,19 @@
    "model": "jev-1.13.0",
    "what": "On-device subtitle generation that connects directly to DaVinci Resolve, Premiere, and After Effects.",
    "judged": "2026-10-11"
+  },
+  "wenet-e2e/wenet": {
+   "p": {
+    "job": 0.91,
+    "software": 0.95,
+    "client": 0.04
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Production First and Production Ready End-to-End Speech Recognition Toolkit",
+   "judged": "2026-10-28"
   }
  },
  "text-to-speech": {
