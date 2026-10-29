@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-28",
+ "generated": "2026-10-29",
  "momentum_days": 30,
  "pools": {
   "llm-serving": {
@@ -10,42 +10,42 @@
     {
      "repo": "ollama/ollama",
      "url": "https://github.com/ollama/ollama",
-     "stars": 185083,
+     "stars": 185193,
      "licence": "MIT",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-06-26",
      "status": "ok",
-     "stars_30d": 3239,
+     "stars_30d": 3241,
      "what": "Run open models locally with one command, OpenAI-compatible API"
     },
     {
      "repo": "ggml-org/llama.cpp",
      "url": "https://github.com/ggml-org/llama.cpp",
-     "stars": 132607,
+     "stars": 132723,
      "licence": "MIT",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-03-10",
      "status": "ok",
-     "stars_30d": 2849,
+     "stars_30d": 2869,
      "what": "LLM inference in C/C++ on CPU, GPU and Apple Silicon; OpenAI-compatible llama-server"
     },
     {
      "repo": "vllm-project/vllm",
      "url": "https://github.com/vllm-project/vllm",
-     "stars": 95756,
+     "stars": 95836,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-02-09",
      "status": "ok",
-     "stars_30d": 2901,
+     "stars_30d": 2885,
      "what": "High-throughput production inference server, OpenAI-compatible API"
     },
     {
      "repo": "mudler/LocalAI",
      "url": "https://github.com/mudler/LocalAI",
-     "stars": 50022,
+     "stars": 50046,
      "licence": "MIT",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-03-18",
      "status": "ok",
      "stars_30d": 717,
@@ -54,23 +54,23 @@
     {
      "repo": "sgl-project/sglang",
      "url": "https://github.com/sgl-project/sglang",
-     "stars": 38310,
+     "stars": 38344,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2024-01-08",
      "status": "ok",
-     "stars_30d": 1790,
+     "stars_30d": 1765,
      "what": "Fast inference server for LLMs and multimodal models, OpenAI-compatible API"
     },
     {
      "repo": "NVIDIA/TensorRT-LLM",
      "url": "https://github.com/NVIDIA/TensorRT-LLM",
-     "stars": 14963,
+     "stars": 14969,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-08-16",
      "status": "ok",
-     "stars_30d": 233,
+     "stars_30d": 231,
      "what": "Optimised LLM inference on NVIDIA GPUs"
     },
     {
@@ -81,7 +81,7 @@
      "pushed": "2026-10-26",
      "created": "2023-04-19",
      "status": "ok",
-     "stars_30d": 28,
+     "stars_30d": 27,
      "what": "Run any open-source LLMs, such as DeepSeek and Llama, as OpenAI compatible API endpoint in the…",
      "kind": [
       "server"
@@ -91,12 +91,12 @@
     {
      "repo": "xorbitsai/inference",
      "url": "https://github.com/xorbitsai/inference",
-     "stars": 9630,
+     "stars": 9632,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-06-14",
      "status": "ok",
-     "stars_30d": 35,
+     "stars_30d": 36,
      "what": "Xinference: serve LLMs, embedding and speech models behind one API"
     },
     {
@@ -104,10 +104,10 @@
      "url": "https://github.com/bentoml/BentoML",
      "stars": 8924,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-27",
+     "pushed": "2026-10-29",
      "created": "2019-04-02",
      "status": "ok",
-     "stars_30d": 48,
+     "stars_30d": 45,
      "what": "The easiest way to serve AI apps and models - Build Model Inference APIs, Job queues, LLM apps…",
      "kind": [
       "framework"
@@ -117,9 +117,9 @@
     {
      "repo": "ai-dynamo/dynamo",
      "url": "https://github.com/ai-dynamo/dynamo",
-     "stars": 8400,
+     "stars": 8408,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2025-03-03",
      "status": "ok",
      "stars_30d": 229,
@@ -130,21 +130,21 @@
      "url": "https://github.com/InternLM/lmdeploy",
      "stars": 8124,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-06-15",
      "status": "ok",
-     "stars_30d": 27,
+     "stars_30d": 26,
      "what": "Toolkit for compressing, deploying and serving LLMs"
     },
     {
      "repo": "kserve/kserve",
      "url": "https://github.com/kserve/kserve",
-     "stars": 6164,
+     "stars": 6169,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-27",
+     "pushed": "2026-10-29",
      "created": "2019-03-27",
      "status": "ok",
-     "stars_30d": 111,
+     "stars_30d": 113,
      "what": "Standardized Distributed Generative and Predictive AI Inference Platform for Scalable…",
      "kind": [
       "server"
@@ -154,12 +154,12 @@
     {
      "repo": "lemonade-sdk/lemonade",
      "url": "https://github.com/lemonade-sdk/lemonade",
-     "stars": 6012,
+     "stars": 6015,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2025-05-15",
      "status": "ok",
-     "stars_30d": 247,
+     "stars_30d": 238,
      "what": "Lemonade helps users discover and run local AI apps by serving optimized LLMs right from their own…",
      "kind": [
       "server"
@@ -169,12 +169,12 @@
     {
      "repo": "Michael-A-Kuykendall/shimmy",
      "url": "https://github.com/Michael-A-Kuykendall/shimmy",
-     "stars": 5997,
+     "stars": 6000,
      "licence": "Apache-2.0",
      "pushed": "2026-10-19",
      "created": "2025-08-28",
      "status": "ok",
-     "stars_30d": 47,
+     "stars_30d": 51,
      "what": "⚡ Pure-Rust WebGPU inference engine — OpenAI-API compatible, GGUF native, runs on any GPU. No…",
      "kind": [
       "server"
@@ -184,23 +184,23 @@
     {
      "repo": "gpustack/gpustack",
      "url": "https://github.com/gpustack/gpustack",
-     "stars": 5911,
+     "stars": 5926,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2024-05-11",
      "status": "ok",
-     "stars_30d": 145,
+     "stars_30d": 155,
      "what": "GPU cluster manager that serves models with vLLM, llama.cpp and more"
     },
     {
      "repo": "PaddlePaddle/FastDeploy",
      "url": "https://github.com/PaddlePaddle/FastDeploy",
-     "stars": 3724,
+     "stars": 3723,
      "licence": "Apache-2.0",
      "pushed": "2026-09-24",
      "created": "2022-06-27",
      "status": "ok",
-     "stars_30d": 11,
+     "stars_30d": 8,
      "what": "High-performance Inference and Deployment Toolkit for LLMs and VLMs based on PaddlePaddle",
      "kind": [
       "framework"
@@ -210,12 +210,12 @@
     {
      "repo": "b4rtaz/distributed-llama",
      "url": "https://github.com/b4rtaz/distributed-llama",
-     "stars": 3119,
+     "stars": 3121,
      "licence": "MIT",
      "pushed": "2026-10-25",
      "created": "2023-12-04",
      "status": "ok",
-     "stars_30d": 23,
+     "stars_30d": 26,
      "what": "Distributed LLM inference. Connect home devices into a powerful cluster to accelerate LLM…",
      "kind": [
       "server"
@@ -225,12 +225,12 @@
     {
      "repo": "thu-pacman/chitu",
      "url": "https://github.com/thu-pacman/chitu",
-     "stars": 2992,
+     "stars": 2993,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2025-02-20",
      "status": "ok",
-     "stars_30d": 9,
+     "stars_30d": 10,
      "what": "High-performance inference framework for large language models, focusing on efficiency…",
      "kind": [
       "framework"
@@ -240,12 +240,12 @@
     {
      "repo": "youssofal/MTPLX",
      "url": "https://github.com/youssofal/MTPLX",
-     "stars": 2649,
+     "stars": 2655,
      "licence": "Apache-2.0",
      "pushed": "2026-10-24",
      "created": "2026-05-02",
      "status": "ok",
-     "stars_30d": 146,
+     "stars_30d": 148,
      "what": "The fastest way to run Qwen 3.8 Flash Next, Qwen 3.8 27B and Ternary Bonsai 2 27B on a Mac: 125…",
      "kind": [
       "server"
@@ -255,12 +255,12 @@
     {
      "repo": "syv-ai/HyperQwen",
      "url": "https://github.com/syv-ai/HyperQwen",
-     "stars": 2319,
+     "stars": 2402,
      "licence": "Apache-2.0",
      "pushed": "2026-10-21",
      "created": "2026-08-15",
      "status": "ok",
-     "stars_30d": 644,
+     "stars_30d": 747,
      "what": "Serve large Qwen models fast on the GPUs you actually own. Qwen3.8-27B on a single 24 GB card with…",
      "kind": [
       "server"
@@ -270,12 +270,12 @@
     {
      "repo": "dphnAI/sonar",
      "url": "https://github.com/dphnAI/sonar",
-     "stars": 1894,
+     "stars": 1895,
      "licence": "AGPL-3.0",
      "pushed": "2026-10-28",
      "created": "2023-06-23",
      "status": "ok",
-     "stars_30d": 41,
+     "stars_30d": 40,
      "what": "Large-scale LLM inference engine",
      "kind": [
       "server"
@@ -285,12 +285,12 @@
     {
      "repo": "xLLM-AI/xllm",
      "url": "https://github.com/xLLM-AI/xllm",
-     "stars": 1609,
+     "stars": 1610,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2025-08-12",
      "status": "ok",
-     "stars_30d": 26,
+     "stars_30d": 27,
      "what": "A high-performance inference engine for LLM, VLM, DiT and REC models, optimized for diverse AI…",
      "kind": [
       "framework"
@@ -300,12 +300,12 @@
     {
      "repo": "alibaba/rtp-llm",
      "url": "https://github.com/alibaba/rtp-llm",
-     "stars": 1377,
+     "stars": 1379,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-12-27",
      "status": "ok",
-     "stars_30d": 28,
+     "stars_30d": 30,
      "what": "RTP-LLM: Alibaba's high-performance LLM inference engine for diverse applications.",
      "kind": [
       "library"
@@ -324,42 +324,42 @@
      "id": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
      "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017",
      "licence": "mit",
-     "trending": 934,
-     "downloads": 116770,
-     "likes": 3472,
+     "trending": 885,
+     "downloads": 131062,
+     "likes": 3678,
      "created": "2026-10-17",
      "pipeline_tag": "image-text-to-text",
      "params": 763205315794
     },
     {
-     "id": "Qwen/Qwen3.8-27B",
-     "url": "https://huggingface.co/Qwen/Qwen3.8-27B",
-     "licence": "apache-2.0",
-     "trending": 325,
-     "downloads": 7515620,
-     "likes": 18577,
-     "created": "2026-08-05",
-     "pipeline_tag": "image-text-to-text",
-     "params": 27781427952
-    },
-    {
      "id": "baidu/Unlimited-OCR-2",
      "url": "https://huggingface.co/baidu/Unlimited-OCR-2",
      "licence": "mit",
-     "trending": 281,
-     "downloads": 8357,
-     "likes": 294,
+     "trending": 339,
+     "downloads": 18141,
+     "likes": 355,
      "created": "2026-10-26",
      "pipeline_tag": "image-text-to-text",
      "params": 3343978497
     },
     {
+     "id": "Qwen/Qwen3.8-27B",
+     "url": "https://huggingface.co/Qwen/Qwen3.8-27B",
+     "licence": "apache-2.0",
+     "trending": 316,
+     "downloads": 7509924,
+     "likes": 18656,
+     "created": "2026-08-05",
+     "pipeline_tag": "image-text-to-text",
+     "params": 27781427952
+    },
+    {
      "id": "openbmb/MiniCPM-OCR-1.0",
      "url": "https://huggingface.co/openbmb/MiniCPM-OCR-1.0",
      "licence": "apache-2.0",
-     "trending": 111,
-     "downloads": 791,
-     "likes": 184,
+     "trending": 178,
+     "downloads": 1597,
+     "likes": 306,
      "created": "2026-10-21",
      "pipeline_tag": "image-text-to-text",
      "params": 1300434160
@@ -368,67 +368,67 @@
      "id": "tencent/WeVisOne-VL-4B",
      "url": "https://huggingface.co/tencent/WeVisOne-VL-4B",
      "licence": "apache-2.0",
-     "trending": 71,
-     "downloads": 4724,
-     "likes": 73,
+     "trending": 79,
+     "downloads": 5986,
+     "likes": 81,
      "created": "2026-10-22",
      "pipeline_tag": "image-text-to-text",
      "params": 4830581248
     },
     {
-     "id": "inclusionAI/Ling-3.0-flash-Sante",
-     "url": "https://huggingface.co/inclusionAI/Ling-3.0-flash-Sante",
-     "licence": "mit",
-     "trending": 70,
-     "downloads": 906,
-     "likes": 71,
-     "created": "2026-10-19",
-     "pipeline_tag": "text-generation",
-     "params": 127486405600
-    },
-    {
      "id": "inclusionAI/Ling-3.1-flash-1019",
      "url": "https://huggingface.co/inclusionAI/Ling-3.1-flash-1019",
      "licence": "mit",
-     "trending": 69,
-     "downloads": 548,
-     "likes": 69,
+     "trending": 79,
+     "downloads": 832,
+     "likes": 79,
      "created": "2026-10-27",
      "pipeline_tag": "text-generation",
      "params": 572120680768
     },
     {
+     "id": "inclusionAI/Ling-3.0-flash-Sante",
+     "url": "https://huggingface.co/inclusionAI/Ling-3.0-flash-Sante",
+     "licence": "mit",
+     "trending": 74,
+     "downloads": 1075,
+     "likes": 75,
+     "created": "2026-10-19",
+     "pipeline_tag": "text-generation",
+     "params": 127486405600
+    },
+    {
      "id": "deepseek-ai/DeepSeek-V4.1-Flash",
      "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash",
      "licence": "mit",
-     "trending": 63,
-     "downloads": 1851983,
-     "likes": 4770,
+     "trending": 68,
+     "downloads": 1895422,
+     "likes": 4787,
      "created": "2026-09-10",
      "pipeline_tag": "image-text-to-text",
      "params": 763205315794
     },
     {
+     "id": "openbmb/MiniCPM-OCR-Jev",
+     "url": "https://huggingface.co/openbmb/MiniCPM-OCR-Jev",
+     "licence": "apache-2.0",
+     "trending": 64,
+     "downloads": 963,
+     "likes": 64,
+     "created": "2026-10-23",
+     "pipeline_tag": "image-text-to-text",
+     "params": 2213245760
+    },
+    {
      "id": "zai-org/GLM-5.3-Flash",
      "url": "https://huggingface.co/zai-org/GLM-5.3-Flash",
      "licence": "mit",
-     "trending": 62,
-     "downloads": 6417099,
-     "likes": 2972,
+     "trending": 56,
+     "downloads": 6397381,
+     "likes": 2976,
      "created": "2026-08-25",
      "pipeline_tag": "image-text-to-text",
      "params": 321323031390
-    },
-    {
-     "id": "baidu/Unlimited-OCR",
-     "url": "https://huggingface.co/baidu/Unlimited-OCR",
-     "licence": "mit",
-     "trending": 56,
-     "downloads": 3305535,
-     "likes": 4924,
-     "created": "2026-06-19",
-     "pipeline_tag": "image-text-to-text",
-     "params": 3336106240
     }
    ],
    "dropped": []
@@ -441,12 +441,12 @@
     {
      "repo": "cheaper-inference/OmniRoute",
      "url": "https://github.com/cheaper-inference/OmniRoute",
-     "stars": 82029,
+     "stars": 82398,
      "licence": "MIT",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2026-02-13",
      "status": "ok",
-     "stars_30d": null,
+     "stars_30d": 11961,
      "what": "Never stop coding. Free MIT AI gateway: one endpoint, 375 providers (150+ free), 1,400+ models…",
      "kind": [
       "proxy"
@@ -456,34 +456,34 @@
     {
      "repo": "BerriAI/litellm",
      "url": "https://github.com/BerriAI/litellm",
-     "stars": 62226,
+     "stars": 62296,
      "licence": "MIT",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-07-27",
      "status": "ok",
-     "stars_30d": 2451,
+     "stars_30d": 2440,
      "what": "Proxy exposing 100+ providers behind one OpenAI-compatible API, with keys, budgets and fallbacks"
     },
     {
      "repo": "QuantumNous/new-api",
      "url": "https://github.com/QuantumNous/new-api",
-     "stars": 50868,
+     "stars": 50953,
      "licence": "AGPL-3.0",
      "pushed": "2026-10-28",
      "created": "2023-11-10",
      "status": "ok",
-     "stars_30d": 1861,
+     "stars_30d": 1883,
      "what": "LLM gateway and key management, successor fork of one-api"
     },
     {
      "repo": "Kong/kong",
      "url": "https://github.com/Kong/kong",
-     "stars": 44314,
+     "stars": 44321,
      "licence": "Apache-2.0",
      "pushed": "2026-10-19",
      "created": "2014-11-17",
      "status": "ok",
-     "stars_30d": 94,
+     "stars_30d": 100,
      "what": "🦍 The API and AI Gateway",
      "kind": [
       "proxy"
@@ -493,23 +493,23 @@
     {
      "repo": "songquanpeng/one-api",
      "url": "https://github.com/songquanpeng/one-api",
-     "stars": 37267,
+     "stars": 37273,
      "licence": "MIT",
      "pushed": "2026-01-09",
      "created": "2023-04-22",
      "status": "ok",
-     "stars_30d": 231,
+     "stars_30d": 229,
      "what": "Unified OpenAI-compatible API over many providers, with key management"
     },
     {
      "repo": "decolua/9router",
      "url": "https://github.com/decolua/9router",
-     "stars": 31565,
+     "stars": 31622,
      "licence": "MIT",
      "pushed": "2026-10-28",
      "created": "2026-01-05",
      "status": "ok",
-     "stars_30d": 1659,
+     "stars_30d": 1662,
      "what": "Unlimited FREE AI coding. Connect Claude Code, Codex, Cursor, Cline, Copilot, Antigravity to FREE…",
      "kind": [
       "proxy"
@@ -519,23 +519,23 @@
     {
      "repo": "Portkey-AI/gateway",
      "url": "https://github.com/Portkey-AI/gateway",
-     "stars": 13287,
+     "stars": 13289,
      "licence": "MIT",
      "pushed": "2026-05-25",
      "created": "2023-08-23",
      "status": "ok",
-     "stars_30d": 189,
+     "stars_30d": 185,
      "what": "Fast AI gateway with routing, retries and guardrails"
     },
     {
      "repo": "higress-group/higress",
      "url": "https://github.com/higress-group/higress",
-     "stars": 9661,
+     "stars": 9667,
      "licence": "Apache-2.0",
      "pushed": "2026-10-28",
      "created": "2022-10-27",
      "status": "ok",
-     "stars_30d": 231,
+     "stars_30d": 228,
      "what": "🤖 AI Gateway | AI Native API Gateway",
      "kind": [
       "proxy"
@@ -545,23 +545,23 @@
     {
      "repo": "maximhq/bifrost",
      "url": "https://github.com/maximhq/bifrost",
-     "stars": 9167,
+     "stars": 9194,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2025-03-19",
      "status": "ok",
-     "stars_30d": 749,
+     "stars_30d": 751,
      "what": "High-performance LLM gateway written in Go"
     },
     {
      "repo": "tbphp/gpt-load",
      "url": "https://github.com/tbphp/gpt-load",
-     "stars": 7175,
+     "stars": 7180,
      "licence": "MIT",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2025-06-06",
      "status": "ok",
-     "stars_30d": 168,
+     "stars_30d": 167,
      "what": "Self-hosted AI gateway for multi-channel, multi-credential setups — API keys and subscription…",
      "kind": [
       "proxy"
@@ -571,12 +571,12 @@
     {
      "repo": "katanemo/plano",
      "url": "https://github.com/katanemo/plano",
-     "stars": 7099,
+     "stars": 7100,
      "licence": "Apache-2.0",
      "pushed": "2026-10-24",
      "created": "2024-07-09",
      "status": "ok",
-     "stars_30d": 26,
+     "stars_30d": 27,
      "what": "Plano is an AI-native proxy server and data plane for agentic apps. Smart LLM routing…",
      "kind": [
       "proxy"
@@ -586,12 +586,12 @@
     {
      "repo": "vllm-project/semantic-router",
      "url": "https://github.com/vllm-project/semantic-router",
-     "stars": 6282,
+     "stars": 6311,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2025-08-26",
      "status": "ok",
-     "stars_30d": 344,
+     "stars_30d": 373,
      "what": "An open, programmable decision layer for models and compute.",
      "kind": [
       "proxy"
@@ -601,9 +601,9 @@
     {
      "repo": "Helicone/helicone",
      "url": "https://github.com/Helicone/helicone",
-     "stars": 6242,
+     "stars": 6244,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-24",
+     "pushed": "2026-10-28",
      "created": "2023-01-31",
      "status": "ok",
      "stars_30d": 59,
@@ -612,12 +612,12 @@
     {
      "repo": "agentgateway/agentgateway",
      "url": "https://github.com/agentgateway/agentgateway",
-     "stars": 5698,
+     "stars": 5759,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2025-03-18",
      "status": "ok",
-     "stars_30d": 732,
+     "stars_30d": 793,
      "what": "Next Generation Agentic Proxy for AI Agents and MCP servers",
      "kind": [
       "proxy"
@@ -627,12 +627,12 @@
     {
      "repo": "weave-os/router",
      "url": "https://github.com/weave-os/router",
-     "stars": 5593,
+     "stars": 5595,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2026-04-27",
      "status": "ok",
-     "stars_30d": 9,
+     "stars_30d": 12,
      "what": "Model router for agentic systems. Routes every prompt to the right model in <50ms. Cut costs…",
      "kind": [
       "proxy"
@@ -642,12 +642,12 @@
     {
      "repo": "bestruirui/octopus",
      "url": "https://github.com/bestruirui/octopus",
-     "stars": 2728,
+     "stars": 2730,
      "licence": "AGPL-3.0",
      "pushed": "2026-10-23",
      "created": "2025-11-18",
      "status": "ok",
-     "stars_30d": 56,
+     "stars_30d": 57,
      "what": "One Hub All LLMs For You | 为个人打造的 LLM API 聚合网关",
      "kind": [
       "proxy"
@@ -657,12 +657,12 @@
     {
      "repo": "theagentrouter/agent-router",
      "url": "https://github.com/theagentrouter/agent-router",
-     "stars": 2307,
+     "stars": 2313,
      "licence": "Apache-2.0",
      "pushed": "2026-10-28",
      "created": "2024-10-21",
      "status": "ok",
-     "stars_30d": 159,
+     "stars_30d": 160,
      "what": "AI gateway built on Envoy Proxy"
     },
     {
@@ -700,10 +700,10 @@
      "url": "https://github.com/astaxie/TokenHub",
      "stars": 1403,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2026-06-10",
      "status": "ok",
-     "stars_30d": 76,
+     "stars_30d": 72,
      "what": "TokenHub gives enterprises a private gateway to unify AI model access and governance, making every…",
      "kind": [
       "proxy"
@@ -713,12 +713,12 @@
     {
      "repo": "ENTERPILOT/GoModel",
      "url": "https://github.com/ENTERPILOT/GoModel",
-     "stars": 1282,
+     "stars": 1286,
      "licence": "MIT",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2025-12-05",
      "status": "ok",
-     "stars_30d": 88,
+     "stars_30d": 90,
      "what": "AI gateway / AI control plane / AI proxy written in Go. Unified OpenAI-compatible and…",
      "kind": [
       "proxy"
@@ -730,13 +730,13 @@
     {
      "repo": "diegosouzapw/OmniRoute",
      "url": "https://github.com/diegosouzapw/OmniRoute",
-     "stars": 82029,
+     "stars": 82398,
      "licence": "MIT",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2026-02-13",
      "status": "renamed",
      "problem": "now cheaper-inference/OmniRoute",
-     "stars_30d": 11935,
+     "stars_30d": 11887,
      "what": "Never stop coding. Free MIT AI gateway: one endpoint, 359 providers (150+ free), 1200+ models…",
      "kind": [
       "proxy"
@@ -753,67 +753,67 @@
     {
      "repo": "unslothai/unsloth",
      "url": "https://github.com/unslothai/unsloth",
-     "stars": 78667,
+     "stars": 78743,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-11-29",
      "status": "ok",
-     "stars_30d": 1772,
+     "stars_30d": 1788,
      "what": "Fast, memory-efficient fine-tuning and RL for open models"
     },
     {
      "repo": "hiyouga/LlamaFactory",
      "url": "https://github.com/hiyouga/LlamaFactory",
-     "stars": 75754,
+     "stars": 75773,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-21",
+     "pushed": "2026-10-29",
      "created": "2023-05-28",
      "status": "ok",
-     "stars_30d": 616,
+     "stars_30d": 615,
      "what": "Unified fine-tuning of 100+ LLMs, with a web UI"
     },
     {
      "repo": "verl-project/verl",
      "url": "https://github.com/verl-project/verl",
-     "stars": 24040,
+     "stars": 24057,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2024-10-31",
      "status": "ok",
-     "stars_30d": 368,
+     "stars_30d": 373,
      "what": "Reinforcement learning for LLMs at scale"
     },
     {
      "repo": "huggingface/trl",
      "url": "https://github.com/huggingface/trl",
-     "stars": 19617,
+     "stars": 19628,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2020-03-27",
      "status": "ok",
-     "stars_30d": 211,
+     "stars_30d": 215,
      "what": "Post-training with SFT, DPO, GRPO and more"
     },
     {
      "repo": "axolotl-ai-cloud/axolotl",
      "url": "https://github.com/axolotl-ai-cloud/axolotl",
-     "stars": 12640,
+     "stars": 12645,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-27",
+     "pushed": "2026-10-29",
      "created": "2023-04-14",
      "status": "ok",
-     "stars_30d": 130,
+     "stars_30d": 131,
      "what": "Config-driven fine-tuning for open models"
     },
     {
      "repo": "ludwig-ai/ludwig",
      "url": "https://github.com/ludwig-ai/ludwig",
-     "stars": 11787,
+     "stars": 11788,
      "licence": "Apache-2.0",
      "pushed": "2026-10-27",
      "created": "2018-12-27",
      "status": "ok",
-     "stars_30d": 26,
+     "stars_30d": 27,
      "what": "Low-code framework for building custom LLMs, neural networks, and other AI models",
      "kind": [
       "framework"
@@ -823,12 +823,12 @@
     {
      "repo": "MakazhanAlpamys/Soup",
      "url": "https://github.com/MakazhanAlpamys/Soup",
-     "stars": 9739,
+     "stars": 9776,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2026-02-20",
      "status": "ok",
-     "stars_30d": 2091,
+     "stars_30d": 2037,
      "what": "Fine-tune LLMs from one YAML. Layer streaming trains an 8B model on a 4 GB laptop GPU.",
      "kind": [
       "cli"
@@ -838,12 +838,12 @@
     {
      "repo": "oumi-ai/oumi",
      "url": "https://github.com/oumi-ai/oumi",
-     "stars": 9415,
+     "stars": 9416,
      "licence": "Apache-2.0",
      "pushed": "2026-10-27",
      "created": "2024-05-07",
      "status": "ok",
-     "stars_30d": 41,
+     "stars_30d": 40,
      "what": "Easily fine-tune (SFT/RL), evaluate, and deploy Qwen, Gemma, or any open agentic LLM/VLM!",
      "kind": [
       "framework"
@@ -858,7 +858,7 @@
      "pushed": "2026-10-16",
      "created": "2025-01-26",
      "status": "ok",
-     "stars_30d": 56,
+     "stars_30d": 53,
      "what": "Democratizing Reinforcement Learning for LLMs",
      "kind": [
       "framework"
@@ -868,12 +868,12 @@
     {
      "repo": "meta-pytorch/torchtune",
      "url": "https://github.com/meta-pytorch/torchtune",
-     "stars": 5823,
+     "stars": 5822,
      "licence": "BSD-3-Clause",
      "pushed": "2026-09-09",
      "created": "2023-10-20",
      "status": "ok",
-     "stars_30d": 13,
+     "stars_30d": 12,
      "what": "PyTorch-native post-training library"
     },
     {
@@ -911,10 +911,10 @@
      "url": "https://github.com/AI-Hypercomputer/maxtext",
      "stars": 2454,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-02-28",
      "status": "ok",
-     "stars_30d": 23,
+     "stars_30d": 22,
      "what": "A simple, performant, and scalable Jax LLM!",
      "kind": [
       "library"
@@ -932,23 +932,23 @@
     {
      "repo": "guardrails-ai/guardrails",
      "url": "https://github.com/guardrails-ai/guardrails",
-     "stars": 7566,
+     "stars": 7568,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-27",
+     "pushed": "2026-10-29",
      "created": "2023-01-29",
      "status": "ok",
-     "stars_30d": 107,
+     "stars_30d": 105,
      "what": "Input and output validation for LLMs"
     },
     {
      "repo": "NVIDIA-NeMo/Guardrails",
      "url": "https://github.com/NVIDIA-NeMo/Guardrails",
-     "stars": 7384,
+     "stars": 7393,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-04-18",
      "status": "ok",
-     "stars_30d": 173,
+     "stars_30d": 176,
      "what": "Programmable guardrails for LLM applications"
     }
    ],
@@ -962,20 +962,20 @@
     {
      "repo": "milvus-io/milvus",
      "url": "https://github.com/milvus-io/milvus",
-     "stars": 46510,
+     "stars": 46523,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2019-09-16",
      "status": "ok",
-     "stars_30d": 240,
+     "stars_30d": 245,
      "what": "Cloud-native vector database built for scale"
     },
     {
      "repo": "qdrant/qdrant",
      "url": "https://github.com/qdrant/qdrant",
-     "stars": 35291,
+     "stars": 35305,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-27",
+     "pushed": "2026-10-28",
      "created": "2020-05-30",
      "status": "ok",
      "stars_30d": 431,
@@ -984,9 +984,9 @@
     {
      "repo": "chroma-core/chroma",
      "url": "https://github.com/chroma-core/chroma",
-     "stars": 29594,
+     "stars": 29600,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-26",
+     "pushed": "2026-10-28",
      "created": "2022-10-05",
      "status": "ok",
      "stars_30d": 191,
@@ -995,34 +995,34 @@
     {
      "repo": "pgvector/pgvector",
      "url": "https://github.com/pgvector/pgvector",
-     "stars": 23510,
+     "stars": 23523,
      "licence": "PostgreSQL",
-     "pushed": "2026-10-27",
+     "pushed": "2026-10-28",
      "created": "2021-04-20",
      "status": "ok",
-     "stars_30d": 336,
+     "stars_30d": 338,
      "what": "Vector similarity search inside Postgres"
     },
     {
      "repo": "weaviate/weaviate",
      "url": "https://github.com/weaviate/weaviate",
-     "stars": 16923,
+     "stars": 16927,
      "licence": "BSD-3-Clause",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2016-03-30",
      "status": "ok",
-     "stars_30d": 66,
+     "stars_30d": 68,
      "what": "Vector database with hybrid search and built-in vectorisers"
     },
     {
      "repo": "alibaba/zvec",
      "url": "https://github.com/alibaba/zvec",
-     "stars": 16159,
+     "stars": 16162,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2025-12-05",
      "status": "ok",
-     "stars_30d": 115,
+     "stars_30d": 113,
      "what": "A lightweight, lightning-fast, in-process vector database",
      "kind": [
       "embedded"
@@ -1032,12 +1032,12 @@
     {
      "repo": "StarTrail-org/LEANN",
      "url": "https://github.com/StarTrail-org/LEANN",
-     "stars": 13560,
+     "stars": 13654,
      "licence": "MIT",
-     "pushed": "2026-10-27",
+     "pushed": "2026-10-28",
      "created": "2025-06-09",
      "status": "ok",
-     "stars_30d": 960,
+     "stars_30d": 1063,
      "what": "[MLsys2026 Best Paper]: https://arxiv.org/abs/2506.08276. RAG on Everything with LEANN. Enjoy 97%…",
      "kind": [
       "embedded"
@@ -1047,23 +1047,23 @@
     {
      "repo": "lancedb/lancedb",
      "url": "https://github.com/lancedb/lancedb",
-     "stars": 11797,
+     "stars": 11807,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-02-28",
      "status": "ok",
-     "stars_30d": 250,
+     "stars_30d": 252,
      "what": "Serverless multimodal vector database on the Lance format"
     },
     {
      "repo": "vespa-engine/vespa",
      "url": "https://github.com/vespa-engine/vespa",
-     "stars": 7150,
+     "stars": 7153,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2016-06-03",
      "status": "ok",
-     "stars_30d": 38,
+     "stars_30d": 40,
      "what": "Search and vector engine for big data serving"
     }
    ],
@@ -1077,12 +1077,12 @@
     {
      "repo": "facebookresearch/faiss",
      "url": "https://github.com/facebookresearch/faiss",
-     "stars": 41222,
+     "stars": 41231,
      "licence": "MIT",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2017-02-07",
      "status": "ok",
-     "stars_30d": 229,
+     "stars_30d": 230,
      "what": "Library for efficient similarity search"
     },
     {
@@ -1093,7 +1093,7 @@
      "pushed": "2026-09-15",
      "created": "2017-07-06",
      "status": "ok",
-     "stars_30d": 26,
+     "stars_30d": 25,
      "what": "Header-only HNSW library for approximate nearest neighbours"
     },
     {
@@ -1114,7 +1114,7 @@
     {
      "repo": "unum-cloud/USearch",
      "url": "https://github.com/unum-cloud/USearch",
-     "stars": 4359,
+     "stars": 4360,
      "licence": "Apache-2.0",
      "pushed": "2026-10-25",
      "created": "2023-02-22",
@@ -1140,12 +1140,12 @@
     {
      "repo": "NGT-labs/NGT",
      "url": "https://github.com/NGT-labs/NGT",
-     "stars": 1375,
+     "stars": 1376,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-26",
+     "pushed": "2026-10-29",
      "created": "2016-09-01",
      "status": "ok",
-     "stars_30d": 2,
+     "stars_30d": 3,
      "what": "Nearest Neighbor Search with Neighborhood Graph and Tree for High-dimensional Data",
      "kind": [
       "library"
@@ -1163,34 +1163,34 @@
     {
      "repo": "meilisearch/meilisearch",
      "url": "https://github.com/meilisearch/meilisearch",
-     "stars": 59693,
+     "stars": 59704,
      "licence": "MIT",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2018-04-23",
      "status": "ok",
-     "stars_30d": 264,
+     "stars_30d": 266,
      "what": "Search engine with hybrid (keyword + vector) search"
     },
     {
      "repo": "typesense/typesense",
      "url": "https://github.com/typesense/typesense",
-     "stars": 27060,
+     "stars": 27063,
      "licence": "GPL-3.0",
      "pushed": "2026-10-28",
      "created": "2017-01-18",
      "status": "ok",
-     "stars_30d": 454,
+     "stars_30d": 442,
      "what": "Typo-tolerant search engine with vector search"
     },
     {
      "repo": "xerj-org/xerj",
      "url": "https://github.com/xerj-org/xerj",
-     "stars": 17246,
+     "stars": 17462,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2026-06-30",
      "status": "ok",
-     "stars_30d": 24099,
+     "stars_30d": 23120,
      "what": "XERJ is the new way for AI to search data. Its autoindex capability activates agents to know your…",
      "kind": [
       "server"
@@ -1200,12 +1200,12 @@
     {
      "repo": "opensearch-project/OpenSearch",
      "url": "https://github.com/opensearch-project/OpenSearch",
-     "stars": 13920,
+     "stars": 13929,
      "licence": "Apache-2.0",
      "pushed": "2026-10-28",
      "created": "2021-01-29",
      "status": "ok",
-     "stars_30d": 138,
+     "stars_30d": 142,
      "what": "Search and analytics suite with vector, lexical and hybrid search"
     },
     {
@@ -1213,10 +1213,10 @@
      "url": "https://github.com/manticoresoftware/manticoresearch",
      "stars": 12074,
      "licence": "GPL-3.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2017-06-28",
      "status": "ok",
-     "stars_30d": 42,
+     "stars_30d": 40,
      "what": "Open-source search database for full-text, vector, and hybrid search with real-time indexing and…",
      "kind": [
       "server"
@@ -1226,9 +1226,9 @@
     {
      "repo": "paradedb/paradedb",
      "url": "https://github.com/paradedb/paradedb",
-     "stars": 9453,
+     "stars": 9458,
      "licence": "AGPL-3.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-06-30",
      "status": "ok",
      "stars_30d": 142,
@@ -1242,18 +1242,18 @@
      "pushed": "2026-10-27",
      "created": "2022-07-18",
      "status": "ok",
-     "stars_30d": 22,
+     "stars_30d": 21,
      "what": "AI-native database for hybrid search"
     },
     {
      "repo": "oceanbase/seekdb",
      "url": "https://github.com/oceanbase/seekdb",
-     "stars": 3197,
+     "stars": 3204,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2025-10-21",
      "status": "ok",
-     "stars_30d": 148,
+     "stars_30d": 152,
      "what": "The AI-Native Search Database. Best for agent storage, it unifies vector, text, structured, and…",
      "kind": [
       "embedded"
@@ -1268,7 +1268,7 @@
      "pushed": "2026-10-27",
      "created": "2024-02-27",
      "status": "ok",
-     "stars_30d": 18,
+     "stars_30d": 17,
      "what": "SeekStorm: vector & lexical search - in-process library & multi-tenancy server, in Rust.",
      "kind": [
       "server"
@@ -1316,18 +1316,18 @@
     {
      "repo": "quickwit-oss/tantivy",
      "url": "https://github.com/quickwit-oss/tantivy",
-     "stars": 16355,
+     "stars": 16359,
      "licence": "MIT",
      "pushed": "2026-10-27",
      "created": "2016-01-11",
      "status": "ok",
-     "stars_30d": 206,
+     "stars_30d": 203,
      "what": "Full-text search engine library in Rust"
     },
     {
      "repo": "blevesearch/bleve",
      "url": "https://github.com/blevesearch/bleve",
-     "stars": 11244,
+     "stars": 11245,
      "licence": "Apache-2.0",
      "pushed": "2026-10-14",
      "created": "2014-04-17",
@@ -1338,12 +1338,12 @@
     {
      "repo": "apache/lucene",
      "url": "https://github.com/apache/lucene",
-     "stars": 3598,
+     "stars": 3600,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2021-02-23",
      "status": "ok",
-     "stars_30d": 36,
+     "stars_30d": 37,
      "what": "Search library behind Elasticsearch and OpenSearch"
     },
     {
@@ -1354,7 +1354,7 @@
      "pushed": "2026-10-27",
      "created": "2024-02-27",
      "status": "ok",
-     "stars_30d": 18,
+     "stars_30d": 17,
      "what": "SeekStorm: vector & lexical search - in-process library & multi-tenancy server, in Rust.",
      "kind": [
       "library"
@@ -1372,12 +1372,12 @@
     {
      "repo": "infiniflow/ragflow",
      "url": "https://github.com/infiniflow/ragflow",
-     "stars": 93008,
+     "stars": 93074,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-12-12",
      "status": "ok",
-     "stars_30d": 1585,
+     "stars_30d": 1598,
      "what": "RAG engine with deep document understanding"
     },
     {
@@ -1398,23 +1398,23 @@
     {
      "repo": "onyx-dot-app/onyx",
      "url": "https://github.com/onyx-dot-app/onyx",
-     "stars": 33045,
+     "stars": 33067,
      "licence": "MIT",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-04-27",
      "status": "ok",
-     "stars_30d": 780,
+     "stars_30d": 776,
      "what": "Self-hostable enterprise search and chat over your documents"
     },
     {
      "repo": "1Panel-dev/MaxKB",
      "url": "https://github.com/1Panel-dev/MaxKB",
-     "stars": 23061,
+     "stars": 23071,
      "licence": "GPL-3.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-09-14",
      "status": "ok",
-     "stars_30d": 208,
+     "stars_30d": 213,
      "what": "🔥 MaxKB is an open-source platform for building enterprise-grade agents. 强大易用的开源企业级智能体平台。",
      "kind": [
       "application"
@@ -1439,7 +1439,7 @@
     {
      "repo": "Zleap-AI/SAG",
      "url": "https://github.com/Zleap-AI/SAG",
-     "stars": 2640,
+     "stars": 2644,
      "licence": "MIT",
      "pushed": "2026-10-27",
      "created": "2025-11-07",
@@ -1459,7 +1459,7 @@
      "pushed": "2026-09-27",
      "created": "2024-02-08",
      "status": "ok",
-     "stars_30d": 30,
+     "stars_30d": 28,
      "what": "LangChat 是由 LangChat Team 开发的开源 AI Agent 应用平台，支持多模型、Agent、知识库 RAG、Skills、MCP 与智能问数。",
      "kind": [
       "application"
@@ -1507,34 +1507,34 @@
     {
      "repo": "run-llama/llama_index",
      "url": "https://github.com/run-llama/llama_index",
-     "stars": 52705,
+     "stars": 52728,
      "licence": "MIT",
      "pushed": "2026-10-26",
      "created": "2022-11-02",
      "status": "ok",
-     "stars_30d": 371,
+     "stars_30d": 381,
      "what": "Framework for building RAG over your data"
     },
     {
      "repo": "HKUDS/LightRAG",
      "url": "https://github.com/HKUDS/LightRAG",
-     "stars": 40385,
+     "stars": 40415,
      "licence": "MIT",
      "pushed": "2026-10-27",
      "created": "2024-10-02",
      "status": "ok",
-     "stars_30d": 488,
+     "stars_30d": 501,
      "what": "Simple and fast graph-based RAG"
     },
     {
      "repo": "VectifyAI/PageIndex",
      "url": "https://github.com/VectifyAI/PageIndex",
-     "stars": 39866,
+     "stars": 39887,
      "licence": "MIT",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2025-04-01",
      "status": "ok",
-     "stars_30d": 1436,
+     "stars_30d": 1392,
      "what": "📑 PageIndex: Document Index for Vectorless, Reasoning-based RAG",
      "kind": [
       "library"
@@ -1544,20 +1544,20 @@
     {
      "repo": "microsoft/graphrag",
      "url": "https://github.com/microsoft/graphrag",
-     "stars": 36472,
+     "stars": 36487,
      "licence": "MIT",
-     "pushed": "2026-10-27",
+     "pushed": "2026-10-28",
      "created": "2024-03-27",
      "status": "ok",
-     "stars_30d": 336,
+     "stars_30d": 340,
      "what": "Graph-based retrieval-augmented generation"
     },
     {
      "repo": "deepset-ai/haystack",
      "url": "https://github.com/deepset-ai/haystack",
-     "stars": 26867,
+     "stars": 26875,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2019-11-14",
      "status": "ok",
      "stars_30d": 244,
@@ -1566,12 +1566,12 @@
     {
      "repo": "HKUDS/RAG-Anything",
      "url": "https://github.com/HKUDS/RAG-Anything",
-     "stars": 24241,
+     "stars": 24273,
      "licence": "MIT",
      "pushed": "2026-10-28",
      "created": "2025-06-06",
      "status": "ok",
-     "stars_30d": 1272,
+     "stars_30d": 1255,
      "what": "\"RAG-Anything: All-in-One RAG Framework\"",
      "kind": [
       "framework"
@@ -1581,7 +1581,7 @@
     {
      "repo": "llmware-ai/llmware",
      "url": "https://github.com/llmware-ai/llmware",
-     "stars": 14816,
+     "stars": 14817,
      "licence": "Apache-2.0",
      "pushed": "2026-10-01",
      "created": "2023-09-29",
@@ -1596,12 +1596,12 @@
     {
      "repo": "neuml/txtai",
      "url": "https://github.com/neuml/txtai",
-     "stars": 13042,
+     "stars": 13045,
      "licence": "Apache-2.0",
      "pushed": "2026-10-27",
      "created": "2020-08-09",
      "status": "ok",
-     "stars_30d": 64,
+     "stars_30d": 65,
      "what": "💡 All-in-one AI framework for semantic search, LLM orchestration and language model workflows",
      "kind": [
       "framework"
@@ -1635,9 +1635,9 @@
      "id": "google/embeddinggemma-2",
      "url": "https://huggingface.co/google/embeddinggemma-2",
      "licence": "apache-2.0",
-     "trending": 149,
-     "downloads": 282912,
-     "likes": 2983,
+     "trending": 132,
+     "downloads": 308608,
+     "likes": 3002,
      "created": "2026-09-14",
      "pipeline_tag": "feature-extraction",
      "params": 744371512
@@ -1646,9 +1646,9 @@
      "id": "BAAI/bge-m3",
      "url": "https://huggingface.co/BAAI/bge-m3",
      "licence": "mit",
-     "trending": 20,
-     "downloads": 30126945,
-     "likes": 3939,
+     "trending": 17,
+     "downloads": 30138444,
+     "likes": 3942,
      "created": "2024-01-27",
      "pipeline_tag": "sentence-similarity",
      "params": null
@@ -1657,89 +1657,89 @@
      "id": "Qwen/Qwen3-Embedding-0.6B",
      "url": "https://huggingface.co/Qwen/Qwen3-Embedding-0.6B",
      "licence": "apache-2.0",
-     "trending": 13,
-     "downloads": 8265250,
-     "likes": 1317,
+     "trending": 11,
+     "downloads": 8315155,
+     "likes": 1318,
      "created": "2025-06-03",
      "pipeline_tag": "feature-extraction",
      "params": 595776512
     },
     {
+     "id": "intfloat/multilingual-e5-small",
+     "url": "https://huggingface.co/intfloat/multilingual-e5-small",
+     "licence": "mit",
+     "trending": 8,
+     "downloads": 9329067,
+     "likes": 479,
+     "created": "2023-06-30",
+     "pipeline_tag": "sentence-similarity",
+     "params": 117654272
+    },
+    {
      "id": "mixedbread-ai/mxbai-embed-large-v1",
      "url": "https://huggingface.co/mixedbread-ai/mxbai-embed-large-v1",
      "licence": "apache-2.0",
-     "trending": 8,
-     "downloads": 2187204,
+     "trending": 7,
+     "downloads": 2205759,
      "likes": 847,
      "created": "2024-03-07",
      "pipeline_tag": "feature-extraction",
      "params": 335141888
     },
     {
-     "id": "intfloat/multilingual-e5-small",
-     "url": "https://huggingface.co/intfloat/multilingual-e5-small",
-     "licence": "mit",
+     "id": "Qwen/Qwen3-VL-Embedding-2B",
+     "url": "https://huggingface.co/Qwen/Qwen3-VL-Embedding-2B",
+     "licence": "apache-2.0",
      "trending": 7,
-     "downloads": 9344983,
-     "likes": 477,
-     "created": "2023-06-30",
+     "downloads": 638550,
+     "likes": 490,
+     "created": "2026-01-07",
      "pipeline_tag": "sentence-similarity",
-     "params": 117654272
+     "params": 2127532032
     },
     {
      "id": "Alibaba-NLP/gte-large-en-v1.5",
      "url": "https://huggingface.co/Alibaba-NLP/gte-large-en-v1.5",
      "licence": "apache-2.0",
-     "trending": 7,
-     "downloads": 1909656,
+     "trending": 5,
+     "downloads": 1931023,
      "likes": 254,
      "created": "2024-04-20",
      "pipeline_tag": "sentence-similarity",
      "params": 434139136
     },
     {
-     "id": "Qwen/Qwen3-VL-Embedding-8B",
-     "url": "https://huggingface.co/Qwen/Qwen3-VL-Embedding-8B",
-     "licence": "apache-2.0",
-     "trending": 7,
-     "downloads": 1191066,
-     "likes": 513,
-     "created": "2026-01-07",
-     "pipeline_tag": "sentence-similarity",
-     "params": 8144793840
-    },
-    {
      "id": "sentence-transformers/paraphrase-MiniLM-L6-v2",
      "url": "https://huggingface.co/sentence-transformers/paraphrase-MiniLM-L6-v2",
      "licence": "apache-2.0",
-     "trending": 6,
-     "downloads": 1414470,
+     "trending": 4,
+     "downloads": 1395811,
      "likes": 164,
      "created": "2022-03-02",
      "pipeline_tag": "sentence-similarity",
      "params": 22713728
     },
     {
-     "id": "BAAI/bge-small-en-v1.5",
-     "url": "https://huggingface.co/BAAI/bge-small-en-v1.5",
+     "id": "intfloat/e5-base-v2",
+     "url": "https://huggingface.co/intfloat/e5-base-v2",
      "licence": "mit",
-     "trending": 5,
-     "downloads": 52591445,
-     "likes": 659,
-     "created": "2023-09-12",
-     "pipeline_tag": "feature-extraction",
-     "params": 33360512
+     "trending": 4,
+     "downloads": 1028942,
+     "likes": 173,
+     "created": "2023-05-19",
+     "pipeline_tag": "sentence-similarity",
+     "params": 109482752
     },
     {
-     "id": "intfloat/multilingual-e5-large",
-     "url": "https://huggingface.co/intfloat/multilingual-e5-large",
+     "id": "microsoft/harrier-oss-v1-270m",
+     "url": "https://huggingface.co/microsoft/harrier-oss-v1-270m",
      "licence": "mit",
-     "trending": 5,
-     "downloads": 6564644,
-     "likes": 1282,
-     "created": "2023-06-30",
+     "trending": 4,
+     "downloads": 100070,
+     "likes": 210,
+     "created": "2026-03-30",
      "pipeline_tag": "feature-extraction",
-     "params": 559890946
+     "params": 268098176
     }
    ],
    "dropped": []
@@ -1752,20 +1752,20 @@
     {
      "repo": "vllm-project/vllm",
      "url": "https://github.com/vllm-project/vllm",
-     "stars": 95756,
+     "stars": 95836,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-02-09",
      "status": "ok",
-     "stars_30d": 2901,
+     "stars_30d": 2885,
      "what": "Also serves embedding models behind an OpenAI-compatible /v1/embeddings"
     },
     {
      "repo": "huggingface/sentence-transformers",
      "url": "https://github.com/huggingface/sentence-transformers",
-     "stars": 19229,
+     "stars": 19232,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-27",
+     "pushed": "2026-10-29",
      "created": "2019-07-24",
      "status": "ok",
      "stars_30d": 100,
@@ -1774,18 +1774,18 @@
     {
      "repo": "huggingface/text-embeddings-inference",
      "url": "https://github.com/huggingface/text-embeddings-inference",
-     "stars": 5089,
+     "stars": 5094,
      "licence": "Apache-2.0",
      "pushed": "2026-10-13",
      "created": "2023-10-13",
      "status": "ok",
-     "stars_30d": 25,
+     "stars_30d": 29,
      "what": "Fast inference server for embedding and reranker models"
     },
     {
      "repo": "qdrant/fastembed",
      "url": "https://github.com/qdrant/fastembed",
-     "stars": 3268,
+     "stars": 3270,
      "licence": "Apache-2.0",
      "pushed": "2026-10-28",
      "created": "2023-07-14",
@@ -1796,12 +1796,12 @@
     {
      "repo": "michaelfeil/infinity",
      "url": "https://github.com/michaelfeil/infinity",
-     "stars": 2970,
+     "stars": 2972,
      "licence": "MIT",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-10-11",
      "status": "ok",
-     "stars_30d": 23,
+     "stars_30d": 24,
      "what": "OpenAI-compatible server for embedding, reranking and CLIP models"
     }
    ],
@@ -1817,8 +1817,8 @@
      "url": "https://huggingface.co/Qwen/Qwen3-Reranker-0.6B",
      "licence": "apache-2.0",
      "trending": 7,
-     "downloads": 1385402,
-     "likes": 428,
+     "downloads": 1339813,
+     "likes": 430,
      "created": "2025-05-29",
      "pipeline_tag": "text-ranking",
      "params": 595776512
@@ -1827,8 +1827,8 @@
      "id": "Qwen/Qwen3-Reranker-4B",
      "url": "https://huggingface.co/Qwen/Qwen3-Reranker-4B",
      "licence": "apache-2.0",
-     "trending": 6,
-     "downloads": 2271497,
+     "trending": 5,
+     "downloads": 2307464,
      "likes": 189,
      "created": "2025-06-03",
      "pipeline_tag": "text-ranking",
@@ -1838,9 +1838,9 @@
      "id": "BAAI/bge-reranker-base",
      "url": "https://huggingface.co/BAAI/bge-reranker-base",
      "licence": "mit",
-     "trending": 4,
-     "downloads": 2775970,
-     "likes": 262,
+     "trending": 2,
+     "downloads": 2780468,
+     "likes": 263,
      "created": "2023-09-11",
      "pipeline_tag": "text-classification",
      "params": 278044931
@@ -1849,9 +1849,9 @@
      "id": "BAAI/bge-reranker-v2-gemma",
      "url": "https://huggingface.co/BAAI/bge-reranker-v2-gemma",
      "licence": "apache-2.0",
-     "trending": 1,
-     "downloads": 77115,
-     "likes": 89,
+     "trending": 2,
+     "downloads": 93410,
+     "likes": 90,
      "created": "2024-03-16",
      "pipeline_tag": "text-classification",
      "params": 2506172416
@@ -1861,7 +1861,7 @@
      "url": "https://huggingface.co/mixedbread-ai/mxbai-rerank-xsmall-v1",
      "licence": "apache-2.0",
      "trending": 0,
-     "downloads": 695224,
+     "downloads": 697212,
      "likes": 59,
      "created": "2024-02-29",
      "pipeline_tag": "text-ranking",
@@ -1872,7 +1872,7 @@
      "url": "https://huggingface.co/mixedbread-ai/mxbai-rerank-large-v1",
      "licence": "apache-2.0",
      "trending": 0,
-     "downloads": 60336,
+     "downloads": 60789,
      "likes": 144,
      "created": "2024-02-29",
      "pipeline_tag": "text-ranking",
@@ -1883,7 +1883,7 @@
      "url": "https://huggingface.co/Alibaba-NLP/gte-multilingual-reranker-base",
      "licence": "apache-2.0",
      "trending": 0,
-     "downloads": 55259,
+     "downloads": 54417,
      "likes": 195,
      "created": "2024-07-20",
      "pipeline_tag": "text-ranking",
@@ -1894,7 +1894,7 @@
      "url": "https://huggingface.co/jinaai/jina-reranker-v1-turbo-en",
      "licence": "apache-2.0",
      "trending": 0,
-     "downloads": 25594,
+     "downloads": 25819,
      "likes": 67,
      "created": "2024-04-15",
      "pipeline_tag": "text-ranking",
@@ -1905,7 +1905,7 @@
      "url": "https://huggingface.co/ibm-granite/granite-embedding-reranker-english-r2",
      "licence": "apache-2.0",
      "trending": 0,
-     "downloads": 9737,
+     "downloads": 9963,
      "likes": 29,
      "created": "2025-08-04",
      "pipeline_tag": "text-ranking",
@@ -1916,7 +1916,7 @@
      "url": "https://huggingface.co/jinaai/jina-reranker-v1-tiny-en",
      "licence": "apache-2.0",
      "trending": 0,
-     "downloads": 9120,
+     "downloads": 9517,
      "likes": 29,
      "created": "2024-04-15",
      "pipeline_tag": "text-ranking",
@@ -1933,45 +1933,45 @@
     {
      "repo": "microsoft/markitdown",
      "url": "https://github.com/microsoft/markitdown",
-     "stars": 192647,
+     "stars": 192813,
      "licence": "MIT",
-     "pushed": "2026-10-23",
+     "pushed": "2026-10-28",
      "created": "2024-11-13",
      "status": "ok",
-     "stars_30d": 5249,
+     "stars_30d": 5240,
      "what": "Converts files and office documents to Markdown"
     },
     {
      "repo": "PaddlePaddle/PaddleOCR",
      "url": "https://github.com/PaddlePaddle/PaddleOCR",
-     "stars": 91843,
+     "stars": 91927,
      "licence": "Apache-2.0",
      "pushed": "2026-09-16",
      "created": "2020-05-08",
      "status": "ok",
-     "stars_30d": 1515,
+     "stars_30d": 1547,
      "what": "OCR and document parsing toolkit, 100+ languages"
     },
     {
      "repo": "docling-project/docling",
      "url": "https://github.com/docling-project/docling",
-     "stars": 69731,
+     "stars": 69797,
      "licence": "MIT",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2024-07-09",
      "status": "ok",
-     "stars_30d": 1617,
+     "stars_30d": 1629,
      "what": "Parses PDF, DOCX, PPTX and more into structured output for AI"
     },
     {
      "repo": "opendataloader-project/opendataloader-pdf",
      "url": "https://github.com/opendataloader-project/opendataloader-pdf",
-     "stars": 30097,
+     "stars": 30114,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2025-05-13",
      "status": "ok",
-     "stars_30d": 877,
+     "stars_30d": 857,
      "what": "PDF Parser for AI-ready data. Automate PDF accessibility. Open-source.",
      "kind": [
       "library"
@@ -1981,18 +1981,18 @@
     {
      "repo": "deepseek-ai/DeepSeek-OCR",
      "url": "https://github.com/deepseek-ai/DeepSeek-OCR",
-     "stars": 24081,
+     "stars": 24091,
      "licence": "MIT",
      "pushed": "2026-01-27",
      "created": "2025-10-17",
      "status": "ok",
-     "stars_30d": 161,
+     "stars_30d": 165,
      "what": "Vision-language OCR model with optical context compression"
     },
     {
      "repo": "allenai/olmocr",
      "url": "https://github.com/allenai/olmocr",
-     "stars": 19805,
+     "stars": 19809,
      "licence": "Apache-2.0",
      "pushed": "2026-03-25",
      "created": "2024-09-17",
@@ -2003,12 +2003,12 @@
     {
      "repo": "firecrawl/pdf-inspector",
      "url": "https://github.com/firecrawl/pdf-inspector",
-     "stars": 19754,
+     "stars": 19770,
      "licence": "MIT",
      "pushed": "2026-10-22",
      "created": "2026-02-06",
      "status": "ok",
-     "stars_30d": 254,
+     "stars_30d": 267,
      "what": "Fast Rust library for PDF inspection, classification, and text extraction. Intelligently detects…",
      "kind": [
       "library"
@@ -2018,9 +2018,9 @@
     {
      "repo": "Unstructured-IO/unstructured",
      "url": "https://github.com/Unstructured-IO/unstructured",
-     "stars": 15630,
+     "stars": 15634,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2022-09-26",
      "status": "ok",
      "stars_30d": 118,
@@ -2029,12 +2029,12 @@
     {
      "repo": "run-llama/liteparse",
      "url": "https://github.com/run-llama/liteparse",
-     "stars": 12931,
+     "stars": 12939,
      "licence": "Apache-2.0",
      "pushed": "2026-10-27",
      "created": "2026-02-09",
      "status": "ok",
-     "stars_30d": 189,
+     "stars_30d": 192,
      "what": "A fast, helpful, and open-source document parser",
      "kind": [
       "library"
@@ -2049,18 +2049,18 @@
      "pushed": "2026-03-24",
      "created": "2025-07-30",
      "status": "ok",
-     "stars_30d": 24,
+     "stars_30d": 23,
      "what": "Multilingual document layout parsing in a single VLM"
     },
     {
      "repo": "oomol-lab/pdf-craft",
      "url": "https://github.com/oomol-lab/pdf-craft",
-     "stars": 6450,
+     "stars": 6459,
      "licence": "MIT",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2025-02-12",
      "status": "ok",
-     "stars_30d": 159,
+     "stars_30d": 165,
      "what": "PDF craft can convert PDF files into various other formats. This project will focus on processing…",
      "kind": [
       "library"
@@ -2070,12 +2070,12 @@
     {
      "repo": "Topdu/OpenOCR",
      "url": "https://github.com/Topdu/OpenOCR",
-     "stars": 1483,
+     "stars": 1485,
      "licence": "Apache-2.0",
      "pushed": "2026-09-21",
      "created": "2024-05-31",
      "status": "ok",
-     "stars_30d": 28,
+     "stars_30d": 30,
      "what": "OpenOCR: An Open-Source Toolkit for General-OCR Research and Applications, integrates a unified…",
      "kind": [
       "library"
@@ -2085,12 +2085,12 @@
     {
      "repo": "datalab-to/indra",
      "url": "https://github.com/datalab-to/indra",
-     "stars": 1321,
+     "stars": 1397,
      "licence": "Apache-2.0",
      "pushed": "2026-10-22",
      "created": "2026-10-13",
      "status": "ok",
-     "stars_30d": 1321,
+     "stars_30d": 1397,
      "what": "1M param OCR model - runs on CPU, 15x faster than tesseract, close to 1B+ param models in accuracy",
      "kind": [
       "cli"
@@ -2100,12 +2100,12 @@
     {
      "repo": "aiptimizer/TurboOCR",
      "url": "https://github.com/aiptimizer/TurboOCR",
-     "stars": 1145,
+     "stars": 1146,
      "licence": "MIT",
      "pushed": "2026-09-27",
      "created": "2026-03-20",
      "status": "ok",
-     "stars_30d": 53,
+     "stars_30d": 52,
      "what": "TurboOCR, >200 img/s OmnidocBench. TensorRT FP16, PP-OCRv6, HTTP + gRPC",
      "kind": [
       "server"
@@ -2123,23 +2123,23 @@
     {
      "repo": "PaddlePaddle/PaddleOCR",
      "url": "https://github.com/PaddlePaddle/PaddleOCR",
-     "stars": 91843,
+     "stars": 91927,
      "licence": "Apache-2.0",
      "pushed": "2026-09-16",
      "created": "2020-05-08",
      "status": "ok",
-     "stars_30d": 1515,
+     "stars_30d": 1547,
      "what": "OCR and document parsing toolkit, 100+ languages"
     },
     {
      "repo": "tesseract-ocr/tesseract",
      "url": "https://github.com/tesseract-ocr/tesseract",
-     "stars": 77213,
+     "stars": 77228,
      "licence": "Apache-2.0",
      "pushed": "2026-10-28",
      "created": "2014-08-12",
      "status": "ok",
-     "stars_30d": 542,
+     "stars_30d": 537,
      "what": "Tesseract Open Source OCR Engine (main repository)",
      "kind": [
       "library"
@@ -2149,34 +2149,34 @@
     {
      "repo": "docling-project/docling",
      "url": "https://github.com/docling-project/docling",
-     "stars": 69731,
+     "stars": 69797,
      "licence": "MIT",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2024-07-09",
      "status": "ok",
-     "stars_30d": 1617,
+     "stars_30d": 1629,
      "what": "Layout analysis, tables and OCR for PDFs and scans"
     },
     {
      "repo": "JaidedAI/EasyOCR",
      "url": "https://github.com/JaidedAI/EasyOCR",
-     "stars": 30116,
+     "stars": 30121,
      "licence": "Apache-2.0",
      "pushed": "2025-12-05",
      "created": "2020-03-14",
      "status": "ok",
-     "stars_30d": 79,
+     "stars_30d": 81,
      "what": "Ready-to-use OCR for 80+ languages"
     },
     {
      "repo": "opendataloader-project/opendataloader-pdf",
      "url": "https://github.com/opendataloader-project/opendataloader-pdf",
-     "stars": 30097,
+     "stars": 30114,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2025-05-13",
      "status": "ok",
-     "stars_30d": 877,
+     "stars_30d": 857,
      "what": "PDF Parser for AI-ready data. Automate PDF accessibility. Open-source.",
      "kind": [
       "library"
@@ -2186,18 +2186,18 @@
     {
      "repo": "deepseek-ai/DeepSeek-OCR",
      "url": "https://github.com/deepseek-ai/DeepSeek-OCR",
-     "stars": 24081,
+     "stars": 24091,
      "licence": "MIT",
      "pushed": "2026-01-27",
      "created": "2025-10-17",
      "status": "ok",
-     "stars_30d": 161,
+     "stars_30d": 165,
      "what": "Vision-language OCR model with optical context compression"
     },
     {
      "repo": "allenai/olmocr",
      "url": "https://github.com/allenai/olmocr",
-     "stars": 19805,
+     "stars": 19809,
      "licence": "Apache-2.0",
      "pushed": "2026-03-25",
      "created": "2024-09-17",
@@ -2208,12 +2208,12 @@
     {
      "repo": "run-llama/liteparse",
      "url": "https://github.com/run-llama/liteparse",
-     "stars": 12931,
+     "stars": 12939,
      "licence": "Apache-2.0",
      "pushed": "2026-10-27",
      "created": "2026-02-09",
      "status": "ok",
-     "stars_30d": 189,
+     "stars_30d": 192,
      "what": "A fast, helpful, and open-source document parser",
      "kind": [
       "library"
@@ -2223,7 +2223,7 @@
     {
      "repo": "datalab-to/chandra",
      "url": "https://github.com/datalab-to/chandra",
-     "stars": 12622,
+     "stars": 12630,
      "licence": "Apache-2.0",
      "pushed": "2026-10-22",
      "created": "2025-10-08",
@@ -2243,18 +2243,18 @@
      "pushed": "2026-03-24",
      "created": "2025-07-30",
      "status": "ok",
-     "stars_30d": 24,
+     "stars_30d": 23,
      "what": "Multilingual document layout parsing in a single VLM"
     },
     {
      "repo": "RapidAI/RapidOCR",
      "url": "https://github.com/RapidAI/RapidOCR",
-     "stars": 8361,
+     "stars": 8378,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2021-01-04",
      "status": "ok",
-     "stars_30d": 443,
+     "stars_30d": 447,
      "what": "📄 Awesome OCR multiple programing languages toolkits based on ONNX Runtime, OpenVINO, MNN…",
      "kind": [
       "library"
@@ -2264,7 +2264,7 @@
     {
      "repo": "zai-org/GLM-OCR",
      "url": "https://github.com/zai-org/GLM-OCR",
-     "stars": 7548,
+     "stars": 7551,
      "licence": "Apache-2.0",
      "pushed": "2026-10-14",
      "created": "2026-02-02",
@@ -2279,12 +2279,12 @@
     {
      "repo": "mindee/doctr",
      "url": "https://github.com/mindee/doctr",
-     "stars": 6397,
+     "stars": 6400,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-27",
+     "pushed": "2026-10-29",
      "created": "2021-01-08",
      "status": "ok",
-     "stars_30d": 31,
+     "stars_30d": 33,
      "what": "Deep-learning OCR for documents"
     }
    ],
@@ -2298,53 +2298,53 @@
     {
      "repo": "langfuse/langfuse",
      "url": "https://github.com/langfuse/langfuse",
-     "stars": 36634,
+     "stars": 36693,
      "licence": "MIT",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-05-18",
      "status": "ok",
-     "stars_30d": 1499,
+     "stars_30d": 1508,
      "what": "LLM tracing, prompt management, evals and metrics"
     },
     {
      "repo": "mlflow/mlflow",
      "url": "https://github.com/mlflow/mlflow",
-     "stars": 28564,
+     "stars": 28584,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2018-06-05",
      "status": "ok",
-     "stars_30d": 405,
+     "stars_30d": 411,
      "what": "Open platform for LLM tracing, evaluation and model management"
     },
     {
      "repo": "comet-ml/opik",
      "url": "https://github.com/comet-ml/opik",
-     "stars": 22984,
+     "stars": 23011,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-05-10",
      "status": "ok",
-     "stars_30d": 713,
+     "stars_30d": 716,
      "what": "Tracing, evaluation and monitoring for LLM apps"
     },
     {
      "repo": "traceloop/openllmetry",
      "url": "https://github.com/traceloop/openllmetry",
-     "stars": 7513,
+     "stars": 7512,
      "licence": "Apache-2.0",
      "pushed": "2026-10-19",
      "created": "2023-09-02",
      "status": "ok",
-     "stars_30d": 58,
+     "stars_30d": 55,
      "what": "OpenTelemetry-based observability for LLM apps"
     },
     {
      "repo": "Helicone/helicone",
      "url": "https://github.com/Helicone/helicone",
-     "stars": 6242,
+     "stars": 6244,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-24",
+     "pushed": "2026-10-28",
      "created": "2023-01-31",
      "status": "ok",
      "stars_30d": 59,
@@ -2353,12 +2353,12 @@
     {
      "repo": "coze-dev/coze-loop",
      "url": "https://github.com/coze-dev/coze-loop",
-     "stars": 5790,
+     "stars": 5792,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2025-06-24",
      "status": "ok",
-     "stars_30d": 44,
+     "stars_30d": 45,
      "what": "Next-generation AI Agent Optimization Platform: Cozeloop addresses challenges in AI agent…",
      "kind": [
       "server"
@@ -2368,12 +2368,12 @@
     {
      "repo": "langwatch/langwatch",
      "url": "https://github.com/langwatch/langwatch",
-     "stars": 4997,
+     "stars": 4998,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-09-09",
      "status": "ok",
-     "stars_30d": 106,
+     "stars_30d": 102,
      "what": "Open-Source Agent Observability & Evals for AI Platform teams. Trace, test, route and govern every…",
      "kind": [
       "server"
@@ -2383,23 +2383,23 @@
     {
      "repo": "Agenta-AI/agenta",
      "url": "https://github.com/Agenta-AI/agenta",
-     "stars": 4868,
+     "stars": 4869,
      "licence": "MIT",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-04-26",
      "status": "ok",
-     "stars_30d": 80,
+     "stars_30d": 78,
      "what": "Prompt management, evaluation and observability"
     },
     {
      "repo": "lmnr-ai/lmnr",
      "url": "https://github.com/lmnr-ai/lmnr",
-     "stars": 3458,
+     "stars": 3460,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2024-08-29",
      "status": "ok",
-     "stars_30d": 148,
+     "stars_30d": 143,
      "what": "Laminar - open-source observability platform purpose-built for AI agents. YC S24.",
      "kind": [
       "server"
@@ -2409,12 +2409,12 @@
     {
      "repo": "openlit/openlit",
      "url": "https://github.com/openlit/openlit",
-     "stars": 2890,
+     "stars": 2893,
      "licence": "Apache-2.0",
      "pushed": "2026-10-26",
      "created": "2024-01-23",
      "status": "ok",
-     "stars_30d": 86,
+     "stars_30d": 87,
      "what": "OpenLIT is the open-source agent harness engineering platform: trace, evaluate, guard, and improve…",
      "kind": [
       "server"
@@ -2424,12 +2424,12 @@
     {
      "repo": "future-agi/future-agi",
      "url": "https://github.com/future-agi/future-agi",
-     "stars": 2212,
+     "stars": 2219,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2026-04-23",
      "status": "ok",
-     "stars_30d": 129,
+     "stars_30d": 133,
      "what": "Open-source, end-to-end platform for evaluating, observing, and improving LLM and AI agent…",
      "kind": [
       "server"
@@ -2439,12 +2439,12 @@
     {
      "repo": "jwuthri-cloud/Tracely-ai",
      "url": "https://github.com/jwuthri-cloud/Tracely-ai",
-     "stars": 1207,
+     "stars": 1208,
      "licence": "MIT",
      "pushed": "2026-10-26",
      "created": "2026-10-11",
      "status": "ok",
-     "stars_30d": 1207,
+     "stars_30d": 1208,
      "what": "Trace-native CI/CD for AI agents: grade production traces, cluster failures, freeze them into…",
      "kind": [
       "server"
@@ -2462,12 +2462,12 @@
     {
      "repo": "ifixai-ai/iFixAi",
      "url": "https://github.com/ifixai-ai/iFixAi",
-     "stars": 36396,
+     "stars": 37453,
      "licence": "Apache-2.0",
      "pushed": "2026-10-24",
      "created": "2026-04-27",
      "status": "ok",
-     "stars_30d": 22221,
+     "stars_30d": 22748,
      "what": "Independent Auditing of AI Agents. Run by human or the agent itself, to answer the most crucial…",
      "kind": [
       "library"
@@ -2477,45 +2477,45 @@
     {
      "repo": "promptfoo/promptfoo",
      "url": "https://github.com/promptfoo/promptfoo",
-     "stars": 26542,
+     "stars": 26581,
      "licence": "MIT",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-04-28",
      "status": "ok",
-     "stars_30d": 1017,
+     "stars_30d": 1022,
      "what": "Evals, red-teaming and regression testing for prompts"
     },
     {
      "repo": "confident-ai/deepeval",
      "url": "https://github.com/confident-ai/deepeval",
-     "stars": 19164,
+     "stars": 19178,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-27",
+     "pushed": "2026-10-29",
      "created": "2023-08-10",
      "status": "ok",
-     "stars_30d": 682,
+     "stars_30d": 674,
      "what": "Evaluation framework for LLM applications"
     },
     {
      "repo": "vibrantlabsai/ragas",
      "url": "https://github.com/vibrantlabsai/ragas",
-     "stars": 16171,
+     "stars": 16177,
      "licence": "Apache-2.0",
      "pushed": "2026-02-24",
      "created": "2023-05-08",
      "status": "ok",
-     "stars_30d": 307,
+     "stars_30d": 303,
      "what": "Evaluation toolkit for RAG and LLM apps"
     },
     {
      "repo": "open-compass/opencompass",
      "url": "https://github.com/open-compass/opencompass",
-     "stars": 7553,
+     "stars": 7557,
      "licence": "Apache-2.0",
      "pushed": "2026-10-28",
      "created": "2023-06-15",
      "status": "ok",
-     "stars_30d": 85,
+     "stars_30d": 87,
      "what": "OpenCompass is an LLM evaluation platform, supporting a wide range of models from OpenAI…",
      "kind": [
       "framework"
@@ -2525,12 +2525,12 @@
     {
      "repo": "Giskard-AI/giskard-oss",
      "url": "https://github.com/Giskard-AI/giskard-oss",
-     "stars": 5931,
+     "stars": 5934,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2022-03-06",
      "status": "ok",
-     "stars_30d": 76,
+     "stars_30d": 77,
      "what": "🐢 Open-Source Evaluation & Testing library for LLM Agents",
      "kind": [
       "library"
@@ -2540,12 +2540,12 @@
     {
      "repo": "truera/trulens",
      "url": "https://github.com/truera/trulens",
-     "stars": 3616,
+     "stars": 3618,
      "licence": "MIT",
-     "pushed": "2026-10-27",
+     "pushed": "2026-10-28",
      "created": "2020-11-02",
      "status": "ok",
-     "stars_30d": 35,
+     "stars_30d": 37,
      "what": "Evaluation and Tracking for LLM Experiments and AI Agents",
      "kind": [
       "library"
@@ -2555,12 +2555,12 @@
     {
      "repo": "future-agi/future-agi",
      "url": "https://github.com/future-agi/future-agi",
-     "stars": 2212,
+     "stars": 2219,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2026-04-23",
      "status": "ok",
-     "stars_30d": 129,
+     "stars_30d": 133,
      "what": "Open-source, end-to-end platform for evaluating, observing, and improving LLM and AI agent…",
      "kind": [
       "server"
@@ -2578,56 +2578,56 @@
     {
      "repo": "openai/whisper",
      "url": "https://github.com/openai/whisper",
-     "stars": 111450,
+     "stars": 111516,
      "licence": "MIT",
      "pushed": "2026-08-31",
      "created": "2022-09-16",
      "status": "ok",
-     "stars_30d": 1766,
+     "stars_30d": 1773,
      "what": "General-purpose speech recognition model"
     },
     {
      "repo": "ggml-org/whisper.cpp",
      "url": "https://github.com/ggml-org/whisper.cpp",
-     "stars": 54726,
+     "stars": 54755,
      "licence": "MIT",
      "pushed": "2026-10-28",
      "created": "2022-09-25",
      "status": "ok",
-     "stars_30d": 746,
+     "stars_30d": 750,
      "what": "Whisper in C/C++, runs on CPU, GPU and edge devices"
     },
     {
      "repo": "SYSTRAN/faster-whisper",
      "url": "https://github.com/SYSTRAN/faster-whisper",
-     "stars": 26248,
+     "stars": 26282,
      "licence": "MIT",
      "pushed": "2026-10-25",
      "created": "2023-02-11",
      "status": "ok",
-     "stars_30d": 638,
+     "stars_30d": 650,
      "what": "Whisper reimplemented on CTranslate2, up to 4x faster"
     },
     {
      "repo": "m-bain/whisperX",
      "url": "https://github.com/m-bain/whisperX",
-     "stars": 24895,
+     "stars": 24921,
      "licence": "BSD-2-Clause",
      "pushed": "2026-10-22",
      "created": "2022-12-09",
      "status": "ok",
-     "stars_30d": 622,
+     "stars_30d": 627,
      "what": "Whisper with word-level timestamps and speaker diarisation"
     },
     {
      "repo": "modelscope/FunASR",
      "url": "https://github.com/modelscope/FunASR",
-     "stars": 20857,
+     "stars": 20868,
      "licence": "MIT",
      "pushed": "2026-10-28",
      "created": "2022-11-24",
      "status": "ok",
-     "stars_30d": 374,
+     "stars_30d": 372,
      "what": "Open-source speech recognition toolkit for training, inference, streaming ASR, VAD, punctuation…",
      "kind": [
       "library"
@@ -2637,34 +2637,34 @@
     {
      "repo": "NVIDIA-NeMo/Speech",
      "url": "https://github.com/NVIDIA-NeMo/Speech",
-     "stars": 18628,
+     "stars": 18641,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2019-08-05",
      "status": "ok",
-     "stars_30d": 110,
+     "stars_30d": 119,
      "what": "Framework behind the Parakeet and Canary speech models"
     },
     {
      "repo": "k2-fsa/sherpa-onnx",
      "url": "https://github.com/k2-fsa/sherpa-onnx",
-     "stars": 15567,
+     "stars": 15588,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2022-09-01",
      "status": "ok",
-     "stars_30d": 556,
+     "stars_30d": 558,
      "what": "Offline speech recognition and synthesis on any platform"
     },
     {
      "repo": "alphacep/vosk-api",
      "url": "https://github.com/alphacep/vosk-api",
-     "stars": 15209,
+     "stars": 15211,
      "licence": "Apache-2.0",
      "pushed": "2026-10-15",
      "created": "2019-09-03",
      "status": "ok",
-     "stars_30d": 78,
+     "stars_30d": 77,
      "what": "Offline speech recognition API for Android, iOS, Raspberry Pi and servers with Python, Java, C#…",
      "kind": [
       "library"
@@ -2674,12 +2674,12 @@
     {
      "repo": "QuentinFuxa/WhisperLiveKit",
      "url": "https://github.com/QuentinFuxa/WhisperLiveKit",
-     "stars": 11183,
+     "stars": 11187,
      "licence": "Apache-2.0",
      "pushed": "2026-10-23",
      "created": "2024-12-19",
      "status": "ok",
-     "stars_30d": 99,
+     "stars_30d": 100,
      "what": "Real-time, local speech-to-text with streaming ASR, speaker diarization, translation, and…",
      "kind": [
       "server"
@@ -2689,12 +2689,12 @@
     {
      "repo": "KoljaB/RealtimeSTT",
      "url": "https://github.com/KoljaB/RealtimeSTT",
-     "stars": 10212,
+     "stars": 10211,
      "licence": "MIT",
-     "pushed": "2026-10-23",
+     "pushed": "2026-10-28",
      "created": "2023-08-29",
      "status": "ok",
-     "stars_30d": 58,
+     "stars_30d": 53,
      "what": "A robust, efficient, low-latency speech-to-text library with advanced voice activity detection…",
      "kind": [
       "library"
@@ -2704,12 +2704,12 @@
     {
      "repo": "QwenAudio/SenseVoice",
      "url": "https://github.com/QwenAudio/SenseVoice",
-     "stars": 9620,
+     "stars": 9624,
      "licence": "MIT",
      "pushed": "2026-09-30",
      "created": "2024-07-03",
      "status": "ok",
-     "stars_30d": 226,
+     "stars_30d": 220,
      "what": "Open-source SenseVoiceSmall model for Mandarin, Cantonese, English, Japanese, and Korean ASR…",
      "kind": [
       "model"
@@ -2719,9 +2719,9 @@
     {
      "repo": "Blaizzy/mlx-audio",
      "url": "https://github.com/Blaizzy/mlx-audio",
-     "stars": 8141,
+     "stars": 8148,
      "licence": "MIT",
-     "pushed": "2026-10-27",
+     "pushed": "2026-10-28",
      "created": "2024-11-27",
      "status": "ok",
      "stars_30d": 205,
@@ -2734,12 +2734,12 @@
     {
      "repo": "argmaxinc/argmax-oss-swift",
      "url": "https://github.com/argmaxinc/argmax-oss-swift",
-     "stars": 6427,
+     "stars": 6432,
      "licence": "MIT",
      "pushed": "2026-10-27",
      "created": "2024-01-26",
      "status": "ok",
-     "stars_30d": 51,
+     "stars_30d": 57,
      "what": "On-device Speech AI for Apple Silicon",
      "kind": [
       "library"
@@ -2764,12 +2764,12 @@
     {
      "repo": "speaches-ai/speaches",
      "url": "https://github.com/speaches-ai/speaches",
-     "stars": 3741,
+     "stars": 3742,
      "licence": "MIT",
      "pushed": "2026-10-26",
      "created": "2024-05-18",
      "status": "ok",
-     "stars_30d": 56,
+     "stars_30d": 55,
      "what": "OpenAI-compatible speech-to-text and text-to-speech server"
     },
     {
@@ -2780,7 +2780,7 @@
      "pushed": "2026-10-01",
      "created": "2022-09-22",
      "status": "ok",
-     "stars_30d": 23,
+     "stars_30d": 22,
      "what": "OpenAI Whisper ASR Webservice API",
      "kind": [
       "server"
@@ -2790,12 +2790,12 @@
     {
      "repo": "FluidInference/FluidAudio",
      "url": "https://github.com/FluidInference/FluidAudio",
-     "stars": 3220,
+     "stars": 3226,
      "licence": "Apache-2.0",
      "pushed": "2026-10-28",
      "created": "2025-06-21",
      "status": "ok",
-     "stars_30d": 358,
+     "stars_30d": 348,
      "what": "Frontier CoreML audio models in your apps — text-to-speech, speech-to-text, voice activity…",
      "kind": [
       "library"
@@ -2805,12 +2805,12 @@
     {
      "repo": "kyutai-labs/delayed-streams-modeling",
      "url": "https://github.com/kyutai-labs/delayed-streams-modeling",
-     "stars": 3040,
+     "stars": 3042,
      "licence": "Apache-2.0",
      "pushed": "2026-01-26",
      "created": "2025-06-16",
      "status": "ok",
-     "stars_30d": 9,
+     "stars_30d": 11,
      "what": "Kyutai's streaming speech-to-text and text-to-speech"
     },
     {
@@ -2831,12 +2831,12 @@
     {
      "repo": "handy-computer/transcribe.cpp",
      "url": "https://github.com/handy-computer/transcribe.cpp",
-     "stars": 2101,
+     "stars": 2105,
      "licence": "MIT",
      "pushed": "2026-10-27",
      "created": "2026-04-07",
      "status": "ok",
-     "stars_30d": 173,
+     "stars_30d": 170,
      "what": "ggml speech-to-text inference for 16+ model families",
      "kind": [
       "library"
@@ -2846,12 +2846,12 @@
     {
      "repo": "QwenAudio/Fun-ASR",
      "url": "https://github.com/QwenAudio/Fun-ASR",
-     "stars": 1588,
+     "stars": 1591,
      "licence": "Apache-2.0",
      "pushed": "2026-10-12",
      "created": "2025-12-15",
      "status": "ok",
-     "stars_30d": 41,
+     "stars_30d": 44,
      "what": "Fun-ASR speech recognition models, with native Hugging Face Transformers support for Fun-ASR-Nano…",
      "kind": [
       "model"
@@ -2861,7 +2861,7 @@
     {
      "repo": "soniqo/speech-swift",
      "url": "https://github.com/soniqo/speech-swift",
-     "stars": 1249,
+     "stars": 1250,
      "licence": "Apache-2.0",
      "pushed": "2026-10-27",
      "created": "2026-02-04",
@@ -2876,12 +2876,12 @@
     {
      "repo": "Kieirra/murmure",
      "url": "https://github.com/Kieirra/murmure",
-     "stars": 1136,
+     "stars": 1139,
      "licence": "AGPL-3.0",
-     "pushed": "2026-10-27",
+     "pushed": "2026-10-29",
      "created": "2025-10-12",
      "status": "ok",
-     "stars_30d": 60,
+     "stars_30d": 62,
      "what": "Fully local, private and cross platform Speech-to-Text with LLM Post-processing",
      "kind": [
       "application"
@@ -2893,10 +2893,10 @@
      "url": "https://github.com/k2-fsa/sherpa",
      "stars": 1013,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2022-05-20",
      "status": "ok",
-     "stars_30d": 16,
+     "stars_30d": 15,
      "what": "Speech-to-text server framework with next-gen Kaldi",
      "kind": [
       "framework"
@@ -2914,12 +2914,12 @@
     {
      "repo": "debpalash/VoiceStudio",
      "url": "https://github.com/debpalash/VoiceStudio",
-     "stars": 92203,
+     "stars": 93634,
      "licence": "AGPL-3.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2026-04-09",
      "status": "ok",
-     "stars_30d": 59446,
+     "stars_30d": 58528,
      "what": "VoiceStudio is the open-source, fully-local ElevenLabs alternative — voice cloning, voice design…",
      "kind": [
       "application"
@@ -2929,12 +2929,12 @@
     {
      "repo": "RVC-Boss/GPT-SoVITS",
      "url": "https://github.com/RVC-Boss/GPT-SoVITS",
-     "stars": 64007,
+     "stars": 64128,
      "licence": "MIT",
      "pushed": "2026-10-19",
      "created": "2024-01-14",
      "status": "ok",
-     "stars_30d": 2345,
+     "stars_30d": 2417,
      "what": "1 min voice data can also be used to train a good TTS model! (few shot voice cloning)",
      "kind": [
       "application"
@@ -2944,23 +2944,23 @@
     {
      "repo": "microsoft/VibeVoice",
      "url": "https://github.com/microsoft/VibeVoice",
-     "stars": 55004,
+     "stars": 55019,
      "licence": "MIT",
      "pushed": "2026-10-08",
      "created": "2025-08-25",
      "status": "ok",
-     "stars_30d": 476,
+     "stars_30d": 475,
      "what": "Long-form, multi-speaker conversational speech synthesis"
     },
     {
      "repo": "OpenBMB/VoxCPM",
      "url": "https://github.com/OpenBMB/VoxCPM",
-     "stars": 40772,
+     "stars": 40809,
      "licence": "Apache-2.0",
      "pushed": "2026-10-08",
      "created": "2025-09-16",
      "status": "ok",
-     "stars_30d": 3258,
+     "stars_30d": 3138,
      "what": "VoxCPM2: Tokenizer-Free TTS for Multilingual Speech Generation, Creative Voice Design, and…",
      "kind": [
       "model"
@@ -2970,34 +2970,34 @@
     {
      "repo": "resemble-ai/chatterbox",
      "url": "https://github.com/resemble-ai/chatterbox",
-     "stars": 27366,
+     "stars": 27398,
      "licence": "MIT",
      "pushed": "2026-07-21",
      "created": "2025-04-23",
      "status": "ok",
-     "stars_30d": 770,
+     "stars_30d": 776,
      "what": "Expressive TTS with voice cloning, MIT weights"
     },
     {
      "repo": "QwenAudio/CosyVoice",
      "url": "https://github.com/QwenAudio/CosyVoice",
-     "stars": 24170,
+     "stars": 24184,
      "licence": "Apache-2.0",
      "pushed": "2026-05-25",
      "created": "2024-07-03",
      "status": "ok",
-     "stars_30d": 376,
+     "stars_30d": 377,
      "what": "Multilingual voice generation with zero-shot cloning"
     },
     {
      "repo": "nari-labs/dia",
      "url": "https://github.com/nari-labs/dia",
-     "stars": 19408,
+     "stars": 19409,
      "licence": "Apache-2.0",
      "pushed": "2025-11-19",
      "created": "2025-04-19",
      "status": "ok",
-     "stars_30d": 10,
+     "stars_30d": 11,
      "what": "Dialogue TTS model generating multi-speaker conversation"
     },
     {
@@ -3018,9 +3018,9 @@
     {
      "repo": "Blaizzy/mlx-audio",
      "url": "https://github.com/Blaizzy/mlx-audio",
-     "stars": 8141,
+     "stars": 8148,
      "licence": "MIT",
-     "pushed": "2026-10-27",
+     "pushed": "2026-10-28",
      "created": "2024-11-27",
      "status": "ok",
      "stars_30d": 205,
@@ -3033,12 +3033,12 @@
     {
      "repo": "espeak-ng/espeak-ng",
      "url": "https://github.com/espeak-ng/espeak-ng",
-     "stars": 6980,
+     "stars": 6987,
      "licence": "GPL-3.0",
      "pushed": "2026-09-22",
      "created": "2015-12-08",
      "status": "ok",
-     "stars_30d": 85,
+     "stars_30d": 92,
      "what": "eSpeak NG is an open source speech synthesizer that supports more than hundred languages and…",
      "kind": [
       "cli"
@@ -3048,34 +3048,34 @@
     {
      "repo": "OHF-Voice/piper1-gpl",
      "url": "https://github.com/OHF-Voice/piper1-gpl",
-     "stars": 6060,
+     "stars": 6073,
      "licence": "GPL-3.0",
      "pushed": "2026-10-25",
      "created": "2025-03-28",
      "status": "ok",
-     "stars_30d": 359,
+     "stars_30d": 360,
      "what": "Fast local neural TTS for edge devices"
     },
     {
      "repo": "remsky/Kokoro-FastAPI",
      "url": "https://github.com/remsky/Kokoro-FastAPI",
-     "stars": 5604,
+     "stars": 5612,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2024-12-30",
      "status": "ok",
-     "stars_30d": 112,
+     "stars_30d": 116,
      "what": "OpenAI-compatible server for Kokoro TTS"
     },
     {
      "repo": "KoljaB/RealtimeTTS",
      "url": "https://github.com/KoljaB/RealtimeTTS",
-     "stars": 4045,
+     "stars": 4047,
      "licence": "MIT",
-     "pushed": "2026-10-19",
+     "pushed": "2026-10-28",
      "created": "2023-08-26",
      "status": "ok",
-     "stars_30d": 5,
+     "stars_30d": 8,
      "what": "Converts text to speech in realtime",
      "kind": [
       "library"
@@ -3085,23 +3085,23 @@
     {
      "repo": "kyutai-labs/delayed-streams-modeling",
      "url": "https://github.com/kyutai-labs/delayed-streams-modeling",
-     "stars": 3040,
+     "stars": 3042,
      "licence": "Apache-2.0",
      "pushed": "2026-01-26",
      "created": "2025-06-16",
      "status": "ok",
-     "stars_30d": 9,
+     "stars_30d": 11,
      "what": "Kyutai's streaming speech-to-text and text-to-speech"
     },
     {
      "repo": "pnnbao97/VieNeu-TTS",
      "url": "https://github.com/pnnbao97/VieNeu-TTS",
-     "stars": 3016,
+     "stars": 3028,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-27",
+     "pushed": "2026-10-29",
      "created": "2025-10-28",
      "status": "ok",
-     "stars_30d": 334,
+     "stars_30d": 335,
      "what": "Vietnamese TTS with instant voice cloning • On-device • Real-time CPU inference • 48kHz audio…",
      "kind": [
       "library"
@@ -3116,7 +3116,7 @@
      "pushed": "2026-10-26",
      "created": "2010-07-28",
      "status": "ok",
-     "stars_30d": 9,
+     "stars_30d": 8,
      "what": "a free and open source speech synthesizer for Russian and other languages",
      "kind": [
       "library"
@@ -3134,34 +3134,34 @@
     {
      "repo": "pipecat-ai/pipecat",
      "url": "https://github.com/pipecat-ai/pipecat",
-     "stars": 16869,
+     "stars": 16897,
      "licence": "BSD-2-Clause",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-12-27",
      "status": "ok",
-     "stars_30d": 936,
+     "stars_30d": 933,
      "what": "Framework for real-time voice and multimodal agents"
     },
     {
      "repo": "livekit/agents",
      "url": "https://github.com/livekit/agents",
-     "stars": 14977,
+     "stars": 14992,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-10-19",
      "status": "ok",
-     "stars_30d": 584,
+     "stars_30d": 580,
      "what": "Framework for real-time voice AI agents on WebRTC"
     },
     {
      "repo": "GetStream/Vision-Agents",
      "url": "https://github.com/GetStream/Vision-Agents",
-     "stars": 8191,
+     "stars": 8194,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2025-08-11",
      "status": "ok",
-     "stars_30d": 58,
+     "stars_30d": 60,
      "what": "Open Vision Agents by Stream. Build voice and vision agents quickly with any model or video…",
      "kind": [
       "framework"
@@ -3171,12 +3171,12 @@
     {
      "repo": "QwenAudio/qwen-audio-agent",
      "url": "https://github.com/QwenAudio/qwen-audio-agent",
-     "stars": 3047,
+     "stars": 3063,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2026-07-27",
      "status": "ok",
-     "stars_30d": 275,
+     "stars_30d": 287,
      "what": "A realtime voice runtime that keeps Agents talking, working, and present. Real-time Voice Runtime…",
      "kind": [
       "application"
@@ -3186,12 +3186,12 @@
     {
      "repo": "Lynpoint/CyberVerse",
      "url": "https://github.com/Lynpoint/CyberVerse",
-     "stars": 1737,
+     "stars": 1738,
      "licence": "GPL-3.0",
      "pushed": "2026-10-21",
      "created": "2026-04-18",
      "status": "ok",
-     "stars_30d": 65,
+     "stars_30d": 63,
      "what": "Self hosted, real-time digital human agent platform. Build voice-first AI agents with WebRTC…",
      "kind": [
       "framework"
@@ -3206,7 +3206,7 @@
      "pushed": "2026-10-03",
      "created": "2026-04-07",
      "status": "ok",
-     "stars_30d": 14,
+     "stars_30d": 13,
      "what": "Open-source voice-AI SDK. The Vapi/Retell alternative for builders who want to own the stack. Give…",
      "kind": [
       "framework"
@@ -3224,20 +3224,20 @@
     {
      "repo": "Comfy-Org/ComfyUI",
      "url": "https://github.com/Comfy-Org/ComfyUI",
-     "stars": 143696,
+     "stars": 143893,
      "licence": "GPL-3.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-01-17",
      "status": "ok",
-     "stars_30d": 8388,
+     "stars_30d": 8308,
      "what": "Node-based engine for diffusion models, the de-facto standard"
     },
     {
      "repo": "huggingface/diffusers",
      "url": "https://github.com/huggingface/diffusers",
-     "stars": 34824,
+     "stars": 34831,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2022-05-30",
      "status": "ok",
      "stars_30d": 200,
@@ -3246,34 +3246,34 @@
     {
      "repo": "invoke-ai/InvokeAI",
      "url": "https://github.com/invoke-ai/InvokeAI",
-     "stars": 28898,
+     "stars": 28913,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2022-08-17",
      "status": "ok",
-     "stars_30d": 589,
+     "stars_30d": 585,
      "what": "Creative engine and UI for Stable Diffusion and FLUX"
     },
     {
      "repo": "Tongyi-MAI/Z-Image",
      "url": "https://github.com/Tongyi-MAI/Z-Image",
-     "stars": 12121,
+     "stars": 12126,
      "licence": "Apache-2.0",
      "pushed": "2026-02-09",
      "created": "2025-11-26",
      "status": "ok",
-     "stars_30d": 66,
+     "stars_30d": 69,
      "what": "Efficient 6B image generation model, Apache-2.0 weights"
     },
     {
      "repo": "QwenLM/Qwen-Image",
      "url": "https://github.com/QwenLM/Qwen-Image",
-     "stars": 8432,
+     "stars": 8433,
      "licence": "Apache-2.0",
      "pushed": "2026-02-10",
      "created": "2025-08-03",
      "status": "ok",
-     "stars_30d": 52,
+     "stars_30d": 51,
      "what": "Image generation and editing model, Apache-2.0 weights"
     },
     {
@@ -3294,12 +3294,12 @@
     {
      "repo": "leejet/stable-diffusion.cpp",
      "url": "https://github.com/leejet/stable-diffusion.cpp",
-     "stars": 7811,
+     "stars": 7819,
      "licence": "MIT",
-     "pushed": "2026-10-27",
+     "pushed": "2026-10-28",
      "created": "2023-08-13",
      "status": "ok",
-     "stars_30d": 305,
+     "stars_30d": 302,
      "what": "Diffusion model(SD,Flux,Wan,Qwen Image,Z-Image,...) inference in pure C/C++",
      "kind": [
       "cli"
@@ -3309,12 +3309,12 @@
     {
      "repo": "vladmandic/sdnext",
      "url": "https://github.com/vladmandic/sdnext",
-     "stars": 7361,
+     "stars": 7362,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2022-12-24",
      "status": "ok",
-     "stars_30d": 19,
+     "stars_30d": 20,
      "what": "SD.Next: All-in-one WebUI for AI generative image and video creation, captioning and processing",
      "kind": [
       "application"
@@ -3324,12 +3324,12 @@
     {
      "repo": "Stability-AI/StableSwarmUI",
      "url": "https://github.com/Stability-AI/StableSwarmUI",
-     "stars": 4941,
+     "stars": 4943,
      "licence": "MIT",
      "pushed": "2026-10-15",
      "created": "2023-05-12",
      "status": "ok",
-     "stars_30d": 2,
+     "stars_30d": 6,
      "what": "StableSwarmUI, A Modular Stable Diffusion Web-User-Interface, with an emphasis on making…",
      "kind": [
       "application"
@@ -3339,12 +3339,12 @@
     {
      "repo": "mcmonkeyprojects/SwarmUI",
      "url": "https://github.com/mcmonkeyprojects/SwarmUI",
-     "stars": 4712,
+     "stars": 4716,
      "licence": "MIT",
      "pushed": "2026-10-27",
      "created": "2024-06-21",
      "status": "ok",
-     "stars_30d": 104,
+     "stars_30d": 105,
      "what": "SwarmUI (formerly StableSwarmUI), A Modular Stable Diffusion Web-User-Interface, with an emphasis…",
      "kind": [
       "application"
@@ -3354,12 +3354,12 @@
     {
      "repo": "OpenMOSS/MOSS-Image",
      "url": "https://github.com/OpenMOSS/MOSS-Image",
-     "stars": 2137,
+     "stars": 2199,
      "licence": "Apache-2.0",
      "pushed": "2026-10-27",
      "created": "2026-10-16",
      "status": "ok",
-     "stars_30d": 2137,
+     "stars_30d": 2199,
      "what": "Official repository for MOSS-Image, a 5B-parameter base DiT model with high-quality text…",
      "kind": [
       "model"
@@ -3377,29 +3377,29 @@
     {
      "repo": "searxng/searxng",
      "url": "https://github.com/searxng/searxng",
-     "stars": 38943,
+     "stars": 38976,
      "licence": "AGPL-3.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2021-04-12",
      "status": "ok",
-     "stars_30d": 1228,
+     "stars_30d": 1220,
      "what": "Self-hosted metasearch engine with a JSON API"
     },
     {
      "repo": "yacy/yacy_search_server",
      "url": "https://github.com/yacy/yacy_search_server",
-     "stars": 4084,
+     "stars": 4086,
      "licence": "GPL-2.0",
      "pushed": "2026-09-23",
      "created": "2015-03-22",
      "status": "ok",
-     "stars_30d": 39,
+     "stars_30d": 40,
      "what": "Self-hosted, peer-to-peer web search engine with its own index"
     },
     {
      "repo": "deedy5/ddgs",
      "url": "https://github.com/deedy5/ddgs",
-     "stars": 3035,
+     "stars": 3039,
      "licence": "MIT",
      "pushed": "2026-10-23",
      "created": "2021-04-25",
@@ -3422,29 +3422,29 @@
     {
      "repo": "khoj-ai/khoj",
      "url": "https://github.com/khoj-ai/khoj",
-     "stars": 37867,
+     "stars": 37884,
      "licence": "AGPL-3.0",
      "pushed": "2026-08-02",
      "created": "2021-08-16",
      "status": "ok",
-     "stars_30d": 338,
+     "stars_30d": 344,
      "what": "Self-hostable AI answer engine and personal assistant"
     },
     {
      "repo": "ItzCrazyKns/Vane",
      "url": "https://github.com/ItzCrazyKns/Vane",
-     "stars": 37801,
+     "stars": 37829,
      "licence": "MIT",
      "pushed": "2026-09-01",
      "created": "2024-04-09",
      "status": "ok",
-     "stars_30d": 881,
+     "stars_30d": 880,
      "what": "AI-powered answer engine, open source Perplexity alternative"
     },
     {
      "repo": "miurla/morphic",
      "url": "https://github.com/miurla/morphic",
-     "stars": 9208,
+     "stars": 9210,
      "licence": "Apache-2.0",
      "pushed": "2026-10-28",
      "created": "2024-04-05",
@@ -3455,12 +3455,12 @@
     {
      "repo": "swirlai/swirl-search",
      "url": "https://github.com/swirlai/swirl-search",
-     "stars": 3049,
+     "stars": 3051,
      "licence": "Apache-2.0",
      "pushed": "2026-10-27",
      "created": "2022-04-08",
      "status": "ok",
-     "stars_30d": 4,
+     "stars_30d": 7,
      "what": "AI Search & RAG Without Moving Your Data. Get instant answers from your company's knowledge across…",
      "kind": [
       "application"
@@ -3478,56 +3478,56 @@
     {
      "repo": "firecrawl/firecrawl",
      "url": "https://github.com/firecrawl/firecrawl",
-     "stars": 196238,
+     "stars": 196578,
      "licence": "AGPL-3.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2024-04-15",
      "status": "ok",
-     "stars_30d": 10505,
+     "stars_30d": 10495,
      "what": "Turns websites into LLM-ready data, self-hostable"
     },
     {
      "repo": "unclecode/crawl4ai",
      "url": "https://github.com/unclecode/crawl4ai",
-     "stars": 86440,
+     "stars": 86505,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-26",
+     "pushed": "2026-10-29",
      "created": "2024-05-09",
      "status": "ok",
-     "stars_30d": 2045,
+     "stars_30d": 2042,
      "what": "LLM-friendly web crawler producing clean Markdown"
     },
     {
      "repo": "ScrapeGraphAI/Scrapegraph-ai",
      "url": "https://github.com/ScrapeGraphAI/Scrapegraph-ai",
-     "stars": 32301,
+     "stars": 32324,
      "licence": "MIT",
      "pushed": "2026-10-06",
      "created": "2024-01-27",
      "status": "ok",
-     "stars_30d": 924,
+     "stars_30d": 916,
      "what": "Scraping pipelines driven by LLMs"
     },
     {
      "repo": "jina-ai/reader",
      "url": "https://github.com/jina-ai/reader",
-     "stars": 12202,
+     "stars": 12212,
      "licence": "Apache-2.0",
      "pushed": "2026-05-22",
      "created": "2024-04-10",
      "status": "ok",
-     "stars_30d": 145,
+     "stars_30d": 150,
      "what": "Converts any URL to LLM-friendly input"
     },
     {
      "repo": "adbar/trafilatura",
      "url": "https://github.com/adbar/trafilatura",
-     "stars": 7032,
+     "stars": 7035,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-27",
+     "pushed": "2026-10-29",
      "created": "2019-04-08",
      "status": "ok",
-     "stars_30d": 132,
+     "stars_30d": 130,
      "what": "Python & Command-line tool to gather text and metadata on the Web: Crawling, scraping, extraction…",
      "kind": [
       "library"
@@ -3537,23 +3537,23 @@
     {
      "repo": "mishushakov/llm-scraper",
      "url": "https://github.com/mishushakov/llm-scraper",
-     "stars": 6949,
+     "stars": 6950,
      "licence": "MIT",
      "pushed": "2026-10-26",
      "created": "2024-04-20",
      "status": "ok",
-     "stars_30d": 11,
+     "stars_30d": 12,
      "what": "Structured data from any web page with LLMs"
     },
     {
      "repo": "0xMassi/webclaw",
      "url": "https://github.com/0xMassi/webclaw",
-     "stars": 2402,
+     "stars": 2408,
      "licence": "AGPL-3.0",
      "pushed": "2026-10-28",
      "created": "2026-03-10",
      "status": "ok",
-     "stars_30d": 53,
+     "stars_30d": 60,
      "what": "Fast, local-first web content extraction for LLMs. Scrape, crawl, extract structured data — all…",
      "kind": [
       "cli"
@@ -3563,12 +3563,12 @@
     {
      "repo": "karust/openserp",
      "url": "https://github.com/karust/openserp",
-     "stars": 1513,
+     "stars": 1518,
      "licence": "MIT",
-     "pushed": "2026-10-27",
+     "pushed": "2026-10-28",
      "created": "2023-06-23",
      "status": "ok",
-     "stars_30d": 90,
+     "stars_30d": 93,
      "what": "Self-hosted SERP API for AI, SEO & automation. Browser-rendered Google, Bing, Yandex, Baidu…",
      "kind": [
       "server"
@@ -3578,12 +3578,12 @@
     {
      "repo": "fastcrw/crw",
      "url": "https://github.com/fastcrw/crw",
-     "stars": 1189,
+     "stars": 1192,
      "licence": "AGPL-3.0",
      "pushed": "2026-10-28",
      "created": "2026-03-02",
      "status": "ok",
-     "stars_30d": 120,
+     "stars_30d": 119,
      "what": "Firecrawl-compatible scrape, crawl and search API in one binary"
     }
    ],
@@ -3597,56 +3597,56 @@
     {
      "repo": "browser-use/browser-use",
      "url": "https://github.com/browser-use/browser-use",
-     "stars": 119351,
+     "stars": 119455,
      "licence": "MIT",
      "pushed": "2026-10-27",
      "created": "2024-10-31",
      "status": "ok",
-     "stars_30d": 2775,
+     "stars_30d": 2786,
      "what": "Makes websites accessible to AI agents"
     },
     {
      "repo": "microsoft/playwright",
      "url": "https://github.com/microsoft/playwright",
-     "stars": 98716,
+     "stars": 98795,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2019-11-15",
      "status": "ok",
-     "stars_30d": 1913,
+     "stars_30d": 1928,
      "what": "Browser automation for Chromium, Firefox and WebKit"
     },
     {
      "repo": "lightpanda-io/browser",
      "url": "https://github.com/lightpanda-io/browser",
-     "stars": 37081,
+     "stars": 37237,
      "licence": "AGPL-3.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-02-07",
      "status": "ok",
-     "stars_30d": 1456,
+     "stars_30d": 1560,
      "what": "Headless browser built for AI and automation"
     },
     {
      "repo": "browserbase/stagehand",
      "url": "https://github.com/browserbase/stagehand",
-     "stars": 25848,
+     "stars": 25856,
      "licence": "MIT",
-     "pushed": "2026-10-27",
+     "pushed": "2026-10-29",
      "created": "2024-03-24",
      "status": "ok",
-     "stars_30d": 414,
+     "stars_30d": 408,
      "what": "AI browser automation framework"
     },
     {
      "repo": "Skyvern-AI/skyvern",
      "url": "https://github.com/Skyvern-AI/skyvern",
-     "stars": 23291,
+     "stars": 23294,
      "licence": "AGPL-3.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2024-02-28",
      "status": "ok",
-     "stars_30d": 194,
+     "stars_30d": 188,
      "what": "Automate browser based workflows with AI",
      "kind": [
       "framework"
@@ -3656,12 +3656,12 @@
     {
      "repo": "browser-use/browser-harness",
      "url": "https://github.com/browser-use/browser-harness",
-     "stars": 18670,
+     "stars": 18691,
      "licence": "MIT",
      "pushed": "2026-10-25",
      "created": "2026-04-17",
      "status": "ok",
-     "stars_30d": 492,
+     "stars_30d": 500,
      "what": "Browser Harness | Self-healing harness that enables LLMs to complete any task.",
      "kind": [
       "library"
@@ -3671,12 +3671,12 @@
     {
      "repo": "nanobrowser/nanobrowser",
      "url": "https://github.com/nanobrowser/nanobrowser",
-     "stars": 14198,
+     "stars": 14201,
      "licence": "Apache-2.0",
      "pushed": "2026-10-24",
      "created": "2024-12-31",
      "status": "ok",
-     "stars_30d": 242,
+     "stars_30d": 231,
      "what": "Open-Source Chrome extension for AI-powered web automation. Run multi-agent workflows using your…",
      "kind": [
       "application"
@@ -3686,20 +3686,20 @@
     {
      "repo": "steel-dev/steel-browser",
      "url": "https://github.com/steel-dev/steel-browser",
-     "stars": 7877,
+     "stars": 7886,
      "licence": "Apache-2.0",
      "pushed": "2026-10-28",
      "created": "2024-11-01",
      "status": "ok",
-     "stars_30d": 170,
+     "stars_30d": 173,
      "what": "Self-hostable browser API for AI agents"
     },
     {
      "repo": "platonai/Browser4",
      "url": "https://github.com/platonai/Browser4",
-     "stars": 1169,
+     "stars": 1170,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2018-03-12",
      "status": "ok",
      "stars_30d": 28,
@@ -3712,12 +3712,12 @@
     {
      "repo": "feder-cr/invisible_playwright_mcp",
      "url": "https://github.com/feder-cr/invisible_playwright_mcp",
-     "stars": 887,
+     "stars": 885,
      "licence": "MIT",
      "pushed": "2026-10-21",
      "created": "2026-09-29",
      "status": "ok",
-     "stars_30d": 887,
+     "stars_30d": 885,
      "what": "Playwright MCP server undetected by anti-bots and captchas: AI agent browses the web on…",
      "kind": [
       "server"
@@ -3735,9 +3735,9 @@
     {
      "repo": "firecracker-microvm/firecracker",
      "url": "https://github.com/firecracker-microvm/firecracker",
-     "stars": 37671,
+     "stars": 37694,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-27",
+     "pushed": "2026-10-29",
      "created": "2017-10-19",
      "status": "ok",
      "stars_30d": 681,
@@ -3746,34 +3746,34 @@
     {
      "repo": "google/gvisor",
      "url": "https://github.com/google/gvisor",
-     "stars": 19809,
+     "stars": 19818,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2018-04-26",
      "status": "ok",
-     "stars_30d": 370,
+     "stars_30d": 367,
      "what": "Application kernel for container isolation"
     },
     {
      "repo": "superradcompany/microsandbox",
      "url": "https://github.com/superradcompany/microsandbox",
-     "stars": 8839,
+     "stars": 8860,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2024-10-03",
      "status": "ok",
-     "stars_30d": 386,
+     "stars_30d": 394,
      "what": "Self-hosted microVM sandboxes for untrusted code"
     },
     {
      "repo": "smol-machines/smolvm",
      "url": "https://github.com/smol-machines/smolvm",
-     "stars": 6856,
+     "stars": 6868,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2025-12-18",
      "status": "ok",
-     "stars_30d": 309,
+     "stars_30d": 312,
      "what": "An embeddable, portable, branchable virtual machine to safely run Agents locally.",
      "kind": [
       "cli"
@@ -3783,12 +3783,12 @@
     {
      "repo": "arcboxlabs/arcbox",
      "url": "https://github.com/arcboxlabs/arcbox",
-     "stars": 4251,
+     "stars": 4252,
      "licence": "Apache-2.0",
      "pushed": "2026-10-27",
      "created": "2026-01-04",
      "status": "ok",
-     "stars_30d": 48,
+     "stars_30d": 47,
      "what": "Run AI agents on real and isolated machines — own kernel, filesystem, and network — with <100ms…",
      "kind": [
       "cli"
@@ -3798,9 +3798,9 @@
     {
      "repo": "deeplethe/sandstorm",
      "url": "https://github.com/deeplethe/sandstorm",
-     "stars": 2904,
+     "stars": 3005,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2026-05-11",
      "status": "ok",
      "stars_30d": null,
@@ -3813,12 +3813,12 @@
     {
      "repo": "zerobootdev/zeroboot",
      "url": "https://github.com/zerobootdev/zeroboot",
-     "stars": 2469,
+     "stars": 2468,
      "licence": "Apache-2.0",
      "pushed": "2026-10-18",
      "created": "2026-03-15",
      "status": "ok",
-     "stars_30d": 13,
+     "stars_30d": 9,
      "what": "Sub-millisecond VM sandboxes for AI agents via copy-on-write forking",
      "kind": [
       "server"
@@ -3828,23 +3828,23 @@
     {
      "repo": "e2b-dev/runtime",
      "url": "https://github.com/e2b-dev/runtime",
-     "stars": 1778,
+     "stars": 1781,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-27",
+     "pushed": "2026-10-29",
      "created": "2023-08-10",
      "status": "ok",
-     "stars_30d": 147,
+     "stars_30d": 145,
      "what": "Self-hostable infrastructure behind E2B sandboxes"
     },
     {
      "repo": "BitMiracle-AI/Dormice",
      "url": "https://github.com/BitMiracle-AI/Dormice",
-     "stars": 1705,
+     "stars": 1715,
      "licence": "Apache-2.0",
      "pushed": "2026-10-11",
      "created": "2026-07-08",
      "status": "ok",
-     "stars_30d": 365,
+     "stars_30d": 362,
      "what": "The SQLite of agent sandboxes — self-hosted, E2B-compatible. One machine, sandboxes that live…",
      "kind": [
       "server"
@@ -3874,7 +3874,7 @@
      "pushed": "2026-10-26",
      "created": "2024-06-27",
      "status": "ok",
-     "stars_30d": 14,
+     "stars_30d": 13,
      "what": "Lightweight and portable LLM sandbox runtime (code interpreter) Python library.",
      "kind": [
       "library"
@@ -3886,13 +3886,13 @@
     {
      "repo": "deeplethe/forkd",
      "url": "https://github.com/deeplethe/forkd",
-     "stars": 2904,
+     "stars": 3005,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2026-05-11",
      "status": "renamed",
      "problem": "now deeplethe/sandstorm",
-     "stars_30d": 0,
+     "stars_30d": 135,
      "what": "Fork() for AI agent microVMs. Spawn 100 children in ~100ms from a warm parent; BRANCH a live VM in…",
      "kind": [
       "server"
@@ -3909,23 +3909,23 @@
     {
      "repo": "mem0ai/mem0",
      "url": "https://github.com/mem0ai/mem0",
-     "stars": 67976,
+     "stars": 68041,
      "licence": "Apache-2.0",
      "pushed": "2026-10-26",
      "created": "2023-06-20",
      "status": "ok",
-     "stars_30d": 1793,
+     "stars_30d": 1798,
      "what": "Memory layer for AI agents, self-hostable"
     },
     {
      "repo": "vectorize-io/hindsight",
      "url": "https://github.com/vectorize-io/hindsight",
-     "stars": 54570,
+     "stars": 55902,
      "licence": "MIT",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2025-10-30",
      "status": "ok",
-     "stars_30d": 10934,
+     "stars_30d": 12547,
      "what": "Hindsight: Agent Memory That Learns",
      "kind": [
       "server"
@@ -3935,12 +3935,12 @@
     {
      "repo": "volcengine/OpenViking",
      "url": "https://github.com/volcengine/OpenViking",
-     "stars": 41021,
+     "stars": 41113,
      "licence": "AGPL-3.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2026-01-05",
      "status": "ok",
-     "stars_30d": 2377,
+     "stars_30d": 2398,
      "what": "Self-evolving Context Database for AI Agents. Unify Agent Memory, Knowledge RAG and Skills.",
      "kind": [
       "server"
@@ -3950,34 +3950,34 @@
     {
      "repo": "topoteretes/cognee",
      "url": "https://github.com/topoteretes/cognee",
-     "stars": 32847,
+     "stars": 32885,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2023-08-16",
      "status": "ok",
-     "stars_30d": 1737,
+     "stars_30d": 1718,
      "what": "Memory for AI agents from documents and conversations"
     },
     {
      "repo": "getzep/graphiti",
      "url": "https://github.com/getzep/graphiti",
-     "stars": 32297,
+     "stars": 32330,
      "licence": "Apache-2.0",
      "pushed": "2026-10-28",
      "created": "2024-08-08",
      "status": "ok",
-     "stars_30d": 1049,
+     "stars_30d": 1047,
      "what": "Real-time knowledge graphs for agent memory"
     },
     {
      "repo": "supermemoryai/supermemory",
      "url": "https://github.com/supermemoryai/supermemory",
-     "stars": 31443,
+     "stars": 31456,
      "licence": "MIT",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2024-02-27",
      "status": "ok",
-     "stars_30d": 452,
+     "stars_30d": 448,
      "what": "Memory and context engine + app that is extremely fast, scalable, and can be run fully locally…",
      "kind": [
       "server"
@@ -3987,23 +3987,23 @@
     {
      "repo": "letta-ai/letta",
      "url": "https://github.com/letta-ai/letta",
-     "stars": 25271,
+     "stars": 25284,
      "licence": "Apache-2.0",
      "pushed": "2026-10-18",
      "created": "2023-10-11",
      "status": "ok",
-     "stars_30d": 331,
+     "stars_30d": 333,
      "what": "Stateful agents with long-term memory"
     },
     {
      "repo": "EverMind-AI/EverOS",
      "url": "https://github.com/EverMind-AI/EverOS",
-     "stars": 13677,
+     "stars": 13699,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2025-10-28",
      "status": "ok",
-     "stars_30d": 485,
+     "stars_30d": 495,
      "what": "One portable memory layer for every AI agent: local-first, Markdown-native, user-owned, and…",
      "kind": [
       "library"
@@ -4013,12 +4013,12 @@
     {
      "repo": "plastic-labs/honcho",
      "url": "https://github.com/plastic-labs/honcho",
-     "stars": 7800,
+     "stars": 7818,
      "licence": "AGPL-3.0",
-     "pushed": "2026-10-27",
+     "pushed": "2026-10-28",
      "created": "2023-09-10",
      "status": "ok",
-     "stars_30d": 401,
+     "stars_30d": 408,
      "what": "Memory library for building stateful agents",
      "kind": [
       "server"
@@ -4028,12 +4028,12 @@
     {
      "repo": "CaviraOSS/LongMemory",
      "url": "https://github.com/CaviraOSS/LongMemory",
-     "stars": 4547,
+     "stars": 4551,
      "licence": "Apache-2.0",
      "pushed": "2026-10-18",
      "created": "2025-10-19",
      "status": "ok",
-     "stars_30d": 35,
+     "stars_30d": 40,
      "what": "Local persistent memory store for LLM applications including claude desktop, github copilot…",
      "kind": [
       "library"
@@ -4043,12 +4043,12 @@
     {
      "repo": "tigerless-labs/agent-memory",
      "url": "https://github.com/tigerless-labs/agent-memory",
-     "stars": 4368,
+     "stars": 4373,
      "licence": "MIT",
-     "pushed": "2026-10-27",
+     "pushed": "2026-10-29",
      "created": "2026-09-01",
      "status": "ok",
-     "stars_30d": 1708,
+     "stars_30d": 1622,
      "what": "Long-term memory runtime for AI agents — plain Markdown as the source of truth, local ranked…",
      "kind": [
       "cli"
@@ -4058,12 +4058,12 @@
     {
      "repo": "Ar9av/obsidian-wiki",
      "url": "https://github.com/Ar9av/obsidian-wiki",
-     "stars": 3630,
+     "stars": 3636,
      "licence": "MIT",
      "pushed": "2026-10-27",
      "created": "2026-04-06",
      "status": "ok",
-     "stars_30d": 148,
+     "stars_30d": 150,
      "what": "Framework for AI agents to build and maintain a digital brain through Obsidian wiki | Memory…",
      "kind": [
       "library"
@@ -4078,7 +4078,7 @@
      "pushed": "2026-10-28",
      "created": "2025-04-11",
      "status": "ok",
-     "stars_30d": 11,
+     "stars_30d": 10,
      "what": "Mirix is a multi-agent personal assistant designed to track on-screen activities and answer user…",
      "kind": [
       "server"
@@ -4088,12 +4088,12 @@
     {
      "repo": "zilliztech/memsearch",
      "url": "https://github.com/zilliztech/memsearch",
-     "stars": 2802,
+     "stars": 2804,
      "licence": "MIT",
      "pushed": "2026-10-27",
      "created": "2026-02-09",
      "status": "ok",
-     "stars_30d": 116,
+     "stars_30d": 113,
      "what": "A persistent, unified memory layer for all your AI agents (e.g. Claude Code, Codex, DSH), backed…",
      "kind": [
       "library"
@@ -4103,9 +4103,9 @@
     {
      "repo": "cortexkit/magic-context",
      "url": "https://github.com/cortexkit/magic-context",
-     "stars": 2401,
+     "stars": 2407,
      "licence": "MIT",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2026-03-26",
      "status": "ok",
      "stars_30d": 173,
@@ -4118,12 +4118,12 @@
     {
      "repo": "doobidoo/mcp-memory-service",
      "url": "https://github.com/doobidoo/mcp-memory-service",
-     "stars": 2052,
+     "stars": 2054,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2024-12-26",
      "status": "ok",
-     "stars_30d": 79,
+     "stars_30d": 78,
      "what": "Open-source persistent memory for AI agent pipelines (LangGraph, CrewAI, AutoGen) and Claude. REST…",
      "kind": [
       "server"
@@ -4138,7 +4138,7 @@
      "pushed": "2026-09-22",
      "created": "2025-12-25",
      "status": "ok",
-     "stars_30d": 37,
+     "stars_30d": 35,
      "what": "A lightweight, rollbackable, and visual Long-Term Memory Server for MCP Agents. Say goodbye to…",
      "kind": [
       "server"
@@ -4148,9 +4148,9 @@
     {
      "repo": "oceanbase/powercontext",
      "url": "https://github.com/oceanbase/powercontext",
-     "stars": 1391,
+     "stars": 1394,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-10-29",
      "created": "2025-11-10",
      "status": "ok",
      "stars_30d": null,
@@ -4180,118 +4180,127 @@
   }
  },
  "arena": {
-  "date": "2026-10-22",
+  "date": "2026-10-28",
   "source": "lmarena-ai/leaderboard-dataset",
   "licence": "CC-BY-4.0",
   "category": "overall",
   "models": [
    {
+    "model": "Gemini 4 Carbon (High)",
+    "org": "google",
+    "licence": "Proprietary",
+    "rating": 1540.0,
+    "low": 1530.7,
+    "high": 1549.4,
+    "votes": 4403
+   },
+   {
     "model": "Gemini 4 Argon (High)",
     "org": "google",
     "licence": "Proprietary",
-    "rating": 1525.7,
-    "low": 1519.2,
-    "high": 1532.3,
-    "votes": 10083
+    "rating": 1528.6,
+    "low": 1522.3,
+    "high": 1534.8,
+    "votes": 11889
    },
    {
     "model": "Claude Opus 5.5 (High)",
     "org": "anthropic",
     "licence": "Proprietary",
-    "rating": 1516.2,
-    "low": 1509.4,
-    "high": 1523.0,
-    "votes": 10322
+    "rating": 1515.8,
+    "low": 1509.2,
+    "high": 1522.4,
+    "votes": 11415
    },
    {
     "model": "Claude Fable 5.1 (Max)",
     "org": "anthropic",
     "licence": "Proprietary",
-    "rating": 1512.5,
-    "low": 1506.7,
-    "high": 1518.4,
-    "votes": 16343
+    "rating": 1513.8,
+    "low": 1508.0,
+    "high": 1519.6,
+    "votes": 17178
    },
    {
     "model": "Claude Opus 5 (Max)",
     "org": "anthropic",
     "licence": "Proprietary",
-    "rating": 1508.3,
-    "low": 1503.7,
-    "high": 1513.0,
-    "votes": 34526
+    "rating": 1507.9,
+    "low": 1503.2,
+    "high": 1512.6,
+    "votes": 35531
    },
    {
     "model": "Claude Opus 5 (High)",
     "org": "anthropic",
     "licence": "Proprietary",
-    "rating": 1503.3,
-    "low": 1499.7,
-    "high": 1506.9,
-    "votes": 71020
+    "rating": 1504.1,
+    "low": 1500.5,
+    "high": 1507.6,
+    "votes": 73167
    },
    {
     "model": "Claude Opus 4.6 (High)",
     "org": "anthropic",
     "licence": "Proprietary",
-    "rating": 1501.5,
-    "low": 1498.2,
-    "high": 1504.7,
-    "votes": 83454
+    "rating": 1501.7,
+    "low": 1498.5,
+    "high": 1505.0,
+    "votes": 84512
    },
    {
     "model": "Muse Wonder (Max)",
     "org": "meta",
     "licence": "Proprietary",
-    "rating": 1500.5,
-    "low": 1492.5,
-    "high": 1508.6,
-    "votes": 6001
+    "rating": 1499.2,
+    "low": 1491.9,
+    "high": 1506.5,
+    "votes": 7749
    },
    {
     "model": "Gemini 3.8 Flash (High)",
     "org": "google",
     "licence": "Proprietary",
-    "rating": 1498.3,
-    "low": 1493.8,
-    "high": 1502.8,
-    "votes": 43997
+    "rating": 1498.5,
+    "low": 1494.1,
+    "high": 1502.9,
+    "votes": 47803
    },
    {
     "model": "Claude Opus 4.6",
     "org": "anthropic",
     "licence": "Proprietary",
-    "rating": 1496.8,
-    "low": 1493.7,
-    "high": 1500.0,
-    "votes": 88206
-   },
-   {
-    "model": "Muse Spark 1.3 (Max)",
-    "org": "meta",
-    "licence": "Proprietary",
-    "rating": 1491.1,
-    "low": 1485.8,
-    "high": 1496.4,
-    "votes": 20506
-   },
-   {
-    "model": "MiMo-V2.6-Pro",
-    "org": "xiaomi",
-    "licence": "MIT",
-    "rating": 1491.1,
-    "low": 1481.8,
-    "high": 1500.4,
-    "votes": 4067
+    "rating": 1496.2,
+    "low": 1493.1,
+    "high": 1499.4,
+    "votes": 89324
    },
    {
     "model": "Claude Fable 5 (High)",
     "org": "anthropic",
     "licence": "Proprietary",
-    "rating": 1490.9,
-    "low": 1486.7,
-    "high": 1495.2,
-    "votes": 44253
+    "rating": 1491.6,
+    "low": 1487.4,
+    "high": 1495.7,
+    "votes": 45341
+   },
+   {
+    "model": "MiMo-V2.6-Pro",
+    "org": "xiaomi",
+    "licence": "MIT",
+    "rating": 1491.4,
+    "low": 1482.0,
+    "high": 1500.7,
+    "votes": 4037
+   },
+   {
+    "model": "Muse Spark 1.3 (Max)",
+    "org": "meta",
+    "licence": "Proprietary",
+    "rating": 1490.6,
+    "low": 1485.4,
+    "high": 1495.8,
+    "votes": 22134
    },
    {
     "model": "Claude Opus 4.7 (High)",
@@ -4300,25 +4309,25 @@
     "rating": 1489.7,
     "low": 1486.0,
     "high": 1493.5,
-    "votes": 65140
+    "votes": 65110
    },
    {
     "model": "Gemini 3.7 Flash (High)",
     "org": "google",
     "licence": "Proprietary",
-    "rating": 1489.5,
-    "low": 1484.8,
-    "high": 1494.2,
-    "votes": 30501
+    "rating": 1489.1,
+    "low": 1484.5,
+    "high": 1493.8,
+    "votes": 32289
    },
    {
     "model": "Qwen3.8-Max",
     "org": "alibaba",
     "licence": "Proprietary",
-    "rating": 1483.6,
-    "low": 1478.8,
-    "high": 1488.4,
-    "votes": 30500
+    "rating": 1483.3,
+    "low": 1478.5,
+    "high": 1488.1,
+    "votes": 31915
    },
    {
     "model": "Claude Opus 4.7",
@@ -4327,160 +4336,160 @@
     "rating": 1483.0,
     "low": 1479.2,
     "high": 1486.7,
-    "votes": 66183
+    "votes": 66140
    },
    {
     "model": "Muse Spark 1.2 (xHigh)",
     "org": "meta",
     "licence": "Proprietary",
-    "rating": 1481.9,
-    "low": 1475.3,
-    "high": 1488.5,
-    "votes": 10470
+    "rating": 1482.7,
+    "low": 1476.3,
+    "high": 1489.0,
+    "votes": 11724
    },
    {
     "model": "Gemini 3.5 Flash (High)",
     "org": "google",
     "licence": "Proprietary",
-    "rating": 1481.9,
-    "low": 1478.0,
-    "high": 1485.7,
-    "votes": 48504
+    "rating": 1482.2,
+    "low": 1478.3,
+    "high": 1486.0,
+    "votes": 48376
    },
    {
     "model": "Gemini 3.1 Pro Preview",
     "org": "google",
     "licence": "Proprietary",
-    "rating": 1480.2,
-    "low": 1477.3,
-    "high": 1483.2,
-    "votes": 130819
+    "rating": 1480.1,
+    "low": 1477.2,
+    "high": 1483.0,
+    "votes": 132547
    },
    {
     "model": "Gemini 3.6 Flash (High)",
     "org": "google",
     "licence": "Proprietary",
-    "rating": 1479.6,
-    "low": 1475.2,
-    "high": 1484.0,
-    "votes": 36102
+    "rating": 1479.8,
+    "low": 1475.4,
+    "high": 1484.2,
+    "votes": 36028
    },
    {
     "model": "Gemini 3 Pro",
     "org": "google",
     "licence": "Proprietary",
-    "rating": 1479.5,
-    "low": 1475.7,
+    "rating": 1479.4,
+    "low": 1475.6,
     "high": 1483.2,
-    "votes": 42054
+    "votes": 42057
    },
    {
     "model": "Muse Spark 1.1",
     "org": "meta",
     "licence": "Proprietary",
-    "rating": 1477.9,
-    "low": 1473.8,
-    "high": 1482.0,
-    "votes": 46121
+    "rating": 1478.3,
+    "low": 1474.2,
+    "high": 1482.4,
+    "votes": 46354
    },
    {
     "model": "Gemini 3.5 Flash (Medium)",
     "org": "google",
     "licence": "Proprietary",
-    "rating": 1477.8,
-    "low": 1473.7,
-    "high": 1481.9,
-    "votes": 47271
-   },
-   {
-    "model": "Qwen3.7-Max-Preview",
-    "org": "alibaba",
-    "licence": "Proprietary",
-    "rating": 1475.1,
-    "low": 1465.4,
-    "high": 1484.8,
-    "votes": 3941
+    "rating": 1478.2,
+    "low": 1474.0,
+    "high": 1482.3,
+    "votes": 47196
    },
    {
     "model": "Kimi K3 (Max)",
     "org": "moonshot",
     "licence": "Kimi K3 license",
-    "rating": 1475.0,
-    "low": 1470.6,
-    "high": 1479.5,
-    "votes": 35379
+    "rating": 1475.7,
+    "low": 1471.3,
+    "high": 1480.1,
+    "votes": 36780
+   },
+   {
+    "model": "Qwen3.7-Max-Preview",
+    "org": "alibaba",
+    "licence": "Proprietary",
+    "rating": 1474.7,
+    "low": 1465.0,
+    "high": 1484.3,
+    "votes": 3932
    },
    {
     "model": "Muse Spark",
     "org": "meta",
     "licence": "Proprietary",
-    "rating": 1474.2,
-    "low": 1468.5,
-    "high": 1480.0,
-    "votes": 14147
+    "rating": 1474.0,
+    "low": 1468.3,
+    "high": 1479.7,
+    "votes": 14140
    },
    {
     "model": "GLM-5.3 (Max)",
     "org": "zai",
     "licence": "MIT",
-    "rating": 1473.9,
-    "low": 1468.9,
-    "high": 1478.9,
-    "votes": 25144
-   },
-   {
-    "model": "Claude Sonnet 5.5 (xHigh)",
-    "org": "anthropic",
-    "licence": "Proprietary",
-    "rating": 1473.1,
-    "low": 1466.1,
-    "high": 1480.1,
-    "votes": 8977
+    "rating": 1473.8,
+    "low": 1468.8,
+    "high": 1478.7,
+    "votes": 26606
    },
    {
     "model": "GLM-5.3-Flash",
     "org": "zai",
     "licence": "MIT",
-    "rating": 1472.4,
-    "low": 1467.7,
-    "high": 1477.1,
-    "votes": 38359
+    "rating": 1473.0,
+    "low": 1468.4,
+    "high": 1477.7,
+    "votes": 41642
+   },
+   {
+    "model": "Claude Sonnet 5.5 (xHigh)",
+    "org": "anthropic",
+    "licence": "Proprietary",
+    "rating": 1472.9,
+    "low": 1466.1,
+    "high": 1479.6,
+    "votes": 10033
    },
    {
     "model": "GPT-5.5 (High)",
     "org": "openai",
     "licence": "Proprietary",
-    "rating": 1471.5,
-    "low": 1467.8,
-    "high": 1475.2,
-    "votes": 69375
+    "rating": 1471.6,
+    "low": 1467.9,
+    "high": 1475.3,
+    "votes": 69377
    },
    {
     "model": "Qwen3.5-Max-Preview",
     "org": "alibaba",
     "licence": "Proprietary",
-    "rating": 1470.3,
+    "rating": 1470.4,
     "low": 1465.5,
     "high": 1475.2,
-    "votes": 22601
+    "votes": 22582
    },
    {
     "model": "GLM-5.2 (Max)",
     "org": "zai",
     "licence": "MIT",
-    "rating": 1469.8,
-    "low": 1465.7,
-    "high": 1473.9,
-    "votes": 52283
+    "rating": 1469.6,
+    "low": 1465.6,
+    "high": 1473.7,
+    "votes": 53702
    },
    {
     "model": "GPT-5.4 (High)",
     "org": "openai",
     "licence": "Proprietary",
-    "rating": 1469.2,
-    "low": 1465.5,
-    "high": 1472.9,
-    "votes": 64757
+    "rating": 1469.1,
+    "low": 1465.3,
+    "high": 1472.8,
+    "votes": 64748
    },
    {
     "model": "ERNIE 5.1",
@@ -4489,142 +4498,151 @@
     "rating": 1467.8,
     "low": 1463.3,
     "high": 1472.3,
-    "votes": 39474
+    "votes": 39469
    },
    {
     "model": "GPT-5.5",
     "org": "openai",
     "licence": "Proprietary",
     "rating": 1466.8,
-    "low": 1463.2,
-    "high": 1470.5,
-    "votes": 70998
+    "low": 1463.1,
+    "high": 1470.4,
+    "votes": 70949
    },
    {
     "model": "Gemini 3 Flash",
     "org": "google",
     "licence": "Proprietary",
-    "rating": 1465.8,
+    "rating": 1465.7,
     "low": 1461.4,
-    "high": 1470.1,
-    "votes": 31313
+    "high": 1470.0,
+    "votes": 31301
    },
    {
     "model": "DeepSeek-V4.1-Flash-20260910 (Max)",
     "org": "deepseek",
     "licence": "MIT",
-    "rating": 1464.3,
-    "low": 1458.2,
-    "high": 1470.3,
-    "votes": 13750
+    "rating": 1464.5,
+    "low": 1458.4,
+    "high": 1470.6,
+    "votes": 13657
    },
    {
     "model": "MiMo-V2.5-Pro",
     "org": "xiaomi",
     "licence": "MIT",
-    "rating": 1464.1,
-    "low": 1460.6,
-    "high": 1467.6,
-    "votes": 77883
+    "rating": 1464.2,
+    "low": 1460.7,
+    "high": 1467.7,
+    "votes": 77728
    },
    {
     "model": "GLM-5.1",
     "org": "zai",
     "licence": "MIT",
     "rating": 1462.8,
-    "low": 1459.2,
+    "low": 1459.3,
     "high": 1466.3,
-    "votes": 65402
+    "votes": 66771
    },
    {
     "model": "Claude Opus 4.8 (High)",
     "org": "anthropic",
     "licence": "Proprietary",
-    "rating": 1461.1,
-    "low": 1457.2,
-    "high": 1464.9,
-    "votes": 64096
+    "rating": 1461.3,
+    "low": 1457.4,
+    "high": 1465.2,
+    "votes": 63994
    },
    {
     "model": "Claude Sonnet 4.6",
     "org": "anthropic",
     "licence": "Proprietary",
-    "rating": 1457.8,
-    "low": 1454.3,
-    "high": 1461.3,
-    "votes": 70953
+    "rating": 1457.7,
+    "low": 1454.2,
+    "high": 1461.2,
+    "votes": 70916
    },
    {
     "model": "Gemini 2.5 Pro",
     "org": "google",
     "licence": "Proprietary",
-    "rating": 1457.8,
+    "rating": 1457.7,
     "low": 1455.3,
-    "high": 1460.2,
-    "votes": 125316
+    "high": 1460.1,
+    "votes": 125307
    },
    {
     "model": "GPT-5.6 Sol (xHigh)",
     "org": "openai",
     "licence": "Proprietary",
-    "rating": 1457.4,
-    "low": 1453.2,
-    "high": 1461.7,
-    "votes": 42713
+    "rating": 1457.2,
+    "low": 1453.0,
+    "high": 1461.5,
+    "votes": 43796
    },
    {
     "model": "Kimi K2.6",
     "org": "moonshot",
     "licence": "Modified MIT",
-    "rating": 1455.3,
-    "low": 1450.9,
-    "high": 1459.7,
-    "votes": 40026
+    "rating": 1455.6,
+    "low": 1451.1,
+    "high": 1460.0,
+    "votes": 39978
    },
    {
     "model": "Qwen3.7-Plus",
     "org": "alibaba",
     "licence": "Proprietary",
     "rating": 1454.6,
-    "low": 1450.3,
+    "low": 1450.2,
     "high": 1458.9,
-    "votes": 42058
+    "votes": 42011
    },
    {
     "model": "Claude Opus 4.8",
     "org": "anthropic",
     "licence": "Proprietary",
-    "rating": 1453.8,
-    "low": 1450.0,
-    "high": 1457.6,
-    "votes": 65208
+    "rating": 1454.0,
+    "low": 1450.2,
+    "high": 1457.9,
+    "votes": 65121
    },
    {
     "model": "GPT-5.4",
     "org": "openai",
     "licence": "Proprietary",
-    "rating": 1452.3,
-    "low": 1448.6,
-    "high": 1455.9,
-    "votes": 67855
+    "rating": 1452.5,
+    "low": 1448.8,
+    "high": 1456.1,
+    "votes": 67856
    },
    {
     "model": "MiMo-V2.6-Flash",
     "org": "xiaomi",
     "licence": "MIT",
-    "rating": 1451.7,
-    "low": 1445.8,
-    "high": 1457.7,
-    "votes": 13730
+    "rating": 1451.2,
+    "low": 1445.5,
+    "high": 1457.0,
+    "votes": 15312
    },
    {
     "model": "DeepSeek-V4-Pro",
     "org": "deepseek",
     "licence": "MIT",
-    "rating": 1451.3,
-    "low": 1447.4,
-    "high": 1455.1,
-    "votes": 57588
+    "rating": 1451.1,
+    "low": 1447.3,
+    "high": 1455.0,
+    "votes": 57572
+   },
+   {
+    "model": "Grok 4.20 Beta (Reasoning, 0309)",
+    "org": "xai",
+    "licence": "Proprietary",
+    "rating": 1451.0,
+    "low": 1447.3,
+    "high": 1454.6,
+    "votes": 66422
    },
    {
     "model": "Claude Opus 4.5 (20251101)",
@@ -4632,134 +4650,134 @@
     "licence": "Proprietary",
     "rating": 1450.9,
     "low": 1447.8,
-    "high": 1454.1,
-    "votes": 72850
-   },
-   {
-    "model": "Grok 4.20 Beta (Reasoning, 0309)",
-    "org": "xai",
-    "licence": "Proprietary",
-    "rating": 1450.9,
-    "low": 1447.3,
-    "high": 1454.6,
-    "votes": 66418
+    "high": 1454.0,
+    "votes": 72825
    },
    {
     "model": "Grok 4.20 Multi-Agent Beta (0309)",
     "org": "xai",
     "licence": "Proprietary",
-    "rating": 1450.6,
+    "rating": 1450.7,
     "low": 1447.0,
     "high": 1454.3,
-    "votes": 64928
+    "votes": 64917
    },
    {
     "model": "amazon-nova-experimental-chat (26-02-10)",
     "org": "amazon",
     "licence": "Proprietary",
-    "rating": 1448.8,
-    "low": 1439.2,
-    "high": 1458.4,
-    "votes": 3522
-   },
-   {
-    "model": "Dola Seed 2.0 Pro",
-    "org": "bytedance",
-    "licence": "Proprietary",
-    "rating": 1448.2,
-    "low": 1444.9,
-    "high": 1451.6,
-    "votes": 79130
+    "rating": 1448.7,
+    "low": 1439.1,
+    "high": 1458.3,
+    "votes": 3523
    },
    {
     "model": "GPT-5.6 Terra (xHigh)",
     "org": "openai",
     "licence": "Proprietary",
-    "rating": 1448.2,
-    "low": 1444.0,
-    "high": 1452.3,
-    "votes": 46470
+    "rating": 1448.3,
+    "low": 1444.2,
+    "high": 1452.4,
+    "votes": 48166
    },
    {
     "model": "Claude Opus 4.5 (High, 32K, 20251101)",
     "org": "anthropic",
     "licence": "Proprietary",
-    "rating": 1448.1,
-    "low": 1444.3,
+    "rating": 1448.2,
+    "low": 1444.4,
     "high": 1452.0,
-    "votes": 37485
+    "votes": 37484
+   },
+   {
+    "model": "Dola Seed 2.0 Pro",
+    "org": "bytedance",
+    "licence": "Proprietary",
+    "rating": 1448.0,
+    "low": 1444.7,
+    "high": 1451.4,
+    "votes": 79094
    },
    {
     "model": "Grok 4.5",
     "org": "xai",
     "licence": "Proprietary",
-    "rating": 1448.0,
-    "low": 1443.7,
-    "high": 1452.3,
-    "votes": 39880
+    "rating": 1447.6,
+    "low": 1443.3,
+    "high": 1452.0,
+    "votes": 39801
    },
    {
     "model": "Qwen3.6-Max-Preview",
     "org": "alibaba",
     "licence": "Proprietary",
-    "rating": 1447.2,
-    "low": 1439.0,
-    "high": 1455.3,
-    "votes": 5423
-   },
-   {
-    "model": "GLM-5",
-    "org": "zai",
-    "licence": "MIT",
-    "rating": 1446.1,
-    "low": 1441.8,
-    "high": 1450.3,
-    "votes": 29267
+    "rating": 1446.7,
+    "low": 1438.6,
+    "high": 1454.9,
+    "votes": 5419
    },
    {
     "model": "DeepSeek-V4-Pro (High, 20260813)",
     "org": "deepseek",
     "licence": "MIT",
-    "rating": 1445.6,
-    "low": 1439.0,
-    "high": 1452.1,
-    "votes": 9797
+    "rating": 1446.0,
+    "low": 1439.5,
+    "high": 1452.6,
+    "votes": 9787
    },
    {
-    "model": "Kimi K2.5 (Thinking)",
-    "org": "moonshot",
-    "licence": "Modified MIT",
-    "rating": 1445.0,
-    "low": 1441.8,
-    "high": 1448.3,
-    "votes": 74744
-   },
-   {
-    "model": "DeepSeek-V4-Pro Preview (High)",
-    "org": "deepseek",
+    "model": "GLM-5",
+    "org": "zai",
     "licence": "MIT",
-    "rating": 1445.0,
-    "low": 1441.0,
-    "high": 1448.9,
-    "votes": 54896
+    "rating": 1445.9,
+    "low": 1441.7,
+    "high": 1450.1,
+    "votes": 29255
+   },
+   {
+    "model": "GPT-6.1 Sol (Max)",
+    "org": "openai",
+    "licence": "Proprietary",
+    "rating": 1445.6,
+    "low": 1438.6,
+    "high": 1452.6,
+    "votes": 9367
    },
    {
     "model": "NVIDIA-Nemotron-3-Ultra-550B-A55B (NVFP4)",
     "org": "nvidia",
     "licence": "OpenMDW-1.1",
-    "rating": 1444.7,
-    "low": 1437.8,
-    "high": 1451.5,
-    "votes": 11557
+    "rating": 1445.2,
+    "low": 1438.3,
+    "high": 1452.0,
+    "votes": 11563
+   },
+   {
+    "model": "DeepSeek-V4-Pro Preview (High)",
+    "org": "deepseek",
+    "licence": "MIT",
+    "rating": 1444.9,
+    "low": 1441.0,
+    "high": 1448.9,
+    "votes": 54870
+   },
+   {
+    "model": "Kimi K2.5 (Thinking)",
+    "org": "moonshot",
+    "licence": "Modified MIT",
+    "rating": 1444.9,
+    "low": 1441.6,
+    "high": 1448.2,
+    "votes": 74682
    },
    {
     "model": "ERNIE 5.0 (0110)",
     "org": "baidu",
     "licence": "Proprietary",
-    "rating": 1444.6,
-    "low": 1440.8,
-    "high": 1448.5,
-    "votes": 36481
+    "rating": 1444.5,
+    "low": 1440.7,
+    "high": 1448.4,
+    "votes": 36475
    },
    {
     "model": "Grok 4.20 Beta 1",
@@ -4768,88 +4786,79 @@
     "rating": 1444.5,
     "low": 1440.0,
     "high": 1449.0,
-    "votes": 27914
-   },
-   {
-    "model": "GPT-6.1 Sol (Max)",
-    "org": "openai",
-    "licence": "Proprietary",
-    "rating": 1444.1,
-    "low": 1436.8,
-    "high": 1451.3,
-    "votes": 8305
+    "votes": 27889
    },
    {
     "model": "Gemma 4 31B",
     "org": "google",
     "licence": "Apache 2.0",
-    "rating": 1442.9,
-    "low": 1435.5,
-    "high": 1450.3,
-    "votes": 6137
-   },
-   {
-    "model": "GPT-5.1 (High)",
-    "org": "openai",
-    "licence": "Proprietary",
-    "rating": 1442.8,
-    "low": 1439.1,
-    "high": 1446.4,
-    "votes": 41646
-   },
-   {
-    "model": "ERNIE-5.0-Preview (1203)",
-    "org": "baidu",
-    "licence": "Proprietary",
-    "rating": 1442.5,
-    "low": 1436.0,
-    "high": 1449.0,
-    "votes": 9805
-   },
-   {
-    "model": "Gemini 3 Flash (Minimal)",
-    "org": "google",
-    "licence": "Proprietary",
-    "rating": 1442.5,
-    "low": 1439.5,
-    "high": 1445.5,
-    "votes": 90998
-   },
-   {
-    "model": "Claude Sonnet 5 (High)",
-    "org": "anthropic",
-    "licence": "Proprietary",
-    "rating": 1442.4,
-    "low": 1438.4,
-    "high": 1446.5,
-    "votes": 51784
-   },
-   {
-    "model": "Inkling",
-    "org": "thinky",
-    "licence": "Apache 2.0",
-    "rating": 1442.0,
-    "low": 1437.8,
-    "high": 1446.2,
-    "votes": 43705
-   },
-   {
-    "model": "GPT-6 Astra (Max)",
-    "org": "openai",
-    "licence": "Proprietary",
-    "rating": 1442.0,
-    "low": 1436.0,
-    "high": 1448.1,
-    "votes": 14076
+    "rating": 1443.0,
+    "low": 1435.6,
+    "high": 1450.4,
+    "votes": 6138
    },
    {
     "model": "Step 5 Preview",
     "org": "stepfun",
     "licence": "Proprietary",
-    "rating": 1442.0,
-    "low": 1435.4,
-    "high": 1448.6,
-    "votes": 9792
+    "rating": 1442.7,
+    "low": 1436.4,
+    "high": 1449.0,
+    "votes": 11355
+   },
+   {
+    "model": "GPT-5.1 (High)",
+    "org": "openai",
+    "licence": "Proprietary",
+    "rating": 1442.7,
+    "low": 1439.0,
+    "high": 1446.4,
+    "votes": 41639
+   },
+   {
+    "model": "Claude Sonnet 5 (High)",
+    "org": "anthropic",
+    "licence": "Proprietary",
+    "rating": 1442.7,
+    "low": 1438.7,
+    "high": 1446.7,
+    "votes": 52952
+   },
+   {
+    "model": "Inkling",
+    "org": "thinky",
+    "licence": "Apache 2.0",
+    "rating": 1442.7,
+    "low": 1438.5,
+    "high": 1446.9,
+    "votes": 45472
+   },
+   {
+    "model": "Gemini 3 Flash (Minimal)",
+    "org": "google",
+    "licence": "Proprietary",
+    "rating": 1442.4,
+    "low": 1439.4,
+    "high": 1445.5,
+    "votes": 90997
+   },
+   {
+    "model": "ERNIE-5.0-Preview (1203)",
+    "org": "baidu",
+    "licence": "Proprietary",
+    "rating": 1442.3,
+    "low": 1435.8,
+    "high": 1448.8,
+    "votes": 9802
+   },
+   {
+    "model": "GPT-6 Astra (Max)",
+    "org": "openai",
+    "licence": "Proprietary",
+    "rating": 1441.2,
+    "low": 1435.2,
+    "high": 1447.1,
+    "votes": 15038
    },
    {
     "model": "GLM-4.6",
@@ -4857,17 +4866,17 @@
     "licence": "MIT",
     "rating": 1440.1,
     "low": 1436.2,
-    "high": 1444.0,
-    "votes": 35818
+    "high": 1443.9,
+    "votes": 35810
    },
    {
-    "model": "Qwen3.8-27B",
-    "org": "alibaba",
+    "model": "Hy3",
+    "org": "tencent",
     "licence": "Apache 2.0",
-    "rating": 1439.9,
-    "low": 1435.1,
-    "high": 1444.8,
-    "votes": 26238
+    "rating": 1439.1,
+    "low": 1433.2,
+    "high": 1444.9,
+    "votes": 13840
    },
    {
     "model": "Qwen3-Max-Preview",
@@ -4876,7 +4885,16 @@
     "rating": 1438.9,
     "low": 1434.4,
     "high": 1443.4,
-    "votes": 27367
+    "votes": 27368
+   },
+   {
+    "model": "Claude Sonnet 4.5 (20250929)",
+    "org": "anthropic",
+    "licence": "Proprietary",
+    "rating": 1438.5,
+    "low": 1435.7,
+    "high": 1441.4,
+    "votes": 82621
    },
    {
     "model": "GPT-5.2 Chat (20260210)",
@@ -4885,52 +4903,34 @@
     "rating": 1438.5,
     "low": 1434.5,
     "high": 1442.5,
-    "votes": 35982
+    "votes": 35974
    },
    {
-    "model": "Claude Sonnet 4.5 (20250929)",
-    "org": "anthropic",
-    "licence": "Proprietary",
-    "rating": 1438.4,
-    "low": 1435.6,
-    "high": 1441.3,
-    "votes": 82650
-   },
-   {
-    "model": "Hy3",
-    "org": "tencent",
-    "licence": "Apache 2.0",
-    "rating": 1438.4,
-    "low": 1432.5,
-    "high": 1444.4,
-    "votes": 13220
-   },
-   {
-    "model": "Qwen3.5-397B-A17B",
+    "model": "Qwen3.8-27B",
     "org": "alibaba",
     "licence": "Apache 2.0",
-    "rating": 1437.8,
-    "low": 1434.8,
-    "high": 1440.9,
-    "votes": 96206
+    "rating": 1438.4,
+    "low": 1433.6,
+    "high": 1443.3,
+    "votes": 27779
    },
    {
     "model": "GLM-5V-Turbo",
     "org": "zai",
     "licence": "Proprietary",
-    "rating": 1437.8,
-    "low": 1431.4,
-    "high": 1444.2,
-    "votes": 10477
+    "rating": 1437.7,
+    "low": 1431.3,
+    "high": 1444.1,
+    "votes": 10476
    },
    {
-    "model": "Qwen3.6-Plus",
+    "model": "Qwen3.5-397B-A17B",
     "org": "alibaba",
-    "licence": "Proprietary",
-    "rating": 1436.4,
-    "low": 1432.3,
-    "high": 1440.5,
-    "votes": 48142
+    "licence": "Apache 2.0",
+    "rating": 1437.6,
+    "low": 1434.5,
+    "high": 1440.6,
+    "votes": 97675
    },
    {
     "model": "Grok 4.1 (Thinking)",
@@ -4939,124 +4939,133 @@
     "rating": 1436.4,
     "low": 1433.3,
     "high": 1439.6,
-    "votes": 66479
+    "votes": 66470
+   },
+   {
+    "model": "Qwen3.6-Plus",
+    "org": "alibaba",
+    "licence": "Proprietary",
+    "rating": 1436.3,
+    "low": 1432.2,
+    "high": 1440.4,
+    "votes": 48126
    },
    {
     "model": "MiMo-V2-Pro",
     "org": "xiaomi",
     "licence": "Proprietary",
-    "rating": 1436.3,
-    "low": 1431.6,
-    "high": 1440.9,
-    "votes": 25435
+    "rating": 1436.1,
+    "low": 1431.4,
+    "high": 1440.7,
+    "votes": 25421
    },
    {
     "model": "Grok 4.1",
     "org": "xai",
     "licence": "Proprietary",
-    "rating": 1436.1,
-    "low": 1433.0,
-    "high": 1439.2,
-    "votes": 68621
+    "rating": 1436.0,
+    "low": 1432.8,
+    "high": 1439.1,
+    "votes": 68599
+   },
+   {
+    "model": "Gemini 3.5 Flash-Lite",
+    "org": "google",
+    "licence": "Proprietary",
+    "rating": 1435.5,
+    "low": 1431.0,
+    "high": 1439.9,
+    "votes": 35740
    },
    {
     "model": "GLM-4.7",
     "org": "zai",
     "licence": "MIT",
     "rating": 1435.4,
-    "low": 1429.3,
-    "high": 1441.4,
-    "votes": 12245
-   },
-   {
-    "model": "Gemini 3.5 Flash-Lite",
-    "org": "google",
-    "licence": "Proprietary",
-    "rating": 1435.0,
-    "low": 1430.5,
-    "high": 1439.4,
-    "votes": 35829
+    "low": 1429.4,
+    "high": 1441.5,
+    "votes": 12239
    },
    {
     "model": "Claude Sonnet 4.5 (High, 32K, 20250929)",
     "org": "anthropic",
     "licence": "Proprietary",
     "rating": 1434.5,
-    "low": 1431.8,
+    "low": 1431.7,
     "high": 1437.3,
-    "votes": 83906
+    "votes": 83892
    },
    {
     "model": "Gemma 4 26B A4B",
     "org": "google",
     "licence": "Apache 2.0",
-    "rating": 1434.1,
-    "low": 1426.6,
-    "high": 1441.5,
-    "votes": 6092
+    "rating": 1434.2,
+    "low": 1426.7,
+    "high": 1441.6,
+    "votes": 6090
    },
    {
     "model": "DeepSeek-V4-Flash",
     "org": "deepseek",
     "licence": "MIT",
-    "rating": 1431.9,
+    "rating": 1431.8,
     "low": 1427.8,
     "high": 1435.9,
-    "votes": 51982
-   },
-   {
-    "model": "Mistral Large 4",
-    "org": "mistral",
-    "licence": "Proprietary",
-    "rating": 1431.9,
-    "low": 1425.4,
-    "high": 1438.3,
-    "votes": 10331
+    "votes": 51944
    },
    {
     "model": "MiniMax-M3",
     "org": "minimax",
     "licence": "MiniMax Community License",
-    "rating": 1431.7,
-    "low": 1428.0,
-    "high": 1435.5,
-    "votes": 67030
+    "rating": 1431.3,
+    "low": 1427.5,
+    "high": 1435.0,
+    "votes": 68611
    },
    {
     "model": "GPT-5.6 Luna (xHigh)",
     "org": "openai",
     "licence": "Proprietary",
-    "rating": 1431.1,
+    "rating": 1431.0,
     "low": 1426.8,
     "high": 1435.3,
-    "votes": 41426
+    "votes": 41317
+   },
+   {
+    "model": "Mistral Large 4",
+    "org": "mistral",
+    "licence": "Proprietary",
+    "rating": 1430.1,
+    "low": 1423.9,
+    "high": 1436.3,
+    "votes": 12066
    },
    {
     "model": "GLM-4.5",
     "org": "zai",
     "licence": "MIT",
     "rating": 1430.0,
-    "low": 1425.2,
+    "low": 1425.1,
     "high": 1434.9,
-    "votes": 23791
+    "votes": 23797
    },
    {
     "model": "ERNIE-5.0-Preview (1022)",
     "org": "baidu",
     "licence": "Proprietary",
-    "rating": 1429.9,
-    "low": 1421.1,
-    "high": 1438.6,
-    "votes": 4754
+    "rating": 1429.8,
+    "low": 1421.0,
+    "high": 1438.5,
+    "votes": 4755
    },
    {
     "model": "Grok 4.6 (High)",
     "org": "xai",
     "licence": "Proprietary",
-    "rating": 1429.6,
-    "low": 1424.9,
-    "high": 1434.3,
-    "votes": 32189
+    "rating": 1428.5,
+    "low": 1423.9,
+    "high": 1433.2,
+    "votes": 33824
    },
    {
     "model": "ChatGPT-4o Latest (20250326)",
@@ -5065,34 +5074,34 @@
     "rating": 1428.4,
     "low": 1425.7,
     "high": 1431.2,
-    "votes": 81905
+    "votes": 81893
    },
    {
     "model": "Mistral Large 3",
     "org": "mistral",
     "licence": "Apache 2.0",
-    "rating": 1428.2,
-    "low": 1425.4,
-    "high": 1431.0,
-    "votes": 86928
+    "rating": 1428.3,
+    "low": 1425.5,
+    "high": 1431.1,
+    "votes": 88325
    },
    {
     "model": "MiMo-V2.5",
     "org": "xiaomi",
     "licence": "MIT",
-    "rating": 1427.9,
-    "low": 1423.7,
-    "high": 1432.1,
-    "votes": 47364
+    "rating": 1427.8,
+    "low": 1423.6,
+    "high": 1432.0,
+    "votes": 47327
    },
    {
     "model": "DeepSeek-R1 (0528)",
     "org": "deepseek",
     "licence": "MIT",
-    "rating": 1427.6,
-    "low": 1422.0,
-    "high": 1433.3,
-    "votes": 18170
+    "rating": 1427.7,
+    "low": 1422.1,
+    "high": 1433.4,
+    "votes": 18165
    },
    {
     "model": "LongCat-Flash-Chat Exp (2602)",
@@ -5100,44 +5109,44 @@
     "licence": "Proprietary",
     "rating": 1426.7,
     "low": 1422.2,
-    "high": 1431.1,
-    "votes": 29275
-   },
-   {
-    "model": "Beam 1.0 501B A23B",
-    "org": "reflection",
-    "licence": "Apache 2.0",
-    "rating": 1425.6,
-    "low": 1416.3,
-    "high": 1434.8,
-    "votes": 4237
+    "high": 1431.2,
+    "votes": 29244
    },
    {
     "model": "Grok 3 Preview (02-24)",
     "org": "xai",
     "licence": "Proprietary",
-    "rating": 1425.5,
-    "low": 1421.2,
-    "high": 1429.8,
-    "votes": 32498
+    "rating": 1425.4,
+    "low": 1421.1,
+    "high": 1429.7,
+    "votes": 32496
+   },
+   {
+    "model": "Beam 1.0 501B A23B",
+    "org": "reflection",
+    "licence": "Apache 2.0",
+    "rating": 1425.4,
+    "low": 1416.1,
+    "high": 1434.7,
+    "votes": 4233
    },
    {
     "model": "DeepSeek-V3.2-Exp (Thinking)",
     "org": "deepseek",
     "licence": "MIT",
     "rating": 1425.0,
-    "low": 1418.5,
-    "high": 1431.6,
-    "votes": 8994
+    "low": 1418.4,
+    "high": 1431.5,
+    "votes": 8991
    },
    {
     "model": "DeepSeek-V3.2",
     "org": "deepseek",
     "licence": "MIT",
-    "rating": 1424.5,
-    "low": 1421.1,
-    "high": 1428.0,
-    "votes": 48090
+    "rating": 1424.4,
+    "low": 1421.0,
+    "high": 1427.9,
+    "votes": 48095
    },
    {
     "model": "DeepSeek-V4-Flash Preview (High)",
@@ -5146,7 +5155,7 @@
     "rating": 1424.3,
     "low": 1420.2,
     "high": 1428.4,
-    "votes": 51781
+    "votes": 51763
    },
    {
     "model": "Mistral Medium 3.1 (2508)",
@@ -5155,43 +5164,43 @@
     "rating": 1424.2,
     "low": 1421.7,
     "high": 1426.8,
-    "votes": 95285
+    "votes": 95269
    },
    {
     "model": "MiMo-V2-Omni",
     "org": "xiaomi",
     "licence": "Proprietary",
-    "rating": 1423.0,
-    "low": 1417.5,
-    "high": 1428.5,
-    "votes": 20618
+    "rating": 1423.1,
+    "low": 1417.6,
+    "high": 1428.6,
+    "votes": 20615
    },
    {
     "model": "LongCat-Flash-Chat",
     "org": "meituan",
     "licence": "MIT",
     "rating": 1422.7,
-    "low": 1416.4,
+    "low": 1416.3,
     "high": 1429.1,
-    "votes": 11166
+    "votes": 11167
    },
    {
     "model": "GPT-5.1",
     "org": "openai",
     "licence": "Proprietary",
     "rating": 1422.2,
-    "low": 1418.7,
-    "high": 1425.8,
-    "votes": 44419
+    "low": 1418.6,
+    "high": 1425.7,
+    "votes": 44413
    },
    {
     "model": "DeepSeek-V3.2-Exp",
     "org": "deepseek",
     "licence": "MIT",
     "rating": 1422.2,
-    "low": 1415.9,
+    "low": 1415.8,
     "high": 1428.5,
-    "votes": 11997
+    "votes": 11996
    },
    {
     "model": "Mistral Medium 3.5",
@@ -5199,16 +5208,16 @@
     "licence": "Modified MIT",
     "rating": 1420.8,
     "low": 1414.4,
-    "high": 1427.2,
+    "high": 1427.1,
     "votes": 11791
    },
    {
     "model": "Kimi K2.5 (Instant)",
     "org": "moonshot",
     "licence": "Modified MIT",
-    "rating": 1420.2,
-    "low": 1413.8,
-    "high": 1426.7,
+    "rating": 1420.1,
+    "low": 1413.7,
+    "high": 1426.6,
     "votes": 8371
    },
    {
@@ -5218,52 +5227,34 @@
     "rating": 1420.0,
     "low": 1413.5,
     "high": 1426.5,
-    "votes": 11312
+    "votes": 11314
    },
    {
     "model": "DeepSeek-V3.2 (Thinking)",
     "org": "deepseek",
     "licence": "MIT",
-    "rating": 1419.9,
-    "low": 1416.3,
-    "high": 1423.4,
-    "votes": 42042
+    "rating": 1419.8,
+    "low": 1416.2,
+    "high": 1423.3,
+    "votes": 42033
    },
    {
     "model": "DeepSeek-V3.1",
     "org": "deepseek",
     "licence": "MIT",
-    "rating": 1419.6,
+    "rating": 1419.5,
     "low": 1413.5,
     "high": 1425.6,
-    "votes": 14607
+    "votes": 14606
    },
    {
     "model": "amazon-nova-experimental-chat (12-10)",
     "org": "amazon",
     "licence": "Proprietary",
-    "rating": 1419.6,
+    "rating": 1419.5,
     "low": 1410.1,
-    "high": 1429.0,
-    "votes": 3728
-   },
-   {
-    "model": "DeepSeek-V3.1-Terminus (Thinking)",
-    "org": "deepseek",
-    "licence": "MIT",
-    "rating": 1419.3,
-    "low": 1409.2,
-    "high": 1429.4,
-    "votes": 3375
-   },
-   {
-    "model": "GPT-5.5 Instant",
-    "org": "openai",
-    "licence": "Proprietary",
-    "rating": 1419.2,
-    "low": 1414.3,
-    "high": 1424.2,
-    "votes": 27163
+    "high": 1428.9,
+    "votes": 3734
    },
    {
     "model": "Claude Opus 4.1 (Thinking 16K, 20250805)",
@@ -5272,7 +5263,16 @@
     "rating": 1419.2,
     "low": 1415.8,
     "high": 1422.7,
-    "votes": 49536
+    "votes": 49535
+   },
+   {
+    "model": "GPT-5.5 Instant",
+    "org": "openai",
+    "licence": "Proprietary",
+    "rating": 1419.2,
+    "low": 1414.3,
+    "high": 1424.1,
+    "votes": 27128
    },
    {
     "model": "Qwen3-235B-A22B-Instruct (2507)",
@@ -5281,25 +5281,34 @@
     "rating": 1419.2,
     "low": 1416.6,
     "high": 1421.7,
-    "votes": 98096
+    "votes": 98081
+   },
+   {
+    "model": "DeepSeek-V3.1-Terminus (Thinking)",
+    "org": "deepseek",
+    "licence": "MIT",
+    "rating": 1419.1,
+    "low": 1409.0,
+    "high": 1429.2,
+    "votes": 3379
    },
    {
     "model": "Claude Opus 4.1 (20250805)",
     "org": "anthropic",
     "licence": "Proprietary",
     "rating": 1418.6,
-    "low": 1415.7,
-    "high": 1421.6,
-    "votes": 77211
+    "low": 1415.6,
+    "high": 1421.5,
+    "votes": 77213
    },
    {
     "model": "Qwen3.5-122B-A10B",
     "org": "alibaba",
     "licence": "Apache 2.0",
-    "rating": 1417.6,
-    "low": 1413.4,
-    "high": 1421.9,
-    "votes": 29716
+    "rating": 1417.5,
+    "low": 1413.3,
+    "high": 1421.8,
+    "votes": 29712
    },
    {
     "model": "GPT-4.5 Preview (2025-02-27)",
@@ -5314,10 +5323,10 @@
     "model": "DeepSeek-V3.1-Terminus",
     "org": "deepseek",
     "licence": "MIT",
-    "rating": 1417.3,
-    "low": 1407.6,
-    "high": 1427.0,
-    "votes": 3608
+    "rating": 1417.1,
+    "low": 1407.4,
+    "high": 1426.8,
+    "votes": 3609
    },
    {
     "model": "Qwen3-Next-80B-A3B-Instruct",
@@ -5326,7 +5335,7 @@
     "rating": 1417.0,
     "low": 1412.3,
     "high": 1421.7,
-    "votes": 22755
+    "votes": 22753
    },
    {
     "model": "Gemini 2.5 Flash",
@@ -5335,7 +5344,7 @@
     "rating": 1416.9,
     "low": 1414.5,
     "high": 1419.3,
-    "votes": 125462
+    "votes": 125457
    },
    {
     "model": "DeepSeek-V3.1 (Thinking)",
@@ -5344,16 +5353,16 @@
     "rating": 1416.6,
     "low": 1410.0,
     "high": 1423.2,
-    "votes": 11454
+    "votes": 11458
    },
    {
     "model": "GPT-5.2 (High)",
     "org": "openai",
     "licence": "Proprietary",
-    "rating": 1416.4,
-    "low": 1412.9,
-    "high": 1419.9,
-    "votes": 49643
+    "rating": 1416.3,
+    "low": 1412.7,
+    "high": 1419.8,
+    "votes": 49628
    },
    {
     "model": "Gemini 3.1 Flash-Lite Preview",
@@ -5362,25 +5371,25 @@
     "rating": 1415.8,
     "low": 1412.2,
     "high": 1419.4,
-    "votes": 64209
-   },
-   {
-    "model": "amazon-nova-experimental-chat (11-10)",
-    "org": "amazon",
-    "licence": "Proprietary",
-    "rating": 1415.1,
-    "low": 1410.9,
-    "high": 1419.3,
-    "votes": 26031
+    "votes": 64196
    },
    {
     "model": "Qwen3-235B-A22B-Thinking (2507)",
     "org": "alibaba",
     "licence": "Apache 2.0",
-    "rating": 1415.1,
-    "low": 1408.5,
-    "high": 1421.6,
-    "votes": 8821
+    "rating": 1415.3,
+    "low": 1408.8,
+    "high": 1421.8,
+    "votes": 8822
+   },
+   {
+    "model": "amazon-nova-experimental-chat (11-10)",
+    "org": "amazon",
+    "licence": "Proprietary",
+    "rating": 1415.0,
+    "low": 1410.8,
+    "high": 1419.2,
+    "votes": 26026
    },
    {
     "model": "Kimi K2 Thinking Turbo",
@@ -5388,134 +5397,134 @@
     "licence": "Modified MIT",
     "rating": 1414.4,
     "low": 1411.3,
-    "high": 1417.5,
-    "votes": 63348
+    "high": 1417.4,
+    "votes": 63310
    },
    {
     "model": "Inkling-Small",
     "org": "thinky",
     "licence": "Apache 2.0",
-    "rating": 1413.4,
-    "low": 1408.8,
-    "high": 1417.9,
-    "votes": 35359
+    "rating": 1414.3,
+    "low": 1409.8,
+    "high": 1418.8,
+    "votes": 36999
    },
    {
     "model": "Qwen3-Max (2025-09-23)",
     "org": "alibaba",
     "licence": "Proprietary",
     "rating": 1413.0,
-    "low": 1406.6,
-    "high": 1419.5,
-    "votes": 9027
+    "low": 1406.5,
+    "high": 1419.4,
+    "votes": 9026
    },
    {
     "model": "GPT-5.2",
     "org": "openai",
     "licence": "Proprietary",
-    "rating": 1412.2,
+    "rating": 1412.3,
     "low": 1409.1,
     "high": 1415.4,
-    "votes": 83828
+    "votes": 83793
    },
    {
     "model": "GPT-5.4 mini (High)",
     "org": "openai",
     "licence": "Proprietary",
-    "rating": 1411.5,
-    "low": 1407.8,
-    "high": 1415.2,
-    "votes": 63451
+    "rating": 1411.6,
+    "low": 1407.9,
+    "high": 1415.3,
+    "votes": 63432
    },
    {
     "model": "Grok 4 (0709)",
     "org": "xai",
     "licence": "Proprietary",
     "rating": 1411.4,
-    "low": 1407.4,
-    "high": 1415.3,
-    "votes": 39679
+    "low": 1407.5,
+    "high": 1415.4,
+    "votes": 39678
    },
    {
     "model": "MiMo-V2-Flash (Non-Thinking)",
     "org": "xiaomi",
     "licence": "MIT",
-    "rating": 1411.0,
-    "low": 1407.6,
-    "high": 1414.5,
-    "votes": 48069
+    "rating": 1410.9,
+    "low": 1407.5,
+    "high": 1414.4,
+    "votes": 48060
    },
    {
     "model": "o3 (2025-04-16)",
     "org": "openai",
     "licence": "Proprietary",
-    "rating": 1409.9,
-    "low": 1406.3,
-    "high": 1413.5,
-    "votes": 58894
+    "rating": 1409.8,
+    "low": 1406.2,
+    "high": 1413.4,
+    "votes": 58901
    },
    {
     "model": "Qwen3.5-27B",
     "org": "alibaba",
     "licence": "Apache 2.0",
-    "rating": 1408.9,
+    "rating": 1409.0,
     "low": 1404.7,
-    "high": 1413.2,
-    "votes": 28661
+    "high": 1413.3,
+    "votes": 28647
    },
    {
     "model": "Grok 4.1 Fast (Reasoning)",
     "org": "xai",
     "licence": "Proprietary",
-    "rating": 1408.1,
-    "low": 1404.9,
-    "high": 1411.3,
-    "votes": 57526
+    "rating": 1407.9,
+    "low": 1404.7,
+    "high": 1411.1,
+    "votes": 57500
    },
    {
     "model": "Grok 4 Fast (Non-Reasoning)",
     "org": "xai",
     "licence": "Proprietary",
     "rating": 1406.8,
-    "low": 1399.1,
-    "high": 1414.6,
-    "votes": 6337
+    "low": 1399.0,
+    "high": 1414.5,
+    "votes": 6336
    },
    {
     "model": "Gemini 2.5 Flash Preview (09-2025)",
     "org": "google",
     "licence": "Proprietary",
     "rating": 1406.5,
-    "low": 1402.4,
+    "low": 1402.5,
     "high": 1410.5,
-    "votes": 32982
+    "votes": 32996
    },
    {
     "model": "GPT-5 (High)",
     "org": "openai",
     "licence": "Proprietary",
     "rating": 1406.2,
-    "low": 1401.8,
+    "low": 1401.7,
     "high": 1410.6,
-    "votes": 31712
+    "votes": 31718
    },
    {
     "model": "Hunyuan Vision 1.5 Thinking",
     "org": "tencent",
     "licence": "Proprietary",
-    "rating": 1405.9,
-    "low": 1393.5,
-    "high": 1418.3,
-    "votes": 2168
+    "rating": 1405.8,
+    "low": 1393.4,
+    "high": 1418.2,
+    "votes": 2169
    },
    {
     "model": "NVIDIA-Nemotron-3.5-Super-VL-120B-A12B (NVFP4)",
     "org": "nvidia",
     "licence": "OpenMDW-1.1",
-    "rating": 1405.4,
-    "low": 1396.0,
-    "high": 1414.7,
-    "votes": 4176
+    "rating": 1405.0,
+    "low": 1395.6,
+    "high": 1414.3,
+    "votes": 4178
    },
    {
     "model": "MiniMax-M2.7",
@@ -5523,62 +5532,62 @@
     "licence": "Modified MIT",
     "rating": 1404.8,
     "low": 1401.5,
-    "high": 1408.0,
-    "votes": 87731
+    "high": 1408.1,
+    "votes": 89197
    },
    {
     "model": "GPT-5 Chat",
     "org": "openai",
     "licence": "Proprietary",
-    "rating": 1403.2,
+    "rating": 1403.3,
     "low": 1399.0,
     "high": 1407.5,
-    "votes": 31183
+    "votes": 31187
    },
    {
     "model": "Step-3.5-Flash",
     "org": "stepfun",
     "licence": "Apache 2.0",
-    "rating": 1402.7,
+    "rating": 1402.8,
     "low": 1399.2,
-    "high": 1406.2,
-    "votes": 60329
+    "high": 1406.3,
+    "votes": 60305
    },
    {
     "model": "Hy3 preview",
     "org": "tencent",
     "licence": "tencent-hunyuan-community",
-    "rating": 1401.4,
-    "low": 1394.1,
-    "high": 1408.8,
-    "votes": 6875
+    "rating": 1401.2,
+    "low": 1393.8,
+    "high": 1408.6,
+    "votes": 6869
    },
    {
     "model": "Claude Haiku 5.5 (High)",
     "org": "anthropic",
     "licence": "Proprietary",
-    "rating": 1400.6,
-    "low": 1392.3,
-    "high": 1408.9,
-    "votes": 6080
-   },
-   {
-    "model": "Qwen3-VL-235B-A22B-Thinking",
-    "org": "alibaba",
-    "licence": "Apache 2.0",
-    "rating": 1400.6,
-    "low": 1393.8,
-    "high": 1407.4,
-    "votes": 7855
+    "rating": 1400.9,
+    "low": 1393.4,
+    "high": 1408.4,
+    "votes": 7890
    },
    {
     "model": "Hunyuan T1 (20250711)",
     "org": "tencent",
     "licence": "Proprietary",
-    "rating": 1400.5,
-    "low": 1391.9,
-    "high": 1409.2,
+    "rating": 1400.7,
+    "low": 1392.0,
+    "high": 1409.3,
     "votes": 4595
+   },
+   {
+    "model": "Qwen3-VL-235B-A22B-Thinking",
+    "org": "alibaba",
+    "licence": "Apache 2.0",
+    "rating": 1400.5,
+    "low": 1393.7,
+    "high": 1407.3,
+    "votes": 7862
    },
    {
     "model": "Grok 4 Fast (Reasoning)",
@@ -5586,35 +5595,35 @@
     "licence": "Proprietary",
     "rating": 1399.6,
     "low": 1394.6,
-    "high": 1404.7,
-    "votes": 18267
-   },
-   {
-    "model": "GPT-6 Sol (Max)",
-    "org": "openai",
-    "licence": "Proprietary",
-    "rating": 1398.2,
-    "low": 1392.2,
-    "high": 1404.2,
-    "votes": 14707
+    "high": 1404.6,
+    "votes": 18270
    },
    {
     "model": "Grok 4.7 (xHigh)",
     "org": "xai",
     "licence": "Proprietary",
-    "rating": 1398.0,
-    "low": 1392.0,
+    "rating": 1398.1,
+    "low": 1392.4,
     "high": 1403.9,
-    "votes": 14693
+    "votes": 16442
+   },
+   {
+    "model": "GPT-6 Sol (Max)",
+    "org": "openai",
+    "licence": "Proprietary",
+    "rating": 1397.4,
+    "low": 1391.5,
+    "high": 1403.3,
+    "votes": 15807
    },
    {
     "model": "Qwen3.5-Flash",
     "org": "alibaba",
     "licence": "Proprietary",
-    "rating": 1397.0,
+    "rating": 1397.1,
     "low": 1393.4,
     "high": 1400.7,
-    "votes": 61802
+    "votes": 61776
    },
    {
     "model": "Grok 4.3",
@@ -5623,88 +5632,88 @@
     "rating": 1396.9,
     "low": 1393.3,
     "high": 1400.5,
-    "votes": 71348
+    "votes": 71287
    },
    {
     "model": "Claude Haiku 4.5 (20251001)",
     "org": "anthropic",
     "licence": "Proprietary",
-    "rating": 1396.8,
+    "rating": 1396.9,
     "low": 1394.5,
-    "high": 1399.2,
-    "votes": 152393
+    "high": 1399.3,
+    "votes": 154063
    },
    {
     "model": "amazon-nova-experimental-chat (26-01-10)",
     "org": "amazon",
     "licence": "Proprietary",
-    "rating": 1395.9,
-    "low": 1386.3,
-    "high": 1405.5,
-    "votes": 3537
+    "rating": 1395.8,
+    "low": 1386.2,
+    "high": 1405.4,
+    "votes": 3534
    },
    {
     "model": "MiMo-V2-Flash (Thinking)",
     "org": "xiaomi",
     "licence": "MIT",
-    "rating": 1394.8,
-    "low": 1388.6,
-    "high": 1400.9,
-    "votes": 11140
+    "rating": 1394.6,
+    "low": 1388.4,
+    "high": 1400.7,
+    "votes": 11135
    },
    {
     "model": "Qwen3.5-35B-A3B",
     "org": "alibaba",
     "licence": "Apache 2.0",
-    "rating": 1394.7,
-    "low": 1390.4,
-    "high": 1398.9,
-    "votes": 30443
+    "rating": 1394.5,
+    "low": 1390.3,
+    "high": 1398.7,
+    "votes": 30427
    },
    {
     "model": "amazon-nova-experimental-chat (10-20)",
     "org": "amazon",
     "licence": "Proprietary",
     "rating": 1393.9,
-    "low": 1387.8,
-    "high": 1399.9,
-    "votes": 11621
+    "low": 1387.9,
+    "high": 1400.0,
+    "votes": 11625
    },
    {
     "model": "Qwen3-235B-A22B (Non-Thinking)",
     "org": "alibaba",
     "licence": "Apache 2.0",
-    "rating": 1393.4,
-    "low": 1388.9,
-    "high": 1397.9,
-    "votes": 37485
+    "rating": 1393.5,
+    "low": 1389.0,
+    "high": 1398.0,
+    "votes": 37472
    },
    {
     "model": "MiniMax-M2.1 Preview",
     "org": "minimax",
     "licence": "MIT",
-    "rating": 1392.1,
-    "low": 1387.0,
+    "rating": 1392.0,
+    "low": 1386.9,
     "high": 1397.1,
-    "votes": 17230
-   },
-   {
-    "model": "GPT-6 Luna (Max)",
-    "org": "openai",
-    "licence": "Proprietary",
-    "rating": 1390.3,
-    "low": 1386.0,
-    "high": 1394.6,
-    "votes": 72504
+    "votes": 17222
    },
    {
     "model": "Muse Glimmer",
     "org": "meta",
     "licence": "Apache-2.0",
-    "rating": 1389.1,
-    "low": 1379.5,
-    "high": 1398.8,
-    "votes": 3889
+    "rating": 1389.3,
+    "low": 1379.7,
+    "high": 1399.0,
+    "votes": 3884
+   },
+   {
+    "model": "GPT-6 Luna (Max)",
+    "org": "openai",
+    "licence": "Proprietary",
+    "rating": 1389.2,
+    "low": 1384.9,
+    "high": 1393.4,
+    "votes": 86478
    },
    {
     "model": "GPT-5.3 Chat",
@@ -5713,25 +5722,25 @@
     "rating": 1389.0,
     "low": 1384.8,
     "high": 1393.2,
-    "votes": 34324
+    "votes": 34316
    },
    {
     "model": "Solar Pro 4",
     "org": "upstage",
     "licence": "Proprietary",
-    "rating": 1387.8,
-    "low": 1382.7,
-    "high": 1392.9,
-    "votes": 24453
+    "rating": 1388.5,
+    "low": 1383.5,
+    "high": 1393.5,
+    "votes": 26159
    },
    {
     "model": "Qwen3-30B-A3B-Instruct (2507)",
     "org": "alibaba",
     "licence": "Apache 2.0",
-    "rating": 1383.7,
-    "low": 1378.8,
-    "high": 1388.6,
-    "votes": 23306
+    "rating": 1383.8,
+    "low": 1378.9,
+    "high": 1388.7,
+    "votes": 23312
    },
    {
     "model": "GLM-4.5-Air",
@@ -5740,7 +5749,7 @@
     "rating": 1383.7,
     "low": 1379.5,
     "high": 1387.9,
-    "votes": 30646
+    "votes": 30652
    },
    {
     "model": "GPT-4.1 (2025-04-14)",
@@ -5749,16 +5758,16 @@
     "rating": 1382.9,
     "low": 1379.2,
     "high": 1386.6,
-    "votes": 50302
+    "votes": 50298
    },
    {
     "model": "Kimi K2 Preview (0905)",
     "org": "moonshot",
     "licence": "Modified MIT",
-    "rating": 1380.1,
-    "low": 1373.7,
-    "high": 1386.6,
-    "votes": 11586
+    "rating": 1379.9,
+    "low": 1373.4,
+    "high": 1386.4,
+    "votes": 11592
    },
    {
     "model": "Gemini 2.5 Flash-Lite Preview (Non-Thinking, 09-2025)",
@@ -5767,24 +5776,24 @@
     "rating": 1379.3,
     "low": 1375.9,
     "high": 1382.7,
-    "votes": 47420
+    "votes": 47418
    },
    {
     "model": "NVIDIA-Nemotron-3-Super-120B-A12B",
     "org": "nvidia",
     "licence": "NVIDIA Open Model",
-    "rating": 1377.6,
-    "low": 1370.5,
-    "high": 1384.6,
-    "votes": 7869
+    "rating": 1377.4,
+    "low": 1370.3,
+    "high": 1384.4,
+    "votes": 7870
    },
    {
     "model": "Hunyuan TurboS (20250416)",
     "org": "tencent",
     "licence": "Proprietary",
-    "rating": 1377.3,
-    "low": 1370.8,
-    "high": 1383.7,
+    "rating": 1377.2,
+    "low": 1370.7,
+    "high": 1383.6,
     "votes": 10623
    },
    {
@@ -5792,18 +5801,18 @@
     "org": "anthropic",
     "licence": "Proprietary",
     "rating": 1377.1,
-    "low": 1372.7,
+    "low": 1372.6,
     "high": 1381.5,
-    "votes": 35908
+    "votes": 35904
    },
    {
     "model": "GLM-4.6V",
     "org": "zai",
     "licence": "MIT",
-    "rating": 1376.4,
-    "low": 1365.2,
-    "high": 1387.5,
-    "votes": 2831
+    "rating": 1376.5,
+    "low": 1365.3,
+    "high": 1387.6,
+    "votes": 2833
    },
    {
     "model": "DeepSeek-V3 (0324)",
@@ -5812,16 +5821,16 @@
     "rating": 1374.6,
     "low": 1370.8,
     "high": 1378.5,
-    "votes": 44974
+    "votes": 44977
    },
    {
     "model": "GPT-5 mini (High)",
     "org": "openai",
     "licence": "Proprietary",
     "rating": 1373.2,
-    "low": 1368.7,
+    "low": 1368.6,
     "high": 1377.8,
-    "votes": 26799
+    "votes": 26793
    },
    {
     "model": "DeepSeek-R1",
@@ -5836,37 +5845,37 @@
     "model": "GPT-5.4 nano (High)",
     "org": "openai",
     "licence": "Proprietary",
-    "rating": 1372.2,
-    "low": 1368.5,
-    "high": 1376.0,
-    "votes": 62375
+    "rating": 1372.0,
+    "low": 1368.2,
+    "high": 1375.7,
+    "votes": 62314
    },
    {
     "model": "Kimi K2 Preview (0711)",
     "org": "moonshot",
     "licence": "Modified MIT",
-    "rating": 1370.8,
+    "rating": 1370.7,
     "low": 1365.9,
     "high": 1375.6,
-    "votes": 27136
+    "votes": 27139
    },
    {
     "model": "Mistral Medium 3 (2505)",
     "org": "mistral",
     "licence": "Proprietary",
-    "rating": 1370.0,
+    "rating": 1370.1,
     "low": 1365.4,
-    "high": 1374.7,
-    "votes": 32776
+    "high": 1374.8,
+    "votes": 32777
    },
    {
     "model": "Grok 3 Mini (High)",
     "org": "xai",
     "licence": "Proprietary",
     "rating": 1369.5,
-    "low": 1364.0,
+    "low": 1364.1,
     "high": 1374.9,
-    "votes": 15591
+    "votes": 15595
    },
    {
     "model": "Gemini 2.5 Flash-Lite Preview (Thinking, 06-17)",
@@ -5875,23 +5884,23 @@
     "rating": 1369.2,
     "low": 1364.7,
     "high": 1373.7,
-    "votes": 32380
+    "votes": 32381
    },
    {
     "model": "Qwen3-Next-80B-A3B-Thinking",
     "org": "alibaba",
     "licence": "Apache 2.0",
-    "rating": 1368.2,
-    "low": 1362.3,
-    "high": 1374.0,
-    "votes": 13473
+    "rating": 1368.1,
+    "low": 1362.2,
+    "high": 1373.9,
+    "votes": 13476
    },
    {
     "model": "Qwen2.5-Max",
     "org": "alibaba",
     "licence": "Proprietary",
-    "rating": 1366.7,
-    "low": 1362.6,
+    "rating": 1366.6,
+    "low": 1362.5,
     "high": 1370.7,
     "votes": 32487
    },
@@ -5902,16 +5911,16 @@
     "rating": 1366.2,
     "low": 1361.5,
     "high": 1370.9,
-    "votes": 25949
+    "votes": 25950
    },
    {
     "model": "Claude Opus 4 (20250514)",
     "org": "anthropic",
     "licence": "Proprietary",
-    "rating": 1365.8,
-    "low": 1361.5,
-    "high": 1370.1,
-    "votes": 43036
+    "rating": 1366.0,
+    "low": 1361.6,
+    "high": 1370.3,
+    "votes": 43037
    },
    {
     "model": "o1 (2024-12-17)",
@@ -5927,25 +5936,25 @@
     "org": "openai",
     "licence": "Apache 2.0",
     "rating": 1365.5,
-    "low": 1361.2,
-    "high": 1369.9,
-    "votes": 30207
+    "low": 1361.1,
+    "high": 1369.8,
+    "votes": 30200
    },
    {
     "model": "Grok 3 Mini Beta",
     "org": "xai",
     "licence": "Proprietary",
-    "rating": 1364.4,
-    "low": 1359.3,
-    "high": 1369.5,
-    "votes": 20929
+    "rating": 1364.2,
+    "low": 1359.1,
+    "high": 1369.3,
+    "votes": 20930
    },
    {
     "model": "amazon-nova-experimental-chat (10-09)",
     "org": "amazon",
     "licence": "Proprietary",
     "rating": 1363.9,
-    "low": 1353.1,
+    "low": 1353.0,
     "high": 1374.8,
     "votes": 2781
    },
@@ -5956,70 +5965,70 @@
     "rating": 1361.9,
     "low": 1355.9,
     "high": 1367.9,
-    "votes": 12410
-   },
-   {
-    "model": "Ling-flash-2.0",
-    "org": "ant-group",
-    "licence": "MIT",
-    "rating": 1361.2,
-    "low": 1354.0,
-    "high": 1368.4,
-    "votes": 6953
+    "votes": 12415
    },
    {
     "model": "Granite 4.2 30B",
     "org": "ibm",
     "licence": "Apache 2.0",
-    "rating": 1361.2,
-    "low": 1350.8,
-    "high": 1371.6,
-    "votes": 3407
+    "rating": 1361.4,
+    "low": 1351.0,
+    "high": 1371.9,
+    "votes": 3389
+   },
+   {
+    "model": "Ling-flash-2.0",
+    "org": "ant-group",
+    "licence": "MIT",
+    "rating": 1361.1,
+    "low": 1353.9,
+    "high": 1368.3,
+    "votes": 6952
    },
    {
     "model": "MiniMax-M2.5",
     "org": "minimax",
     "licence": "Modified MIT",
-    "rating": 1359.2,
+    "rating": 1359.1,
     "low": 1355.3,
-    "high": 1363.1,
-    "votes": 42791
+    "high": 1363.0,
+    "votes": 42783
    },
    {
     "model": "Gemma 3 27B IT",
     "org": "google",
     "licence": "Gemma",
     "rating": 1357.7,
-    "low": 1354.0,
+    "low": 1354.1,
     "high": 1361.4,
-    "votes": 46665
+    "votes": 46670
    },
    {
     "model": "Qwen3-Coder-480B-A35B-Instruct",
     "org": "alibaba",
     "licence": "Apache 2.0",
-    "rating": 1356.5,
+    "rating": 1356.6,
     "low": 1351.6,
-    "high": 1361.5,
-    "votes": 25192
+    "high": 1361.6,
+    "votes": 25190
    },
    {
     "model": "INTELLECT-3",
     "org": "",
     "licence": "MIT",
-    "rating": 1355.7,
-    "low": 1347.6,
-    "high": 1363.9,
-    "votes": 5432
+    "rating": 1355.6,
+    "low": 1347.4,
+    "high": 1363.8,
+    "votes": 5435
    },
    {
     "model": "Mercury 2",
     "org": "inception-ai",
     "licence": "Proprietary",
-    "rating": 1354.7,
+    "rating": 1354.8,
     "low": 1344.4,
-    "high": 1365.1,
-    "votes": 3193
+    "high": 1365.2,
+    "votes": 3191
    },
    {
     "model": "Gemini 2.0 Flash (001)",
@@ -6037,7 +6046,7 @@
     "rating": 1353.2,
     "low": 1349.3,
     "high": 1357.2,
-    "votes": 44851
+    "votes": 44843
    },
    {
     "model": "o1-preview",
@@ -6052,10 +6061,10 @@
     "model": "Claude Sonnet 4 (Thinking 32K, 20250514)",
     "org": "anthropic",
     "licence": "Proprietary",
-    "rating": 1350.8,
+    "rating": 1350.9,
     "low": 1346.4,
-    "high": 1355.3,
-    "votes": 34135
+    "high": 1355.4,
+    "votes": 34128
    },
    {
     "model": "GLM-4.7-Flash",
@@ -6064,25 +6073,25 @@
     "rating": 1350.8,
     "low": 1345.1,
     "high": 1356.4,
-    "votes": 12013
+    "votes": 12008
    },
    {
     "model": "Step-3",
     "org": "stepfun",
     "licence": "Apache 2.0",
     "rating": 1350.4,
-    "low": 1343.0,
-    "high": 1357.9,
-    "votes": 6295
+    "low": 1342.9,
+    "high": 1357.8,
+    "votes": 6291
    },
    {
     "model": "NVIDIA-Nemotron-3-Nano-30B-A3B (BF16)",
     "org": "nvidia",
     "licence": "NVIDIA Open Model",
-    "rating": 1348.0,
-    "low": 1342.6,
-    "high": 1353.3,
-    "votes": 15765
+    "rating": 1347.8,
+    "low": 1342.5,
+    "high": 1353.2,
+    "votes": 15761
    },
    {
     "model": "MiniMax-M1",
@@ -6091,7 +6100,7 @@
     "rating": 1342.6,
     "low": 1338.4,
     "high": 1346.9,
-    "votes": 34299
+    "votes": 34293
    },
    {
     "model": "GPT-4.1 mini (2025-04-14)",
@@ -6100,25 +6109,25 @@
     "rating": 1340.5,
     "low": 1336.2,
     "high": 1344.8,
-    "votes": 38701
-   },
-   {
-    "model": "MiniMax-M2",
-    "org": "minimax",
-    "licence": "Apache 2.0",
-    "rating": 1340.2,
-    "low": 1332.5,
-    "high": 1347.9,
-    "votes": 6855
+    "votes": 38696
    },
    {
     "model": "Trinity Large Thinking",
     "org": "",
     "licence": "Apache 2.0",
-    "rating": 1340.2,
-    "low": 1335.5,
-    "high": 1344.8,
-    "votes": 30307
+    "rating": 1340.3,
+    "low": 1335.6,
+    "high": 1344.9,
+    "votes": 30290
+   },
+   {
+    "model": "MiniMax-M2",
+    "org": "minimax",
+    "licence": "Apache 2.0",
+    "rating": 1340.1,
+    "low": 1332.4,
+    "high": 1347.8,
+    "votes": 6850
    },
    {
     "model": "Qwen3-32B",
@@ -6133,37 +6142,37 @@
     "model": "Claude Sonnet 4 (20250514)",
     "org": "anthropic",
     "licence": "Proprietary",
-    "rating": 1339.2,
-    "low": 1334.8,
-    "high": 1343.7,
-    "votes": 39167
+    "rating": 1339.4,
+    "low": 1334.9,
+    "high": 1343.8,
+    "votes": 39168
    },
    {
     "model": "Trinity Large Preview",
     "org": "",
     "licence": "Apache 2.0",
-    "rating": 1338.7,
-    "low": 1334.5,
-    "high": 1342.9,
-    "votes": 31246
+    "rating": 1338.6,
+    "low": 1334.4,
+    "high": 1342.8,
+    "votes": 31233
    },
    {
     "model": "Llama 3.3 Nemotron Super 49B v1.5",
     "org": "nvidia",
     "licence": "Nvidia Open",
-    "rating": 1338.0,
+    "rating": 1338.1,
     "low": 1328.1,
-    "high": 1348.0,
-    "votes": 3328
+    "high": 1348.1,
+    "votes": 3327
    },
    {
     "model": "Mistral Small 3.2 (2506)",
     "org": "mistral",
     "licence": "Apache 2.0",
-    "rating": 1337.9,
-    "low": 1332.7,
-    "high": 1343.1,
-    "votes": 17454
+    "rating": 1338.0,
+    "low": 1332.9,
+    "high": 1343.2,
+    "votes": 17462
    },
    {
     "model": "o3-mini (High)",
@@ -6181,7 +6190,7 @@
     "rating": 1335.6,
     "low": 1328.8,
     "high": 1342.5,
-    "votes": 8904
+    "votes": 8906
    },
    {
     "model": "Gemma 3 12B IT",
@@ -6207,8 +6216,8 @@
     "licence": "MIT",
     "rating": 1332.6,
     "low": 1324.2,
-    "high": 1341.0,
-    "votes": 4821
+    "high": 1341.1,
+    "votes": 4817
    },
    {
     "model": "DeepSeek-V3",
@@ -6225,8 +6234,17 @@
     "licence": "CC-BY-NC-4.0",
     "rating": 1330.9,
     "low": 1327.5,
-    "high": 1334.4,
-    "votes": 55758
+    "high": 1334.3,
+    "votes": 55763
+   },
+   {
+    "model": "NVIDIA-Nemotron-3.5-Lightning-30B-A3B (NVFP4)",
+    "org": "nvidia",
+    "licence": "OpenMDW-1.1",
+    "rating": 1330.8,
+    "low": 1325.5,
+    "high": 1336.1,
+    "votes": 24230
    },
    {
     "model": "GLM-4-Plus (0111)",
@@ -6238,20 +6256,11 @@
     "votes": 5760
    },
    {
-    "model": "NVIDIA-Nemotron-3.5-Lightning-30B-A3B (NVFP4)",
-    "org": "nvidia",
-    "licence": "OpenMDW-1.1",
-    "rating": 1330.5,
-    "low": 1325.2,
-    "high": 1335.9,
-    "votes": 22498
-   },
-   {
     "model": "Gemini 2.0 Flash-Lite Preview (02-05)",
     "org": "google",
     "licence": "Proprietary",
     "rating": 1329.5,
-    "low": 1325.3,
+    "low": 1325.2,
     "high": 1333.8,
     "votes": 24955
    },
@@ -6259,10 +6268,10 @@
     "model": "QwQ-32B",
     "org": "alibaba",
     "licence": "Apache 2.0",
-    "rating": 1329.1,
+    "rating": 1329.0,
     "low": 1324.6,
     "high": 1333.5,
-    "votes": 25174
+    "votes": 25177
    },
    {
     "model": "Qwen-Plus (0125)",
@@ -6286,9 +6295,9 @@
     "model": "GPT-5 nano (High)",
     "org": "openai",
     "licence": "Proprietary",
-    "rating": 1320.0,
-    "low": 1313.2,
-    "high": 1326.9,
+    "rating": 1319.9,
+    "low": 1313.0,
+    "high": 1326.7,
     "votes": 8134
    },
    {
@@ -6314,18 +6323,9 @@
     "org": "openai",
     "licence": "Proprietary",
     "rating": 1319.4,
-    "low": 1315.8,
-    "high": 1322.9,
-    "votes": 56742
-   },
-   {
-    "model": "Granite 4.2 8B",
-    "org": "ibm",
-    "licence": "Apache 2.0",
-    "rating": 1319.1,
-    "low": 1308.1,
-    "high": 1330.2,
-    "votes": 3259
+    "low": 1315.9,
+    "high": 1323.0,
+    "votes": 56735
    },
    {
     "model": "Gemini 1.5 Pro (002)",
@@ -6337,10 +6337,19 @@
     "votes": 55606
    },
    {
+    "model": "Granite 4.2 8B",
+    "org": "ibm",
+    "licence": "Apache 2.0",
+    "rating": 1319.0,
+    "low": 1307.9,
+    "high": 1330.1,
+    "votes": 3251
+   },
+   {
     "model": "o1-mini",
     "org": "openai",
     "licence": "Proprietary",
-    "rating": 1317.0,
+    "rating": 1317.1,
     "low": 1313.4,
     "high": 1320.7,
     "votes": 51981
@@ -6349,10 +6358,10 @@
     "model": "Qwen3-30B-A3B",
     "org": "alibaba",
     "licence": "Apache 2.0",
-    "rating": 1316.9,
+    "rating": 1317.0,
     "low": 1312.2,
-    "high": 1321.6,
-    "votes": 26155
+    "high": 1321.7,
+    "votes": 26156
    },
    {
     "model": "Claude 3.7 Sonnet (Thinking 32K, 20250219)",
@@ -6361,7 +6370,7 @@
     "rating": 1314.3,
     "low": 1310.0,
     "high": 1318.5,
-    "votes": 38158
+    "votes": 38156
    },
    {
     "model": "Hunyuan Turbo (0110)",
@@ -6376,9 +6385,9 @@
     "model": "Olmo 3.1 32B Instruct",
     "org": "allenai",
     "licence": "Apache 2.0",
-    "rating": 1311.3,
-    "low": 1305.2,
-    "high": 1317.4,
+    "rating": 1311.2,
+    "low": 1305.1,
+    "high": 1317.3,
     "votes": 11805
    },
    {
@@ -6397,13 +6406,13 @@
     "rating": 1305.6,
     "low": 1300.4,
     "high": 1310.7,
-    "votes": 22142
+    "votes": 22136
    },
    {
     "model": "Grok 2 (2024-08-13)",
     "org": "xai",
     "licence": "Proprietary",
-    "rating": 1304.5,
+    "rating": 1304.6,
     "low": 1300.9,
     "high": 1308.2,
     "votes": 63498
@@ -6427,22 +6436,22 @@
     "votes": 112881
    },
    {
-    "model": "Olmo 3 32B Think",
-    "org": "allenai",
-    "licence": "Apache 2.0",
-    "rating": 1299.6,
-    "low": 1291.3,
-    "high": 1307.8,
-    "votes": 5825
-   },
-   {
     "model": "Claude 3.7 Sonnet (20250219)",
     "org": "anthropic",
     "licence": "Proprietary",
     "rating": 1299.3,
     "low": 1295.4,
     "high": 1303.3,
-    "votes": 42572
+    "votes": 42573
+   },
+   {
+    "model": "Olmo 3 32B Think",
+    "org": "allenai",
+    "licence": "Apache 2.0",
+    "rating": 1299.3,
+    "low": 1291.1,
+    "high": 1307.6,
+    "votes": 5827
    },
    {
     "model": "Qwen2.5-Plus (1127)",
@@ -6450,7 +6459,7 @@
     "licence": "Proprietary",
     "rating": 1299.1,
     "low": 1292.8,
-    "high": 1305.4,
+    "high": 1305.5,
     "votes": 10187
    },
    {
@@ -6458,7 +6467,7 @@
     "org": "anthropic",
     "licence": "Proprietary",
     "rating": 1297.8,
-    "low": 1294.6,
+    "low": 1294.7,
     "high": 1301.0,
     "votes": 87771
    },
@@ -6475,10 +6484,10 @@
     "model": "Granite 4.2 3B",
     "org": "ibm",
     "licence": "Apache 2.0",
-    "rating": 1293.6,
-    "low": 1282.2,
-    "high": 1305.1,
-    "votes": 3260
+    "rating": 1293.3,
+    "low": 1281.8,
+    "high": 1304.8,
+    "votes": 3249
    },
    {
     "model": "Athene V2 Chat",
@@ -6502,9 +6511,9 @@
     "model": "Granite 4.1 8B",
     "org": "ibm",
     "licence": "Apache 2.0",
-    "rating": 1290.6,
-    "low": 1280.7,
-    "high": 1300.6,
+    "rating": 1290.5,
+    "low": 1280.6,
+    "high": 1300.4,
     "votes": 4177
    },
    {
@@ -6517,15 +6526,6 @@
     "votes": 26126
    },
    {
-    "model": "Molmo 2 8B",
-    "org": "allenai",
-    "licence": "Apache 2.0",
-    "rating": 1288.0,
-    "low": 1267.2,
-    "high": 1308.7,
-    "votes": 823
-   },
-   {
     "model": "Hunyuan Large (2025-02-10)",
     "org": "tencent",
     "licence": "Proprietary",
@@ -6535,22 +6535,31 @@
     "votes": 3738
    },
    {
+    "model": "Molmo 2 8B",
+    "org": "allenai",
+    "licence": "Apache 2.0",
+    "rating": 1287.4,
+    "low": 1266.7,
+    "high": 1308.2,
+    "votes": 822
+   },
+   {
     "model": "gpt-oss-20b",
     "org": "openai",
     "licence": "Apache 2.0",
-    "rating": 1287.5,
-    "low": 1281.1,
-    "high": 1293.9,
-    "votes": 10417
+    "rating": 1287.3,
+    "low": 1280.9,
+    "high": 1293.7,
+    "votes": 10416
    },
    {
     "model": "Llama 4 Maverick 17B 128E Instruct",
     "org": "meta",
     "licence": "Llama 4",
     "rating": 1287.2,
-    "low": 1282.9,
-    "high": 1291.4,
-    "votes": 39444
+    "low": 1283.0,
+    "high": 1291.5,
+    "votes": 39439
    },
    {
     "model": "Gemini 1.5 Flash (002)",
@@ -6610,10 +6619,10 @@
     "model": "Mercury",
     "org": "inception-ai",
     "licence": "Proprietary",
-    "rating": 1282.1,
-    "low": 1268.4,
-    "high": 1295.8,
-    "votes": 1964
+    "rating": 1282.0,
+    "low": 1268.3,
+    "high": 1295.7,
+    "votes": 1966
    },
    {
     "model": "Qwen-Max (0919)",
@@ -6630,7 +6639,7 @@
     "licence": "Llama 3.1 Community",
     "rating": 1281.8,
     "low": 1278.2,
-    "high": 1285.3,
+    "high": 1285.4,
     "votes": 59656
    },
    {
@@ -6655,10 +6664,10 @@
     "model": "Llama 4 Scout 17B 16E Instruct",
     "org": "meta",
     "licence": "Llama",
-    "rating": 1279.2,
-    "low": 1274.5,
+    "rating": 1279.1,
+    "low": 1274.4,
     "high": 1283.9,
-    "votes": 29830
+    "votes": 29823
    },
    {
     "model": "Gemini Advanced (0514)",
@@ -6673,17 +6682,17 @@
     "model": "Mistral Small 3.1 24B Instruct (2503)",
     "org": "mistral",
     "licence": "Apache 2.0",
-    "rating": 1277.1,
-    "low": 1272.6,
-    "high": 1281.7,
-    "votes": 32721
+    "rating": 1277.0,
+    "low": 1272.5,
+    "high": 1281.5,
+    "votes": 32722
    },
    {
     "model": "Llama 3.3 70B Instruct",
     "org": "meta",
     "licence": "Llama-3.3",
     "rating": 1274.2,
-    "low": 1270.7,
+    "low": 1270.8,
     "high": 1277.7,
     "votes": 54493
    },
@@ -6784,7 +6793,7 @@
     "rating": 1262.9,
     "low": 1253.6,
     "high": 1272.1,
-    "votes": 5283
+    "votes": 5279
    },
    {
     "model": "GPT-4 Turbo Preview (0125)",
@@ -6838,23 +6847,23 @@
     "rating": 1255.4,
     "low": 1252.2,
     "high": 1258.6,
-    "votes": 69055
+    "votes": 69056
    },
    {
     "model": "Magistral Medium (2506)",
     "org": "mistral",
     "licence": "Proprietary",
-    "rating": 1254.7,
-    "low": 1248.3,
-    "high": 1261.2,
-    "votes": 11509
+    "rating": 1254.8,
+    "low": 1248.4,
+    "high": 1261.3,
+    "votes": 11513
    },
    {
     "model": "Reka Core (20240904)",
     "org": "",
     "licence": "Proprietary",
     "rating": 1248.4,
-    "low": 1241.2,
+    "low": 1241.3,
     "high": 1255.5,
     "votes": 7312
    },
@@ -6862,10 +6871,10 @@
     "model": "Granite-4.0-H-Small",
     "org": "ibm",
     "licence": "Apache 2.0",
-    "rating": 1241.5,
-    "low": 1233.1,
-    "high": 1250.0,
-    "votes": 5628
+    "rating": 1241.3,
+    "low": 1232.9,
+    "high": 1249.7,
+    "votes": 5630
    },
    {
     "model": "Gemini 1.5 Flash (001)",
@@ -6990,7 +6999,7 @@
     "licence": "Llama 3 Community",
     "rating": 1220.8,
     "low": 1217.2,
-    "high": 1224.3,
+    "high": 1224.4,
     "votes": 156876
    },
    {
@@ -7071,7 +7080,7 @@
     "licence": "Qianwen LICENSE",
     "rating": 1203.2,
     "low": 1198.3,
-    "high": 1208.1,
+    "high": 1208.2,
     "votes": 37325
    },
    {
@@ -7132,7 +7141,7 @@
     "model": "Jamba 1.5 Mini",
     "org": "",
     "licence": "Jamba Open",
-    "rating": 1186.6,
+    "rating": 1186.7,
     "low": 1179.5,
     "high": 1193.8,
     "votes": 8858
@@ -7168,7 +7177,7 @@
     "model": "Mistral Large (2402)",
     "org": "mistral",
     "licence": "Proprietary",
-    "rating": 1176.4,
+    "rating": 1176.5,
     "low": 1171.8,
     "high": 1181.1,
     "votes": 62436
@@ -7233,7 +7242,7 @@
     "licence": "Proprietary",
     "rating": 1165.0,
     "low": 1159.1,
-    "high": 1170.8,
+    "high": 1170.9,
     "votes": 24806
    },
    {
@@ -7276,7 +7285,7 @@
     "model": "Gemma 2 2B IT",
     "org": "google",
     "licence": "Gemma license",
-    "rating": 1155.7,
+    "rating": 1155.8,
     "low": 1151.7,
     "high": 1159.8,
     "votes": 46616
@@ -7492,7 +7501,7 @@
     "model": "Snowflake Arctic Instruct",
     "org": "",
     "licence": "Apache 2.0",
-    "rating": 1100.9,
+    "rating": 1101.0,
     "low": 1095.1,
     "high": 1106.8,
     "votes": 32832
@@ -7521,7 +7530,7 @@
     "licence": "Apache 2.0",
     "rating": 1096.4,
     "low": 1087.9,
-    "high": 1104.9,
+    "high": 1105.0,
     "votes": 6638
    },
    {
@@ -7673,7 +7682,7 @@
     "org": "",
     "licence": "Llama 2 Community",
     "rating": 1057.6,
-    "low": 1051.0,
+    "low": 1051.1,
     "high": 1064.2,
     "votes": 19367
    },
@@ -7692,7 +7701,7 @@
     "licence": "Gemma license",
     "rating": 1056.1,
     "low": 1046.6,
-    "high": 1065.6,
+    "high": 1065.7,
     "votes": 8925
    },
    {
@@ -7726,7 +7735,7 @@
     "model": "Guanaco 33B",
     "org": "",
     "licence": "Non-commercial",
-    "rating": 1053.3,
+    "rating": 1053.4,
     "low": 1041.4,
     "high": 1065.3,
     "votes": 2921
@@ -7764,7 +7773,7 @@
     "licence": "Apache 2.0",
     "rating": 1038.4,
     "low": 1027.5,
-    "high": 1049.3,
+    "high": 1049.4,
     "votes": 5182
    },
    {
@@ -7781,7 +7790,7 @@
     "org": "",
     "licence": "Llama 2 Community",
     "rating": 1030.9,
-    "low": 1021.8,
+    "low": 1021.9,
     "high": 1040.0,
     "votes": 6923
    },
@@ -7817,7 +7826,7 @@
     "org": "google",
     "licence": "Gemma license",
     "rating": 1002.1,
-    "low": 990.6,
+    "low": 990.7,
     "high": 1013.6,
     "votes": 4780
    },
@@ -7852,9 +7861,9 @@
     "model": "GPT4All 13B Snoozy",
     "org": "",
     "licence": "Non-commercial",
-    "rating": 956.1,
+    "rating": 956.2,
     "low": 941.2,
-    "high": 971.1,
+    "high": 971.2,
     "votes": 1743
    },
    {
@@ -7899,7 +7908,7 @@
     "licence": "Non-commercial",
     "rating": 918.4,
     "low": 906.2,
-    "high": 930.6,
+    "high": 930.7,
     "votes": 4914
    },
    {
