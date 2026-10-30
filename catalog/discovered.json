@@ -462,6 +462,19 @@
    "what": "Graph-Native Infrastructure for Context and Accountable AI Systems",
    "judged": "2026-10-11"
   },
+  "sno-ai/sno-station": {
+   "p": {
+    "job": 0.18,
+    "software": 0.97,
+    "client": 0.09
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Turn the agents you already use into a squad. Codex, Claude Code, Cursor, Hermes Agent and OpenClaw use one encrypted memory, pass work to each other, review each other's work, and dream every night to wake up a little better. Open source. Runs on your computer.",
+   "judged": "2026-10-30"
+  },
   "supermemoryai/supermemory": {
    "p": {
     "job": 0.9,
@@ -1220,6 +1233,19 @@
    "what": "Fast Rust library for PDF inspection, classification, and text extraction. Intelligently detects scanned vs text-based P",
    "judged": "2026-10-11"
   },
+  "landing-ai/ade-cli": {
+   "p": {
+    "job": 0.77,
+    "software": 0.97,
+    "client": 0.92
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.14.0",
+   "what": "The official CLI for Agentic Document Extraction (ADE) by LandingAI — parse documents and extract schema-shaped data from your terminal",
+   "judged": "2026-10-30"
+  },
   "oomol-lab/pdf-craft": {
    "p": {
     "job": 0.69,
@@ -1853,6 +1879,19 @@
    "what": "Ready-to-run cloud templates for RAG, AI pipelines, and enterprise search with live data. 🐳Docker-friendly.⚡Always in sync with Sharepoint, Google Drive, S3, Kafka, PostgreSQL, real-time data APIs, and more.",
    "judged": "2026-10-15"
   },
+  "qybaihe/bla": {
+   "p": {
+    "job": 0.03,
+    "software": 0.94,
+    "client": 0.07
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.14.0",
+   "what": "🛡️ BLA (Blind LLM Agents) — Adversarial defense shield that protects binaries, Electron apps, JS bundles, Python, and WebAssembly against AI reverse-engineering agents like REA. Poison -> Exhaust -> Hallucinate.",
+   "judged": "2026-10-30"
+  },
   "uber/ADR": {
    "p": {
     "job": 0.13,
@@ -2311,6 +2350,28 @@
    "what": "An open-source project for Windows developers to learn how to add AI with local models and APIs to Windows apps.",
    "judged": "2026-10-14"
   },
+  "op7418/guizang-ppt-skill": {
+   "p": {
+    "job": 0.04,
+    "software": 0.86,
+    "client": 0.1
+   },
+   "kind": [],
+   "model": "jev-1.14.0",
+   "what": "AI-agent Skill for generating polished HTML slide decks: editorial magazine and Swiss layouts, image prompts, social covers, and a WebGL/low-power presentation runtime.",
+   "judged": "2026-10-30"
+  },
+  "op7418/guizang-social-card-skill": {
+   "p": {
+    "job": 0.04,
+    "software": 0.87,
+    "client": 0.08
+   },
+   "kind": [],
+   "model": "jev-1.14.0",
+   "what": "🪧 Claude Code / Codex skill — generate Xiaohongshu carousels & WeChat 21:9+1:1 cover pairs. Editorial × Swiss visual systems, 28 layouts, 10 themes, single-file HTML → PNG. 小红书图文 + 公众号封面对",
+   "judged": "2026-10-30"
+  },
   "openvinotoolkit/openvino": {
    "p": {
     "job": 0.1,
@@ -2336,6 +2397,17 @@
    "model": "jev-1.13.0",
    "what": "Making ComfyUI more comfortable!",
    "judged": "2026-10-11"
+  },
+  "s1dashu/ip-as-logo-skill": {
+   "p": {
+    "job": 0.07,
+    "software": 0.74,
+    "client": 0.11
+   },
+   "kind": [],
+   "model": "jev-1.14.0",
+   "what": "A compact Agent Skill for highly simplified, rounded, subtly neo-skeuomorphic IP mascot logos.",
+   "judged": "2026-10-30"
   },
   "scenario-labs/skills": {
    "p": {
@@ -4231,6 +4303,19 @@
    "what": "pingcap/autoflow is a Graph RAG based and conversational knowledge base tool built with TiDB Serverless Vector Storage. Demo: https://tidb.ai",
    "judged": "2026-10-24"
   },
+  "poco-ai/Agentero": {
+   "p": {
+    "job": 0.17,
+    "software": 0.96,
+    "client": 0.1
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Unified research workspace for humans & agents — PDF Q&A with citations, Vault, writing. 为人与 Agent 协作的科研工作台；补齐 Zotero 时代的人机上下文断点。",
+   "judged": "2026-10-30"
+  },
   "simstudioai/sim": {
    "p": {
     "job": 0.23,
@@ -4764,6 +4849,19 @@
    "what": "The open-source context layer for AI agents. PipesHub turns your company's knowledge (Slack, Drive, Jira, GitHub, Micros",
    "judged": "2026-10-11"
   },
+  "teamtnt/tntsearch": {
+   "p": {
+    "job": 0.46,
+    "software": 0.93,
+    "client": 0.05
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": "A fully featured full text search engine written in PHP",
+   "judged": "2026-10-30"
+  },
   "xerj-org/xerj": {
    "p": {
     "job": 0.79,
@@ -4882,6 +4980,19 @@
    "model": "jev-1.13.0",
    "what": "Add a real-time analytics node to your operational database. Spice is a portable, accelerated SQL query, search, and LLM",
    "judged": "2026-10-11"
+  },
+  "teamtnt/tntsearch": {
+   "p": {
+    "job": 0.88,
+    "software": 0.96,
+    "client": 0.03
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": "A fully featured full text search engine written in PHP",
+   "judged": "2026-10-30"
   },
   "timescale/pg_textsearch": {
    "p": {
@@ -5444,6 +5555,19 @@
    "what": "On-device subtitle generation that connects directly to DaVinci Resolve, Premiere, and After Effects.",
    "judged": "2026-10-11"
   },
+  "umlx5h/LLPlayer": {
+   "p": {
+    "job": 0.05,
+    "software": 0.97,
+    "client": 0.1
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "The media player for language learning, with dual subtitles, AI-generated subtitles, real-time translation, and more!",
+   "judged": "2026-10-30"
+  },
   "wenet-e2e/wenet": {
    "p": {
     "job": 0.91,
@@ -5918,6 +6042,19 @@
    "model": "jev-1.13.0",
    "what": "Readest is a modern, feature-rich ebook reader designed for avid readers offering seamless cross-platform access, powerf",
    "judged": "2026-10-11"
+  },
+  "rsxdalv/TTS-WebUI": {
+   "p": {
+    "job": 0.19,
+    "software": 0.95,
+    "client": 0.09
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "A single Gradio + React WebUI with extensions for ACE-Step, OmniVoice, Kimi Audio, Piper TTS, GPT-SoVITS, CosyVoice, XTTSv2, DIA, Kokoro, OpenVoice, ParlerTTS, Stable Audio, MMS, StyleTTS2, MAGNet, AudioGen, MusicGen, Tortoise, RVC, Vocos, Demucs, SeamlessM4T, and Bark!",
+   "judged": "2026-10-30"
   },
   "tensorflow/lingvo": {
    "p": {
@@ -6496,6 +6633,19 @@
    "model": "jev-1.13.0",
    "what": "The open-source AI voice studio. Clone, dictate, create.",
    "judged": "2026-10-11"
+  },
+  "keinsaasforever/better-chatbot": {
+   "p": {
+    "job": 0.11,
+    "software": 0.96,
+    "client": 0.23
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Formerly Better Chatbot. Navigator is an open-source AI workspace for agents, MCP and workflow automation.",
+   "judged": "2026-10-30"
   },
   "livekit/livekit": {
    "p": {
