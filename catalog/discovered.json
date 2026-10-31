@@ -3861,6 +3861,19 @@
    "what": "The chat decision assistant: before you reply, Jev reads the chat, judges intent and risk, and drafts replies you fill i",
    "judged": "2026-10-11"
   },
+  "liustack/modlens": {
+   "p": {
+    "job": 0.18,
+    "software": 0.94,
+    "client": 0.43
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": "The first vision plugin for DeepSeek Harness, and the vision bridge for every text-only coding agent. Paste an image, get structured JSON evidence (OCR, layout, semantics). | 全网最强 DeepSeek Harness 外挂视觉插件，为 DeepSeek、GLM 等纯文本模型外挂视觉能力，粘贴图片即得结构化 JSON 证据（OCR、版面、语义）。",
+   "judged": "2026-10-31"
+  },
   "ocrmypdf/OCRmyPDF": {
    "p": {
     "job": 0.31,
