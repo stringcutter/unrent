@@ -1634,6 +1634,19 @@
    "what": "Open-source autonomous AI penetration testing. 50 specialist agents across web, API, cloud, Active Directory, Kubernetes",
    "judged": "2026-10-11"
   },
+  "AgentSafeLabs/safelabs-eval": {
+   "p": {
+    "job": 0.1,
+    "software": 0.94,
+    "client": 0.06
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Red-teaming and evaluation framework for AI agents, built around an OWASP-inspired ASI01–ASI10 taxonomy",
+   "judged": "2026-11-01"
+  },
   "BoundaryML/baml": {
    "p": {
     "job": 0.11,
@@ -3510,6 +3523,19 @@
    "what": "本项目旨在分享大模型相关技术原理以及实战经验（大模型工程化、大模型应用落地）",
    "judged": "2026-10-14"
   },
+  "mw00/project-maya": {
+   "p": {
+    "job": 0.85,
+    "software": 0.97,
+    "client": 0.03
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Project Maya - run GLM-5.3-Flash (321B MoE), DeepSeek-V4.1-Flash-1017 (748B MoE) and MiniMax-M3.1-Flash (428B MoE) privately on your own GPU(s), from one card to 16, NVIDIA or AMD, Linux or Windows. Engine, server, dashboard, OpenAI- and Anthropic-compatible API, quant tools.",
+   "judged": "2026-11-01"
+  },
   "neuron-core/neuron-ai": {
    "p": {
     "job": 0.04,
@@ -5334,6 +5360,19 @@
    "what": "Record your screen, ship a demo. Free and open-source, GPU-accelerated, no watermarks, no subscriptions. Windows, macOS,",
    "judged": "2026-10-11"
   },
+  "goodroot/hyprwhspr": {
+   "p": {
+    "job": 0.23,
+    "software": 0.97,
+    "client": 0.14
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": " Native speech-to-text for Linux - Fast, accurate, private, and hackable system-wide dictation",
+   "judged": "2026-11-01"
+  },
   "gradio-app/fastrtc": {
    "p": {
     "job": 0.06,
@@ -5502,6 +5541,19 @@
    "model": "jev-1.13.0",
    "what": "FunASR-powered video transcription, subtitle generation, and LLM-assisted clipping tool with a local Gradio UI.",
    "judged": "2026-10-11"
+  },
+  "nexmoe/VidBee": {
+   "p": {
+    "job": 0.07,
+    "software": 0.97,
+    "client": 0.12
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Download video and audio from 1000+ sites, transcribe locally with speaker labels, and summarize, translate, or chat with your media using your preferred AI provider.",
+   "judged": "2026-11-01"
   },
   "sgl-project/sglang-omni": {
    "p": {
