@@ -4981,6 +4981,19 @@
    "what": "Lightweight Python utilities for working with Redis",
    "judged": "2026-10-15"
   },
+  "kividbio/kividb": {
+   "p": {
+    "job": 0.08,
+    "software": 0.96,
+    "client": 0.03
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.14.0",
+   "what": "A fast, multi-threaded Redis® and Valkey alternative written in Rust: drop-in compatible, with full-text and vector search built in",
+   "judged": "2026-11-02"
+  },
   "manticoresoftware/manticoresearch": {
    "p": {
     "job": 0.33,
@@ -6395,6 +6408,19 @@
    "model": "jev-1.13.0",
    "what": "Ready-to-run cloud templates for RAG, AI pipelines, and enterprise search with live data. 🐳Docker-friendly.⚡Always in sync with Sharepoint, Google Drive, S3, Kafka, PostgreSQL, real-time data APIs, and more.",
    "judged": "2026-10-15"
+  },
+  "seaweedfs/seaweedfs": {
+   "p": {
+    "job": 0.12,
+    "software": 0.97,
+    "client": 0.03
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.14.0",
+   "what": "SeaweedFS is a distributed storage system for object storage (S3), file systems, Iceberg table buckets, and Lance vector buckets, designed to handle billions of files with O(1) disk access and effortless horizontal scaling.",
+   "judged": "2026-11-02"
   },
   "srbhr/Resume-Matcher": {
    "p": {
