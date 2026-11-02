@@ -736,6 +736,21 @@
     - inference.hetzner.com
     env:
     - HETZNER_API_KEY
+- id: hopper
+  name: Hopper
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://withhopper.com/agents/deepseek-v4.1-flash-1017
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.withhopper.com
+    env:
+    - HOPPER_API_KEY
 - id: hpc-ai
   name: HPC-AI
   category: LLM API
@@ -1219,6 +1234,21 @@
     - api-inference.modelscope.cn
     env:
     - MODELSCOPE_API_KEY
+- id: modular
+  name: Modular
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://docs.modular.com/models
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.modular.com
+    env:
+    - MODULAR_API_KEY
 - id: morph
   name: Morph
   category: LLM API
@@ -2024,6 +2054,21 @@
     - api.wallabytoken.com
     env:
     - WALLABY_API_KEY
+- id: wally
+  name: Wally
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://docs.runanywhere.ai/wally-cloud/api
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - inference.runanywhere.ai
+    env:
+    - WALLY_API_KEY
 - id: xiaomi
   name: Xiaomi
   category: LLM API
