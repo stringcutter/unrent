@@ -1367,6 +1367,17 @@
    "what": "Scalable data pre processing and curation toolkit for LLMs",
    "judged": "2026-10-11"
   },
+  "R6410418/Jackrong-llm-finetuning-guide": {
+   "p": {
+    "job": 0.13,
+    "software": 0.17,
+    "client": 0.06
+   },
+   "kind": [],
+   "model": "jev-1.14.0",
+   "what": "",
+   "judged": "2026-11-03"
+  },
   "amitshekhariitbhu/ai-engineering-interview-questions": {
    "p": {
     "job": 0.02,
