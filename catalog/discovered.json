@@ -1734,6 +1734,19 @@
    "what": "🛡️ Free open-source AI-powered security terminal & vulnerability scanner (CVE, SBOM). Supports SSH, SFTP, RDP, VNC, Serial, and 12+ autonomous AI agents (DeepSeek, OpenAI) for automated security workflows, CTF & DevSecOps. Cross-platform & Web UI.",
    "judged": "2026-10-21"
   },
+  "Zyrexnn/Cybermes": {
+   "p": {
+    "job": 0.03,
+    "software": 0.96,
+    "client": 0.08
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Autonomous Offensive Security, Bug Bounty & Red Teaming Agent Framework powered by Hermes Agent, specialized reasoning skills, and multi-model LLM orchestration.",
+   "judged": "2026-11-04"
+  },
   "akto-api-security/akto": {
    "p": {
     "job": 0.09,
@@ -2210,6 +2223,17 @@
    "model": "jev-1.13.0",
    "what": "【三年面试五年模拟】AIGC/LLM/AI Agent算法工程师面试资源平台。涵盖AIGC、LLM大模型、AI Agent、具身智能、传统深度学习、计算机视觉、自然语言处理、自动驾驶、机器学习、强化学习、大数据挖掘、世界模型、元宇宙、AGI",
    "judged": "2026-10-11"
+  },
+  "Yutong-Zhou-cv/Awesome-Text-to-Image": {
+   "p": {
+    "job": 0.04,
+    "software": 0.04,
+    "client": 0.02
+   },
+   "kind": [],
+   "model": "jev-1.14.0",
+   "what": "(ෆ`꒳´ෆ) A Survey on Text-to-Image Generation/Synthesis.",
+   "judged": "2026-11-04"
   },
   "bghira/SimpleTuner": {
    "p": {
@@ -5176,6 +5200,19 @@
    "what": "A robust, efficient, low-latency speech-to-text library with advanced voice activity detection, wake word activation and",
    "judged": "2026-10-11"
   },
+  "Neywa-Labs/mlx-audio": {
+   "p": {
+    "job": 0.76,
+    "software": 0.97,
+    "client": 0.08
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": "A text-to-speech (TTS), speech-to-text (STT) and speech-to-speech (STS) library built on Apple's MLX framework, providing efficient speech analysis on Apple Silicon.",
+   "judged": "2026-11-04"
+  },
   "Open-Less/openless": {
    "p": {
     "job": 0.18,
@@ -5318,6 +5355,19 @@
    "model": "jev-1.13.0",
    "what": "🎙️ AI Dictation App - Open Source and Local-first ⚡ Type 3x faster, no keyboard needed. 🆓 Powered by open source models,",
    "judged": "2026-10-11"
+  },
+  "anomalyco/hex": {
+   "p": {
+    "job": 0.21,
+    "software": 0.98,
+    "client": 0.07
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Local voice dictation for mac, windows and linux",
+   "judged": "2026-11-04"
   },
   "argmaxinc/argmax-oss-swift": {
    "p": {
@@ -5758,6 +5808,19 @@
    "model": "jev-1.13.0",
    "what": "Converts text to speech in realtime",
    "judged": "2026-10-11"
+  },
+  "Neywa-Labs/mlx-audio": {
+   "p": {
+    "job": 0.74,
+    "software": 0.97,
+    "client": 0.08
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": "A text-to-speech (TTS), speech-to-text (STT) and speech-to-speech (STS) library built on Apple's MLX framework, providing efficient speech analysis on Apple Silicon.",
+   "judged": "2026-11-04"
   },
   "OpenBMB/VoxCPM": {
    "p": {
