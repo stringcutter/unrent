@@ -1114,6 +1114,19 @@
    "what": "An embeddable, portable, branchable virtual machine to safely run Agents locally.",
    "judged": "2026-10-11"
   },
+  "tembo/voxl": {
+   "p": {
+    "job": 0.05,
+    "software": 0.95,
+    "client": 0.09
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.14.0",
+   "what": "extremely fast web remote desktop streaming",
+   "judged": "2026-11-06"
+  },
   "tensorlakeai/tensorlake": {
    "p": {
     "job": 0.72,
@@ -2602,6 +2615,19 @@
    "what": "The Continuous-Improvement Stack for Agents. Our environment data and evals power agent improvement and monitoring.",
    "judged": "2026-10-11"
   },
+  "Jwuthri/Tracely-ai": {
+   "p": {
+    "job": 0.29,
+    "software": 0.95,
+    "client": 0.3
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Trace-native CI/CD for AI agents — production failures become regression tests that block the PR. Auto-detect, cluster, freeze into hermetic cases, replay in CI for $0.",
+   "judged": "2026-11-06"
+  },
   "NVIDIA/garak": {
    "p": {
     "job": 0.43,
@@ -3148,6 +3174,19 @@
    "what": "The Continuous-Improvement Stack for Agents. Our environment data and evals power agent improvement and monitoring.",
    "judged": "2026-10-11"
   },
+  "Jwuthri/Tracely-ai": {
+   "p": {
+    "job": 0.66,
+    "software": 0.95,
+    "client": 0.15
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Trace-native CI/CD for AI agents — production failures become regression tests that block the PR. Auto-detect, cluster, freeze into hermetic cases, replay in CI for $0.",
+   "judged": "2026-11-06"
+  },
   "VoltAgent/voltagent": {
    "p": {
     "job": 0.16,
@@ -3292,6 +3331,19 @@
    "model": "jev-1.13.0",
    "what": "A 2.78-trillion-parameter Kimi K3 running inference on a single CPU in 8.24 GB of RAM. Portable C99: no BLAS, no framewo",
    "judged": "2026-10-11"
+  },
+  "Generated-Computers/Locals": {
+   "p": {
+    "job": 0.52,
+    "software": 0.96,
+    "client": 0.05
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Run many AI agents at once on your Mac, up to 3x faster.",
+   "judged": "2026-11-06"
   },
   "Lightning-AI/litgpt": {
    "p": {
@@ -6352,6 +6404,19 @@
    "model": "jev-1.13.0",
    "what": "A lightweight, lightning-fast, in-process vector database",
    "judged": "2026-10-11"
+  },
+  "apache/pinot": {
+   "p": {
+    "job": 0.35,
+    "software": 0.97,
+    "client": 0.03
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Apache Pinot: a real-time analytics database for low-latency SQL and vector search, serving user-facing and agent-facing applications",
+   "judged": "2026-11-06"
   },
   "crate/crate": {
    "p": {
