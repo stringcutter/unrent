@@ -2715,6 +2715,19 @@
    "what": "Comprehensive resources on Generative AI, including a detailed roadmap, projects, use cases, interview preparation, and ",
    "judged": "2026-10-11"
   },
+  "gepa-ai/gepa": {
+   "p": {
+    "job": 0.12,
+    "software": 0.96,
+    "client": 0.08
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Optimize prompts, code, and more with AI-powered Reflective Optimization",
+   "judged": "2026-11-07"
+  },
   "huggingface/aisheets": {
    "p": {
     "job": 0.05,
@@ -3370,6 +3383,17 @@
    "model": "jev-1.13.0",
    "what": "⚡ Pure-Rust WebGPU inference engine — OpenAI-API compatible, GGUF native, runs on any GPU. No Python. No llama.cpp. Single binary.",
    "judged": "2026-10-19"
+  },
+  "NVIDIA/GenerativeAIExamples": {
+   "p": {
+    "job": 0.06,
+    "software": 0.14,
+    "client": 0.29
+   },
+   "kind": [],
+   "model": "jev-1.14.0",
+   "what": "Generative AI reference workflows optimized for accelerated infrastructure and microservice architecture.",
+   "judged": "2026-11-07"
   },
   "PaddlePaddle/FastDeploy": {
    "p": {
@@ -4171,6 +4195,19 @@
    "what": "🔥 MaxKB is an open-source platform for building enterprise-grade agents.  强大易用的开源企业级智能体平台。",
    "judged": "2026-10-11"
   },
+  "DemonDamon/AgenticX": {
+   "p": {
+    "job": 0.17,
+    "software": 0.96,
+    "client": 0.26
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.14.0",
+   "what": "AgenticX is a unified, production-ready multi-agent platform — Python SDK + CLI (agx) + Studio server + Machi desktop app. Features Meta-Agent orchestration, 15+ LLM providers, MCP Hub, hierarchical memory, avatar & group chat, skill ecosystem, safety sandbox, and IM gateway (Feishu/WeChat).",
+   "judged": "2026-11-07"
+  },
   "EmbeddedLLM/JamAIBase": {
    "p": {
     "job": 0.68,
@@ -4599,6 +4636,17 @@
    "model": "jev-1.13.0",
    "what": "NVIDIA AI Blueprint for video search and summarization (VSS) is a GPU-accelerated reference architecture for building video analytics agents with real-time verified alerts, visual Q&A, and automated reporting. The VSS Blueprint uses vision language models (VLMs) such as NVIDIA Cosmos, LLMs such as NVIDIA Nemotron, RAG, and NVIDIA NIMs.",
    "judged": "2026-10-16"
+  },
+  "NVIDIA/GenerativeAIExamples": {
+   "p": {
+    "job": 0.13,
+    "software": 0.21,
+    "client": 0.22
+   },
+   "kind": [],
+   "model": "jev-1.14.0",
+   "what": "Generative AI reference workflows optimized for accelerated infrastructure and microservice architecture.",
+   "judged": "2026-11-07"
   },
   "RUC-NLPIR/FlashRAG": {
    "p": {
@@ -5158,6 +5206,19 @@
    "model": "jev-1.13.0",
    "what": "Local-first search engine and MCP server for AI agents. One Rust binary indexes code, docs, logs, JSONL/CSV and PDFs for BM25 full-text, vector and hybrid search, code search without grep, agent memory and RAG. Elasticsearch-compatible API; Corpus Hub serves hundreds of reference memory corpora.",
    "judged": "2026-10-20"
+  },
+  "yjid/kensaku": {
+   "p": {
+    "job": 0.09,
+    "software": 0.97,
+    "client": 0.03
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Search inside documents, code, and even screenshots - instantly and locally. A free, open-source file launcher with OCR, semantic search, and MCP agent access.",
+   "judged": "2026-11-07"
   },
   "zvec-ai/zvec-grep": {
    "p": {
