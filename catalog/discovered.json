@@ -1354,6 +1354,19 @@
    "what": "Infrastructure for continually self‑improving agents",
    "judged": "2026-10-11"
   },
+  "InternScience/GraphGen": {
+   "p": {
+    "job": 0.05,
+    "software": 0.89,
+    "client": 0.06
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.14.0",
+   "what": "GraphGen: Enhancing Supervised Fine-Tuning for LLMs with Knowledge-Driven Synthetic Data Generation",
+   "judged": "2026-11-08"
+  },
   "MakazhanAlpamys/Soup": {
    "p": {
     "job": 0.84,
@@ -2200,6 +2213,19 @@
    "what": "Official repository for MOSS-Image, a 5B-parameter base DiT model with high-quality text rendering, layout generation, and efficient fine-tuning.",
    "judged": "2026-10-20"
   },
+  "OpenMontageInc/OpenMontage": {
+   "p": {
+    "job": 0.06,
+    "software": 0.9,
+    "client": 0.12
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "World's first open-source, agentic video production system. 12 production pipelines, 100+ tools, 700+ agent skill and production-knowledge files. Turn your AI coding assistant into a full video production studio.",
+   "judged": "2026-11-08"
+  },
   "PurpleDoubleD/locally-uncensored": {
    "p": {
     "job": 0.23,
@@ -2561,6 +2587,19 @@
    "what": "Remove visible and invisible AI watermarks and provenance metadata from images and video. Python library and CLI for Syn",
    "judged": "2026-10-11"
   },
+  "win4r/AISuperDomain": {
+   "p": {
+    "job": 0.03,
+    "software": 0.95,
+    "client": 0.7
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Aila(AI超元域): The premier AI integration tool for Windows, macOS, and Android. Ask once, get answers from 10+ AIs like ChatGPT, Gemini, Claude3, Copilot, Poe, perplexity and more. Features customizable AI and prompts.",
+   "judged": "2026-11-08"
+  },
   "wuyoscar/GPT-Image2-Skill": {
    "p": {
     "job": 0.12,
@@ -2586,6 +2625,19 @@
    "model": "jev-1.13.0",
    "what": "AI 助手全套开源解决方案，自带运营管理后台，开箱即用。集成了 ChatGPT, Azure, ChatGLM,讯飞星火，文心一言等多个平台的大语言模型。支持 MJ AI 绘画，Stable Diffusion AI  绘画，微博热搜等插件",
    "judged": "2026-10-11"
+  },
+  "zombieyang/sd-ppp": {
+   "p": {
+    "job": 0.14,
+    "software": 0.94,
+    "client": 0.62
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "A Photoshop AI plugin",
+   "judged": "2026-11-08"
   }
  },
  "llm-evals": {
@@ -5947,6 +5999,19 @@
    "model": "jev-1.13.0",
    "what": "VoxCPM2: Tokenizer-Free TTS for Multilingual Speech Generation, Creative Voice Design, and True-to-Life Cloning",
    "judged": "2026-10-11"
+  },
+  "OpenMontageInc/OpenMontage": {
+   "p": {
+    "job": 0.03,
+    "software": 0.89,
+    "client": 0.13
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "World's first open-source, agentic video production system. 12 production pipelines, 100+ tools, 700+ agent skill and production-knowledge files. Turn your AI coding assistant into a full video production studio.",
+   "judged": "2026-11-08"
   },
   "Osmantic/ODS": {
    "p": {
