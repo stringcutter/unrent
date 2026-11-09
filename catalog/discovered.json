@@ -449,6 +449,19 @@
    "what": " Memory library for building stateful agents",
    "judged": "2026-10-11"
   },
+  "ruvnet/ruflo": {
+   "p": {
+    "job": 0.14,
+    "software": 0.96,
+    "client": 0.1
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.14.0",
+   "what": "🌊 The original agent harness. Deploy intelligent multi-player swarms, coordinate autonomous workflows, and build conversational AI systems. Features adaptive memory, self-learning intelligence, federation, vector RAG integration, and native Claude Code / Codex / Hermes and many more Integrated",
+   "judged": "2026-11-09"
+  },
   "semantica-agi/semantica": {
    "p": {
     "job": 0.43,
@@ -1297,6 +1310,19 @@
    "model": "jev-1.13.0",
    "what": "A fast, helpful, and open-source document parser",
    "judged": "2026-10-11"
+  },
+  "run-llama/llama_cloud_services": {
+   "p": {
+    "job": 0.11,
+    "software": 0.86,
+    "client": 0.9
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Knowledge Agents and Management in the Cloud",
+   "judged": "2026-11-09"
   },
   "yfedoseev/pdf_oxide": {
    "p": {
@@ -3368,6 +3394,19 @@
    "model": "jev-1.13.0",
    "what": "OpenLIT is the open-source agent harness engineering platform: trace, evaluate, guard, and improve everything around the",
    "judged": "2026-10-11"
+  },
+  "pezzolabs/pezzo": {
+   "p": {
+    "job": 0.8,
+    "software": 0.95,
+    "client": 0.19
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.14.0",
+   "what": "🕹️ Open-source, developer-first LLMOps platform designed to streamline prompt design, version management, instant delivery, collaboration, troubleshooting, observability and more.",
+   "judged": "2026-11-09"
   },
   "pydantic/logfire": {
    "p": {
@@ -6673,6 +6712,19 @@
    "model": "jev-1.13.0",
    "what": "Ready-to-run cloud templates for RAG, AI pipelines, and enterprise search with live data. 🐳Docker-friendly.⚡Always in sync with Sharepoint, Google Drive, S3, Kafka, PostgreSQL, real-time data APIs, and more.",
    "judged": "2026-10-15"
+  },
+  "ruvnet/ruflo": {
+   "p": {
+    "job": 0.03,
+    "software": 0.95,
+    "client": 0.1
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.14.0",
+   "what": "🌊 The original agent harness. Deploy intelligent multi-player swarms, coordinate autonomous workflows, and build conversational AI systems. Features adaptive memory, self-learning intelligence, federation, vector RAG integration, and native Claude Code / Codex / Hermes and many more Integrated",
+   "judged": "2026-11-09"
   },
   "seaweedfs/seaweedfs": {
    "p": {
