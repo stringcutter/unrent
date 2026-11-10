@@ -4325,6 +4325,19 @@
    "what": "LangChat 是由 LangChat Team 开发的开源 AI Agent 应用平台，支持多模型、Agent、知识库 RAG、Skills、MCP 与智能问数。",
    "judged": "2026-10-11"
   },
+  "Marker-Inc-Korea/AutoRAG": {
+   "p": {
+    "job": 0.25,
+    "software": 0.93,
+    "client": 0.25
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Your Personal Librarian Agent. Ask anything on your computer, organize files, remember important info and files.",
+   "judged": "2026-11-10"
+  },
   "Ramakm/AI-Engineering": {
    "p": {
     "job": 0.06,
@@ -5036,6 +5049,19 @@
   }
  },
  "search-engine": {
+  "Marker-Inc-Korea/AutoRAG": {
+   "p": {
+    "job": 0.1,
+    "software": 0.93,
+    "client": 0.16
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Your Personal Librarian Agent. Ask anything on your computer, organize files, remember important info and files.",
+   "judged": "2026-11-10"
+  },
   "SeekStorm/SeekStorm": {
    "p": {
     "job": 0.9,
