@@ -670,6 +670,17 @@
    "what": "Anywhere, anything to memory, memory to anything.",
    "judged": "2026-10-11"
   },
+  "leopard627/fire-your-seo-agency": {
+   "p": {
+    "job": 0.03,
+    "software": 0.88,
+    "client": 0.08
+   },
+   "kind": [],
+   "model": "jev-1.14.0",
+   "what": "Fire your SEO·GEO agency 🔥 A Claude Code skill that audits and optimizes SEO·AEO·GEO·LLMO·NEO(Naver) by itself — 월 50~350만 원짜리 'AI 검색 최적화' 대행, AI 에이전트가 대체합니다",
+   "judged": "2026-11-11"
+  },
   "swirlai/swirl-search": {
    "p": {
     "job": 0.64,
@@ -1681,6 +1692,19 @@
    "model": "jev-1.13.0",
    "what": "Nvidia GPU exporter for prometheus using nvidia-smi binary OR using NVML",
    "judged": "2026-10-11"
+  },
+  "volcengine/veScale": {
+   "p": {
+    "job": 0.15,
+    "software": 0.79,
+    "client": 0.05
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": " Byted PyTorch Distributed for Hyperscale Training of LLMs and RLs",
+   "judged": "2026-11-11"
   }
  },
  "guardrails": {
@@ -3003,6 +3027,19 @@
    "what": "Non-destructive compression gateway for AI coding agents. Cuts token bills 25% on turn 1 to past 85% in long or saturate",
    "judged": "2026-10-11"
   },
+  "ThinkWatchProject/ThinkWatch-Lite": {
+   "p": {
+    "job": 0.71,
+    "software": 0.98,
+    "client": 0.08
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Local gateway for Claude Code, Codex and other AI clients on macOS, Windows and Linux: switch upstreams without touching clients, keep API keys from relays, cut off malicious tool calls, trace every request.",
+   "judged": "2026-11-11"
+  },
   "agentgateway/agentgateway": {
    "p": {
     "job": 0.74,
@@ -3278,6 +3315,19 @@
    "what": "Trace-native CI/CD for AI agents — production failures become regression tests that block the PR. Auto-detect, cluster, freeze into hermetic cases, replay in CI for $0.",
    "judged": "2026-11-06"
   },
+  "ThinkWatchProject/ThinkWatch-Lite": {
+   "p": {
+    "job": 0.21,
+    "software": 0.97,
+    "client": 0.14
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Local gateway for Claude Code, Codex and other AI clients on macOS, Windows and Linux: switch upstreams without touching clients, keep API keys from relays, cut off malicious tool calls, trace every request.",
+   "judged": "2026-11-11"
+  },
   "VoltAgent/voltagent": {
    "p": {
     "job": 0.16,
@@ -3436,6 +3486,19 @@
    "what": "A 2.78-trillion-parameter Kimi K3 running inference on a single CPU in 8.24 GB of RAM. Portable C99: no BLAS, no framewo",
    "judged": "2026-10-11"
   },
+  "FedML-AI/FedML": {
+   "p": {
+    "job": 0.26,
+    "software": 0.91,
+    "client": 0.28
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": "FEDML - The unified and scalable ML library for large-scale distributed training, model serving, and federated learning. FEDML Launch, a cross-cloud scheduler, further enables running any AI jobs on any GPU cloud or on-premise cluster. Built on this library, TensorOpera AI (https://TensorOpera.ai) is your generative AI platform at scale.",
+   "judged": "2026-11-11"
+  },
   "Generated-Computers/Locals": {
    "p": {
     "job": 0.52,
@@ -3498,6 +3561,19 @@
    "model": "jev-1.13.0",
    "what": "High-performance Inference and Deployment Toolkit for LLMs and VLMs based on PaddlePaddle",
    "judged": "2026-10-11"
+  },
+  "RunanywhereAI/trnrt": {
+   "p": {
+    "job": 0.87,
+    "software": 0.96,
+    "client": 0.06
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.14.0",
+   "what": "The open LLM inference engine for AWS Trainium: NKI megakernels, 1M-token context, OpenAI-compatible API. By RunAnywhere.",
+   "judged": "2026-11-11"
   },
   "SemiAnalysisAI/InferenceX": {
    "p": {
@@ -6855,6 +6931,19 @@
    "model": "jev-1.13.0",
    "what": "Semantic cache for LLMs. Fully integrated with LangChain and llama_index. ",
    "judged": "2026-10-11"
+  },
+  "zilliztech/claude-context": {
+   "p": {
+    "job": 0.04,
+    "software": 0.92,
+    "client": 0.71
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Code search MCP for Claude Code. Make entire codebase the context for any coding agent.",
+   "judged": "2026-11-11"
   },
   "zilliztech/deep-searcher": {
    "p": {
