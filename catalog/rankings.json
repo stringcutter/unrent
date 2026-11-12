@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-11",
+ "generated": "2026-11-12",
  "momentum_days": 30,
  "pools": {
   "llm-serving": {
@@ -10,31 +10,31 @@
     {
      "repo": "ollama/ollama",
      "url": "https://github.com/ollama/ollama",
-     "stars": 186644,
+     "stars": 186765,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-06-26",
      "status": "ok",
-     "stars_30d": 3799,
+     "stars_30d": 3773,
      "what": "Run open models locally with one command, OpenAI-compatible API"
     },
     {
      "repo": "ggml-org/llama.cpp",
      "url": "https://github.com/ggml-org/llama.cpp",
-     "stars": 134059,
+     "stars": 134296,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-03-10",
      "status": "ok",
-     "stars_30d": 3142,
+     "stars_30d": 3287,
      "what": "LLM inference in C/C++ on CPU, GPU and Apple Silicon; OpenAI-compatible llama-server"
     },
     {
      "repo": "vllm-project/vllm",
      "url": "https://github.com/vllm-project/vllm",
-     "stars": 96735,
+     "stars": 96815,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-02-09",
      "status": "ok",
      "stars_30d": 3103,
@@ -43,45 +43,45 @@
     {
      "repo": "mudler/LocalAI",
      "url": "https://github.com/mudler/LocalAI",
-     "stars": 50315,
+     "stars": 50335,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-03-18",
      "status": "ok",
-     "stars_30d": 830,
+     "stars_30d": 823,
      "what": "Self-hosted drop-in replacement for the OpenAI API, runs on consumer hardware"
     },
     {
      "repo": "sgl-project/sglang",
      "url": "https://github.com/sgl-project/sglang",
-     "stars": 38733,
+     "stars": 38789,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2024-01-08",
      "status": "ok",
-     "stars_30d": 1697,
+     "stars_30d": 1707,
      "what": "Fast inference server for LLMs and multimodal models, OpenAI-compatible API"
     },
     {
      "repo": "NVIDIA/TensorRT-LLM",
      "url": "https://github.com/NVIDIA/TensorRT-LLM",
-     "stars": 15061,
+     "stars": 15069,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-08-16",
      "status": "ok",
-     "stars_30d": 260,
+     "stars_30d": 263,
      "what": "Optimised LLM inference on NVIDIA GPUs"
     },
     {
      "repo": "bentoml/OpenLLM",
      "url": "https://github.com/bentoml/OpenLLM",
-     "stars": 12592,
+     "stars": 12598,
      "licence": "Apache-2.0",
      "pushed": "2026-11-09",
      "created": "2023-04-19",
      "status": "ok",
-     "stars_30d": 36,
+     "stars_30d": 40,
      "what": "Run any open-source LLMs, such as DeepSeek and Llama, as OpenAI compatible API endpoint in the…",
      "kind": [
       "server"
@@ -91,18 +91,18 @@
     {
      "repo": "xorbitsai/inference",
      "url": "https://github.com/xorbitsai/inference",
-     "stars": 9653,
+     "stars": 9654,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-06-14",
      "status": "ok",
-     "stars_30d": 45,
+     "stars_30d": 46,
      "what": "Xinference: serve LLMs, embedding and speech models behind one API"
     },
     {
      "repo": "bentoml/BentoML",
      "url": "https://github.com/bentoml/BentoML",
-     "stars": 8939,
+     "stars": 8940,
      "licence": "Apache-2.0",
      "pushed": "2026-11-02",
      "created": "2019-04-02",
@@ -117,12 +117,12 @@
     {
      "repo": "ai-dynamo/dynamo",
      "url": "https://github.com/ai-dynamo/dynamo",
-     "stars": 8470,
+     "stars": 8476,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2025-03-03",
      "status": "ok",
-     "stars_30d": 205,
+     "stars_30d": 200,
      "what": "Datacenter-scale distributed inference serving framework"
     },
     {
@@ -130,7 +130,7 @@
      "url": "https://github.com/InternLM/lmdeploy",
      "stars": 8140,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-12",
      "created": "2023-06-15",
      "status": "ok",
      "stars_30d": 36,
@@ -139,12 +139,12 @@
     {
      "repo": "kserve/kserve",
      "url": "https://github.com/kserve/kserve",
-     "stars": 6216,
+     "stars": 6218,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-09",
+     "pushed": "2026-11-12",
      "created": "2019-03-27",
      "status": "ok",
-     "stars_30d": 112,
+     "stars_30d": 110,
      "what": "Standardized Distributed Generative and Predictive AI Inference Platform for Scalable…",
      "kind": [
       "server"
@@ -154,12 +154,12 @@
     {
      "repo": "lemonade-sdk/lemonade",
      "url": "https://github.com/lemonade-sdk/lemonade",
-     "stars": 6181,
+     "stars": 6189,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2025-05-15",
      "status": "ok",
-     "stars_30d": 305,
+     "stars_30d": 306,
      "what": "Lemonade helps users discover and run local AI apps by serving optimized LLMs right from their own…",
      "kind": [
       "server"
@@ -169,12 +169,12 @@
     {
      "repo": "gpustack/gpustack",
      "url": "https://github.com/gpustack/gpustack",
-     "stars": 6025,
+     "stars": 6038,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2024-05-11",
      "status": "ok",
-     "stars_30d": 210,
+     "stars_30d": 219,
      "what": "GPU cluster manager that serves models with vLLM, llama.cpp and more"
     },
     {
@@ -182,10 +182,10 @@
      "url": "https://github.com/Michael-A-Kuykendall/shimmy",
      "stars": 6014,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-09",
+     "pushed": "2026-11-11",
      "created": "2025-08-28",
      "status": "ok",
-     "stars_30d": 40,
+     "stars_30d": 39,
      "what": "⚡ Pure-Rust WebGPU inference engine — OpenAI-API compatible, GGUF native, runs on any GPU. No…",
      "kind": [
       "server"
@@ -210,12 +210,12 @@
     {
      "repo": "b4rtaz/distributed-llama",
      "url": "https://github.com/b4rtaz/distributed-llama",
-     "stars": 3137,
+     "stars": 3140,
      "licence": "MIT",
      "pushed": "2026-11-10",
      "created": "2023-12-04",
      "status": "ok",
-     "stars_30d": 31,
+     "stars_30d": 33,
      "what": "Distributed LLM inference. Connect home devices into a powerful cluster to accelerate LLM…",
      "kind": [
       "server"
@@ -227,10 +227,10 @@
      "url": "https://github.com/thu-pacman/chitu",
      "stars": 3000,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2025-02-20",
      "status": "ok",
-     "stars_30d": 12,
+     "stars_30d": 10,
      "what": "High-performance inference framework for large language models, focusing on efficiency…",
      "kind": [
       "framework"
@@ -240,12 +240,12 @@
     {
      "repo": "mw00/project-maya",
      "url": "https://github.com/mw00/project-maya",
-     "stars": 2790,
+     "stars": 2823,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2026-10-06",
      "status": "ok",
-     "stars_30d": 1308,
+     "stars_30d": 1279,
      "what": "Project Maya - run GLM-5.3-Flash (321B MoE), DeepSeek-V4.1-Flash-1017 (748B MoE) and…",
      "kind": [
       "server"
@@ -255,12 +255,12 @@
     {
      "repo": "youssofal/MTPLX",
      "url": "https://github.com/youssofal/MTPLX",
-     "stars": 2696,
+     "stars": 2698,
      "licence": "Apache-2.0",
      "pushed": "2026-11-07",
      "created": "2026-05-02",
      "status": "ok",
-     "stars_30d": 127,
+     "stars_30d": 120,
      "what": "The fastest way to run Qwen 3.8 Flash Next, Qwen 3.8 27B and Ternary Bonsai 2 27B on a Mac: 125…",
      "kind": [
       "server"
@@ -270,12 +270,12 @@
     {
      "repo": "syv-ai/HyperQwen",
      "url": "https://github.com/syv-ai/HyperQwen",
-     "stars": 2674,
+     "stars": 2688,
      "licence": "Apache-2.0",
      "pushed": "2026-11-10",
      "created": "2026-08-15",
      "status": "ok",
-     "stars_30d": 705,
+     "stars_30d": 706,
      "what": "Serve large Qwen models fast on the GPUs you actually own. Qwen3.8-27B on a single 24 GB card with…",
      "kind": [
       "server"
@@ -285,12 +285,12 @@
     {
      "repo": "dphnAI/sonar",
      "url": "https://github.com/dphnAI/sonar",
-     "stars": 1910,
+     "stars": 1912,
      "licence": "AGPL-3.0",
-     "pushed": "2026-11-09",
+     "pushed": "2026-11-12",
      "created": "2023-06-23",
      "status": "ok",
-     "stars_30d": 38,
+     "stars_30d": 39,
      "what": "Large-scale LLM inference engine",
      "kind": [
       "server"
@@ -300,12 +300,12 @@
     {
      "repo": "xLLM-AI/xllm",
      "url": "https://github.com/xLLM-AI/xllm",
-     "stars": 1619,
+     "stars": 1622,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2025-08-12",
      "status": "ok",
-     "stars_30d": 24,
+     "stars_30d": 25,
      "what": "A high-performance inference engine for LLM, VLM, DiT and REC models, optimized for diverse AI…",
      "kind": [
       "framework"
@@ -313,14 +313,29 @@
      "discovered": true
     },
     {
-     "repo": "alibaba/rtp-llm",
-     "url": "https://github.com/alibaba/rtp-llm",
-     "stars": 1394,
+     "repo": "RunanywhereAI/trnrt",
+     "url": "https://github.com/RunanywhereAI/trnrt",
+     "stars": 1478,
      "licence": "Apache-2.0",
      "pushed": "2026-11-11",
+     "created": "2026-10-30",
+     "status": "ok",
+     "stars_30d": 1478,
+     "what": "The open LLM inference engine for AWS Trainium: NKI megakernels, 1M-token context…",
+     "kind": [
+      "server"
+     ],
+     "discovered": true
+    },
+    {
+     "repo": "alibaba/rtp-llm",
+     "url": "https://github.com/alibaba/rtp-llm",
+     "stars": 1396,
+     "licence": "Apache-2.0",
+     "pushed": "2026-11-12",
      "created": "2023-12-27",
      "status": "ok",
-     "stars_30d": 33,
+     "stars_30d": 35,
      "what": "RTP-LLM: Alibaba's high-performance LLM inference engine for diverse applications.",
      "kind": [
       "library"
@@ -328,15 +343,15 @@
      "discovered": true
     },
     {
-     "repo": "RunanywhereAI/trnrt",
-     "url": "https://github.com/RunanywhereAI/trnrt",
-     "stars": 1182,
-     "licence": "Apache-2.0",
+     "repo": "simplexai-labs/PolyStrata",
+     "url": "https://github.com/simplexai-labs/PolyStrata",
+     "stars": 1000,
+     "licence": "MIT",
      "pushed": "2026-11-11",
-     "created": "2026-10-30",
+     "created": "2026-10-06",
      "status": "ok",
-     "stars_30d": 1182,
-     "what": "The open LLM inference engine for AWS Trainium: NKI megakernels, 1M-token context…",
+     "stars_30d": 811,
+     "what": "Run large AI models on your own PC: Qwen3.8-Flash-Next on Strata's engine, and GLM 5.3 Flash…",
      "kind": [
       "server"
      ],
@@ -345,12 +360,12 @@
     {
      "repo": "Generated-Computers/Locals",
      "url": "https://github.com/Generated-Computers/Locals",
-     "stars": 646,
+     "stars": 647,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-11",
      "created": "2026-10-12",
      "status": "ok",
-     "stars_30d": 646,
+     "stars_30d": 626,
      "what": "Run many AI agents at once on your Mac, up to 3x faster.",
      "kind": [
       "server"
@@ -369,9 +384,9 @@
      "id": "Qwen/Qwen3.8-27B",
      "url": "https://huggingface.co/Qwen/Qwen3.8-27B",
      "licence": "apache-2.0",
-     "trending": 315,
-     "downloads": 7232703,
-     "likes": 19595,
+     "trending": 340,
+     "downloads": 7094218,
+     "likes": 19689,
      "created": "2026-08-05",
      "pipeline_tag": "image-text-to-text",
      "params": 27781427952
@@ -380,9 +395,9 @@
      "id": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
      "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017",
      "licence": "mit",
-     "trending": 180,
-     "downloads": 348914,
-     "likes": 5479,
+     "trending": 153,
+     "downloads": 374631,
+     "likes": 5554,
      "created": "2026-10-17",
      "pipeline_tag": "image-text-to-text",
      "params": 763205315794
@@ -391,86 +406,86 @@
      "id": "meituan-longcat/LongCat-2.5",
      "url": "https://huggingface.co/meituan-longcat/LongCat-2.5",
      "licence": "mit",
-     "trending": 84,
-     "downloads": 490,
-     "likes": 84,
+     "trending": 147,
+     "downloads": 710,
+     "likes": 182,
      "created": "2026-11-04",
      "pipeline_tag": "image-text-to-text",
      "params": 1779752648320
     },
     {
-     "id": "baidu/Unlimited-OCR-2",
-     "url": "https://huggingface.co/baidu/Unlimited-OCR-2",
-     "licence": "mit",
-     "trending": 67,
-     "downloads": 503648,
-     "likes": 675,
-     "created": "2026-10-26",
-     "pipeline_tag": "image-text-to-text",
-     "params": 3343978497
-    },
-    {
-     "id": "zai-org/GLM-5.3-Flash",
-     "url": "https://huggingface.co/zai-org/GLM-5.3-Flash",
-     "licence": "mit",
-     "trending": 65,
-     "downloads": 6403007,
-     "likes": 3124,
-     "created": "2026-08-25",
-     "pipeline_tag": "image-text-to-text",
-     "params": 321323031390
-    },
-    {
      "id": "deepseek-ai/DeepSeek-V4.1-Flash",
      "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash",
      "licence": "mit",
-     "trending": 65,
-     "downloads": 1762074,
-     "likes": 4939,
+     "trending": 67,
+     "downloads": 1759335,
+     "likes": 4948,
      "created": "2026-09-10",
      "pipeline_tag": "image-text-to-text",
      "params": 763205315794
     },
     {
+     "id": "zai-org/GLM-5.3-Flash",
+     "url": "https://huggingface.co/zai-org/GLM-5.3-Flash",
+     "licence": "mit",
+     "trending": 62,
+     "downloads": 6397774,
+     "likes": 3131,
+     "created": "2026-08-25",
+     "pipeline_tag": "image-text-to-text",
+     "params": 321323031390
+    },
+    {
+     "id": "baidu/Unlimited-OCR-2",
+     "url": "https://huggingface.co/baidu/Unlimited-OCR-2",
+     "licence": "mit",
+     "trending": 59,
+     "downloads": 519371,
+     "likes": 681,
+     "created": "2026-10-26",
+     "pipeline_tag": "image-text-to-text",
+     "params": 3343978497
+    },
+    {
      "id": "baidu/Unlimited-OCR",
      "url": "https://huggingface.co/baidu/Unlimited-OCR",
      "licence": "mit",
-     "trending": 55,
-     "downloads": 5692246,
-     "likes": 4999,
+     "trending": 52,
+     "downloads": 5833292,
+     "likes": 5003,
      "created": "2026-06-19",
      "pipeline_tag": "image-text-to-text",
      "params": 3336106240
     },
     {
+     "id": "google/gemma-4-31B-it",
+     "url": "https://huggingface.co/google/gemma-4-31B-it",
+     "licence": "apache-2.0",
+     "trending": 38,
+     "downloads": 6692367,
+     "likes": 4345,
+     "created": "2026-03-11",
+     "pipeline_tag": "image-text-to-text",
+     "params": 31273088876
+    },
+    {
      "id": "microsoft/Mage-VL-Cowork",
      "url": "https://huggingface.co/microsoft/Mage-VL-Cowork",
      "licence": "apache-2.0",
-     "trending": 54,
-     "downloads": 4079,
+     "trending": 36,
+     "downloads": 4226,
      "likes": 222,
      "created": "2026-10-30",
      "pipeline_tag": "image-text-to-text",
      "params": 4741793792
     },
     {
-     "id": "google/gemma-4-31B-it",
-     "url": "https://huggingface.co/google/gemma-4-31B-it",
-     "licence": "apache-2.0",
-     "trending": 39,
-     "downloads": 6806282,
-     "likes": 4338,
-     "created": "2026-03-11",
-     "pipeline_tag": "image-text-to-text",
-     "params": 31273088876
-    },
-    {
      "id": "Qwen/Qwen3.5-9B",
      "url": "https://huggingface.co/Qwen/Qwen3.5-9B",
      "licence": "apache-2.0",
-     "trending": 26,
-     "downloads": 6314359,
-     "likes": 2344,
+     "trending": 27,
+     "downloads": 6259809,
+     "likes": 2351,
      "created": "2026-02-27",
      "pipeline_tag": "image-text-to-text",
      "params": 9653104368
@@ -486,12 +501,12 @@
     {
      "repo": "cheaper-inference/OmniRoute",
      "url": "https://github.com/cheaper-inference/OmniRoute",
-     "stars": 86431,
+     "stars": 86763,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2026-02-13",
      "status": "ok",
-     "stars_30d": 10236,
+     "stars_30d": 10223,
      "what": "Never stop coding. Free MIT AI gateway: one endpoint, 375 providers (150+ free), 1,400+ models…",
      "kind": [
       "proxy"
@@ -501,34 +516,34 @@
     {
      "repo": "BerriAI/litellm",
      "url": "https://github.com/BerriAI/litellm",
-     "stars": 63099,
+     "stars": 63161,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-07-27",
      "status": "ok",
-     "stars_30d": 2050,
+     "stars_30d": 2024,
      "what": "Proxy exposing 100+ providers behind one OpenAI-compatible API, with keys, budgets and fallbacks"
     },
     {
      "repo": "QuantumNous/new-api",
      "url": "https://github.com/QuantumNous/new-api",
-     "stars": 51752,
+     "stars": 51821,
      "licence": "AGPL-3.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-11-10",
      "status": "ok",
-     "stars_30d": 1970,
+     "stars_30d": 1968,
      "what": "LLM gateway and key management, successor fork of one-api"
     },
     {
      "repo": "Kong/kong",
      "url": "https://github.com/Kong/kong",
-     "stars": 44375,
+     "stars": 44377,
      "licence": "Apache-2.0",
      "pushed": "2026-10-19",
      "created": "2014-11-17",
      "status": "ok",
-     "stars_30d": 115,
+     "stars_30d": 117,
      "what": "🦍 The API and AI Gateway",
      "kind": [
       "proxy"
@@ -538,23 +553,23 @@
     {
      "repo": "songquanpeng/one-api",
      "url": "https://github.com/songquanpeng/one-api",
-     "stars": 37402,
+     "stars": 37414,
      "licence": "MIT",
      "pushed": "2026-01-09",
      "created": "2023-04-22",
      "status": "ok",
-     "stars_30d": 276,
+     "stars_30d": 282,
      "what": "Unified OpenAI-compatible API over many providers, with key management"
     },
     {
      "repo": "decolua/9router",
      "url": "https://github.com/decolua/9router",
-     "stars": 32263,
+     "stars": 32302,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2026-01-05",
      "status": "ok",
-     "stars_30d": 1603,
+     "stars_30d": 1580,
      "what": "Unlimited FREE AI coding. Connect Claude Code, Codex, Cursor, Cline, Copilot, Antigravity to FREE…",
      "kind": [
       "proxy"
@@ -564,23 +579,23 @@
     {
      "repo": "Portkey-AI/gateway",
      "url": "https://github.com/Portkey-AI/gateway",
-     "stars": 13366,
+     "stars": 13369,
      "licence": "MIT",
      "pushed": "2026-05-25",
      "created": "2023-08-23",
      "status": "ok",
-     "stars_30d": 194,
+     "stars_30d": 193,
      "what": "Fast AI gateway with routing, retries and guardrails"
     },
     {
      "repo": "higress-group/higress",
      "url": "https://github.com/higress-group/higress",
-     "stars": 9750,
+     "stars": 9757,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2022-10-27",
      "status": "ok",
-     "stars_30d": 214,
+     "stars_30d": 211,
      "what": "🤖 AI Gateway | AI Native API Gateway",
      "kind": [
       "proxy"
@@ -590,23 +605,23 @@
     {
      "repo": "maximhq/bifrost",
      "url": "https://github.com/maximhq/bifrost",
-     "stars": 9497,
+     "stars": 9520,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2025-03-19",
      "status": "ok",
-     "stars_30d": 775,
+     "stars_30d": 772,
      "what": "High-performance LLM gateway written in Go"
     },
     {
      "repo": "tbphp/gpt-load",
      "url": "https://github.com/tbphp/gpt-load",
-     "stars": 7208,
+     "stars": 7212,
      "licence": "MIT",
-     "pushed": "2026-11-09",
+     "pushed": "2026-11-12",
      "created": "2025-06-06",
      "status": "ok",
-     "stars_30d": 128,
+     "stars_30d": 132,
      "what": "Self-hosted AI gateway for multi-channel, multi-credential setups — API keys and subscription…",
      "kind": [
       "proxy"
@@ -621,7 +636,7 @@
      "pushed": "2026-10-24",
      "created": "2024-07-09",
      "status": "ok",
-     "stars_30d": 30,
+     "stars_30d": 29,
      "what": "Plano is an AI-native proxy server and data plane for agentic apps. Smart LLM routing…",
      "kind": [
       "proxy"
@@ -631,12 +646,12 @@
     {
      "repo": "vllm-project/semantic-router",
      "url": "https://github.com/vllm-project/semantic-router",
-     "stars": 6452,
+     "stars": 6458,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2025-08-26",
      "status": "ok",
-     "stars_30d": 347,
+     "stars_30d": 322,
      "what": "An open, programmable decision layer for models and compute.",
      "kind": [
       "proxy"
@@ -646,9 +661,9 @@
     {
      "repo": "Helicone/helicone",
      "url": "https://github.com/Helicone/helicone",
-     "stars": 6277,
+     "stars": 6280,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-11-12",
      "created": "2023-01-31",
      "status": "ok",
      "stars_30d": 65,
@@ -657,12 +672,12 @@
     {
      "repo": "agentgateway/agentgateway",
      "url": "https://github.com/agentgateway/agentgateway",
-     "stars": 6116,
+     "stars": 6140,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2025-03-18",
      "status": "ok",
-     "stars_30d": 823,
+     "stars_30d": 833,
      "what": "Next Generation Agentic Proxy for AI Agents and MCP servers",
      "kind": [
       "proxy"
@@ -672,12 +687,12 @@
     {
      "repo": "weave-os/router",
      "url": "https://github.com/weave-os/router",
-     "stars": 5619,
+     "stars": 5620,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2026-04-27",
      "status": "ok",
-     "stars_30d": 31,
+     "stars_30d": 32,
      "what": "Model router for agentic systems. Routes every prompt to the right model in <50ms. Cut costs…",
      "kind": [
       "proxy"
@@ -687,12 +702,12 @@
     {
      "repo": "bestruirui/octopus",
      "url": "https://github.com/bestruirui/octopus",
-     "stars": 2746,
+     "stars": 2748,
      "licence": "AGPL-3.0",
      "pushed": "2026-10-23",
      "created": "2025-11-18",
      "status": "ok",
-     "stars_30d": 46,
+     "stars_30d": 47,
      "what": "One Hub All LLMs For You | 为个人打造的 LLM API 聚合网关",
      "kind": [
       "proxy"
@@ -702,9 +717,9 @@
     {
      "repo": "theagentrouter/agent-router",
      "url": "https://github.com/theagentrouter/agent-router",
-     "stars": 2382,
+     "stars": 2388,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-12",
      "created": "2024-10-21",
      "status": "ok",
      "stars_30d": 165,
@@ -713,12 +728,12 @@
     {
      "repo": "Continuum-AI-Corp/OrcaRouter-Lite",
      "url": "https://github.com/Continuum-AI-Corp/OrcaRouter-Lite",
-     "stars": 2028,
+     "stars": 2103,
      "licence": "MIT",
      "pushed": "2026-10-08",
      "created": "2026-05-03",
      "status": "ok",
-     "stars_30d": 284,
+     "stars_30d": 357,
      "what": "Self-hosted LLM router with a managed safety net. OpenAI-compatible. BYOK. Single-workspace…",
      "kind": [
       "proxy"
@@ -728,12 +743,12 @@
     {
      "repo": "APIParkLab/APIPark",
      "url": "https://github.com/APIParkLab/APIPark",
-     "stars": 1827,
+     "stars": 1826,
      "licence": "Apache-2.0",
      "pushed": "2026-10-27",
      "created": "2024-08-12",
      "status": "ok",
-     "stars_30d": 15,
+     "stars_30d": 12,
      "what": "Cloud native, ultra-high performance AI&API gateway, LLM API management, distribution system, open…",
      "kind": [
       "proxy"
@@ -743,12 +758,12 @@
     {
      "repo": "astaxie/TokenHub",
      "url": "https://github.com/astaxie/TokenHub",
-     "stars": 1432,
+     "stars": 1439,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2026-06-10",
      "status": "ok",
-     "stars_30d": 67,
+     "stars_30d": 73,
      "what": "TokenHub gives enterprises a private gateway to unify AI model access and governance, making every…",
      "kind": [
       "proxy"
@@ -760,10 +775,10 @@
      "url": "https://github.com/ENTERPILOT/GoModel",
      "stars": 1317,
      "licence": "MIT",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-12",
      "created": "2025-12-05",
      "status": "ok",
-     "stars_30d": 83,
+     "stars_30d": 82,
      "what": "AI gateway / AI control plane / AI proxy written in Go. Unified OpenAI-compatible and…",
      "kind": [
       "proxy"
@@ -773,12 +788,12 @@
     {
      "repo": "ThinkWatchProject/ThinkWatch-Lite",
      "url": "https://github.com/ThinkWatchProject/ThinkWatch-Lite",
-     "stars": 1024,
+     "stars": 1055,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2026-09-12",
      "status": "ok",
-     "stars_30d": 512,
+     "stars_30d": 519,
      "what": "Local gateway for Claude Code, Codex and other AI clients on macOS, Windows and Linux: switch…",
      "kind": [
       "proxy"
@@ -790,13 +805,13 @@
     {
      "repo": "diegosouzapw/OmniRoute",
      "url": "https://github.com/diegosouzapw/OmniRoute",
-     "stars": 86431,
+     "stars": 86763,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2026-02-13",
      "status": "renamed",
      "problem": "now cheaper-inference/OmniRoute",
-     "stars_30d": 10895,
+     "stars_30d": 10812,
      "what": "Never stop coding. Free MIT AI gateway: one endpoint, 359 providers (150+ free), 1200+ models…",
      "kind": [
       "proxy"
@@ -813,56 +828,56 @@
     {
      "repo": "unslothai/unsloth",
      "url": "https://github.com/unslothai/unsloth",
-     "stars": 79320,
+     "stars": 79375,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-11-29",
      "status": "ok",
-     "stars_30d": 1465,
+     "stars_30d": 1447,
      "what": "Fast, memory-efficient fine-tuning and RL for open models"
     },
     {
      "repo": "hiyouga/LlamaFactory",
      "url": "https://github.com/hiyouga/LlamaFactory",
-     "stars": 75996,
+     "stars": 76015,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-05-28",
      "status": "ok",
-     "stars_30d": 571,
+     "stars_30d": 568,
      "what": "Unified fine-tuning of 100+ LLMs, with a web UI"
     },
     {
      "repo": "verl-project/verl",
      "url": "https://github.com/verl-project/verl",
-     "stars": 24196,
+     "stars": 24207,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2024-10-31",
      "status": "ok",
-     "stars_30d": 360,
+     "stars_30d": 353,
      "what": "Reinforcement learning for LLMs at scale"
     },
     {
      "repo": "huggingface/trl",
      "url": "https://github.com/huggingface/trl",
-     "stars": 19720,
+     "stars": 19728,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2020-03-27",
      "status": "ok",
-     "stars_30d": 223,
+     "stars_30d": 221,
      "what": "Post-training with SFT, DPO, GRPO and more"
     },
     {
      "repo": "axolotl-ai-cloud/axolotl",
      "url": "https://github.com/axolotl-ai-cloud/axolotl",
-     "stars": 12683,
+     "stars": 12689,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-04-14",
      "status": "ok",
-     "stars_30d": 126,
+     "stars_30d": 130,
      "what": "Config-driven fine-tuning for open models"
     },
     {
@@ -883,12 +898,12 @@
     {
      "repo": "MakazhanAlpamys/Soup",
      "url": "https://github.com/MakazhanAlpamys/Soup",
-     "stars": 10460,
+     "stars": 10492,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2026-02-20",
      "status": "ok",
-     "stars_30d": 1867,
+     "stars_30d": 1804,
      "what": "Fine-tune LLMs from one YAML. Layer streaming trains an 8B model on a 4 GB laptop GPU.",
      "kind": [
       "cli"
@@ -900,10 +915,10 @@
      "url": "https://github.com/oumi-ai/oumi",
      "stars": 9430,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-11",
      "created": "2024-05-07",
      "status": "ok",
-     "stars_30d": 37,
+     "stars_30d": 34,
      "what": "Easily fine-tune (SFT/RL), evaluate, and deploy Qwen, Gemma, or any open agentic LLM/VLM!",
      "kind": [
       "framework"
@@ -913,12 +928,12 @@
     {
      "repo": "rllm-org/rllm",
      "url": "https://github.com/rllm-org/rllm",
-     "stars": 5916,
+     "stars": 5917,
      "licence": "Apache-2.0",
      "pushed": "2026-10-16",
      "created": "2025-01-26",
      "status": "ok",
-     "stars_30d": 45,
+     "stars_30d": 42,
      "what": "Democratizing Reinforcement Learning for LLMs",
      "kind": [
       "framework"
@@ -928,23 +943,23 @@
     {
      "repo": "meta-pytorch/torchtune",
      "url": "https://github.com/meta-pytorch/torchtune",
-     "stars": 5818,
+     "stars": 5816,
      "licence": "BSD-3-Clause",
      "pushed": "2026-11-09",
      "created": "2023-10-20",
      "status": "ok",
-     "stars_30d": 6,
+     "stars_30d": 3,
      "what": "PyTorch-native post-training library"
     },
     {
      "repo": "h2oai/h2o-llmstudio",
      "url": "https://github.com/h2oai/h2o-llmstudio",
-     "stars": 5193,
+     "stars": 5195,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-09",
+     "pushed": "2026-11-12",
      "created": "2023-04-17",
      "status": "ok",
-     "stars_30d": 10,
+     "stars_30d": 12,
      "what": "H2O LLM Studio - a framework and no-code GUI for fine-tuning LLMs. Documentation…",
      "kind": [
       "framework"
@@ -954,7 +969,7 @@
     {
      "repo": "stochasticai/xTuring",
      "url": "https://github.com/stochasticai/xTuring",
-     "stars": 2679,
+     "stars": 2680,
      "licence": "Apache-2.0",
      "pushed": "2026-11-05",
      "created": "2023-03-19",
@@ -969,12 +984,12 @@
     {
      "repo": "AI-Hypercomputer/maxtext",
      "url": "https://github.com/AI-Hypercomputer/maxtext",
-     "stars": 2461,
+     "stars": 2460,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-02-28",
      "status": "ok",
-     "stars_30d": 20,
+     "stars_30d": 18,
      "what": "A simple, performant, and scalable Jax LLM!",
      "kind": [
       "library"
@@ -992,23 +1007,23 @@
     {
      "repo": "guardrails-ai/guardrails",
      "url": "https://github.com/guardrails-ai/guardrails",
-     "stars": 7600,
+     "stars": 7605,
      "licence": "Apache-2.0",
      "pushed": "2026-11-11",
      "created": "2023-01-29",
      "status": "ok",
-     "stars_30d": 89,
+     "stars_30d": 91,
      "what": "Input and output validation for LLMs"
     },
     {
      "repo": "NVIDIA-NeMo/Guardrails",
      "url": "https://github.com/NVIDIA-NeMo/Guardrails",
-     "stars": 7474,
+     "stars": 7480,
      "licence": "Apache-2.0",
      "pushed": "2026-11-11",
      "created": "2023-04-18",
      "status": "ok",
-     "stars_30d": 194,
+     "stars_30d": 192,
      "what": "Programmable guardrails for LLM applications"
     }
    ],
@@ -1022,67 +1037,67 @@
     {
      "repo": "milvus-io/milvus",
      "url": "https://github.com/milvus-io/milvus",
-     "stars": 46640,
+     "stars": 46649,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2019-09-16",
      "status": "ok",
-     "stars_30d": 275,
+     "stars_30d": 276,
      "what": "Cloud-native vector database built for scale"
     },
     {
      "repo": "qdrant/qdrant",
      "url": "https://github.com/qdrant/qdrant",
-     "stars": 35513,
+     "stars": 35527,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2020-05-30",
      "status": "ok",
-     "stars_30d": 466,
+     "stars_30d": 469,
      "what": "Vector database and search engine written in Rust"
     },
     {
      "repo": "chroma-core/chroma",
      "url": "https://github.com/chroma-core/chroma",
-     "stars": 29673,
+     "stars": 29676,
      "licence": "Apache-2.0",
      "pushed": "2026-11-07",
      "created": "2022-10-05",
      "status": "ok",
-     "stars_30d": 189,
+     "stars_30d": 183,
      "what": "Embedding database for AI applications"
     },
     {
      "repo": "pgvector/pgvector",
      "url": "https://github.com/pgvector/pgvector",
-     "stars": 23648,
+     "stars": 23658,
      "licence": "PostgreSQL",
      "pushed": "2026-11-11",
      "created": "2021-04-20",
      "status": "ok",
-     "stars_30d": 331,
+     "stars_30d": 325,
      "what": "Vector similarity search inside Postgres"
     },
     {
      "repo": "weaviate/weaviate",
      "url": "https://github.com/weaviate/weaviate",
-     "stars": 16943,
+     "stars": 16945,
      "licence": "BSD-3-Clause",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2016-03-30",
      "status": "ok",
-     "stars_30d": 68,
+     "stars_30d": 67,
      "what": "Vector database with hybrid search and built-in vectorisers"
     },
     {
      "repo": "alibaba/zvec",
      "url": "https://github.com/alibaba/zvec",
-     "stars": 16225,
+     "stars": 16230,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2025-12-05",
      "status": "ok",
-     "stars_30d": 126,
+     "stars_30d": 125,
      "what": "A lightweight, lightning-fast, in-process vector database",
      "kind": [
       "embedded"
@@ -1092,12 +1107,12 @@
     {
      "repo": "StarTrail-org/LEANN",
      "url": "https://github.com/StarTrail-org/LEANN",
-     "stars": 13789,
+     "stars": 13795,
      "licence": "MIT",
      "pushed": "2026-11-11",
      "created": "2025-06-09",
      "status": "ok",
-     "stars_30d": 771,
+     "stars_30d": 774,
      "what": "[MLsys2026 Best Paper]: https://arxiv.org/abs/2506.08276. RAG on Everything with LEANN. Enjoy 97%…",
      "kind": [
       "embedded"
@@ -1107,20 +1122,20 @@
     {
      "repo": "lancedb/lancedb",
      "url": "https://github.com/lancedb/lancedb",
-     "stars": 11881,
+     "stars": 11885,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-02-28",
      "status": "ok",
-     "stars_30d": 232,
+     "stars_30d": 226,
      "what": "Serverless multimodal vector database on the Lance format"
     },
     {
      "repo": "vespa-engine/vespa",
      "url": "https://github.com/vespa-engine/vespa",
-     "stars": 7174,
+     "stars": 7176,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2016-06-03",
      "status": "ok",
      "stars_30d": 48,
@@ -1137,34 +1152,34 @@
     {
      "repo": "facebookresearch/faiss",
      "url": "https://github.com/facebookresearch/faiss",
-     "stars": 41409,
+     "stars": 41497,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2017-02-07",
      "status": "ok",
-     "stars_30d": 274,
+     "stars_30d": 357,
      "what": "Library for efficient similarity search"
     },
     {
      "repo": "nmslib/hnswlib",
      "url": "https://github.com/nmslib/hnswlib",
-     "stars": 5365,
+     "stars": 5366,
      "licence": "Apache-2.0",
      "pushed": "2026-09-15",
      "created": "2017-07-06",
      "status": "ok",
-     "stars_30d": 16,
+     "stars_30d": 17,
      "what": "Header-only HNSW library for approximate nearest neighbours"
     },
     {
      "repo": "microsoft/SPTAG",
      "url": "https://github.com/microsoft/SPTAG",
-     "stars": 5022,
+     "stars": 5021,
      "licence": "MIT",
      "pushed": "2026-11-10",
      "created": "2018-09-12",
      "status": "ok",
-     "stars_30d": 1,
+     "stars_30d": 0,
      "what": "A distributed approximate nearest neighborhood search (ANN) library which provides a high quality…",
      "kind": [
       "library"
@@ -1174,9 +1189,9 @@
     {
      "repo": "unum-cloud/USearch",
      "url": "https://github.com/unum-cloud/USearch",
-     "stars": 4380,
+     "stars": 4381,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-12",
      "created": "2023-02-22",
      "status": "ok",
      "stars_30d": 49,
@@ -1225,16 +1240,16 @@
      "url": "https://github.com/meilisearch/meilisearch",
      "stars": 59842,
      "licence": "MIT",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-12",
      "created": "2018-04-23",
      "status": "ok",
-     "stars_30d": 296,
+     "stars_30d": 285,
      "what": "Search engine with hybrid (keyword + vector) search"
     },
     {
      "repo": "typesense/typesense",
      "url": "https://github.com/typesense/typesense",
-     "stars": 27112,
+     "stars": 27118,
      "licence": "GPL-3.0",
      "pushed": "2026-11-11",
      "created": "2017-01-18",
@@ -1245,12 +1260,12 @@
     {
      "repo": "xerj-org/xerj",
      "url": "https://github.com/xerj-org/xerj",
-     "stars": 18826,
+     "stars": 18928,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2026-06-30",
      "status": "ok",
-     "stars_30d": 15173,
+     "stars_30d": 15154,
      "what": "XERJ is the new way for AI to search data. Its autoindex capability activates agents to know your…",
      "kind": [
       "server"
@@ -1260,23 +1275,23 @@
     {
      "repo": "opensearch-project/OpenSearch",
      "url": "https://github.com/opensearch-project/OpenSearch",
-     "stars": 13993,
+     "stars": 14001,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2021-01-29",
      "status": "ok",
-     "stars_30d": 142,
+     "stars_30d": 144,
      "what": "Search and analytics suite with vector, lexical and hybrid search"
     },
     {
      "repo": "manticoresoftware/manticoresearch",
      "url": "https://github.com/manticoresoftware/manticoresearch",
-     "stars": 12082,
+     "stars": 12084,
      "licence": "GPL-3.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2017-06-28",
      "status": "ok",
-     "stars_30d": 31,
+     "stars_30d": 33,
      "what": "Open-source search database for full-text, vector, and hybrid search with real-time indexing and…",
      "kind": [
       "server"
@@ -1286,12 +1301,12 @@
     {
      "repo": "paradedb/paradedb",
      "url": "https://github.com/paradedb/paradedb",
-     "stars": 9504,
+     "stars": 9506,
      "licence": "AGPL-3.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-06-30",
      "status": "ok",
-     "stars_30d": 106,
+     "stars_30d": 108,
      "what": "Elasticsearch-quality search inside Postgres"
     },
     {
@@ -1299,21 +1314,21 @@
      "url": "https://github.com/infiniflow/infinity",
      "stars": 4764,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2022-07-18",
      "status": "ok",
-     "stars_30d": 26,
+     "stars_30d": 25,
      "what": "AI-native database for hybrid search"
     },
     {
      "repo": "oceanbase/seekdb",
      "url": "https://github.com/oceanbase/seekdb",
-     "stars": 3240,
+     "stars": 3242,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2025-10-21",
      "status": "ok",
-     "stars_30d": 104,
+     "stars_30d": 94,
      "what": "The AI-Native Search Database. Best for agent storage, it unifies vector, text, structured, and…",
      "kind": [
       "embedded"
@@ -1325,7 +1340,7 @@
      "url": "https://github.com/SeekStorm/SeekStorm",
      "stars": 1938,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-06",
+     "pushed": "2026-11-12",
      "created": "2024-02-27",
      "status": "ok",
      "stars_30d": 19,
@@ -1355,7 +1370,7 @@
      "url": "https://github.com/codelibs/fess",
      "stars": 1147,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2013-09-13",
      "status": "ok",
      "stars_30d": 6,
@@ -1376,45 +1391,45 @@
     {
      "repo": "quickwit-oss/tantivy",
      "url": "https://github.com/quickwit-oss/tantivy",
-     "stars": 16423,
+     "stars": 16429,
      "licence": "MIT",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-11",
      "created": "2016-01-11",
      "status": "ok",
-     "stars_30d": 216,
+     "stars_30d": 222,
      "what": "Full-text search engine library in Rust"
     },
     {
      "repo": "blevesearch/bleve",
      "url": "https://github.com/blevesearch/bleve",
-     "stars": 11256,
+     "stars": 11255,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2014-04-17",
      "status": "ok",
-     "stars_30d": 22,
+     "stars_30d": 21,
      "what": "Text, numeric, geo and vector indexing library for Go"
     },
     {
      "repo": "apache/lucene",
      "url": "https://github.com/apache/lucene",
-     "stars": 3609,
+     "stars": 3610,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2021-02-23",
      "status": "ok",
-     "stars_30d": 27,
+     "stars_30d": 26,
      "what": "Search library behind Elasticsearch and OpenSearch"
     },
     {
      "repo": "teamtnt/tntsearch",
      "url": "https://github.com/teamtnt/tntsearch",
-     "stars": 3201,
+     "stars": 3202,
      "licence": "MIT",
      "pushed": "2026-11-03",
      "created": "2016-02-26",
      "status": "ok",
-     "stars_30d": 5,
+     "stars_30d": 7,
      "what": "A fully featured full text search engine written in PHP",
      "kind": [
       "library"
@@ -1426,7 +1441,7 @@
      "url": "https://github.com/SeekStorm/SeekStorm",
      "stars": 1938,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-06",
+     "pushed": "2026-11-12",
      "created": "2024-02-27",
      "status": "ok",
      "stars_30d": 19,
@@ -1447,18 +1462,18 @@
     {
      "repo": "infiniflow/ragflow",
      "url": "https://github.com/infiniflow/ragflow",
-     "stars": 94023,
+     "stars": 94087,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-12-12",
      "status": "ok",
-     "stars_30d": 1965,
+     "stars_30d": 1944,
      "what": "RAG engine with deep document understanding"
     },
     {
      "repo": "pathwaycom/serviette",
      "url": "https://github.com/pathwaycom/serviette",
-     "stars": 58711,
+     "stars": 58705,
      "licence": "MIT",
      "pushed": "2026-11-10",
      "created": "2023-07-19",
@@ -1473,23 +1488,23 @@
     {
      "repo": "onyx-dot-app/onyx",
      "url": "https://github.com/onyx-dot-app/onyx",
-     "stars": 33335,
+     "stars": 33353,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-04-27",
      "status": "ok",
-     "stars_30d": 922,
+     "stars_30d": 915,
      "what": "Self-hostable enterprise search and chat over your documents"
     },
     {
      "repo": "1Panel-dev/MaxKB",
      "url": "https://github.com/1Panel-dev/MaxKB",
-     "stars": 23143,
+     "stars": 23150,
      "licence": "GPL-3.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-09-14",
      "status": "ok",
-     "stars_30d": 188,
+     "stars_30d": 185,
      "what": "🔥 MaxKB is an open-source platform for building enterprise-grade agents. 强大易用的开源企业级智能体平台。",
      "kind": [
       "application"
@@ -1514,12 +1529,12 @@
     {
      "repo": "Zleap-AI/SAG",
      "url": "https://github.com/Zleap-AI/SAG",
-     "stars": 2940,
+     "stars": 2960,
      "licence": "MIT",
      "pushed": "2026-11-11",
      "created": "2025-11-07",
      "status": "ok",
-     "stars_30d": 364,
+     "stars_30d": 379,
      "what": "A new SOTA for RAG — an original retrieval architecture and an open-source knowledge base for…",
      "kind": [
       "application"
@@ -1529,12 +1544,12 @@
     {
      "repo": "LangChat/langchat",
      "url": "https://github.com/LangChat/langchat",
-     "stars": 1345,
+     "stars": 1353,
      "licence": "Apache-2.0",
      "pushed": "2026-09-27",
      "created": "2024-02-08",
      "status": "ok",
-     "stars_30d": 40,
+     "stars_30d": 45,
      "what": "LangChat 是由 LangChat Team 开发的开源 AI Agent 应用平台，支持多模型、Agent、知识库 RAG、Skills、MCP 与智能问数。",
      "kind": [
       "application"
@@ -1544,12 +1559,12 @@
     {
      "repo": "EmbeddedLLM/JamAIBase",
      "url": "https://github.com/EmbeddedLLM/JamAIBase",
-     "stars": 1104,
+     "stars": 1103,
      "licence": "Apache-2.0",
      "pushed": "2026-10-22",
      "created": "2024-05-30",
      "status": "ok",
-     "stars_30d": 2,
+     "stars_30d": 1,
      "what": "The collaborative spreadsheet for AI. Chain cells into powerful pipelines, experiment with prompts…",
      "kind": [
       "server"
@@ -1567,7 +1582,7 @@
     {
      "repo": "pathwaycom/serviette",
      "url": "https://github.com/pathwaycom/serviette",
-     "stars": 58711,
+     "stars": 58705,
      "licence": "MIT",
      "pushed": "2026-11-10",
      "created": "2023-07-19",
@@ -1582,7 +1597,7 @@
     {
      "repo": "run-llama/llama_index",
      "url": "https://github.com/run-llama/llama_index",
-     "stars": 52874,
+     "stars": 52880,
      "licence": "MIT",
      "pushed": "2026-11-11",
      "created": "2022-11-02",
@@ -1593,23 +1608,23 @@
     {
      "repo": "HKUDS/LightRAG",
      "url": "https://github.com/HKUDS/LightRAG",
-     "stars": 40657,
+     "stars": 40674,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2024-10-02",
      "status": "ok",
-     "stars_30d": 572,
+     "stars_30d": 563,
      "what": "Simple and fast graph-based RAG"
     },
     {
      "repo": "VectifyAI/PageIndex",
      "url": "https://github.com/VectifyAI/PageIndex",
-     "stars": 40363,
+     "stars": 40397,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2025-04-01",
      "status": "ok",
-     "stars_30d": 1291,
+     "stars_30d": 1293,
      "what": "📑 PageIndex: Document Index for Vectorless, Reasoning-based RAG",
      "kind": [
       "library"
@@ -1619,34 +1634,34 @@
     {
      "repo": "microsoft/graphrag",
      "url": "https://github.com/microsoft/graphrag",
-     "stars": 36629,
+     "stars": 36635,
      "licence": "MIT",
      "pushed": "2026-11-09",
      "created": "2024-03-27",
      "status": "ok",
-     "stars_30d": 332,
+     "stars_30d": 312,
      "what": "Graph-based retrieval-augmented generation"
     },
     {
      "repo": "deepset-ai/haystack",
      "url": "https://github.com/deepset-ai/haystack",
-     "stars": 26990,
+     "stars": 26996,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2019-11-14",
      "status": "ok",
-     "stars_30d": 265,
+     "stars_30d": 262,
      "what": "Framework for production RAG pipelines"
     },
     {
      "repo": "HKUDS/RAG-Anything",
      "url": "https://github.com/HKUDS/RAG-Anything",
-     "stars": 24486,
+     "stars": 24501,
      "licence": "MIT",
-     "pushed": "2026-11-02",
+     "pushed": "2026-11-12",
      "created": "2025-06-06",
      "status": "ok",
-     "stars_30d": 957,
+     "stars_30d": 959,
      "what": "\"RAG-Anything: All-in-One RAG Framework\"",
      "kind": [
       "framework"
@@ -1656,12 +1671,12 @@
     {
      "repo": "llmware-ai/llmware",
      "url": "https://github.com/llmware-ai/llmware",
-     "stars": 14822,
+     "stars": 14821,
      "licence": "Apache-2.0",
      "pushed": "2026-10-01",
      "created": "2023-09-29",
      "status": "ok",
-     "stars_30d": 0,
+     "stars_30d": 2,
      "what": "Unified framework for building enterprise RAG pipelines with small, specialized models",
      "kind": [
       "framework"
@@ -1671,12 +1686,12 @@
     {
      "repo": "neuml/txtai",
      "url": "https://github.com/neuml/txtai",
-     "stars": 13292,
+     "stars": 13326,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-11",
      "created": "2020-08-09",
      "status": "ok",
-     "stars_30d": 281,
+     "stars_30d": 311,
      "what": "💡 All-in-one AI framework for semantic search, LLM orchestration and language model workflows",
      "kind": [
       "framework"
@@ -1686,12 +1701,12 @@
     {
      "repo": "superlinear-ai/raglite",
      "url": "https://github.com/superlinear-ai/raglite",
-     "stars": 1211,
+     "stars": 1212,
      "licence": "MPL-2.0",
      "pushed": "2026-11-01",
      "created": "2024-06-10",
      "status": "ok",
-     "stars_30d": 2,
+     "stars_30d": 3,
      "what": "🥤 RAGLite is a Python toolkit for Retrieval-Augmented Generation (RAG) with DuckDB or PostgreSQL",
      "kind": [
       "library"
@@ -1710,53 +1725,64 @@
      "id": "google/embeddinggemma-2",
      "url": "https://huggingface.co/google/embeddinggemma-2",
      "licence": "apache-2.0",
-     "trending": 94,
-     "downloads": 492050,
-     "likes": 3237,
+     "trending": 146,
+     "downloads": 503609,
+     "likes": 3342,
      "created": "2026-09-14",
      "pipeline_tag": "feature-extraction",
      "params": 744371512
     },
     {
-     "id": "BAAI/bge-m3",
-     "url": "https://huggingface.co/BAAI/bge-m3",
-     "licence": "mit",
-     "trending": 18,
-     "downloads": 29082867,
-     "likes": 3987,
-     "created": "2024-01-27",
-     "pipeline_tag": "sentence-similarity",
-     "params": null
-    },
-    {
      "id": "Qwen/Qwen3-Embedding-0.6B",
      "url": "https://huggingface.co/Qwen/Qwen3-Embedding-0.6B",
      "licence": "apache-2.0",
-     "trending": 16,
-     "downloads": 8919366,
-     "likes": 1343,
+     "trending": 17,
+     "downloads": 8761091,
+     "likes": 1345,
      "created": "2025-06-03",
      "pipeline_tag": "feature-extraction",
      "params": 595776512
     },
     {
+     "id": "BAAI/bge-m3",
+     "url": "https://huggingface.co/BAAI/bge-m3",
+     "licence": "mit",
+     "trending": 16,
+     "downloads": 29282167,
+     "likes": 3989,
+     "created": "2024-01-27",
+     "pipeline_tag": "sentence-similarity",
+     "params": null
+    },
+    {
      "id": "Qwen/Qwen3-Embedding-8B",
      "url": "https://huggingface.co/Qwen/Qwen3-Embedding-8B",
      "licence": "apache-2.0",
-     "trending": 9,
-     "downloads": 2360347,
-     "likes": 856,
+     "trending": 10,
+     "downloads": 2358928,
+     "likes": 858,
      "created": "2025-06-03",
      "pipeline_tag": "feature-extraction",
      "params": 7567295488
     },
     {
+     "id": "intfloat/multilingual-e5-small",
+     "url": "https://huggingface.co/intfloat/multilingual-e5-small",
+     "licence": "mit",
+     "trending": 6,
+     "downloads": 9414953,
+     "likes": 488,
+     "created": "2023-06-30",
+     "pipeline_tag": "sentence-similarity",
+     "params": 117654272
+    },
+    {
      "id": "microsoft/harrier-oss-v1-0.6b",
      "url": "https://huggingface.co/microsoft/harrier-oss-v1-0.6b",
      "licence": "mit",
-     "trending": 6,
-     "downloads": 222060,
-     "likes": 336,
+     "trending": 5,
+     "downloads": 218439,
+     "likes": 338,
      "created": "2026-03-30",
      "pipeline_tag": "feature-extraction",
      "params": 596049920
@@ -1766,8 +1792,8 @@
      "url": "https://huggingface.co/BAAI/bge-small-en-v1.5",
      "licence": "mit",
      "trending": 4,
-     "downloads": 46666291,
-     "likes": 669,
+     "downloads": 46171345,
+     "likes": 671,
      "created": "2023-09-12",
      "pipeline_tag": "feature-extraction",
      "params": 33360512
@@ -1777,44 +1803,33 @@
      "url": "https://huggingface.co/nomic-ai/nomic-embed-text-v1.5",
      "licence": "apache-2.0",
      "trending": 4,
-     "downloads": 11905257,
+     "downloads": 11809681,
      "likes": 992,
      "created": "2024-02-10",
      "pipeline_tag": "sentence-similarity",
      "params": 136731648
     },
     {
-     "id": "intfloat/multilingual-e5-small",
-     "url": "https://huggingface.co/intfloat/multilingual-e5-small",
-     "licence": "mit",
-     "trending": 4,
-     "downloads": 9438152,
-     "likes": 485,
-     "created": "2023-06-30",
-     "pipeline_tag": "sentence-similarity",
-     "params": 117654272
-    },
-    {
      "id": "lightonai/SlideOn",
      "url": "https://huggingface.co/lightonai/SlideOn",
      "licence": "apache-2.0",
      "trending": 4,
-     "downloads": 763,
+     "downloads": 830,
      "likes": 18,
      "created": "2026-10-12",
      "pipeline_tag": "feature-extraction",
      "params": 174246400
     },
     {
-     "id": "intfloat/multilingual-e5-large",
-     "url": "https://huggingface.co/intfloat/multilingual-e5-large",
-     "licence": "mit",
+     "id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+     "url": "https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+     "licence": "apache-2.0",
      "trending": 3,
-     "downloads": 7135323,
-     "likes": 1285,
-     "created": "2023-06-30",
-     "pipeline_tag": "feature-extraction",
-     "params": 559890946
+     "downloads": 26540125,
+     "likes": 1504,
+     "created": "2022-03-02",
+     "pipeline_tag": "sentence-similarity",
+     "params": 117654272
     }
    ],
    "dropped": []
@@ -1827,9 +1842,9 @@
     {
      "repo": "vllm-project/vllm",
      "url": "https://github.com/vllm-project/vllm",
-     "stars": 96735,
+     "stars": 96815,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-02-09",
      "status": "ok",
      "stars_30d": 3103,
@@ -1838,34 +1853,34 @@
     {
      "repo": "huggingface/sentence-transformers",
      "url": "https://github.com/huggingface/sentence-transformers",
-     "stars": 19280,
+     "stars": 19281,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2019-07-24",
      "status": "ok",
-     "stars_30d": 114,
+     "stars_30d": 113,
      "what": "The standard Python library for embedding and reranker models"
     },
     {
      "repo": "huggingface/text-embeddings-inference",
      "url": "https://github.com/huggingface/text-embeddings-inference",
-     "stars": 5119,
+     "stars": 5121,
      "licence": "Apache-2.0",
      "pushed": "2026-11-10",
      "created": "2023-10-13",
      "status": "ok",
-     "stars_30d": 42,
+     "stars_30d": 45,
      "what": "Fast inference server for embedding and reranker models"
     },
     {
      "repo": "qdrant/fastembed",
      "url": "https://github.com/qdrant/fastembed",
-     "stars": 3291,
+     "stars": 3294,
      "licence": "Apache-2.0",
      "pushed": "2026-11-11",
      "created": "2023-07-14",
      "status": "ok",
-     "stars_30d": 50,
+     "stars_30d": 52,
      "what": "Lightweight, ONNX-based embedding generation"
     },
     {
@@ -1876,7 +1891,7 @@
      "pushed": "2026-11-11",
      "created": "2023-10-11",
      "status": "ok",
-     "stars_30d": 29,
+     "stars_30d": 27,
      "what": "OpenAI-compatible server for embedding, reranking and CLIP models"
     }
    ],
@@ -1892,8 +1907,8 @@
      "url": "https://huggingface.co/BAAI/bge-reranker-v2-m3",
      "licence": "apache-2.0",
      "trending": 7,
-     "downloads": 14727148,
-     "likes": 1297,
+     "downloads": 14685230,
+     "likes": 1301,
      "created": "2024-03-15",
      "pipeline_tag": "text-classification",
      "params": 567755777
@@ -1902,9 +1917,9 @@
      "id": "Qwen/Qwen3-Reranker-0.6B",
      "url": "https://huggingface.co/Qwen/Qwen3-Reranker-0.6B",
      "licence": "apache-2.0",
-     "trending": 5,
-     "downloads": 1293775,
-     "likes": 438,
+     "trending": 6,
+     "downloads": 1251943,
+     "likes": 439,
      "created": "2025-05-29",
      "pipeline_tag": "text-ranking",
      "params": 595776512
@@ -1914,7 +1929,7 @@
      "url": "https://huggingface.co/Qwen/Qwen3-Reranker-8B",
      "licence": "apache-2.0",
      "trending": 1,
-     "downloads": 79165,
+     "downloads": 78514,
      "likes": 297,
      "created": "2025-05-29",
      "pipeline_tag": "text-ranking",
@@ -1925,7 +1940,7 @@
      "url": "https://huggingface.co/BAAI/bge-reranker-base",
      "licence": "mit",
      "trending": 0,
-     "downloads": 2279993,
+     "downloads": 2281471,
      "likes": 263,
      "created": "2023-09-11",
      "pipeline_tag": "text-classification",
@@ -1936,7 +1951,7 @@
      "url": "https://huggingface.co/mixedbread-ai/mxbai-rerank-xsmall-v1",
      "licence": "apache-2.0",
      "trending": 0,
-     "downloads": 646616,
+     "downloads": 625515,
      "likes": 59,
      "created": "2024-02-29",
      "pipeline_tag": "text-ranking",
@@ -1947,7 +1962,7 @@
      "url": "https://huggingface.co/mixedbread-ai/mxbai-rerank-base-v1",
      "licence": "apache-2.0",
      "trending": 0,
-     "downloads": 45618,
+     "downloads": 44276,
      "likes": 48,
      "created": "2024-02-29",
      "pipeline_tag": "text-ranking",
@@ -1958,7 +1973,7 @@
      "url": "https://huggingface.co/Alibaba-NLP/gte-multilingual-reranker-base",
      "licence": "apache-2.0",
      "trending": 0,
-     "downloads": 41942,
+     "downloads": 41493,
      "likes": 195,
      "created": "2024-07-20",
      "pipeline_tag": "text-ranking",
@@ -1969,7 +1984,7 @@
      "url": "https://huggingface.co/jinaai/jina-reranker-v1-turbo-en",
      "licence": "apache-2.0",
      "trending": 0,
-     "downloads": 38632,
+     "downloads": 38506,
      "likes": 67,
      "created": "2024-04-15",
      "pipeline_tag": "text-ranking",
@@ -1980,7 +1995,7 @@
      "url": "https://huggingface.co/jinaai/jina-reranker-v1-tiny-en",
      "licence": "apache-2.0",
      "trending": 0,
-     "downloads": 16980,
+     "downloads": 17291,
      "likes": 30,
      "created": "2024-04-15",
      "pipeline_tag": "text-ranking",
@@ -1991,7 +2006,7 @@
      "url": "https://huggingface.co/ibm-granite/granite-embedding-reranker-english-r2",
      "licence": "apache-2.0",
      "trending": 0,
-     "downloads": 11999,
+     "downloads": 12010,
      "likes": 29,
      "created": "2025-08-04",
      "pipeline_tag": "text-ranking",
@@ -2008,45 +2023,45 @@
     {
      "repo": "microsoft/markitdown",
      "url": "https://github.com/microsoft/markitdown",
-     "stars": 194900,
+     "stars": 195050,
      "licence": "MIT",
      "pushed": "2026-11-07",
      "created": "2024-11-13",
      "status": "ok",
-     "stars_30d": 5173,
+     "stars_30d": 5138,
      "what": "Converts files and office documents to Markdown"
     },
     {
      "repo": "PaddlePaddle/PaddleOCR",
      "url": "https://github.com/PaddlePaddle/PaddleOCR",
-     "stars": 92575,
+     "stars": 92625,
      "licence": "Apache-2.0",
      "pushed": "2026-09-16",
      "created": "2020-05-08",
      "status": "ok",
-     "stars_30d": 1609,
+     "stars_30d": 1603,
      "what": "OCR and document parsing toolkit, 100+ languages"
     },
     {
      "repo": "docling-project/docling",
      "url": "https://github.com/docling-project/docling",
-     "stars": 70434,
+     "stars": 70483,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2024-07-09",
      "status": "ok",
-     "stars_30d": 1689,
+     "stars_30d": 1678,
      "what": "Parses PDF, DOCX, PPTX and more into structured output for AI"
     },
     {
      "repo": "opendataloader-project/opendataloader-pdf",
      "url": "https://github.com/opendataloader-project/opendataloader-pdf",
-     "stars": 30277,
+     "stars": 30282,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2025-05-13",
      "status": "ok",
-     "stars_30d": 632,
+     "stars_30d": 614,
      "what": "PDF Parser for AI-ready data. Automate PDF accessibility. Open-source.",
      "kind": [
       "library"
@@ -2056,23 +2071,23 @@
     {
      "repo": "deepseek-ai/DeepSeek-OCR",
      "url": "https://github.com/deepseek-ai/DeepSeek-OCR",
-     "stars": 24144,
+     "stars": 24146,
      "licence": "MIT",
      "pushed": "2026-01-27",
      "created": "2025-10-17",
      "status": "ok",
-     "stars_30d": 162,
+     "stars_30d": 138,
      "what": "Vision-language OCR model with optical context compression"
     },
     {
      "repo": "firecrawl/pdf-inspector",
      "url": "https://github.com/firecrawl/pdf-inspector",
-     "stars": 19994,
+     "stars": 20006,
      "licence": "MIT",
      "pushed": "2026-10-22",
      "created": "2026-02-06",
      "status": "ok",
-     "stars_30d": 370,
+     "stars_30d": 362,
      "what": "Fast Rust library for PDF inspection, classification, and text extraction. Intelligently detects…",
      "kind": [
       "library"
@@ -2082,7 +2097,7 @@
     {
      "repo": "allenai/olmocr",
      "url": "https://github.com/allenai/olmocr",
-     "stars": 19821,
+     "stars": 19822,
      "licence": "Apache-2.0",
      "pushed": "2026-03-25",
      "created": "2024-09-17",
@@ -2093,20 +2108,20 @@
     {
      "repo": "Unstructured-IO/unstructured",
      "url": "https://github.com/Unstructured-IO/unstructured",
-     "stars": 15714,
+     "stars": 15724,
      "licence": "Apache-2.0",
      "pushed": "2026-11-06",
      "created": "2022-09-26",
      "status": "ok",
-     "stars_30d": 154,
+     "stars_30d": 162,
      "what": "Open source ETL for unstructured documents"
     },
     {
      "repo": "run-llama/liteparse",
      "url": "https://github.com/run-llama/liteparse",
-     "stars": 13034,
+     "stars": 13040,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-12",
      "created": "2026-02-09",
      "status": "ok",
      "stars_30d": 198,
@@ -2124,18 +2139,18 @@
      "pushed": "2026-03-24",
      "created": "2025-07-30",
      "status": "ok",
-     "stars_30d": 21,
+     "stars_30d": 19,
      "what": "Multilingual document layout parsing in a single VLM"
     },
     {
      "repo": "oomol-lab/pdf-craft",
      "url": "https://github.com/oomol-lab/pdf-craft",
-     "stars": 6592,
+     "stars": 6599,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2025-02-12",
      "status": "ok",
-     "stars_30d": 229,
+     "stars_30d": 231,
      "what": "PDF craft can convert PDF files into various other formats. This project will focus on processing…",
      "kind": [
       "library"
@@ -2145,12 +2160,12 @@
     {
      "repo": "datalab-to/indra",
      "url": "https://github.com/datalab-to/indra",
-     "stars": 1759,
+     "stars": 1780,
      "licence": "Apache-2.0",
      "pushed": "2026-11-04",
      "created": "2026-10-13",
      "status": "ok",
-     "stars_30d": 1759,
+     "stars_30d": 1780,
      "what": "1M param OCR model - runs on CPU, 15x faster than tesseract, close to 1B+ param models in accuracy",
      "kind": [
       "cli"
@@ -2160,7 +2175,7 @@
     {
      "repo": "Topdu/OpenOCR",
      "url": "https://github.com/Topdu/OpenOCR",
-     "stars": 1496,
+     "stars": 1498,
      "licence": "Apache-2.0",
      "pushed": "2026-09-21",
      "created": "2024-05-31",
@@ -2180,7 +2195,7 @@
      "pushed": "2026-09-27",
      "created": "2026-03-20",
      "status": "ok",
-     "stars_30d": 40,
+     "stars_30d": 31,
      "what": "TurboOCR, >200 img/s OmnidocBench. TensorRT FP16, PP-OCRv6, HTTP + gRPC",
      "kind": [
       "server"
@@ -2198,23 +2213,23 @@
     {
      "repo": "PaddlePaddle/PaddleOCR",
      "url": "https://github.com/PaddlePaddle/PaddleOCR",
-     "stars": 92575,
+     "stars": 92625,
      "licence": "Apache-2.0",
      "pushed": "2026-09-16",
      "created": "2020-05-08",
      "status": "ok",
-     "stars_30d": 1609,
+     "stars_30d": 1603,
      "what": "OCR and document parsing toolkit, 100+ languages"
     },
     {
      "repo": "tesseract-ocr/tesseract",
      "url": "https://github.com/tesseract-ocr/tesseract",
-     "stars": 77458,
+     "stars": 77479,
      "licence": "Apache-2.0",
      "pushed": "2026-11-11",
      "created": "2014-08-12",
      "status": "ok",
-     "stars_30d": 526,
+     "stars_30d": 515,
      "what": "Tesseract Open Source OCR Engine (main repository)",
      "kind": [
       "library"
@@ -2224,23 +2239,23 @@
     {
      "repo": "docling-project/docling",
      "url": "https://github.com/docling-project/docling",
-     "stars": 70434,
+     "stars": 70483,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2024-07-09",
      "status": "ok",
-     "stars_30d": 1689,
+     "stars_30d": 1678,
      "what": "Layout analysis, tables and OCR for PDFs and scans"
     },
     {
      "repo": "opendataloader-project/opendataloader-pdf",
      "url": "https://github.com/opendataloader-project/opendataloader-pdf",
-     "stars": 30277,
+     "stars": 30282,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2025-05-13",
      "status": "ok",
-     "stars_30d": 632,
+     "stars_30d": 614,
      "what": "PDF Parser for AI-ready data. Automate PDF accessibility. Open-source.",
      "kind": [
       "library"
@@ -2255,24 +2270,24 @@
      "pushed": "2025-12-05",
      "created": "2020-03-14",
      "status": "ok",
-     "stars_30d": 75,
+     "stars_30d": 73,
      "what": "Ready-to-use OCR for 80+ languages"
     },
     {
      "repo": "deepseek-ai/DeepSeek-OCR",
      "url": "https://github.com/deepseek-ai/DeepSeek-OCR",
-     "stars": 24144,
+     "stars": 24146,
      "licence": "MIT",
      "pushed": "2026-01-27",
      "created": "2025-10-17",
      "status": "ok",
-     "stars_30d": 162,
+     "stars_30d": 138,
      "what": "Vision-language OCR model with optical context compression"
     },
     {
      "repo": "allenai/olmocr",
      "url": "https://github.com/allenai/olmocr",
-     "stars": 19821,
+     "stars": 19822,
      "licence": "Apache-2.0",
      "pushed": "2026-03-25",
      "created": "2024-09-17",
@@ -2283,9 +2298,9 @@
     {
      "repo": "run-llama/liteparse",
      "url": "https://github.com/run-llama/liteparse",
-     "stars": 13034,
+     "stars": 13040,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-12",
      "created": "2026-02-09",
      "status": "ok",
      "stars_30d": 198,
@@ -2298,12 +2313,12 @@
     {
      "repo": "datalab-to/chandra",
      "url": "https://github.com/datalab-to/chandra",
-     "stars": 12699,
+     "stars": 12709,
      "licence": "Apache-2.0",
      "pushed": "2026-10-22",
      "created": "2025-10-08",
      "status": "ok",
-     "stars_30d": 238,
+     "stars_30d": 242,
      "what": "OCR model that handles complex tables, forms, handwriting with full layout.",
      "kind": [
       "cli"
@@ -2318,18 +2333,18 @@
      "pushed": "2026-03-24",
      "created": "2025-07-30",
      "status": "ok",
-     "stars_30d": 21,
+     "stars_30d": 19,
      "what": "Multilingual document layout parsing in a single VLM"
     },
     {
      "repo": "RapidAI/RapidOCR",
      "url": "https://github.com/RapidAI/RapidOCR",
-     "stars": 8508,
+     "stars": 8516,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2021-01-04",
      "status": "ok",
-     "stars_30d": 386,
+     "stars_30d": 389,
      "what": "📄 Awesome OCR multiple programing languages toolkits based on ONNX Runtime, OpenVINO, MNN…",
      "kind": [
       "library"
@@ -2344,7 +2359,7 @@
      "pushed": "2026-10-14",
      "created": "2026-02-02",
      "status": "ok",
-     "stars_30d": 95,
+     "stars_30d": 92,
      "what": "GLM-OCR: Accurate × Fast × Comprehensive",
      "kind": [
       "library"
@@ -2356,10 +2371,10 @@
      "url": "https://github.com/mindee/doctr",
      "stars": 6430,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-09",
+     "pushed": "2026-11-11",
      "created": "2021-01-08",
      "status": "ok",
-     "stars_30d": 46,
+     "stars_30d": 44,
      "what": "Deep-learning OCR for documents"
     }
    ],
@@ -2373,53 +2388,53 @@
     {
      "repo": "langfuse/langfuse",
      "url": "https://github.com/langfuse/langfuse",
-     "stars": 37296,
+     "stars": 37354,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-05-18",
      "status": "ok",
-     "stars_30d": 1607,
+     "stars_30d": 1595,
      "what": "LLM tracing, prompt management, evals and metrics"
     },
     {
      "repo": "mlflow/mlflow",
      "url": "https://github.com/mlflow/mlflow",
-     "stars": 28761,
+     "stars": 28781,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2018-06-05",
      "status": "ok",
-     "stars_30d": 412,
+     "stars_30d": 414,
      "what": "Open platform for LLM tracing, evaluation and model management"
     },
     {
      "repo": "comet-ml/opik",
      "url": "https://github.com/comet-ml/opik",
-     "stars": 23332,
+     "stars": 23365,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-05-10",
      "status": "ok",
-     "stars_30d": 806,
+     "stars_30d": 803,
      "what": "Tracing, evaluation and monitoring for LLM apps"
     },
     {
      "repo": "traceloop/openllmetry",
      "url": "https://github.com/traceloop/openllmetry",
-     "stars": 7530,
+     "stars": 7532,
      "licence": "Apache-2.0",
      "pushed": "2026-11-09",
      "created": "2023-09-02",
      "status": "ok",
-     "stars_30d": 46,
+     "stars_30d": 44,
      "what": "OpenTelemetry-based observability for LLM apps"
     },
     {
      "repo": "Helicone/helicone",
      "url": "https://github.com/Helicone/helicone",
-     "stars": 6277,
+     "stars": 6280,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-28",
+     "pushed": "2026-11-12",
      "created": "2023-01-31",
      "status": "ok",
      "stars_30d": 65,
@@ -2428,12 +2443,12 @@
     {
      "repo": "coze-dev/coze-loop",
      "url": "https://github.com/coze-dev/coze-loop",
-     "stars": 5803,
+     "stars": 5800,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2025-06-24",
      "status": "ok",
-     "stars_30d": 36,
+     "stars_30d": 32,
      "what": "Next-generation AI Agent Optimization Platform: Cozeloop addresses challenges in AI agent…",
      "kind": [
       "server"
@@ -2443,12 +2458,12 @@
     {
      "repo": "langwatch/langwatch",
      "url": "https://github.com/langwatch/langwatch",
-     "stars": 5025,
+     "stars": 5026,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-09-09",
      "status": "ok",
-     "stars_30d": 86,
+     "stars_30d": 84,
      "what": "Open-Source Agent Observability & Evals for AI Platform teams. Trace, test, route and govern every…",
      "kind": [
       "server"
@@ -2458,9 +2473,9 @@
     {
      "repo": "Agenta-AI/agenta",
      "url": "https://github.com/Agenta-AI/agenta",
-     "stars": 4905,
+     "stars": 4906,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-04-26",
      "status": "ok",
      "stars_30d": 77,
@@ -2469,12 +2484,12 @@
     {
      "repo": "lmnr-ai/lmnr",
      "url": "https://github.com/lmnr-ai/lmnr",
-     "stars": 3482,
+     "stars": 3485,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2024-08-29",
      "status": "ok",
-     "stars_30d": 108,
+     "stars_30d": 107,
      "what": "Laminar - open-source observability platform purpose-built for AI agents. YC S24.",
      "kind": [
       "server"
@@ -2484,7 +2499,7 @@
     {
      "repo": "pezzolabs/pezzo",
      "url": "https://github.com/pezzolabs/pezzo",
-     "stars": 3280,
+     "stars": 3281,
      "licence": "Apache-2.0",
      "pushed": "2026-11-08",
      "created": "2023-04-22",
@@ -2499,12 +2514,12 @@
     {
      "repo": "openlit/openlit",
      "url": "https://github.com/openlit/openlit",
-     "stars": 3021,
+     "stars": 3052,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-11",
      "created": "2024-01-23",
      "status": "ok",
-     "stars_30d": 178,
+     "stars_30d": 207,
      "what": "OpenLIT is the open-source agent harness engineering platform: trace, evaluate, guard, and improve…",
      "kind": [
       "server"
@@ -2514,12 +2529,12 @@
     {
      "repo": "future-agi/future-agi",
      "url": "https://github.com/future-agi/future-agi",
-     "stars": 2261,
+     "stars": 2266,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2026-04-23",
      "status": "ok",
-     "stars_30d": 120,
+     "stars_30d": 121,
      "what": "Open-source, end-to-end platform for evaluating, observing, and improving LLM and AI agent…",
      "kind": [
       "server"
@@ -2565,62 +2580,47 @@
    "ranked_by": "stars",
    "ranked": [
     {
-     "repo": "ifixai-ai/iFixAi",
-     "url": "https://github.com/ifixai-ai/iFixAi",
-     "stars": 44766,
-     "licence": "Apache-2.0",
-     "pushed": "2026-11-09",
-     "created": "2026-04-27",
-     "status": "ok",
-     "stars_30d": 20769,
-     "what": "Independent Auditing of AI Agents. Run by human or the agent itself, to answer the most crucial…",
-     "kind": [
-      "library"
-     ],
-     "discovered": true
-    },
-    {
      "repo": "promptfoo/promptfoo",
      "url": "https://github.com/promptfoo/promptfoo",
-     "stars": 27061,
+     "stars": 27087,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-04-28",
      "status": "ok",
-     "stars_30d": 1133,
+     "stars_30d": 1125,
      "what": "Evals, red-teaming and regression testing for prompts"
     },
     {
      "repo": "confident-ai/deepeval",
      "url": "https://github.com/confident-ai/deepeval",
-     "stars": 19436,
+     "stars": 19459,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-08-10",
      "status": "ok",
-     "stars_30d": 670,
+     "stars_30d": 663,
      "what": "Evaluation framework for LLM applications"
     },
     {
      "repo": "vibrantlabsai/ragas",
      "url": "https://github.com/vibrantlabsai/ragas",
-     "stars": 16294,
+     "stars": 16306,
      "licence": "Apache-2.0",
      "pushed": "2026-02-24",
      "created": "2023-05-08",
      "status": "ok",
-     "stars_30d": 293,
+     "stars_30d": 297,
      "what": "Evaluation toolkit for RAG and LLM apps"
     },
     {
      "repo": "open-compass/opencompass",
      "url": "https://github.com/open-compass/opencompass",
-     "stars": 7582,
+     "stars": 7587,
      "licence": "Apache-2.0",
      "pushed": "2026-11-11",
      "created": "2023-06-15",
      "status": "ok",
-     "stars_30d": 77,
+     "stars_30d": 79,
      "what": "OpenCompass is an LLM evaluation platform, supporting a wide range of models from OpenAI…",
      "kind": [
       "framework"
@@ -2630,12 +2630,12 @@
     {
      "repo": "Giskard-AI/giskard-oss",
      "url": "https://github.com/Giskard-AI/giskard-oss",
-     "stars": 5947,
+     "stars": 5949,
      "licence": "Apache-2.0",
      "pushed": "2026-11-10",
      "created": "2022-03-06",
      "status": "ok",
-     "stars_30d": 59,
+     "stars_30d": 54,
      "what": "🐢 Open-Source Evaluation & Testing library for LLM Agents",
      "kind": [
       "library"
@@ -2645,12 +2645,12 @@
     {
      "repo": "truera/trulens",
      "url": "https://github.com/truera/trulens",
-     "stars": 3639,
+     "stars": 3640,
      "licence": "MIT",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-12",
      "created": "2020-11-02",
      "status": "ok",
-     "stars_30d": 41,
+     "stars_30d": 40,
      "what": "Evaluation and Tracking for LLM Experiments and AI Agents",
      "kind": [
       "library"
@@ -2660,12 +2660,12 @@
     {
      "repo": "future-agi/future-agi",
      "url": "https://github.com/future-agi/future-agi",
-     "stars": 2261,
+     "stars": 2266,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2026-04-23",
      "status": "ok",
-     "stars_30d": 120,
+     "stars_30d": 121,
      "what": "Open-source, end-to-end platform for evaluating, observing, and improving LLM and AI agent…",
      "kind": [
       "server"
@@ -2673,7 +2673,19 @@
      "discovered": true
     }
    ],
-   "dropped": []
+   "dropped": [
+    {
+     "repo": "ifixai-ai/iFixAi",
+     "url": "https://github.com/ifixai-ai/iFixAi",
+     "status": "missing",
+     "problem": "GitHub returned 404",
+     "what": "Independent Auditing of AI Agents. Run by human or the agent itself, to answer the most crucial…",
+     "kind": [
+      "library"
+     ],
+     "discovered": true
+    }
+   ]
   },
   "speech-to-text": {
    "name": "Speech-to-text",
@@ -2683,56 +2695,56 @@
     {
      "repo": "openai/whisper",
      "url": "https://github.com/openai/whisper",
-     "stars": 112450,
+     "stars": 112562,
      "licence": "MIT",
      "pushed": "2026-08-31",
      "created": "2022-09-16",
      "status": "ok",
-     "stars_30d": 2081,
+     "stars_30d": 2148,
      "what": "General-purpose speech recognition model"
     },
     {
      "repo": "ggml-org/whisper.cpp",
      "url": "https://github.com/ggml-org/whisper.cpp",
-     "stars": 55092,
+     "stars": 55131,
      "licence": "MIT",
      "pushed": "2026-11-10",
      "created": "2022-09-25",
      "status": "ok",
-     "stars_30d": 778,
+     "stars_30d": 785,
      "what": "Whisper in C/C++, runs on CPU, GPU and edge devices"
     },
     {
      "repo": "SYSTRAN/faster-whisper",
      "url": "https://github.com/SYSTRAN/faster-whisper",
-     "stars": 26665,
+     "stars": 26690,
      "licence": "MIT",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-12",
      "created": "2023-02-11",
      "status": "ok",
-     "stars_30d": 843,
+     "stars_30d": 854,
      "what": "Whisper reimplemented on CTranslate2, up to 4x faster"
     },
     {
      "repo": "m-bain/whisperX",
      "url": "https://github.com/m-bain/whisperX",
-     "stars": 25212,
+     "stars": 25233,
      "licence": "BSD-2-Clause",
      "pushed": "2026-10-22",
      "created": "2022-12-09",
      "status": "ok",
-     "stars_30d": 716,
+     "stars_30d": 712,
      "what": "Whisper with word-level timestamps and speaker diarisation"
     },
     {
      "repo": "modelscope/FunASR",
      "url": "https://github.com/modelscope/FunASR",
-     "stars": 20998,
+     "stars": 21006,
      "licence": "MIT",
      "pushed": "2026-11-11",
      "created": "2022-11-24",
      "status": "ok",
-     "stars_30d": 339,
+     "stars_30d": 331,
      "what": "Open-source speech recognition toolkit for training, inference, streaming ASR, VAD, punctuation…",
      "kind": [
       "library"
@@ -2742,34 +2754,34 @@
     {
      "repo": "NVIDIA-NeMo/Speech",
      "url": "https://github.com/NVIDIA-NeMo/Speech",
-     "stars": 18732,
+     "stars": 18740,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2019-08-05",
      "status": "ok",
-     "stars_30d": 160,
+     "stars_30d": 165,
      "what": "Framework behind the Parakeet and Canary speech models"
     },
     {
      "repo": "k2-fsa/sherpa-onnx",
      "url": "https://github.com/k2-fsa/sherpa-onnx",
-     "stars": 15883,
+     "stars": 15905,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2022-09-01",
      "status": "ok",
-     "stars_30d": 646,
+     "stars_30d": 650,
      "what": "Offline speech recognition and synthesis on any platform"
     },
     {
      "repo": "alphacep/vosk-api",
      "url": "https://github.com/alphacep/vosk-api",
-     "stars": 15243,
+     "stars": 15249,
      "licence": "Apache-2.0",
      "pushed": "2026-10-15",
      "created": "2019-09-03",
      "status": "ok",
-     "stars_30d": 76,
+     "stars_30d": 79,
      "what": "Offline speech recognition API for Android, iOS, Raspberry Pi and servers with Python, Java, C#…",
      "kind": [
       "library"
@@ -2779,7 +2791,7 @@
     {
      "repo": "QuentinFuxa/WhisperLiveKit",
      "url": "https://github.com/QuentinFuxa/WhisperLiveKit",
-     "stars": 11234,
+     "stars": 11240,
      "licence": "Apache-2.0",
      "pushed": "2026-11-08",
      "created": "2024-12-19",
@@ -2794,12 +2806,12 @@
     {
      "repo": "KoljaB/RealtimeSTT",
      "url": "https://github.com/KoljaB/RealtimeSTT",
-     "stars": 10240,
+     "stars": 10242,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-11",
      "created": "2023-08-29",
      "status": "ok",
-     "stars_30d": 57,
+     "stars_30d": 58,
      "what": "A robust, efficient, low-latency speech-to-text library with advanced voice activity detection…",
      "kind": [
       "library"
@@ -2809,12 +2821,12 @@
     {
      "repo": "QwenAudio/SenseVoice",
      "url": "https://github.com/QwenAudio/SenseVoice",
-     "stars": 9739,
+     "stars": 9744,
      "licence": "MIT",
      "pushed": "2026-09-30",
      "created": "2024-07-03",
      "status": "ok",
-     "stars_30d": 239,
+     "stars_30d": 240,
      "what": "Open-source SenseVoiceSmall model for Mandarin, Cantonese, English, Japanese, and Korean ASR…",
      "kind": [
       "model"
@@ -2824,12 +2836,12 @@
     {
      "repo": "Neywa-Labs/mlx-audio",
      "url": "https://github.com/Neywa-Labs/mlx-audio",
-     "stars": 8247,
+     "stars": 8252,
      "licence": "MIT",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-11",
      "created": "2024-11-27",
      "status": "ok",
-     "stars_30d": 223,
+     "stars_30d": 214,
      "what": "A text-to-speech (TTS), speech-to-text (STT) and speech-to-speech (STS) library built on Apple's…",
      "kind": [
       "library"
@@ -2844,7 +2856,7 @@
      "pushed": "2026-10-27",
      "created": "2024-01-26",
      "status": "ok",
-     "stars_30d": 53,
+     "stars_30d": 49,
      "what": "On-device Speech AI for Apple Silicon",
      "kind": [
       "library"
@@ -2854,12 +2866,12 @@
     {
      "repo": "wenet-e2e/wenet",
      "url": "https://github.com/wenet-e2e/wenet",
-     "stars": 5255,
+     "stars": 5256,
      "licence": "Apache-2.0",
      "pushed": "2026-10-26",
      "created": "2020-11-17",
      "status": "ok",
-     "stars_30d": 9,
+     "stars_30d": 10,
      "what": "Production First and Production Ready End-to-End Speech Recognition Toolkit",
      "kind": [
       "library"
@@ -2871,10 +2883,10 @@
      "url": "https://github.com/speaches-ai/speaches",
      "stars": 3763,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2024-05-18",
      "status": "ok",
-     "stars_30d": 50,
+     "stars_30d": 48,
      "what": "OpenAI-compatible speech-to-text and text-to-speech server"
     },
     {
@@ -2885,7 +2897,7 @@
      "pushed": "2026-10-01",
      "created": "2022-09-22",
      "status": "ok",
-     "stars_30d": 15,
+     "stars_30d": 16,
      "what": "OpenAI Whisper ASR Webservice API",
      "kind": [
       "server"
@@ -2895,12 +2907,12 @@
     {
      "repo": "FluidInference/FluidAudio",
      "url": "https://github.com/FluidInference/FluidAudio",
-     "stars": 3285,
+     "stars": 3291,
      "licence": "Apache-2.0",
      "pushed": "2026-11-11",
      "created": "2025-06-21",
      "status": "ok",
-     "stars_30d": 262,
+     "stars_30d": 252,
      "what": "Frontier CoreML audio models in your apps — text-to-speech, speech-to-text, voice activity…",
      "kind": [
       "library"
@@ -2936,13 +2948,28 @@
     {
      "repo": "handy-computer/transcribe.cpp",
      "url": "https://github.com/handy-computer/transcribe.cpp",
-     "stars": 2160,
+     "stars": 2164,
      "licence": "MIT",
      "pushed": "2026-11-11",
      "created": "2026-04-07",
      "status": "ok",
-     "stars_30d": 150,
+     "stars_30d": 151,
      "what": "ggml speech-to-text inference for 16+ model families",
+     "kind": [
+      "library"
+     ],
+     "discovered": true
+    },
+    {
+     "repo": "k2-fsa/sherpa-ncnn",
+     "url": "https://github.com/k2-fsa/sherpa-ncnn",
+     "stars": 1801,
+     "licence": "Apache-2.0",
+     "pushed": "2026-11-12",
+     "created": "2022-09-04",
+     "status": "ok",
+     "stars_30d": null,
+     "what": "Real-time speech recognition and voice activity detection (VAD) using next-gen Kaldi with ncnn…",
      "kind": [
       "library"
      ],
@@ -2951,12 +2978,12 @@
     {
      "repo": "QwenAudio/Fun-ASR",
      "url": "https://github.com/QwenAudio/Fun-ASR",
-     "stars": 1602,
+     "stars": 1604,
      "licence": "Apache-2.0",
      "pushed": "2026-11-09",
      "created": "2025-12-15",
      "status": "ok",
-     "stars_30d": 36,
+     "stars_30d": 34,
      "what": "Fun-ASR speech recognition models, with native Hugging Face Transformers support for Fun-ASR-Nano…",
      "kind": [
       "model"
@@ -2966,12 +2993,12 @@
     {
      "repo": "soniqo/speech-swift",
      "url": "https://github.com/soniqo/speech-swift",
-     "stars": 1270,
+     "stars": 1272,
      "licence": "Apache-2.0",
      "pushed": "2026-11-10",
      "created": "2026-02-04",
      "status": "ok",
-     "stars_30d": 43,
+     "stars_30d": 44,
      "what": "AI speech toolkit for Apple Silicon — ASR, TTS, speech-to-speech, VAD, and diarization powered by…",
      "kind": [
       "library"
@@ -2981,12 +3008,12 @@
     {
      "repo": "Kieirra/murmure",
      "url": "https://github.com/Kieirra/murmure",
-     "stars": 1155,
+     "stars": 1160,
      "licence": "AGPL-3.0",
      "pushed": "2026-11-11",
      "created": "2025-10-12",
      "status": "ok",
-     "stars_30d": 50,
+     "stars_30d": 53,
      "what": "Fully local, private and cross platform Speech-to-Text with LLM Post-processing",
      "kind": [
       "application"
@@ -2996,12 +3023,12 @@
     {
      "repo": "k2-fsa/sherpa",
      "url": "https://github.com/k2-fsa/sherpa",
-     "stars": 1017,
+     "stars": 1019,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2022-05-20",
      "status": "ok",
-     "stars_30d": 13,
+     "stars_30d": 14,
      "what": "Speech-to-text server framework with next-gen Kaldi",
      "kind": [
       "framework"
@@ -3013,13 +3040,13 @@
     {
      "repo": "Blaizzy/mlx-audio",
      "url": "https://github.com/Blaizzy/mlx-audio",
-     "stars": 8247,
+     "stars": 8252,
      "licence": "MIT",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-11",
      "created": "2024-11-27",
      "status": "renamed",
      "problem": "now Neywa-Labs/mlx-audio",
-     "stars_30d": 221,
+     "stars_30d": 223,
      "what": "A text-to-speech (TTS), speech-to-text (STT) and speech-to-speech (STS) library built on Apple's…",
      "kind": [
       "library"
@@ -3036,12 +3063,12 @@
     {
      "repo": "debpalash/VoiceStudio",
      "url": "https://github.com/debpalash/VoiceStudio",
-     "stars": 107829,
+     "stars": 108827,
      "licence": "AGPL-3.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2026-04-09",
      "status": "ok",
-     "stars_30d": 48138,
+     "stars_30d": 47284,
      "what": "VoiceStudio is the open-source, fully-local ElevenLabs alternative — voice cloning, voice design…",
      "kind": [
       "application"
@@ -3051,12 +3078,12 @@
     {
      "repo": "RVC-Boss/GPT-SoVITS",
      "url": "https://github.com/RVC-Boss/GPT-SoVITS",
-     "stars": 64767,
+     "stars": 64861,
      "licence": "MIT",
-     "pushed": "2026-11-09",
+     "pushed": "2026-11-11",
      "created": "2024-01-14",
      "status": "ok",
-     "stars_30d": 2052,
+     "stars_30d": 2107,
      "what": "1 min voice data can also be used to train a good TTS model! (few shot voice cloning)",
      "kind": [
       "application"
@@ -3066,23 +3093,23 @@
     {
      "repo": "microsoft/VibeVoice",
      "url": "https://github.com/microsoft/VibeVoice",
-     "stars": 57006,
+     "stars": 57074,
      "licence": "MIT",
      "pushed": "2026-10-08",
      "created": "2025-08-25",
      "status": "ok",
-     "stars_30d": 2218,
+     "stars_30d": 2270,
      "what": "Long-form, multi-speaker conversational speech synthesis"
     },
     {
      "repo": "OpenBMB/VoxCPM",
      "url": "https://github.com/OpenBMB/VoxCPM",
-     "stars": 42255,
+     "stars": 42383,
      "licence": "Apache-2.0",
      "pushed": "2026-11-09",
      "created": "2025-09-16",
      "status": "ok",
-     "stars_30d": 3144,
+     "stars_30d": 3128,
      "what": "VoxCPM2: Tokenizer-Free TTS for Multilingual Speech Generation, Creative Voice Design, and…",
      "kind": [
       "model"
@@ -3092,40 +3119,40 @@
     {
      "repo": "resemble-ai/chatterbox",
      "url": "https://github.com/resemble-ai/chatterbox",
-     "stars": 27758,
+     "stars": 27771,
      "licence": "MIT",
      "pushed": "2026-11-04",
      "created": "2025-04-23",
      "status": "ok",
-     "stars_30d": 890,
+     "stars_30d": 881,
      "what": "Expressive TTS with voice cloning, MIT weights"
     },
     {
      "repo": "QwenAudio/CosyVoice",
      "url": "https://github.com/QwenAudio/CosyVoice",
-     "stars": 24366,
+     "stars": 24376,
      "licence": "Apache-2.0",
      "pushed": "2026-05-25",
      "created": "2024-07-03",
      "status": "ok",
-     "stars_30d": 440,
+     "stars_30d": 437,
      "what": "Multilingual voice generation with zero-shot cloning"
     },
     {
      "repo": "nari-labs/dia",
      "url": "https://github.com/nari-labs/dia",
-     "stars": 19412,
+     "stars": 19410,
      "licence": "Apache-2.0",
      "pushed": "2025-11-19",
      "created": "2025-04-19",
      "status": "ok",
-     "stars_30d": 9,
+     "stars_30d": 7,
      "what": "Dialogue TTS model generating multi-speaker conversation"
     },
     {
      "repo": "fishaudio/Bert-VITS2",
      "url": "https://github.com/fishaudio/Bert-VITS2",
-     "stars": 8801,
+     "stars": 8802,
      "licence": "AGPL-3.0",
      "pushed": "2026-11-09",
      "created": "2023-07-29",
@@ -3140,12 +3167,12 @@
     {
      "repo": "Neywa-Labs/mlx-audio",
      "url": "https://github.com/Neywa-Labs/mlx-audio",
-     "stars": 8247,
+     "stars": 8252,
      "licence": "MIT",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-11",
      "created": "2024-11-27",
      "status": "ok",
-     "stars_30d": 223,
+     "stars_30d": 214,
      "what": "A text-to-speech (TTS), speech-to-text (STT) and speech-to-speech (STS) library built on Apple's…",
      "kind": [
       "library"
@@ -3155,7 +3182,7 @@
     {
      "repo": "espeak-ng/espeak-ng",
      "url": "https://github.com/espeak-ng/espeak-ng",
-     "stars": 7024,
+     "stars": 7026,
      "licence": "GPL-3.0",
      "pushed": "2026-11-08",
      "created": "2015-12-08",
@@ -3170,34 +3197,34 @@
     {
      "repo": "OHF-Voice/piper1-gpl",
      "url": "https://github.com/OHF-Voice/piper1-gpl",
-     "stars": 6243,
+     "stars": 6261,
      "licence": "GPL-3.0",
-     "pushed": "2026-11-09",
+     "pushed": "2026-11-11",
      "created": "2025-03-28",
      "status": "ok",
-     "stars_30d": 407,
+     "stars_30d": 402,
      "what": "Fast local neural TTS for edge devices"
     },
     {
      "repo": "remsky/Kokoro-FastAPI",
      "url": "https://github.com/remsky/Kokoro-FastAPI",
-     "stars": 5669,
+     "stars": 5670,
      "licence": "Apache-2.0",
      "pushed": "2026-11-10",
      "created": "2024-12-30",
      "status": "ok",
-     "stars_30d": 136,
+     "stars_30d": 130,
      "what": "OpenAI-compatible server for Kokoro TTS"
     },
     {
      "repo": "KoljaB/RealtimeTTS",
      "url": "https://github.com/KoljaB/RealtimeTTS",
-     "stars": 4052,
+     "stars": 4056,
      "licence": "Apache-2.0",
      "pushed": "2026-11-10",
      "created": "2023-08-26",
      "status": "ok",
-     "stars_30d": 10,
+     "stars_30d": 14,
      "what": "Converts text to speech in realtime",
      "kind": [
       "library"
@@ -3207,12 +3234,12 @@
     {
      "repo": "pnnbao97/VieNeu-TTS",
      "url": "https://github.com/pnnbao97/VieNeu-TTS",
-     "stars": 3195,
+     "stars": 3207,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2025-10-28",
      "status": "ok",
-     "stars_30d": 363,
+     "stars_30d": 362,
      "what": "Vietnamese TTS with instant voice cloning • On-device • Real-time CPU inference • 48kHz audio…",
      "kind": [
       "library"
@@ -3233,12 +3260,12 @@
     {
      "repo": "RHVoice/RHVoice",
      "url": "https://github.com/RHVoice/RHVoice",
-     "stars": 1857,
+     "stars": 1858,
      "licence": "GPL-2.0",
      "pushed": "2026-11-09",
      "created": "2010-07-28",
      "status": "ok",
-     "stars_30d": 8,
+     "stars_30d": 9,
      "what": "a free and open source speech synthesizer for Russian and other languages",
      "kind": [
       "library"
@@ -3250,13 +3277,13 @@
     {
      "repo": "Blaizzy/mlx-audio",
      "url": "https://github.com/Blaizzy/mlx-audio",
-     "stars": 8247,
+     "stars": 8252,
      "licence": "MIT",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-11",
      "created": "2024-11-27",
      "status": "renamed",
      "problem": "now Neywa-Labs/mlx-audio",
-     "stars_30d": 221,
+     "stars_30d": 223,
      "what": "A text-to-speech (TTS), speech-to-text (STT) and speech-to-speech (STS) library built on Apple's…",
      "kind": [
       "library"
@@ -3273,34 +3300,34 @@
     {
      "repo": "pipecat-ai/pipecat",
      "url": "https://github.com/pipecat-ai/pipecat",
-     "stars": 17196,
+     "stars": 17219,
      "licence": "BSD-2-Clause",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-12-27",
      "status": "ok",
-     "stars_30d": 805,
+     "stars_30d": 798,
      "what": "Framework for real-time voice and multimodal agents"
     },
     {
      "repo": "livekit/agents",
      "url": "https://github.com/livekit/agents",
-     "stars": 15176,
+     "stars": 15195,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-10-19",
      "status": "ok",
-     "stars_30d": 467,
+     "stars_30d": 470,
      "what": "Framework for real-time voice AI agents on WebRTC"
     },
     {
      "repo": "GetStream/Vision-Agents",
      "url": "https://github.com/GetStream/Vision-Agents",
-     "stars": 8206,
+     "stars": 8208,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2025-08-11",
      "status": "ok",
-     "stars_30d": 49,
+     "stars_30d": 43,
      "what": "Open Vision Agents by Stream. Build voice and vision agents quickly with any model or video…",
      "kind": [
       "framework"
@@ -3310,12 +3337,12 @@
     {
      "repo": "QwenAudio/qwen-audio-agent",
      "url": "https://github.com/QwenAudio/qwen-audio-agent",
-     "stars": 3208,
+     "stars": 3212,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2026-07-27",
      "status": "ok",
-     "stars_30d": 304,
+     "stars_30d": 306,
      "what": "A realtime voice runtime that keeps Agents talking, working, and present. Real-time Voice Runtime…",
      "kind": [
       "application"
@@ -3325,12 +3352,12 @@
     {
      "repo": "Lynpoint/CyberVerse",
      "url": "https://github.com/Lynpoint/CyberVerse",
-     "stars": 1951,
+     "stars": 1958,
      "licence": "GPL-3.0",
-     "pushed": "2026-10-21",
+     "pushed": "2026-11-12",
      "created": "2026-04-18",
      "status": "ok",
-     "stars_30d": 251,
+     "stars_30d": 256,
      "what": "Self hosted, real-time digital human agent platform. Build voice-first AI agents with WebRTC…",
      "kind": [
       "framework"
@@ -3363,34 +3390,34 @@
     {
      "repo": "Comfy-Org/ComfyUI",
      "url": "https://github.com/Comfy-Org/ComfyUI",
-     "stars": 146305,
+     "stars": 146465,
      "licence": "GPL-3.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-01-17",
      "status": "ok",
-     "stars_30d": 9228,
+     "stars_30d": 9193,
      "what": "Node-based engine for diffusion models, the de-facto standard"
     },
     {
      "repo": "huggingface/diffusers",
      "url": "https://github.com/huggingface/diffusers",
-     "stars": 34908,
+     "stars": 34914,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2022-05-30",
      "status": "ok",
-     "stars_30d": 204,
+     "stars_30d": 206,
      "what": "Library for state-of-the-art diffusion models"
     },
     {
      "repo": "invoke-ai/InvokeAI",
      "url": "https://github.com/invoke-ai/InvokeAI",
-     "stars": 29065,
+     "stars": 29075,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2022-08-17",
      "status": "ok",
-     "stars_30d": 489,
+     "stars_30d": 471,
      "what": "Creative engine and UI for Stable Diffusion and FLUX"
     },
     {
@@ -3401,29 +3428,29 @@
      "pushed": "2026-02-09",
      "created": "2025-11-26",
      "status": "ok",
-     "stars_30d": 62,
+     "stars_30d": 55,
      "what": "Efficient 6B image generation model, Apache-2.0 weights"
     },
     {
      "repo": "QwenLM/Qwen-Image",
      "url": "https://github.com/QwenLM/Qwen-Image",
-     "stars": 8475,
+     "stars": 8476,
      "licence": "Apache-2.0",
      "pushed": "2026-02-10",
      "created": "2025-08-03",
      "status": "ok",
-     "stars_30d": 79,
+     "stars_30d": 77,
      "what": "Image generation and editing model, Apache-2.0 weights"
     },
     {
      "repo": "leejet/stable-diffusion.cpp",
      "url": "https://github.com/leejet/stable-diffusion.cpp",
-     "stars": 7980,
+     "stars": 7994,
      "licence": "MIT",
      "pushed": "2026-11-10",
      "created": "2023-08-13",
      "status": "ok",
-     "stars_30d": 330,
+     "stars_30d": 331,
      "what": "Diffusion model(SD,Flux,Wan,Qwen Image,Z-Image,...) inference in pure C/C++",
      "kind": [
       "cli"
@@ -3433,12 +3460,12 @@
     {
      "repo": "MochiDiffusion/MochiDiffusion",
      "url": "https://github.com/MochiDiffusion/MochiDiffusion",
-     "stars": 7979,
+     "stars": 7981,
      "licence": "GPL-3.0",
      "pushed": "2026-11-08",
      "created": "2022-12-15",
      "status": "ok",
-     "stars_30d": 11,
+     "stars_30d": 13,
      "what": "Run Stable Diffusion on Mac natively",
      "kind": [
       "application"
@@ -3448,12 +3475,12 @@
     {
      "repo": "vladmandic/sdnext",
      "url": "https://github.com/vladmandic/sdnext",
-     "stars": 7376,
+     "stars": 7378,
      "licence": "Apache-2.0",
      "pushed": "2026-11-11",
      "created": "2022-12-24",
      "status": "ok",
-     "stars_30d": 24,
+     "stars_30d": 25,
      "what": "SD.Next: All-in-one WebUI for AI generative image and video creation, captioning and processing",
      "kind": [
       "application"
@@ -3478,12 +3505,12 @@
     {
      "repo": "mcmonkeyprojects/SwarmUI",
      "url": "https://github.com/mcmonkeyprojects/SwarmUI",
-     "stars": 4773,
+     "stars": 4776,
      "licence": "MIT",
      "pushed": "2026-11-11",
      "created": "2024-06-21",
      "status": "ok",
-     "stars_30d": 118,
+     "stars_30d": 121,
      "what": "SwarmUI (formerly StableSwarmUI), A Modular Stable Diffusion Web-User-Interface, with an emphasis…",
      "kind": [
       "application"
@@ -3493,12 +3520,12 @@
     {
      "repo": "OpenMOSS/MOSS-Image",
      "url": "https://github.com/OpenMOSS/MOSS-Image",
-     "stars": 2807,
+     "stars": 2833,
      "licence": "Apache-2.0",
      "pushed": "2026-11-08",
      "created": "2026-10-16",
      "status": "ok",
-     "stars_30d": 2807,
+     "stars_30d": 2833,
      "what": "Official repository for MOSS-Image, a 5B-parameter base DiT model with high-quality text…",
      "kind": [
       "model"
@@ -3516,29 +3543,29 @@
     {
      "repo": "searxng/searxng",
      "url": "https://github.com/searxng/searxng",
-     "stars": 39447,
+     "stars": 39484,
      "licence": "AGPL-3.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2021-04-12",
      "status": "ok",
-     "stars_30d": 1182,
+     "stars_30d": 1155,
      "what": "Self-hosted metasearch engine with a JSON API"
     },
     {
      "repo": "yacy/yacy_search_server",
      "url": "https://github.com/yacy/yacy_search_server",
-     "stars": 4106,
+     "stars": 4107,
      "licence": "GPL-2.0",
      "pushed": "2026-11-03",
      "created": "2015-03-22",
      "status": "ok",
-     "stars_30d": 43,
+     "stars_30d": 41,
      "what": "Self-hosted, peer-to-peer web search engine with its own index"
     },
     {
      "repo": "deedy5/ddgs",
      "url": "https://github.com/deedy5/ddgs",
-     "stars": 3060,
+     "stars": 3062,
      "licence": "MIT",
      "pushed": "2026-10-23",
      "created": "2021-04-25",
@@ -3561,34 +3588,34 @@
     {
      "repo": "ItzCrazyKns/Vane",
      "url": "https://github.com/ItzCrazyKns/Vane",
-     "stars": 38163,
+     "stars": 38185,
      "licence": "MIT",
      "pushed": "2026-09-01",
      "created": "2024-04-09",
      "status": "ok",
-     "stars_30d": 895,
+     "stars_30d": 894,
      "what": "AI-powered answer engine, open source Perplexity alternative"
     },
     {
      "repo": "khoj-ai/khoj",
      "url": "https://github.com/khoj-ai/khoj",
-     "stars": 38108,
+     "stars": 38113,
      "licence": "AGPL-3.0",
      "pushed": "2026-08-02",
      "created": "2021-08-16",
      "status": "ok",
-     "stars_30d": 455,
+     "stars_30d": 444,
      "what": "Self-hostable AI answer engine and personal assistant"
     },
     {
      "repo": "miurla/morphic",
      "url": "https://github.com/miurla/morphic",
-     "stars": 9317,
+     "stars": 9320,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-09",
+     "pushed": "2026-11-12",
      "created": "2024-04-05",
      "status": "ok",
-     "stars_30d": 158,
+     "stars_30d": 156,
      "what": "AI answer engine with a generative UI"
     },
     {
@@ -3617,56 +3644,56 @@
     {
      "repo": "firecrawl/firecrawl",
      "url": "https://github.com/firecrawl/firecrawl",
-     "stars": 200741,
+     "stars": 201143,
      "licence": "AGPL-3.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2024-04-15",
      "status": "ok",
-     "stars_30d": 10043,
+     "stars_30d": 10101,
      "what": "Turns websites into LLM-ready data, self-hostable"
     },
     {
      "repo": "unclecode/crawl4ai",
      "url": "https://github.com/unclecode/crawl4ai",
-     "stars": 87213,
+     "stars": 87266,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-12",
      "created": "2024-05-09",
      "status": "ok",
-     "stars_30d": 1858,
+     "stars_30d": 1833,
      "what": "LLM-friendly web crawler producing clean Markdown"
     },
     {
      "repo": "ScrapeGraphAI/Scrapegraph-ai",
      "url": "https://github.com/ScrapeGraphAI/Scrapegraph-ai",
-     "stars": 32711,
+     "stars": 32736,
      "licence": "MIT",
      "pushed": "2026-10-06",
      "created": "2024-01-27",
      "status": "ok",
-     "stars_30d": 993,
+     "stars_30d": 996,
      "what": "Scraping pipelines driven by LLMs"
     },
     {
      "repo": "jina-ai/reader",
      "url": "https://github.com/jina-ai/reader",
-     "stars": 12251,
+     "stars": 12253,
      "licence": "Apache-2.0",
      "pushed": "2026-05-22",
      "created": "2024-04-10",
      "status": "ok",
-     "stars_30d": 114,
+     "stars_30d": 107,
      "what": "Converts any URL to LLM-friendly input"
     },
     {
      "repo": "adbar/trafilatura",
      "url": "https://github.com/adbar/trafilatura",
-     "stars": 7121,
+     "stars": 7122,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-11",
      "created": "2019-04-08",
      "status": "ok",
-     "stars_30d": 160,
+     "stars_30d": 158,
      "what": "Python & Command-line tool to gather text and metadata on the Web: Crawling, scraping, extraction…",
      "kind": [
       "library"
@@ -3687,9 +3714,9 @@
     {
      "repo": "0xMassi/webclaw",
      "url": "https://github.com/0xMassi/webclaw",
-     "stars": 2438,
+     "stars": 2440,
      "licence": "AGPL-3.0",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-11",
      "created": "2026-03-10",
      "status": "ok",
      "stars_30d": 65,
@@ -3702,12 +3729,12 @@
     {
      "repo": "karust/openserp",
      "url": "https://github.com/karust/openserp",
-     "stars": 1568,
+     "stars": 1572,
      "licence": "MIT",
-     "pushed": "2026-11-03",
+     "pushed": "2026-11-11",
      "created": "2023-06-23",
      "status": "ok",
-     "stars_30d": 103,
+     "stars_30d": 104,
      "what": "Self-hosted SERP API for AI, SEO & automation. Browser-rendered Google, Bing, Yandex, Baidu…",
      "kind": [
       "server"
@@ -3717,12 +3744,12 @@
     {
      "repo": "fastcrw/crw",
      "url": "https://github.com/fastcrw/crw",
-     "stars": 1243,
+     "stars": 1250,
      "licence": "AGPL-3.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2026-03-02",
      "status": "ok",
-     "stars_30d": 121,
+     "stars_30d": 123,
      "what": "Firecrawl-compatible scrape, crawl and search API in one binary"
     }
    ],
@@ -3736,56 +3763,56 @@
     {
      "repo": "browser-use/browser-use",
      "url": "https://github.com/browser-use/browser-use",
-     "stars": 120676,
+     "stars": 120822,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2024-10-31",
      "status": "ok",
-     "stars_30d": 2956,
+     "stars_30d": 2989,
      "what": "Makes websites accessible to AI agents"
     },
     {
      "repo": "microsoft/playwright",
      "url": "https://github.com/microsoft/playwright",
-     "stars": 99848,
+     "stars": 99969,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2019-11-15",
      "status": "ok",
-     "stars_30d": 2312,
+     "stars_30d": 2361,
      "what": "Browser automation for Chromium, Firefox and WebKit"
     },
     {
      "repo": "lightpanda-io/browser",
      "url": "https://github.com/lightpanda-io/browser",
-     "stars": 41874,
+     "stars": 41948,
      "licence": "AGPL-3.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-02-07",
      "status": "ok",
-     "stars_30d": 5551,
+     "stars_30d": 5545,
      "what": "Headless browser built for AI and automation"
     },
     {
      "repo": "browserbase/stagehand",
      "url": "https://github.com/browserbase/stagehand",
-     "stars": 26001,
+     "stars": 26015,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2024-03-24",
      "status": "ok",
-     "stars_30d": 364,
+     "stars_30d": 359,
      "what": "AI browser automation framework"
     },
     {
      "repo": "Skyvern-AI/skyvern",
      "url": "https://github.com/Skyvern-AI/skyvern",
-     "stars": 23380,
+     "stars": 23395,
      "licence": "AGPL-3.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2024-02-28",
      "status": "ok",
-     "stars_30d": 195,
+     "stars_30d": 204,
      "what": "Automate browser based workflows with AI",
      "kind": [
       "framework"
@@ -3795,12 +3822,12 @@
     {
      "repo": "browser-use/browser-harness",
      "url": "https://github.com/browser-use/browser-harness",
-     "stars": 19017,
+     "stars": 19043,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2026-04-17",
      "status": "ok",
-     "stars_30d": 617,
+     "stars_30d": 632,
      "what": "Browser Harness | Self-healing harness that enables LLMs to complete any task.",
      "kind": [
       "library"
@@ -3810,12 +3837,12 @@
     {
      "repo": "nanobrowser/nanobrowser",
      "url": "https://github.com/nanobrowser/nanobrowser",
-     "stars": 14287,
+     "stars": 14291,
      "licence": "Apache-2.0",
      "pushed": "2026-11-10",
      "created": "2024-12-31",
      "status": "ok",
-     "stars_30d": 216,
+     "stars_30d": 212,
      "what": "Open-Source Chrome extension for AI-powered web automation. Run multi-agent workflows using your…",
      "kind": [
       "application"
@@ -3825,23 +3852,23 @@
     {
      "repo": "steel-dev/steel-browser",
      "url": "https://github.com/steel-dev/steel-browser",
-     "stars": 7947,
+     "stars": 7951,
      "licence": "Apache-2.0",
      "pushed": "2026-11-09",
      "created": "2024-11-01",
      "status": "ok",
-     "stars_30d": 158,
+     "stars_30d": 157,
      "what": "Self-hostable browser API for AI agents"
     },
     {
      "repo": "platonai/Browser4",
      "url": "https://github.com/platonai/Browser4",
-     "stars": 1180,
+     "stars": 1184,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2018-03-12",
      "status": "ok",
-     "stars_30d": 28,
+     "stars_30d": 32,
      "what": "Browser4 — an AI-native browser engine for autonomous agents, intelligent extraction, and…",
      "kind": [
       "browser"
@@ -3851,7 +3878,7 @@
     {
      "repo": "feder-cr/invisible_playwright_mcp",
      "url": "https://github.com/feder-cr/invisible_playwright_mcp",
-     "stars": 878,
+     "stars": 879,
      "licence": "MIT",
      "pushed": "2026-10-21",
      "created": "2026-09-29",
@@ -3874,45 +3901,45 @@
     {
      "repo": "firecracker-microvm/firecracker",
      "url": "https://github.com/firecracker-microvm/firecracker",
-     "stars": 37968,
+     "stars": 37980,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-12",
      "created": "2017-10-19",
      "status": "ok",
-     "stars_30d": 652,
+     "stars_30d": 644,
      "what": "Lightweight microVMs for secure multi-tenant workloads"
     },
     {
      "repo": "google/gvisor",
      "url": "https://github.com/google/gvisor",
-     "stars": 19963,
+     "stars": 19979,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2018-04-26",
      "status": "ok",
-     "stars_30d": 317,
+     "stars_30d": 319,
      "what": "Application kernel for container isolation"
     },
     {
      "repo": "superradcompany/microsandbox",
      "url": "https://github.com/superradcompany/microsandbox",
-     "stars": 9024,
+     "stars": 9035,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2024-10-03",
      "status": "ok",
-     "stars_30d": 363,
+     "stars_30d": 364,
      "what": "Self-hosted microVM sandboxes for untrusted code"
     },
     {
      "repo": "smol-machines/smolvm",
      "url": "https://github.com/smol-machines/smolvm",
-     "stars": 7076,
+     "stars": 7095,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-12",
      "created": "2025-12-18",
      "status": "ok",
-     "stars_30d": 382,
+     "stars_30d": 387,
      "what": "An embeddable, portable, branchable virtual machine to safely run Agents locally.",
      "kind": [
       "cli"
@@ -3922,12 +3949,12 @@
     {
      "repo": "deeplethe/sandstorm",
      "url": "https://github.com/deeplethe/sandstorm",
-     "stars": 6091,
+     "stars": 6093,
      "licence": "Apache-2.0",
      "pushed": "2026-11-01",
      "created": "2026-05-11",
      "status": "ok",
-     "stars_30d": 6378,
+     "stars_30d": 5983,
      "what": "Fork() for AI agent microVMs. Spawn 100 children in ~100ms from a warm parent; BRANCH a live VM in…",
      "kind": [
       "server"
@@ -3937,12 +3964,12 @@
     {
      "repo": "arcboxlabs/arcbox",
      "url": "https://github.com/arcboxlabs/arcbox",
-     "stars": 4263,
+     "stars": 4302,
      "licence": "Apache-2.0",
      "pushed": "2026-11-09",
      "created": "2026-01-04",
      "status": "ok",
-     "stars_30d": 38,
+     "stars_30d": 71,
      "what": "Run AI agents on real and isolated machines — own kernel, filesystem, and network — with <100ms…",
      "kind": [
       "cli"
@@ -3967,12 +3994,12 @@
     {
      "repo": "BitMiracle-AI/Dormice",
      "url": "https://github.com/BitMiracle-AI/Dormice",
-     "stars": 1867,
+     "stars": 1874,
      "licence": "Apache-2.0",
-     "pushed": "2026-10-11",
+     "pushed": "2026-11-12",
      "created": "2026-07-08",
      "status": "ok",
-     "stars_30d": 360,
+     "stars_30d": 357,
      "what": "The SQLite of agent sandboxes — self-hosted, E2B-compatible. One machine, sandboxes that live…",
      "kind": [
       "server"
@@ -3982,12 +4009,12 @@
     {
      "repo": "e2b-dev/runtime",
      "url": "https://github.com/e2b-dev/runtime",
-     "stars": 1834,
+     "stars": 1837,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-08-10",
      "status": "ok",
-     "stars_30d": 124,
+     "stars_30d": 126,
      "what": "Self-hostable infrastructure behind E2B sandboxes"
     },
     {
@@ -3995,10 +4022,10 @@
      "url": "https://github.com/liquidmetal-dev/flintlock",
      "stars": 1527,
      "licence": "MPL-2.0",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-11",
      "created": "2021-06-28",
      "status": "ok",
-     "stars_30d": 15,
+     "stars_30d": 14,
      "what": "Lock, Stock, and Two Smoking MicroVMs. Create and manage the lifecycle of MicroVMs backed by…",
      "kind": [
       "server"
@@ -4025,7 +4052,7 @@
     {
      "repo": "deeplethe/forkd",
      "url": "https://github.com/deeplethe/forkd",
-     "stars": 6091,
+     "stars": 6093,
      "licence": "Apache-2.0",
      "pushed": "2026-11-01",
      "created": "2026-05-11",
@@ -4048,23 +4075,23 @@
     {
      "repo": "mem0ai/mem0",
      "url": "https://github.com/mem0ai/mem0",
-     "stars": 68803,
+     "stars": 68867,
      "licence": "Apache-2.0",
      "pushed": "2026-11-06",
      "created": "2023-06-20",
      "status": "ok",
-     "stars_30d": 1767,
+     "stars_30d": 1763,
      "what": "Memory layer for AI agents, self-hostable"
     },
     {
      "repo": "vectorize-io/hindsight",
      "url": "https://github.com/vectorize-io/hindsight",
-     "stars": 60431,
+     "stars": 60638,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2025-10-30",
      "status": "ok",
-     "stars_30d": 11755,
+     "stars_30d": 11591,
      "what": "Hindsight: Agent Memory That Learns",
      "kind": [
       "server"
@@ -4074,9 +4101,9 @@
     {
      "repo": "volcengine/OpenViking",
      "url": "https://github.com/volcengine/OpenViking",
-     "stars": 42002,
+     "stars": 42069,
      "licence": "AGPL-3.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2026-01-05",
      "status": "ok",
      "stars_30d": 2258,
@@ -4089,34 +4116,34 @@
     {
      "repo": "topoteretes/cognee",
      "url": "https://github.com/topoteretes/cognee",
-     "stars": 33239,
+     "stars": 33269,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2023-08-16",
      "status": "ok",
-     "stars_30d": 1156,
+     "stars_30d": 1114,
      "what": "Memory for AI agents from documents and conversations"
     },
     {
      "repo": "getzep/graphiti",
      "url": "https://github.com/getzep/graphiti",
-     "stars": 32743,
+     "stars": 32771,
      "licence": "Apache-2.0",
      "pushed": "2026-11-11",
      "created": "2024-08-08",
      "status": "ok",
-     "stars_30d": 1071,
+     "stars_30d": 1070,
      "what": "Real-time knowledge graphs for agent memory"
     },
     {
      "repo": "supermemoryai/supermemory",
      "url": "https://github.com/supermemoryai/supermemory",
-     "stars": 31594,
+     "stars": 31595,
      "licence": "MIT",
      "pushed": "2026-11-11",
      "created": "2024-02-27",
      "status": "ok",
-     "stars_30d": 400,
+     "stars_30d": 388,
      "what": "Memory and context engine + app that is extremely fast, scalable, and can be run fully locally…",
      "kind": [
       "server"
@@ -4126,23 +4153,23 @@
     {
      "repo": "letta-ai/letta",
      "url": "https://github.com/letta-ai/letta",
-     "stars": 25416,
+     "stars": 25424,
      "licence": "Apache-2.0",
      "pushed": "2026-10-18",
      "created": "2023-10-11",
      "status": "ok",
-     "stars_30d": 304,
+     "stars_30d": 302,
      "what": "Stateful agents with long-term memory"
     },
     {
      "repo": "EverMind-AI/EverOS",
      "url": "https://github.com/EverMind-AI/EverOS",
-     "stars": 13882,
+     "stars": 13892,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2025-10-28",
      "status": "ok",
-     "stars_30d": 476,
+     "stars_30d": 481,
      "what": "One portable memory layer for every AI agent: local-first, Markdown-native, user-owned, and…",
      "kind": [
       "library"
@@ -4152,12 +4179,12 @@
     {
      "repo": "plastic-labs/honcho",
      "url": "https://github.com/plastic-labs/honcho",
-     "stars": 8067,
+     "stars": 8092,
      "licence": "AGPL-3.0",
      "pushed": "2026-11-11",
      "created": "2023-09-10",
      "status": "ok",
-     "stars_30d": 486,
+     "stars_30d": 496,
      "what": "Memory library for building stateful agents",
      "kind": [
       "server"
@@ -4167,12 +4194,12 @@
     {
      "repo": "CaviraOSS/LongMemory",
      "url": "https://github.com/CaviraOSS/LongMemory",
-     "stars": 4573,
+     "stars": 4575,
      "licence": "Apache-2.0",
      "pushed": "2026-11-10",
      "created": "2025-10-19",
      "status": "ok",
-     "stars_30d": 42,
+     "stars_30d": 44,
      "what": "Local persistent memory store for LLM applications including claude desktop, github copilot…",
      "kind": [
       "library"
@@ -4182,12 +4209,12 @@
     {
      "repo": "tigerless-labs/agent-memory",
      "url": "https://github.com/tigerless-labs/agent-memory",
-     "stars": 4311,
+     "stars": 4315,
      "licence": "MIT",
-     "pushed": "2026-11-10",
+     "pushed": "2026-11-12",
      "created": "2026-09-01",
      "status": "ok",
-     "stars_30d": 908,
+     "stars_30d": 909,
      "what": "Long-term memory runtime for AI agents — plain Markdown as the source of truth, local ranked…",
      "kind": [
       "cli"
@@ -4197,12 +4224,12 @@
     {
      "repo": "Ar9av/obsidian-wiki",
      "url": "https://github.com/Ar9av/obsidian-wiki",
-     "stars": 3712,
+     "stars": 3718,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2026-04-06",
      "status": "ok",
-     "stars_30d": 162,
+     "stars_30d": 161,
      "what": "Framework for AI agents to build and maintain a digital brain through Obsidian wiki | Memory…",
      "kind": [
       "library"
@@ -4212,12 +4239,12 @@
     {
      "repo": "Mirix-AI/MIRIX",
      "url": "https://github.com/Mirix-AI/MIRIX",
-     "stars": 3461,
+     "stars": 3464,
      "licence": "Apache-2.0",
      "pushed": "2026-11-11",
      "created": "2025-04-11",
      "status": "ok",
-     "stars_30d": 10,
+     "stars_30d": 13,
      "what": "Mirix is a multi-agent personal assistant designed to track on-screen activities and answer user…",
      "kind": [
       "server"
@@ -4227,12 +4254,12 @@
     {
      "repo": "zilliztech/memsearch",
      "url": "https://github.com/zilliztech/memsearch",
-     "stars": 2859,
+     "stars": 2865,
      "licence": "MIT",
      "pushed": "2026-11-10",
      "created": "2026-02-09",
      "status": "ok",
-     "stars_30d": 121,
+     "stars_30d": 124,
      "what": "A persistent, unified memory layer for all your AI agents (e.g. Claude Code, Codex, DSH), backed…",
      "kind": [
       "library"
@@ -4242,12 +4269,12 @@
     {
      "repo": "cortexkit/magic-context",
      "url": "https://github.com/cortexkit/magic-context",
-     "stars": 2507,
+     "stars": 2510,
      "licence": "MIT",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2026-03-26",
      "status": "ok",
-     "stars_30d": 194,
+     "stars_30d": 190,
      "what": "Unbounded context. Memory that manages itself. One session, for life. The hippocampus for coding…",
      "kind": [
       "library"
@@ -4257,12 +4284,12 @@
     {
      "repo": "doobidoo/mcp-memory-service",
      "url": "https://github.com/doobidoo/mcp-memory-service",
-     "stars": 2111,
+     "stars": 2116,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2024-12-26",
      "status": "ok",
-     "stars_30d": 101,
+     "stars_30d": 104,
      "what": "Open-source persistent memory for AI agent pipelines (LangGraph, CrewAI, AutoGen) and Claude. REST…",
      "kind": [
       "server"
@@ -4272,12 +4299,12 @@
     {
      "repo": "oceanbase/powercontext",
      "url": "https://github.com/oceanbase/powercontext",
-     "stars": 1594,
+     "stars": 1627,
      "licence": "Apache-2.0",
-     "pushed": "2026-11-11",
+     "pushed": "2026-11-12",
      "created": "2025-11-10",
      "status": "ok",
-     "stars_30d": 435,
+     "stars_30d": 472,
      "what": "Self-evolving long-term memory for Codex, Claude Code, and other AI agents. Pick up where another…",
      "kind": [
       "server"
@@ -4287,12 +4314,12 @@
     {
      "repo": "Dataojitori/nocturne_memory",
      "url": "https://github.com/Dataojitori/nocturne_memory",
-     "stars": 1426,
+     "stars": 1427,
      "licence": "MIT",
      "pushed": "2026-11-03",
      "created": "2025-12-25",
      "status": "ok",
-     "stars_30d": 35,
+     "stars_30d": 36,
      "what": "A lightweight, rollbackable, and visual Long-Term Memory Server for MCP Agents. Say goodbye to…",
      "kind": [
       "server"
@@ -4307,7 +4334,7 @@
      "pushed": "2026-10-16",
      "created": "2026-07-10",
      "status": "ok",
-     "stars_30d": 6,
+     "stars_30d": 5,
      "what": "Build your HUMAN.md.",
      "kind": [
       "server"

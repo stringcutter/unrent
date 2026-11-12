@@ -3892,6 +3892,19 @@
    "what": "RuVector provides High Performance, Real-Time decisions and agent memory , Self-Learning Ai, Vector GNN DB built in Rust",
    "judged": "2026-10-11"
   },
+  "simplexai-labs/PolyStrata": {
+   "p": {
+    "job": 0.81,
+    "software": 0.97,
+    "client": 0.03
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Run large AI models on your own PC: Qwen3.8-Flash-Next on Strata's engine, and GLM 5.3 Flash, DeepSeek V4 Flash, LFM2.5, Qwen3.6, Ornith 1.5, Gemma 4, Tiel Coder and MiniCPM-V on a second engine written for PolyStrata. One-click install for Windows and Linux, OpenAI/Anthropic API on localhost.",
+   "judged": "2026-11-12"
+  },
   "skypilot-org/skypilot": {
    "p": {
     "job": 0.13,
@@ -4413,6 +4426,19 @@
    "model": "jev-1.14.0",
    "what": "Your Personal Librarian Agent. Ask anything on your computer, organize files, remember important info and files.",
    "judged": "2026-11-10"
+  },
+  "Pinvou/pinvou-agent": {
+   "p": {
+    "job": 0.16,
+    "software": 0.97,
+    "client": 0.11
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Open-source desktop AI agent for tools, files, knowledge, workflows, and real deliverables.",
+   "judged": "2026-11-12"
   },
   "Ramakm/AI-Engineering": {
    "p": {
@@ -5428,6 +5454,19 @@
   }
  },
  "speech-to-text": {
+  "233stone/vocotype-cli": {
+   "p": {
+    "job": 0.31,
+    "software": 0.96,
+    "client": 0.16
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.14.0",
+   "what": "VocoType 是一款运行在本地端侧的隐私安全语音输入工具，通过快捷键即可将语音实时转换为文字并自动输入到当前应用。支持语音转文字MCP、AI 优化文本、自定义替换词典、录音视频转文字等功能，让语音输入更高效、更安全。",
+   "judged": "2026-11-12"
+  },
   "Blaizzy/mlx-audio": {
    "p": {
     "job": 0.79,
@@ -5830,6 +5869,19 @@
    "model": "jev-1.13.0",
    "what": "Speech-to-text server framework with next-gen Kaldi",
    "judged": "2026-10-11"
+  },
+  "k2-fsa/sherpa-ncnn": {
+   "p": {
+    "job": 0.9,
+    "software": 0.95,
+    "client": 0.03
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Real-time speech recognition and voice activity detection (VAD) using next-gen Kaldi with ncnn without Internet connection. Support iOS, Android, Linux, macOS, Windows, Raspberry Pi, VisionFive2, LicheePi4A etc.",
+   "judged": "2026-11-12"
   },
   "leon-ai/leon": {
    "p": {
