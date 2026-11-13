@@ -633,6 +633,19 @@
    "what": "SeekStorm: vector & lexical search - in-process library & multi-tenancy server, in Rust.",
    "judged": "2026-10-11"
   },
+  "anysearch-ai/anysearch-skill": {
+   "p": {
+    "job": 0.2,
+    "software": 0.88,
+    "client": 0.85
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Unified real-time search engine skill for AI agents. Supports general web search, vertical domain search, parallel batch search, and full-page content extraction.",
+   "judged": "2026-11-13"
+  },
   "codelibs/fess": {
    "p": {
     "job": 0.18,
@@ -784,6 +797,19 @@
    "model": "jev-1.13.0",
    "what": "Open-source benchmark for browser AI agents on daily tasks.",
    "judged": "2026-10-11"
+  },
+  "agentes-chat/agentes-chat": {
+   "p": {
+    "job": 0.04,
+    "software": 0.97,
+    "client": 0.13
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Open-source, self-hosted Slack alternative where your team and AI agents work together in channels and DMs. Agents run on Claude, ChatGPT/Codex, Gemini or Grok, with MCP tools, their own computer and browser, routines, memory and approvals. Web, desktop and phone apps. Docker Compose + Postgres. AGPL-3.0.",
+   "judged": "2026-11-13"
   },
   "brightdata/brightdata-mcp": {
    "p": {
@@ -2004,6 +2030,19 @@
    "model": "jev-1.14.0",
    "what": "🛡️ BLA (Blind LLM Agents) — Adversarial defense shield that protects binaries, Electron apps, JS bundles, Python, and WebAssembly against AI reverse-engineering agents like REA. Poison -> Exhaust -> Hallucinate.",
    "judged": "2026-10-30"
+  },
+  "splx-ai/agentic-radar": {
+   "p": {
+    "job": 0.1,
+    "software": 0.95,
+    "client": 0.11
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.14.0",
+   "what": "A security scanner for your LLM agentic workflows",
+   "judged": "2026-11-13"
   },
   "uber/ADR": {
    "p": {
@@ -3524,6 +3563,19 @@
    "model": "jev-1.13.0",
    "what": "20+ high-performance LLMs with recipes to pretrain, finetune and deploy at scale.",
    "judged": "2026-10-11"
+  },
+  "Luce-Org/lucebox": {
+   "p": {
+    "job": 0.81,
+    "software": 0.94,
+    "client": 0.06
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Lucebox inference engine for heterogeneous hardware & consumer GPUs",
+   "judged": "2026-11-13"
   },
   "Michael-A-Kuykendall/shimmy": {
    "p": {
@@ -5136,6 +5188,19 @@
    "what": "AI Search & RAG Without Moving Your Data. Get instant answers from your company's knowledge across 100+ apps while keepi",
    "judged": "2026-10-11"
   },
+  "video-db/Director": {
+   "p": {
+    "job": 0.08,
+    "software": 0.91,
+    "client": 0.49
+   },
+   "kind": [
+    "framework"
+   ],
+   "model": "jev-1.14.0",
+   "what": "AI video agents framework for next-gen video interactions and workflows.",
+   "judged": "2026-11-13"
+  },
   "vitali87/code-graph-rag": {
    "p": {
     "job": 0.4,
@@ -5283,6 +5348,19 @@
   }
  },
  "search-library": {
+  "LingCore/WinShun": {
+   "p": {
+    "job": 0.07,
+    "software": 0.98,
+    "client": 0.04
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Win顺：免费开源的 Windows 快速搜索启动器。双击 Ctrl，拼音秒搜文件、全文搜索 Word/Excel/PDF、剪贴板历史（代替 Win+V）、对话框搜索、任务栏搜索、插件、AI 助手 MCP。Free Windows search launcher: pinyin file search, full-text search, clipboard history, MCP server. Everything/Listary alternative.",
+   "judged": "2026-11-13"
+  },
   "SeekStorm/SeekStorm": {
    "p": {
     "job": 0.83,
