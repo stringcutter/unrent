@@ -423,6 +423,19 @@
    "what": "Self-evolving long-term memory for Codex, Claude Code, and other AI agents. Pick up where another agent left off.",
    "judged": "2026-10-28"
   },
+  "omdsh-dev/dsh-mnemon": {
+   "p": {
+    "job": 0.39,
+    "software": 0.94,
+    "client": 0.16
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Composable, view-based context for DeepSeek Harness. Pluggable sources and strategies, with layered memory and self-evolving skills out of the box.",
+   "judged": "2026-11-14"
+  },
   "pingcap/tidb": {
    "p": {
     "job": 0.12,
@@ -862,6 +875,19 @@
    "model": "jev-1.13.0",
    "what": "Playwright MCP server undetected by anti-bots and captchas: AI agent browses the web on anti-detect stealth Firefox, Pyt",
    "judged": "2026-10-11"
+  },
+  "n8n-io/nod": {
+   "p": {
+    "job": 0.12,
+    "software": 0.97,
+    "client": 0.09
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Open source personal agent with its own computer. It chases invoices, preps your calls and cancels trials on real websites, and asks before it acts. Runs on your machine with the model you choose. By n8n.",
+   "judged": "2026-11-14"
   },
   "nanobrowser/nanobrowser": {
    "p": {
