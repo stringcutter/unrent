@@ -2057,6 +2057,19 @@
    "what": "🛡️ BLA (Blind LLM Agents) — Adversarial defense shield that protects binaries, Electron apps, JS bundles, Python, and WebAssembly against AI reverse-engineering agents like REA. Poison -> Exhaust -> Hallucinate.",
    "judged": "2026-10-30"
   },
+  "sherwinvishesh/SurrogateShield": {
+   "p": {
+    "job": 0.24,
+    "software": 0.96,
+    "client": 0.12
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.14.0",
+   "what": "A privacy-first guardrail for LLMs and RAG pipelines. SurrogateShield detects, redacts, and reconstructs sensitive PII data on the fly while defending against adversarial attacks.",
+   "judged": "2026-11-15"
+  },
   "splx-ai/agentic-radar": {
    "p": {
     "job": 0.1,
@@ -4763,6 +4776,19 @@
    "what": "Unified research workspace for humans & agents — PDF Q&A with citations, Vault, writing. 为人与 Agent 协作的科研工作台；补齐 Zotero 时代的人机上下文断点。",
    "judged": "2026-10-30"
   },
+  "sherwinvishesh/SurrogateShield": {
+   "p": {
+    "job": 0.03,
+    "software": 0.95,
+    "client": 0.1
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.14.0",
+   "what": "A privacy-first guardrail for LLMs and RAG pipelines. SurrogateShield detects, redacts, and reconstructs sensitive PII data on the fly while defending against adversarial attacks.",
+   "judged": "2026-11-15"
+  },
   "simstudioai/sim": {
    "p": {
     "job": 0.23,
@@ -6116,6 +6142,19 @@
    "model": "jev-1.13.0",
    "what": "AI speech toolkit for Apple Silicon — ASR, TTS, speech-to-speech, VAD, and diarization powered by MLX and CoreML",
    "judged": "2026-10-11"
+  },
+  "sooftware/conformer": {
+   "p": {
+    "job": 0.23,
+    "software": 0.69,
+    "client": 0.02
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": "[Unofficial] PyTorch implementation of \"Conformer: Convolution-augmented Transformer for Speech Recognition\" (INTERSPEECH 2020)",
+   "judged": "2026-11-15"
   },
   "speechbrain/speechbrain": {
    "p": {
