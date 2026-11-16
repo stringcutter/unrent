@@ -32,6 +32,21 @@
     - routellm.abacus.ai
     env:
     - ABACUS_API_KEY
+- id: abliteratedllm
+  name: AbliteratedLLM
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://abliteratedllm.dev/docs/models
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.abliteratedllm.dev
+    env:
+    - ABLITERATEDLLM_API_KEY
 - id: abliteration-ai
   name: abliteration.ai
   category: LLM API
@@ -62,6 +77,36 @@
     - api.above.dev
     env:
     - ABOVE_API_KEY
+- id: adaption
+  name: Adaption
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://docs.adaptionlabs.ai
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.prod.adaptionlabs.ai
+    env:
+    - ADAPTION_API_KEY
+- id: adzuki
+  name: Adzuki AI
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://adzukiai.com/docs
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - adzukiai.com/v1
+    env:
+    - ADZUKI_API_KEY
 - id: agentrouter
   name: AgentRouter
   category: LLM gateway
@@ -120,6 +165,21 @@
     - api.aiand.com
     env:
     - AIAND_API_KEY
+- id: aigrow
+  name: AIGROW
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://aigrow.gg/ai-api/guide
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - aigrow.gg/v1
+    env:
+    - AIGROW_API_KEY
 - id: aihubmix
   name: AIHubMix
   category: LLM gateway
@@ -147,6 +207,36 @@
     - microquickjs.com/v1
     env:
     - AINETCAFE_API_KEY
+- id: aipg
+  name: AI Power Grid
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://aipowergrid.io/docs/integrations
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.aipowergrid.io
+    env:
+    - AIPG_API_KEY
+- id: aistupidlevel
+  name: AI Stupid Level
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://aistupidlevel.info/router/docs
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - aistupidlevel.info/v1
+    env:
+    - AISTUPIDLEVEL_API_KEY
 - id: aixy
   name: Aixy
   category: LLM API
@@ -174,7 +264,7 @@
   - openai
   detect:
     endpoint:
-    - aki.io/v1
+    - aki.io/openai/v1
     env:
     - AKI_IO_API_KEY
 - id: ambient
@@ -207,6 +297,20 @@
     - developer.amd.com.cn
     env:
     - AMD_API_KEY
+- id: anonrouter
+  name: AnonRouter
+  category: LLM gateway
+  replace_with:
+  - llm-gateway
+  source: models.dev
+  doc: https://docs.anonrouter.ai/models
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.anonrouter.ai
+    env:
+    - ANONROUTER_API_KEY
 - id: anyapi
   name: AnyAPI
   category: LLM API
@@ -222,6 +326,21 @@
     - api.anyapi.ai
     env:
     - ANYAPI_API_KEY
+- id: apiko
+  name: APIKO
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://apiko.app/docs/introduction
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.apiko.app
+    env:
+    - APIKO_API_KEY
 - id: arcee
   name: Arcee
   category: LLM API
@@ -237,6 +356,21 @@
     - api.arcee.ai
     env:
     - ARCEE_API_KEY
+- id: augure
+  name: Augure
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://augureai.ca/docs/api
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.augureai.ca
+    env:
+    - AUGURE_API_KEY
 - id: auriko
   name: Auriko
   category: LLM API
@@ -252,6 +386,21 @@
     - api.auriko.ai
     env:
     - AURIKO_API_KEY
+- id: autarcho
+  name: Autarcho
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://autarcho.com/use/
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.autarcho.com
+    env:
+    - AUTARCHO_API_KEY
 - id: bailing
   name: Bailing
   category: LLM API
@@ -259,12 +408,12 @@
   - open-llm
   - llm-serving
   source: models.dev
-  doc: https://alipaytbox.yuque.com/sxs0ba/ling/intro
+  doc: https://developer.ant-ling.com/zh-CN/docs
   excludes:
   - openai
   detect:
     endpoint:
-    - api.tbox.cn
+    - api.ant-ling.com
     env:
     - BAILING_API_TOKEN
 - id: bee
@@ -342,6 +491,80 @@
     - api.inference.boundless.network
     env:
     - BOUNDLESS_API_KEY
+- id: bumo
+  name: Bumo Router
+  category: LLM gateway
+  replace_with:
+  - llm-gateway
+  source: models.dev
+  doc: https://bumo.ai/docs/api
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - router.bumo.ai
+    env:
+    - BUMO_API_KEY
+- id: cedarllm
+  name: CedarLLM
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://cedarllm.com/docs
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.cedarllm.com
+    env:
+    - CEDARLLM_API_KEY
+- id: cheapaimodel
+  name: cheapaimodel
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://cheapaimodel.ai/docs
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.cheapaimodel.ai
+    env:
+    - CHEAPAIMODEL_API_KEY
+- id: cheapest-token
+  name: CheapestToken
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://cheapest-token.com/docs/opencode
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.cheapest-token.com
+    env:
+    - CHEAPEST_TOKEN_API_KEY
+- id: cheapllm
+  name: cheapllm.shop
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://cheapllm.shop/docs
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - cheapllm.shop/v1
+    env:
+    - CHEAPLLM_API_KEY
 - id: chutes
   name: Chutes
   category: LLM API
@@ -387,6 +610,21 @@
     - api.cline.bot
     env:
     - CLINE_API_KEY
+- id: cloudcode
+  name: CloudCode.ONE
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://cloudcode.one
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.cloudcode.one
+    env:
+    - CLOUDCODE_API_KEY
 - id: cloudferro-sherlock
   name: CloudFerro Sherlock
   category: LLM API
@@ -415,6 +653,21 @@
   detect:
     endpoint:
     - api.commandcode.ai
+- id: confidential-ai
+  name: Confidential AI
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://confidential.ai/docs/inference-api/get-started
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.confidential.ai
+    env:
+    - CONFIDENTIAL_API_KEY
 - id: coralbricks
   name: CoralBricks
   category: LLM API
@@ -518,6 +771,36 @@
     - api.dinference.com
     env:
     - DINFERENCE_API_KEY
+- id: dothoosh
+  name: DotHoosh
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://gateway.dothoosh.com/docs
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - gateway.dothoosh.com
+    env:
+    - DOTHOOSH_API_KEY
+- id: doubleword
+  name: Doubleword
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://docs.doubleword.ai/inference-api/models
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.doubleword.ai
+    env:
+    - DOUBLEWORD_API_KEY
 - id: drun
   name: D.Run
   category: LLM API
@@ -608,6 +891,21 @@
     - api.engy.ai
     env:
     - ENGY_API_KEY
+- id: entrim
+  name: Entrim
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://docs.entrim.ai/model-api/
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.entrim.ai
+    env:
+    - ENTRIM_API_KEY
 - id: evroc
   name: evroc
   category: LLM API
@@ -623,6 +921,21 @@
     - models.think.evroc.com
     env:
     - EVROC_API_KEY
+- id: ezkielyna
+  name: Ezkielyna
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://ezkielyna.store/models
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.ezkielyna.store
+    env:
+    - EZKIELYNA_API_KEY
 - id: fastrouter
   name: FastRouter
   category: LLM gateway
@@ -637,6 +950,36 @@
     - go.fastrouter.ai
     env:
     - FASTROUTER_API_KEY
+- id: fiftyx
+  name: 50X
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://ai.50x.energy/docs
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.ai.50x.energy
+    env:
+    - FIFTYX_API_KEY
+- id: fortytwo
+  name: Fortytwo
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://docs.fortytwo.network/docs/models
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.fortytwo.network
+    env:
+    - FORTYTWO_API_KEY
 - id: freemodel
   name: FreeModel
   category: LLM API
@@ -650,6 +993,21 @@
     - cc.freemodel.dev
     env:
     - FREEMODEL_API_KEY
+- id: frequency
+  name: Frequency
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://docs.miraiminds.co/v2/llm
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - llm.scalefrequency.com
+    env:
+    - FREQUENCY_API_KEY
 - id: friendli
   name: Friendli
   category: LLM API
@@ -680,6 +1038,21 @@
     - app.frogbot.ai
     env:
     - FROGBOT_API_KEY
+- id: gisoo
+  name: Gisoo
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://gisoo.pro/docs/models
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - gisoo.pro/api/v1
+    env:
+    - GISOO_API_KEY
 - id: gitlab
   name: GitLab Duo
   category: LLM API
@@ -706,6 +1079,21 @@
     - api.gmi-serving.com
     env:
     - GMICLOUD_API_KEY
+- id: graphn
+  name: GraphN
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://graphn.ai/docs/getting-started
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - model.graphn.ai
+    env:
+    - GRAPHN_API_KEY
 - id: greenpt
   name: GreenPT
   category: LLM API
@@ -751,6 +1139,20 @@
     - api.withhopper.com
     env:
     - HOPPER_API_KEY
+- id: hostinger-router
+  name: Hostinger Router
+  category: LLM gateway
+  replace_with:
+  - llm-gateway
+  source: models.dev
+  doc: https://www.hostinger.com/ai-router
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - router.hostinger.com
+    env:
+    - HOSTINGER_ROUTER_API_KEY
 - id: hpc-ai
   name: HPC-AI
   category: LLM API
@@ -766,6 +1168,36 @@
     - api.hpc-ai.com
     env:
     - HPC_AI_API_KEY
+- id: hubris
+  name: Hubris
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://hubris.pw/models
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.hubris.pw
+    env:
+    - HUBRIS_API_KEY
+- id: humain
+  name: HUMAIN
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://platform.node.humain.com
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.node.humainaic.com
+    env:
+    - HUMAIN_API_KEY
 - id: hyper
   name: Charm Hyper
   category: LLM API
@@ -854,6 +1286,21 @@
   detect:
     endpoint:
     - infer.flow7.org
+- id: inferall
+  name: InferAll
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://inferall.ai/docs
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.inferall.ai
+    env:
+    - INFERALL_API_KEY
 - id: inference
   name: Inference
   category: LLM API
@@ -867,6 +1314,66 @@
   detect:
     endpoint:
     - inference.net/v1
+- id: inference-coop
+  name: Inference Cooperative
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://inference.coop
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - gateway.inference.coop
+    env:
+    - INFERENCE_COOP_API_KEY
+- id: inferenceapis
+  name: Inference APIs
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://inferenceapis.com/models
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.inferenceapis.com
+    env:
+    - INFERENCEAPIS_API_KEY
+- id: inferris
+  name: Inferris
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://inferris.ai/developers.md
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.inferris.ai
+    env:
+    - INFERRIS_API_KEY
+- id: infersia
+  name: Infersia
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://infersia.com/models
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.infersia.com
+    env:
+    - INFERSIA_API_KEY
 - id: inferx
   name: InferX
   category: LLM API
@@ -895,6 +1402,21 @@
   detect:
     endpoint:
     - api.intelligence.io.solutions
+- id: isoquant
+  name: Isoquant
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://isoquant.ai/docs
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.isoquant.ai
+    env:
+    - ISOQUANT_API_KEY
 - id: iteracompute
   name: IteraCompute
   category: LLM API
@@ -910,6 +1432,21 @@
     - api.iteracompute.com
     env:
     - ITERACOMPUTE_API_KEY
+- id: jad-ai
+  name: Jad AI
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://jadai.freesrv.com/docs
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - jadai.freesrv.com
+    env:
+    - JAD_API_KEY
 - id: jalapeno
   name: Jalapeno Cloud
   category: LLM API
@@ -940,6 +1477,51 @@
     - api.jiekou.ai
     env:
     - JIEKOU_API_KEY
+- id: joingonka
+  name: JoinGonka
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://gate.joingonka.ai/docs/models
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - gate.joingonka.ai
+    env:
+    - JOINGONKA_API_KEY
+- id: jzstoken
+  name: JZSTOKEN
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://jzstoken.com
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - jzstoken.com/api/v1
+    env:
+    - JZSTOKEN_API_KEY
+- id: keln
+  name: Keln
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://docs.keln.ai/models-pricing/
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.keln.ai
+    env:
+    - KELN_API_KEY
 - id: kenari
   name: Kenari
   category: LLM API
@@ -969,6 +1551,36 @@
     - api.kilo.ai
     env:
     - KILO_API_KEY
+- id: kitani
+  name: Kitani
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://kitani.ai/docs
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.kitani.ai
+    env:
+    - KITANI_API_KEY
+- id: klavo
+  name: Klavo AI
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://ai.klavo.ru/docs
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.klavo.ru
+    env:
+    - KLAVO_API_KEY
 - id: klokintegration
   name: klokintegration.se
   category: LLM API
@@ -984,6 +1596,20 @@
     - api-gw.klok.ipaas.se
     env:
     - KLOKINTEGRATION_API_KEY
+- id: korouter
+  name: KoRouter
+  category: LLM gateway
+  replace_with:
+  - llm-gateway
+  source: models.dev
+  doc: https://korouter.ai/docs
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - korouter.ai/v1
+    env:
+    - KOROUTER_API_KEY
 - id: kosmik
   name: Kosmik Compute
   category: LLM API
@@ -1014,21 +1640,21 @@
     - coding-plan-endpoint.kuaecloud.net
     env:
     - KUAE_API_KEY
-- id: lilac
-  name: Lilac
+- id: kunavo
+  name: Kunavo
   category: LLM API
   replace_with:
   - open-llm
   - llm-serving
   source: models.dev
-  doc: https://docs.getlilac.com/inference/models
+  doc: https://kunavo.com/docs/quickstart?utm_source=models.dev&utm_medium=directory
   excludes:
   - openai
   detect:
     endpoint:
-    - api.getlilac.com
+    - api.kunavo.com
     env:
-    - LILAC_API_KEY
+    - KUNAVO_API_KEY
 - id: liquid
   name: Liquid Inference
   category: LLM API
@@ -1044,6 +1670,21 @@
     - router.inference.ai.exchange
     env:
     - LIQUID_API_KEY
+- id: lithosai
+  name: LithosAI
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://docs.lithosai.com
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.lithosai.cloud
+    env:
+    - LITHOSAI_API_KEY
 - id: llmgateway
   name: DevPass
   category: LLM gateway
@@ -1088,6 +1729,21 @@
     - llmtr.com/v1
     env:
     - LLMTR_API_KEY
+- id: logits
+  name: Logits
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://logits.com/docs
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.logits.com
+    env:
+    - LOGITS_API_KEY
 - id: longcat
   name: LongCat
   category: LLM API
@@ -1132,6 +1788,36 @@
     - api.lucidquery.com
     env:
     - LUCIDQUERY_API_KEY
+- id: lyceum
+  name: Lyceum
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://docs.lyceum.technology/docs/inference/serverless
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.lyceum.technology
+    env:
+    - LYCEUM_API_KEY
+- id: mallard
+  name: Mallard AI
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://mallardai.co.uk/docs/
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.mallardai.co.uk
+    env:
+    - MALLARD_API_KEY
 - id: meganova
   name: Meganova
   category: LLM API
@@ -1162,6 +1848,21 @@
     - api.melious.ai
     env:
     - MELIOUS_API_KEY
+- id: meragpt
+  name: meraGPT
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://meragpt.com/docs/models
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - meragpt.com/v1
+    env:
+    - MERAGPT_API_KEY
 - id: merge-gateway
   name: Merge Gateway
   category: LLM gateway
@@ -1249,6 +1950,21 @@
     - api.modular.com
     env:
     - MODULAR_API_KEY
+- id: moneo
+  name: Moneo
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://moneo.one/api.html
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.moneo.one
+    env:
+    - MONEO_API_KEY
 - id: morph
   name: Morph
   category: LLM API
@@ -1355,6 +2071,36 @@
     - api.neuralwatt.com
     env:
     - NEURALWATT_API_KEY
+- id: nodecode
+  name: Nodecode
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://nodecode.ai/docs/models
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.nodecode.ai
+    env:
+    - NODECODE_API_KEY
+- id: nokeep
+  name: nokeep
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://nokeep.ai/docs
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - nokeep.ai/v1
+    env:
+    - NOKEEP_API_KEY
 - id: nova
   name: Nova
   category: LLM API
@@ -1370,6 +2116,36 @@
     - api.nova.amazon.com
     env:
     - NOVA_API_KEY
+- id: oathbreaker
+  name: Oathbreaker AI
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://oathbreaker.ai/docs
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - oathbreaker.ai/v1
+    env:
+    - OATHBREAKER_API_KEY
+- id: obscurify
+  name: Obscurify.ai
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://obscurify.ai/api-docs
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - obscurify.ai/v1
+    env:
+    - OBSCURIFY_API_KEY
 - id: ofox
   name: Ofox
   category: LLM API
@@ -1445,6 +2221,21 @@
     - api.orcarouter.ai
     env:
     - ORCAROUTER_API_KEY
+- id: outerlabs
+  name: Outer Labs
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://outerlabs.ai/docs
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.outerlabs.ai
+    env:
+    - OUTERLABS_API_KEY
 - id: ovhcloud
   name: OVHcloud AI Endpoints
   category: LLM API
@@ -1460,6 +2251,21 @@
     - oai.endpoints.kepler.ai.cloud.ovh.net
     env:
     - OVHCLOUD_API_KEY
+- id: paraloncloud
+  name: ParalonCloud
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://paraloncloud.com/docs/inference-api
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - paraloncloud.com/v1
+    env:
+    - PARALONCLOUD_API_KEY
 - id: pareto
   name: Pareto Inference
   category: LLM API
@@ -1490,6 +2296,33 @@
     - api.pendra.ai
     env:
     - PENDRA_API_KEY
+- id: phala
+  name: Phala
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://docs.phala.com/phala-cloud/confidential-ai/confidential-model/confidential-ai-api
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - inference.phala.com
+- id: phase
+  name: Phase Router
+  category: LLM gateway
+  replace_with:
+  - llm-gateway
+  source: models.dev
+  doc: https://router.phase.xyz/models
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - router.phase.xyz
+    env:
+    - PHASE_API_KEY
 - id: pioneer
   name: Pioneer
   category: LLM API
@@ -1535,6 +2368,21 @@
     - inference.poolside.ai
     env:
     - POOLSIDE_API_KEY
+- id: powerspring
+  name: Powerspring
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://powerspring.eu/models
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.powerspring.eu
+    env:
+    - POWERSPRING_API_KEY
 - id: prime
   name: Prime Inference
   category: LLM API
@@ -1550,6 +2398,20 @@
     - api.pinference.ai
     env:
     - PRIME_API_KEY
+- id: proxystacks
+  name: ProxyStacks Relay
+  category: LLM gateway
+  replace_with:
+  - llm-gateway
+  source: models.dev
+  doc: https://proxystacks.com/en/docs/opencode
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - proxystacks.com/v1
+    env:
+    - RELAY_API_KEY
 - id: qihang-ai
   name: QiHang
   category: LLM API
@@ -1580,6 +2442,19 @@
     - api.qnaigc.com
     env:
     - QINIU_API_KEY
+- id: rayline
+  name: Rayline
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://docs.rayline.ai/tools/opencode
+  detect:
+    endpoint:
+    - api.rayline.ai
+    env:
+    - RAYLINE_API_KEY
 - id: reflection
   name: Reflection
   category: LLM API
@@ -1595,6 +2470,21 @@
     - api.reflection.ai
     env:
     - REFLECTION_API_KEY
+- id: refuseless
+  name: Refuseless
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://docs.refuseless.com/models
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.refuseless.com
+    env:
+    - REFUSELESS_API_KEY
 - id: regolo-ai
   name: Regolo AI
   category: LLM API
@@ -1640,6 +2530,36 @@
     - api.routing.run
     env:
     - ROUTING_RUN_API_KEY
+- id: ruapi
+  name: RuAPI
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://www.ruapi.ai/pricing?lng=en
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - www.ruapi.ai/v1
+    env:
+    - RUAPI_API_KEY
+- id: runcrate
+  name: Runcrate
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://www.runcrate.ai/docs/models/overview
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.runcrate.ai
+    env:
+    - RUNCRATE_API_KEY
 - id: runinfra
   name: RunInfra
   category: LLM API
@@ -1653,6 +2573,21 @@
   detect:
     endpoint:
     - api.runinfra.ai
+- id: sagg
+  name: SAGG
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://api.privatedeskai.com/docs
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.privatedeskai.com
+    env:
+    - SAGG_API_KEY
 - id: sakana
   name: Sakana AI
   category: LLM API
@@ -1680,6 +2615,21 @@
     - '@saladtechnologies-oss/ai-sdk-provider'
     env:
     - SALAD_CLOUD_API_KEY
+- id: sandbase
+  name: SandBase
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://www.sandbase.ai/docs/model-api-reference/llm-models
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.sandbase.ai
+    env:
+    - SANDBASE_API_KEY
 - id: scaleway
   name: Scaleway
   category: LLM API
@@ -1740,6 +2690,35 @@
     - token.sensenova.cn
     env:
     - SENSENOVA_API_KEY
+- id: sokkan
+  name: SOKKAN Router
+  category: LLM gateway
+  replace_with:
+  - llm-gateway
+  source: models.dev
+  doc: https://router.sokkan.ch/docs
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - router.sokkan.ch
+    env:
+    - SOKKAN_API_KEY
+- id: sparrowcodes
+  name: SparrowCodes
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://sparrowcodes.com/models
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.sparrowcodes.com
+    env:
+    - SPARROWCODES_API_KEY
 - id: stackit
   name: STACKIT
   category: LLM API
@@ -1770,6 +2749,35 @@
     - api.stdcmpt.com
     env:
     - STANDARDCOMPUTE_API_KEY
+- id: steadyrouter
+  name: SteadyRouter
+  category: LLM gateway
+  replace_with:
+  - llm-gateway
+  source: models.dev
+  doc: https://www.steadyrouter.com/site/docs.html
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.steadyrouter.com
+    env:
+    - STEADYROUTER_API_KEY
+- id: stepping-stone
+  name: stepping stone AG
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://www.stepping-stone.ch/en/products/artificial-intelligence
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - llm.stoney-cloud.com
+    env:
+    - STONEY_API_KEY
 - id: subconscious
   name: Subconscious
   category: LLM API
@@ -1796,6 +2804,21 @@
   detect:
     endpoint:
     - llm.submodel.ai
+- id: superbot-gg
+  name: superbot
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://superbot.gg/api
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.superbot.gg
+    env:
+    - SUPERBOT_API_KEY
 - id: synthetic
   name: Synthetic
   category: LLM API
@@ -1811,20 +2834,49 @@
     - api.synthetic.new
     env:
     - SYNTHETIC_API_KEY
-- id: tempr
-  name: Tempr Gateway
-  category: LLM gateway
+- id: synthorai
+  name: Synthorai
+  category: LLM API
   replace_with:
-  - llm-gateway
+  - open-llm
+  - llm-serving
   source: models.dev
-  doc: https://temprhq.io/docs/gateway-reference.html
+  doc: https://synthorai.io/docs/
   excludes:
   - openai
   detect:
     endpoint:
-    - api.temprhq.io
+    - synthorai.io/v1
     env:
-    - TEMPR_API_KEY
+    - SYNTHORAI_API_KEY
+- id: teamorouter
+  name: TeamoRouter
+  category: LLM gateway
+  replace_with:
+  - llm-gateway
+  source: models.dev
+  doc: https://teamorouter.com/docs/api-integration
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.teamorouter.com
+    env:
+    - TEAMOROUTER_API_KEY
+- id: teapot-router
+  name: Teapot Router
+  category: LLM gateway
+  replace_with:
+  - llm-gateway
+  source: models.dev
+  doc: https://teapotrouter.com/docs
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.teapotrouter.com
+    env:
+    - TEAPOT_ROUTER_API_KEY
 - id: tensorx
   name: TensorX
   category: LLM API
@@ -1840,6 +2892,21 @@
     - api.tensorx.ai
     env:
     - TENSORX_API_KEY
+- id: tenstorrent
+  name: Tenstorrent
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://console.tenstorrent.com
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - console.tenstorrent.com
+    env:
+    - TENSTORRENT_API_KEY
 - id: the-grid-ai
   name: The Grid AI
   category: LLM API
@@ -1855,6 +2922,20 @@
     - api.thegrid.ai
     env:
     - THEGRID_API_KEY
+- id: therouter
+  name: TheRouter
+  category: LLM gateway
+  replace_with:
+  - llm-gateway
+  source: models.dev
+  doc: https://therouter.ai/docs/quickstart/
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.therouter.ai
+    env:
+    - THEROUTER_API_KEY
 - id: thinkingmachines
   name: Thinking Machines
   category: LLM API
@@ -1881,6 +2962,21 @@
     - inference.tinfoil.sh
     env:
     - TINFOIL_API_KEY
+- id: toapis
+  name: ToAPIs
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://docs.toapis.com
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - toapis.com/v1
+    env:
+    - TOAPIS_API_KEY
 - id: tokengo
   name: TokenGo
   category: LLM API
@@ -1896,6 +2992,36 @@
     - api.tokengo.com
     env:
     - TOKENGO_API_KEY
+- id: tokenify
+  name: Tokenify
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://www.tokenify.dev/docs/
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.tokenify.dev
+    env:
+    - TOKENIFY_API_KEY
+- id: tokenlab
+  name: TokenLab
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://tokenlab.sh/docs
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.tokenlab.sh
+    env:
+    - TOKENLAB_API_KEY
 - id: tokenrouter
   name: TokenRouter
   category: LLM gateway
@@ -1910,6 +3036,21 @@
     - api.tokenrouter.com
     env:
     - TOKENROUTER_API_KEY
+- id: tokenwatt
+  name: TokenWatt
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://www.tokenwatt.io/api.html
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.tokenwatt.io
+    env:
+    - TOKENWATT_API_KEY
 - id: trustedrouter
   name: TrustedRouter
   category: LLM gateway
@@ -1924,6 +3065,21 @@
     - api.trustedrouter.com
     env:
     - TRUSTEDROUTER_API_KEY
+- id: trustedtokens
+  name: TrustedTokens
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://trustedtokens.eu/docs
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.trustedtokens.eu
+    env:
+    - TRUSTEDTOKENS_API_KEY
 - id: umans-ai
   name: Umans AI
   category: LLM API
@@ -1939,6 +3095,36 @@
     - api.code.umans.ai
     env:
     - UMANS_AI_API_KEY
+- id: unbiased
+  name: Pareto by Unbiased
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://unbiased.ai/developers/
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.unbiased.ai
+    env:
+    - UNBIASED_API_KEY
+- id: uncensuredai
+  name: UncensuredAI
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://uncensuredai.com/en/api/reference
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - uncensuredai.com/v1
+    env:
+    - UNCENSURED_API_KEY
 - id: unorouter
   name: UnoRouter
   category: LLM gateway
@@ -1953,6 +3139,36 @@
     - api.unorouter.com
     env:
     - UNOROUTER_API_KEY
+- id: unrestricted
+  name: Unrestricted
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://unrestricted.sh/reference
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.unrestricted.sh
+    env:
+    - UNRESTRICTED_API_KEY
+- id: uplinkswitch
+  name: UplinkSwitch
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://uplinkswitch.ai/models
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.uplinkswitch.com
+    env:
+    - UPLINKSWITCH_API_KEY
 - id: vancine
   name: Vancine
   category: LLM API
@@ -1981,6 +3197,19 @@
     - venice-ai-sdk-provider
     env:
     - VENICE_API_KEY
+- id: verda
+  name: Verda
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://docs.verda.com/inference/quickstart/
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - inference.verda.com
 - id: vispark
   name: Vispark
   category: LLM API
@@ -2031,7 +3260,7 @@
   - open-llm
   - llm-serving
   source: models.dev
-  doc: https://docs.wafer.ai/wafer-pass
+  doc: https://docs.wafer.ai/serverless/models
   excludes:
   - openai
   detect:
@@ -2069,6 +3298,21 @@
     - inference.runanywhere.ai
     env:
     - WALLY_API_KEY
+- id: watt
+  name: Watt Cloud
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://www.watt-cloud.com/docs/
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.watt-cloud.com
+    env:
+    - WATT_API_KEY
 - id: xiaomi
   name: Xiaomi
   category: LLM API
@@ -2102,6 +3346,21 @@
     - www.xpersona.co/v1
     env:
     - XPERSONA_API_KEY
+- id: xxapi
+  name: xxapi
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://docs.xxapi.ai/opencode
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - xxapi.ai/v1
+    env:
+    - XXAPI_API_KEY
 - id: zeldoc
   name: Zeldoc
   category: LLM API
@@ -2145,3 +3404,33 @@
     - zenmux.ai/api/v1
     env:
     - ZENMUX_API_KEY
+- id: zerogpu
+  name: ZeroGPU
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://docs.zerogpu.ai/docs/model-catalog
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.zerogpu.ai
+    env:
+    - ZEROGPU_API_KEY
+- id: zro
+  name: Zro
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://zro.moonmath.ai/
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - zro.moonmath.ai
+    env:
+    - ZRO_API_KEY
