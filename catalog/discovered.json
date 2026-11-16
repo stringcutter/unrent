@@ -646,6 +646,19 @@
    "what": "SeekStorm: vector & lexical search - in-process library & multi-tenancy server, in Rust.",
    "judged": "2026-10-11"
   },
+  "anysearch-ai/anysearch-mcp-server": {
+   "p": {
+    "job": 0.17,
+    "software": 0.85,
+    "client": 0.53
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Unified real-time search MCP server supporting general web search, vertical domain search, parallel batch search, and full-page URL content extraction.",
+   "judged": "2026-11-16"
+  },
   "anysearch-ai/anysearch-skill": {
    "p": {
     "job": 0.2,
@@ -4492,6 +4505,19 @@
    "what": "The collaborative spreadsheet for AI. Chain cells into powerful pipelines, experiment with prompts and models, and evalu",
    "judged": "2026-10-11"
   },
+  "GanymedeNil/document.ai": {
+   "p": {
+    "job": 0.89,
+    "software": 0.96,
+    "client": 0.04
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "可溯源、带时效判断的企业知识库问答：每条结论标明出自哪份文档的哪个版本、哪一处，以及在目标时间是否有效（Traceable, version- and time-aware enterprise RAG）",
+   "judged": "2026-11-16"
+  },
   "LangChat/langchat": {
    "p": {
     "job": 0.57,
@@ -4868,6 +4894,19 @@
    "model": "jev-1.14.0",
    "what": "Retrieval and Retrieval-augmented LLMs",
    "judged": "2026-10-28"
+  },
+  "GanymedeNil/document.ai": {
+   "p": {
+    "job": 0.61,
+    "software": 0.96,
+    "client": 0.05
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.14.0",
+   "what": "可溯源、带时效判断的企业知识库问答：每条结论标明出自哪份文档的哪个版本、哪一处，以及在目标时间是否有效（Traceable, version- and time-aware enterprise RAG）",
+   "judged": "2026-11-16"
   },
   "GiovanniPasq/agentic-rag-for-dummies": {
    "p": {
