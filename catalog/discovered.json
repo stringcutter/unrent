@@ -152,6 +152,19 @@
    "what": "Prismer Cloud",
    "judged": "2026-10-11"
   },
+  "Team-Commonly/commonly": {
+   "p": {
+    "job": 0.07,
+    "software": 0.97,
+    "client": 0.26
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Open-source workspace where your team and your agents share one pod. Connect the Claude Code or Codex you already run, @mention it next to your teammates, and put the work on one board. Self-host with Docker, or try it on commonly.me.",
+   "judged": "2026-11-21"
+  },
   "aakarim/OpenLore": {
    "p": {
     "job": 0.27,
@@ -1296,6 +1309,19 @@
    "what": "TurboOCR, >200 img/s OmnidocBench. TensorRT FP16, PP-OCRv6, HTTP + gRPC",
    "judged": "2026-10-11"
   },
+  "datalab-to/chandra": {
+   "p": {
+    "job": 0.92,
+    "software": 0.95,
+    "client": 0.2
+   },
+   "kind": [
+    "cli"
+   ],
+   "model": "jev-1.14.0",
+   "what": "OCR model that handles complex tables, forms, handwriting with full layout.",
+   "judged": "2026-11-21"
+  },
   "datalab-to/indra": {
    "p": {
     "job": 0.9,
@@ -1308,6 +1334,19 @@
    "model": "jev-1.14.0",
    "what": "1M param OCR model - runs on CPU, 15x faster than tesseract, close to 1B+ param models in accuracy",
    "judged": "2026-10-24"
+  },
+  "datalab-to/marker": {
+   "p": {
+    "job": 0.94,
+    "software": 0.94,
+    "client": 0.15
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Convert PDF to markdown + JSON quickly with high accuracy",
+   "judged": "2026-11-21"
   },
   "enoch3712/ExtractThinker": {
    "p": {
@@ -2057,6 +2096,19 @@
    "what": "Ready-to-run cloud templates for RAG, AI pipelines, and enterprise search with live data. 🐳Docker-friendly.⚡Always in sync with Sharepoint, Google Drive, S3, Kafka, PostgreSQL, real-time data APIs, and more.",
    "judged": "2026-10-15"
   },
+  "pipelab-org/pipelock": {
+   "p": {
+    "job": 0.12,
+    "software": 0.95,
+    "client": 0.08
+   },
+   "kind": [
+    "proxy"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Open-source AI agent firewall for MCP security and agent egress. Scans mediated HTTP, MCP, A2A, and WebSocket traffic for exfiltration, SSRF, and prompt injection, and emits mediator-signed action receipts: verifiable audit evidence from outside the agent.",
+   "judged": "2026-11-21"
+  },
   "qybaihe/bla": {
    "p": {
     "job": 0.03,
@@ -2134,6 +2186,19 @@
    "model": "jev-1.13.0",
    "what": "An open, programmable decision layer for models and compute.",
    "judged": "2026-10-11"
+  },
+  "xalgorix/xalgorix": {
+   "p": {
+    "job": 0.02,
+    "software": 0.97,
+    "client": 0.17
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Open-source AI penetration testing agent that exploit-verifies every finding. Autonomous 22-phase pentests of web apps & APIs with CVSS-scored PDF reports. Self-hosted, bring your own LLM, or run fully local with Ollama.",
+   "judged": "2026-11-21"
   }
  },
  "image-generation": {
@@ -2578,6 +2643,19 @@
    "what": "An open-source project for Windows developers to learn how to add AI with local models and APIs to Windows apps.",
    "judged": "2026-10-14"
   },
+  "neuregex/freefield": {
+   "p": {
+    "job": 0.2,
+    "software": 0.94,
+    "client": 0.13
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Open-source Higgsfield on ComfyUI: 120 image, video, VFX and audio apps, every model open weights; runs on Modal or your own GPU",
+   "judged": "2026-11-21"
+  },
   "op7418/guizang-ppt-skill": {
    "p": {
     "job": 0.04,
@@ -2636,6 +2714,19 @@
    "model": "jev-1.14.0",
    "what": "A compact Agent Skill for highly simplified, rounded, subtly neo-skeuomorphic IP mascot logos.",
    "judged": "2026-10-30"
+  },
+  "sakalond/StableGen": {
+   "p": {
+    "job": 0.11,
+    "software": 0.96,
+    "client": 0.11
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Transform your 3D texturing workflow with the power of generative AI, directly within Blender!",
+   "judged": "2026-11-21"
   },
   "scenario-labs/skills": {
    "p": {
@@ -2753,6 +2844,19 @@
    "model": "jev-1.13.0",
    "what": "GPT Image 2/2.5 prompt gallery, image prompt library, agentic skill, and CLI for OpenAI image generation/editing",
    "judged": "2026-10-11"
+  },
+  "xlite-dev/lite.ai.toolkit": {
+   "p": {
+    "job": 0.11,
+    "software": 0.92,
+    "client": 0.07
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": "A lite C++ AI toolkit: 100+ models with MNN, ORT and TRT, including Det, Seg, Stable-Diffusion, Face-Fusion.",
+   "judged": "2026-11-21"
   },
   "yangjian102621/geekai": {
    "p": {
@@ -3666,6 +3770,19 @@
    "what": "High-performance Inference and Deployment Toolkit for LLMs and VLMs based on PaddlePaddle",
    "judged": "2026-10-11"
   },
+  "RainBowLuoCS/Gamer": {
+   "p": {
+    "job": 0.05,
+    "software": 0.47,
+    "client": 0.08
+   },
+   "kind": [
+    "model"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Official Implementation of Gamer: A Generalist Vision-Language-Action Foundation Model for Long-Horizon Real-Time Game Agents",
+   "judged": "2026-11-21"
+  },
   "RunanywhereAI/trnrt": {
    "p": {
     "job": 0.87,
@@ -3855,6 +3972,19 @@
    "what": "Find secrets with Gitleaks 🔑",
    "judged": "2026-10-11"
   },
+  "incoai/splash": {
+   "p": {
+    "job": 0.86,
+    "software": 0.98,
+    "client": 0.03
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.14.0",
+   "what": "A local inference engine for Apple silicon, built around the model.",
+   "judged": "2026-11-21"
+  },
   "katanemo/plano": {
    "p": {
     "job": 0.13,
@@ -3969,6 +4099,19 @@
    "model": "jev-1.13.0",
    "what": "Qualcomm® AI Hub Models is our collection of state-of-the-art machine learning models optimized for performance (latency",
    "judged": "2026-10-11"
+  },
+  "raullenchai/Rapid-MLX": {
+   "p": {
+    "job": 0.88,
+    "software": 0.98,
+    "client": 0.03
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Rapid-MLX is an open-source (Apache 2.0) OpenAI- and Anthropic-compatible LLM inference server for Apple Silicon, built on MLX, focused on reliable tool calling for coding agents. Up to 4× faster than Apple's MLX (mlx-lm) on the same weights.",
+   "judged": "2026-11-21"
   },
   "ray-project/ray": {
    "p": {
@@ -4230,6 +4373,19 @@
    "what": "LLM-Driven Extraction of Unstructured Data — Built for API Deployments & ETL Pipeline Workflows",
    "judged": "2026-10-11"
   },
+  "clusterzx/paperless-ai": {
+   "p": {
+    "job": 0.06,
+    "software": 0.97,
+    "client": 0.15
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.14.0",
+   "what": "AI companion for Paperless-ngx: automatically titles, tags and files your documents, reads bad scans with local OCR (PaddleOCR, CPU/GPU) and answers questions about your whole archive with cited sources. Works with OpenAI, Claude, Ollama (fully local), Azure and any OpenAI-compatible API.",
+   "judged": "2026-11-21"
+  },
   "dataelement/bisheng": {
    "p": {
     "job": 0.08,
@@ -4255,6 +4411,32 @@
    "model": "jev-1.14.0",
    "what": "OCR model that handles complex tables, forms, handwriting with full layout.",
    "judged": "2026-10-23"
+  },
+  "datalab-to/marker": {
+   "p": {
+    "job": 0.91,
+    "software": 0.95,
+    "client": 0.14
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Convert PDF to markdown + JSON quickly with high accuracy",
+   "judged": "2026-11-21"
+  },
+  "datalab-to/surya": {
+   "p": {
+    "job": 0.94,
+    "software": 0.93,
+    "client": 0.2
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": "OCR, layout analysis, reading order, table recognition in 90+ languages",
+   "judged": "2026-11-21"
   },
   "dmMaze/BallonsTranslator": {
    "p": {
@@ -4750,6 +4932,19 @@
    "what": "Open-source AI sales OS — self-hosted CRM with native AI agents + WhatsApp (WAHA). Open alternative to Kommo, Octadesk &",
    "judged": "2026-10-11"
   },
+  "metadist/synaplan": {
+   "p": {
+    "job": 0.3,
+    "software": 0.98,
+    "client": 0.12
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Own the flow: one open-source AI platform for your knowledge, models and channels – web, WhatsApp, email, Outlook, Nextcloud & ownCloud. Local and cloud models side by side, with the cost on every answer.",
+   "judged": "2026-11-21"
+  },
   "om-ai-lab/OmAgent": {
    "p": {
     "job": 0.09,
@@ -5239,6 +5434,19 @@
    "model": "jev-1.13.0",
    "what": "Agent S: an open agentic framework that uses computers like a human",
    "judged": "2026-10-11"
+  },
+  "snap-stanford/memorilla": {
+   "p": {
+    "job": 0.28,
+    "software": 0.54,
+    "client": 0.04
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": "🦍 Memorilla: Latent Semantic Memory for LLMs",
+   "judged": "2026-11-21"
   },
   "superlinear-ai/raglite": {
    "p": {
@@ -5818,6 +6026,19 @@
    "what": "💬 Speech recognition for your site",
    "judged": "2026-10-11"
   },
+  "Uberi/speech_recognition": {
+   "p": {
+    "job": 0.7,
+    "software": 0.96,
+    "client": 0.2
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Speech recognition module for Python, supporting several engines and APIs, online and offline.",
+   "judged": "2026-11-21"
+  },
   "Zackriya-Solutions/meetily": {
    "p": {
     "job": 0.17,
@@ -5974,6 +6195,19 @@
    "what": "The python library for real-time communication",
    "judged": "2026-10-22"
   },
+  "gufo-org/gufo": {
+   "p": {
+    "job": 0.12,
+    "software": 0.97,
+    "client": 0.05
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.14.0",
+   "what": "The open-source AI engine for AMD Strix Halo. Text, embeddings, speech, image and video models in one binary, with OpenAI-compatible APIs, caching for coding agents and model extensions. Linux and Windows.",
+   "judged": "2026-11-21"
+  },
   "handy-computer/transcribe.cpp": {
    "p": {
     "job": 0.88,
@@ -6077,6 +6311,19 @@
    "model": "jev-1.13.0",
    "what": "Multilingual Automatic Speech Recognition with word-level timestamps and confidence",
    "judged": "2026-10-11"
+  },
+  "liuzhao1225/YouDub-Desktop": {
+   "p": {
+    "job": 0.08,
+    "software": 0.97,
+    "client": 0.1
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Open-source AI video localization and dubbing for YouTube/Bilibili: speech recognition, subtitle translation, voice cloning, audio mixing and rendering. 开源 AI 视频翻译配音工具。",
+   "judged": "2026-11-21"
   },
   "liuzhao1225/YouDub-webui": {
    "p": {
@@ -6309,6 +6556,19 @@
    "model": "jev-1.13.0",
    "what": "FLUX, Stable Diffusion, SDXL, SD3, LoRA, Fine Tuning, DreamBooth, Training, Automatic1111, Forge WebUI, SwarmUI, DeepFak",
    "judged": "2026-10-11"
+  },
+  "GetStream/Agents": {
+   "p": {
+    "job": 0.07,
+    "software": 0.92,
+    "client": 0.57
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Quickly build text, voice and video agents. Fast, Go based Agent backend with SDKs for every language. Sensible defaults for search, knowledge, skills, telephony, sandboxes, memory and persistence. Sovereign AI. Take control of your AI.",
+   "judged": "2026-11-21"
   },
   "GetStream/Vision-Agents": {
    "p": {
@@ -6685,6 +6945,19 @@
    "what": "🧠 Leon is your open-source personal assistant.",
    "judged": "2026-10-11"
   },
+  "liuzhao1225/YouDub-Desktop": {
+   "p": {
+    "job": 0.1,
+    "software": 0.97,
+    "client": 0.12
+   },
+   "kind": [
+    "application"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Open-source AI video localization and dubbing for YouTube/Bilibili: speech recognition, subtitle translation, voice cloning, audio mixing and rendering. 开源 AI 视频翻译配音工具。",
+   "judged": "2026-11-21"
+  },
   "liuzhao1225/YouDub-webui": {
    "p": {
     "job": 0.11,
@@ -6734,6 +7007,19 @@
    "model": "jev-1.13.0",
    "what": "This repository contains a hand-curated resources for Prompt Engineering with a focus on Generative Pre-trained Transfor",
    "judged": "2026-10-11"
+  },
+  "readbeyond/aeneas": {
+   "p": {
+    "job": 0.03,
+    "software": 0.96,
+    "client": 0.03
+   },
+   "kind": [
+    "library"
+   ],
+   "model": "jev-1.14.0",
+   "what": "aeneas is a Python/C library and a set of tools to automagically synchronize audio and text (aka forced alignment)",
+   "judged": "2026-11-21"
   },
   "readest/readest": {
    "p": {
@@ -7287,6 +7573,19 @@
   }
  },
  "voice-agent": {
+  "GetStream/Agents": {
+   "p": {
+    "job": 0.73,
+    "software": 0.94,
+    "client": 0.48
+   },
+   "kind": [
+    "server"
+   ],
+   "model": "jev-1.14.0",
+   "what": "Quickly build text, voice and video agents. Fast, Go based Agent backend with SDKs for every language. Sensible defaults for search, knowledge, skills, telephony, sandboxes, memory and persistence. Sovereign AI. Take control of your AI.",
+   "judged": "2026-11-21"
+  },
   "GetStream/Vision-Agents": {
    "p": {
     "job": 0.58,
