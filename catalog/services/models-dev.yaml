@@ -653,6 +653,21 @@
   detect:
     endpoint:
     - api.commandcode.ai
+- id: concentrate
+  name: Concentrate
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://concentrate.ai/docs
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.concentrate.ai
+    env:
+    - CONCENTRATE_API_KEY
 - id: confidential-ai
   name: Confidential AI
   category: LLM API
@@ -2383,6 +2398,21 @@
     - api.powerspring.eu
     env:
     - POWERSPRING_API_KEY
+- id: primalabs
+  name: PrimaLabs
+  category: LLM API
+  replace_with:
+  - open-llm
+  - llm-serving
+  source: models.dev
+  doc: https://docs.primalabs.ai/inference/models
+  excludes:
+  - openai
+  detect:
+    endpoint:
+    - api.primalabs.ai
+    env:
+    - PRIMALABS_API_KEY
 - id: prime
   name: Prime Inference
   category: LLM API
@@ -2755,7 +2785,7 @@
   replace_with:
   - llm-gateway
   source: models.dev
-  doc: https://www.steadyrouter.com/site/docs.html
+  doc: https://www.steadyrouter.com/site/docs.html?utm_source=models.dev
   excludes:
   - openai
   detect:
